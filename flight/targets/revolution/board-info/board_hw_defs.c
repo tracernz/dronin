@@ -2,14 +2,14 @@
  ******************************************************************************
  * @addtogroup TauLabsTargets Tau Labs Targets
  * @{
- * @addtogroup RevoMini OpenPilot RevoMini support files
+ * @addtogroup Revolution OpenPilot Revolution support files
  * @{
  *
  * @file       board_hw_defs.c 
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2011.
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2014
  * @brief      Defines board specific static initializers for hardware for the
- *             RevoMini board.
+ *             Revolution board.
  * @see        The GNU Public License (GPL) Version 3
  * 
  *****************************************************************************/

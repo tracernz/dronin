@@ -3,6 +3,8 @@ TARGET = Config
 DEFINES += CONFIG_LIBRARY
 DEFINES += QWT_DLL
 
+QT += qml
+QT += quickwidgets
 QT += svg
 QT += network
 
@@ -49,7 +51,8 @@ HEADERS += calibration.h \
     configosdwidget.h \
     convertmwrate.h \
     expocurve.h \
-    autotuneshareform.h
+    autotuneshareform.h \
+    osdsimulatorwidget.h
 
 SOURCES += calibration.cpp \
     configplugin.cpp \
@@ -84,7 +87,8 @@ SOURCES += calibration.cpp \
     configosdwidget.cpp \
     convertmwrate.cpp \
     expocurve.cpp \
-    autotuneshareform.cpp
+    autotuneshareform.cpp \
+    osdsimulatorwidget.cpp
 
 FORMS += airframe.ui \
     ccpm.ui \

@@ -34,6 +34,8 @@
 #include "uavobjectmanager.h"
 #include "uavobject.h"
 
+#include "osdsimulatorwidget.h"
+
 #include "onscreendisplaysettings.h"
 #include "manualcontrolcommand.h"
 #include "manualcontrolsettings.h"
@@ -93,6 +95,7 @@ private:
     Ui::Osd *ui;
     Ui::OsdPage * ui_pages[4];
     QWidget *pages[4];
+    OsdSimulatorWidget *simulator;
 
     OnScreenDisplaySettings * osdSettingsObj;
     OnScreenDisplayPageSettings * osdPageSettingsObj;

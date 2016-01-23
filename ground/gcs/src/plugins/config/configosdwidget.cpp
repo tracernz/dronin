@@ -155,6 +155,12 @@ ConfigOsdWidget::ConfigOsdWidget(QWidget *parent) : ConfigTaskWidget(parent)
     connect(ui_pages[3]->copyButton1, SIGNAL(released()), this, SLOT(handle_button_3_0()));
     connect(ui_pages[3]->copyButton2, SIGNAL(released()), this, SLOT(handle_button_3_1()));
     connect(ui_pages[3]->copyButton3, SIGNAL(released()), this, SLOT(handle_button_3_2()));
+
+    simulator = new OsdSimulatorWidget();
+    QWidget *simWidget = QWidget::createWindowContainer(simulator);
+    simWidget->setMinimumSize(352, 240);
+    simWidget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+    ui->verticalLayout_5->addWidget(simWidget);
 }
 
 ConfigOsdWidget::~ConfigOsdWidget()

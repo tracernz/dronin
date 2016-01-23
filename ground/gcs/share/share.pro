@@ -3,7 +3,7 @@ include(../gcs.pri)
 TEMPLATE = subdirs
 SUBDIRS = translations
 
-DATACOLLECTIONS = dials models pfd sounds diagrams mapicons stylesheets default_configurations welcome
+DATACOLLECTIONS = dials models pfd sounds diagrams mapicons stylesheets default_configurations welcome osdsimulator
 
 equals(copydata, 1) {
    for(dir, DATACOLLECTIONS) {

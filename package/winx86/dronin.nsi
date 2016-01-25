@@ -31,6 +31,7 @@
 ; Includes
 
 !include "x64.nsh"
+!include "WinVer.nsh"
 
 ;--------------------------------
 ; Paths
@@ -199,25 +200,27 @@ Section "Firmware" InSecFirmware
   File "${FIRMWARE_DIR}\*.*"
 SectionEnd
 
-; Copy driver files
-Section "-Drivers" InSecDrivers
-IfSilent +3
-  SetOutPath "$INSTDIR\drivers"
-  File "${SOURCE_ROOT}\flight\Project\Windows USB\dRonin-CDC.inf"
-SectionEnd
+${If} ${AtMostWin8.1}
+  ; Copy driver files
+  Section "-Drivers" InSecDrivers
+  IfSilent +3
+    SetOutPath "$INSTDIR\drivers"
+    File "${SOURCE_ROOT}\flight\Project\Windows USB\dRonin-CDC.inf"
+  SectionEnd
 
-; Preinstall OpenPilot CDC driver
-Section "CDC driver" InSecInstallDrivers
-IfSilent +9
-  InitPluginsDir
-  SetOutPath "$PLUGINSDIR"
-  ${If} ${RunningX64}
-    File "/oname=dpinst.exe" "${NSIS_DATA_TREE}\redist\dpinst_x64.exe"
-  ${Else}
-    File "/oname=dpinst.exe" "${NSIS_DATA_TREE}\redist\dpinst_x86.exe"
-  ${EndIf}
-  ExecWait '"$PLUGINSDIR\dpinst.exe" /lm /path "$INSTDIR\drivers"'
-SectionEnd
+  ; Preinstall OpenPilot CDC driver
+  Section "CDC driver" InSecInstallDrivers
+  IfSilent +9
+    InitPluginsDir
+    SetOutPath "$PLUGINSDIR"
+    ${If} ${RunningX64}
+      File "/oname=dpinst.exe" "${NSIS_DATA_TREE}\redist\dpinst_x64.exe"
+    ${Else}
+      File "/oname=dpinst.exe" "${NSIS_DATA_TREE}\redist\dpinst_x86.exe"
+    ${EndIf}
+    ExecWait '"$PLUGINSDIR\dpinst.exe" /lm /path "$INSTDIR\drivers"'
+  SectionEnd
+${EndIf}
 
 Section "Shortcuts" InSecShortcuts
   ; Create desktop and start menu shortcuts

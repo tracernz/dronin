@@ -24,6 +24,7 @@
 				<option>PicoC</option>
 				<option>FrSKY SPort Telemetry</option>
 				<option>OpenLog</option>
+				<option>UAVO Serial</option>
 			</options>
 		</field>
 
@@ -47,6 +48,7 @@
 				<option>PicoC</option>
 				<option>FrSKY SPort Telemetry</option>
 				<option>OpenLog</option>
+				<option>UAVO Serial</option>
 			</options>
 		</field>
 
@@ -70,6 +72,7 @@
 				<option>PicoC</option>
 				<option>FrSKY SPort Telemetry</option>
 				<option>OpenLog</option>
+				<option>UAVO Serial</option>
 			</options>
 		</field>
 
@@ -92,6 +95,7 @@
 				<option>PicoC</option>
 				<option>FrSKY SPort Telemetry</option>
 				<option>OpenLog</option>
+				<option>UAVO Serial</option>
 			</options>
 		</field>
 
@@ -114,6 +118,7 @@
 				<option>PicoC</option>
 				<option>FrSKY SPort Telemetry</option>
 				<option>OpenLog</option>
+				<option>UAVO Serial</option>
 			</options>
 		</field>
 

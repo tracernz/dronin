@@ -83,6 +83,11 @@ uintptr_t pios_com_telem_usb_id;
 uintptr_t pios_com_vcp_id;
 #endif
 
+#if defined(PIOS_INCLUDE_UAVO_SERIAL)
+uintptr_t pios_com_uavo_serial_id = 0;
+uintptr_t pios_uavo_serial_id;
+#endif
+
 uintptr_t pios_com_telem_serial_id;
 
 #if defined(PIOS_INCLUDE_DEBUG_CONSOLE)
@@ -176,6 +181,10 @@ uintptr_t pios_com_debug_id;
 
 #ifndef PIOS_COM_RFM22B_RF_TX_BUF_LEN
 #define PIOS_COM_RFM22B_RF_TX_BUF_LEN 512
+#endif
+
+#ifndef PIOS_COM_UAVO_SERIAL_RX_BUF_LEN
+#define PIOS_COM_UAVO_SERIAL_RX_BUF_LEN 64
 #endif
 
 /**
@@ -555,7 +564,15 @@ void PIOS_HAL_ConfigurePort(HwSharedPortTypesOptions port_type,
 			PIOS_COM_ChangeBaud(port_driver_id, 115200);
 #endif /* PIOS_INCLUDE_OPENLOG */
 		break;
-
+		case HWSHARED_PORTTYPES_UAVOSERIAL:
+#if defined(PIOS_INCLUDE_UAVO_SERIAL)
+			if (!pios_com_uavo_serial_id) {
+				if (PIOS_UAVO_SERIAL_Init(&pios_uavo_serial_id)) {
+					PIOS_Assert(0);
+				}
+				PIOS_HAL_ConfigureCom(usart_port_cfg, 0, PIOS_COM_UAVO_SERIAL_RX_BUF_LEN, com_driver, &port_driver_id);
+				target = &pios_com_uavo_serial_id;
+			}
 	} /* port_type */
 
 	if (port_type != HWSHARED_PORTTYPES_SBUS && sbus_toggle) {

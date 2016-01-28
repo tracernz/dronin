@@ -22,6 +22,7 @@
 				<option>LighttelemetryTx</option>
 				<option>PicoC</option>
 				<option>OpenLog</option>
+				<option>UAVO Serial</option>
 <!-- These last couple are special cases, really.  le sigh -->
 				<option>I2C</option>
 				<option>PPM</option>

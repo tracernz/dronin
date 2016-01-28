@@ -1,0 +1,17 @@
+<xml>
+	<object name="UavoSerialRx" singleinstance="true" settings="false" category="Utilities">
+		<description>Carries a UAVO serial packet from the device (i.e. out of the UAVOSerial tx port).</description>
+
+		<field name="PayloadLength" units="bytes" type="uint8" elements="1" defaultvalue="0">
+			<description>Length of the payload contained in the Payload field.</description>
+		</field>
+		<field name="Payload" units="" type="uint8" elements="64" defaultvalue="0">
+			<description>Payload bytes.</description>
+		</field>
+
+		<access gcs="readonly" flight="readwrite"/>
+		<telemetrygcs acked="true" updatemode="onchange" period="0"/>
+		<telemetryflight acked="true" updatemode="onchange" period="0"/>
+		<logging updatemode="manual" period="0"/>
+	</object>
+</xml>

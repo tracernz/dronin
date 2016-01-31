@@ -138,7 +138,8 @@ void ControllerPage::devicesChanged(QLinkedList<Core::DevListItem> devices)
         ui->deviceCombo->addItem(deviceItem.getConName());
         QString deviceName = (const QString)deviceItem.getConName();
         ui->deviceCombo->setItemData(ui->deviceCombo->count() - 1, deviceName, Qt::ToolTipRole);
-        if (!deviceName.startsWith("USB:", Qt::CaseInsensitive)) {
+        if (!deviceName.startsWith("USB:", Qt::CaseInsensitive) && !deviceName.startsWith("Serial:", Qt::CaseInsensitive)) {
+            // disable unusuable items
             ui->deviceCombo->setItemData(ui->deviceCombo->count() - 1, QVariant(0), Qt::UserRole - 1);
         }
         if (currSelectedDeviceName != "" && currSelectedDeviceName == deviceName) {

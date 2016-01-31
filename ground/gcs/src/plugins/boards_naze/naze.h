@@ -50,6 +50,7 @@ public:
     virtual enum Core::IBoardType::InputType getInputOnPort(int port_num);
     virtual bool isUSBSupported() { return false; }
     virtual QStringList getAdcNames();
+    virtual QString getConnectionDiagram() { return ":/naze/images/connection-diagram.svg"; }
 };
 
 

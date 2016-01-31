@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/naze">
         <file>images/nazev6.png</file>
+        <file>images/connection-diagram.svg</file>
     </qresource>
 </RCC>

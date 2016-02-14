@@ -260,6 +260,10 @@ static void PIOS_USART_RegisterTxCallback(uintptr_t usart_id, pios_com_callback 
 
 static void PIOS_USART_generic_irq_handler(uintptr_t usart_id)
 {
+#ifdef PIOS_INCLUDE_CHIBIOS
+	CH_IRQ_PROLOGUE();
+#endif
+
 	struct pios_usart_dev * usart_dev = (struct pios_usart_dev *)usart_id;
 
 	bool valid = PIOS_USART_validate(usart_dev);
@@ -308,6 +312,9 @@ static void PIOS_USART_generic_irq_handler(uintptr_t usart_id)
 #if defined(PIOS_INCLUDE_FREERTOS)
 	portEND_SWITCHING_ISR((rx_need_yield || tx_need_yield) ? pdTRUE : pdFALSE);
 #endif	/* PIOS_INCLUDE_FREERTOS */
+#ifdef PIOS_INCLUDE_CHIBIOS
+	CH_IRQ_EPILOGUE();
+#endif
 }
 
 #endif

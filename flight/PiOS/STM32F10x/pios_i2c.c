@@ -916,6 +916,10 @@ int32_t PIOS_I2C_Transfer(uint32_t i2c_id, const struct pios_i2c_txn txn_list[],
 
 void PIOS_I2C_EV_IRQ_Handler(uint32_t i2c_id)
 {
+#ifdef PIOS_INCLUDE_CHIBIOS
+	CH_IRQ_PROLOGUE();
+#endif
+
 	struct pios_i2c_adapter * i2c_adapter = (struct pios_i2c_adapter *)i2c_id;
 
 	bool valid = PIOS_I2C_validate(i2c_adapter);
@@ -1036,11 +1040,19 @@ void PIOS_I2C_EV_IRQ_Handler(uint32_t i2c_id)
 
 skip_event:
 	;
+
+#ifdef PIOS_INCLUDE_CHIBIOS
+	CH_IRQ_EPILOGUE();
+#endif
 }
 
 
 void PIOS_I2C_ER_IRQ_Handler(uint32_t i2c_id)
 {
+#ifdef PIOS_INCLUDE_CHIBIOS
+	CH_IRQ_PROLOGUE();
+#endif
+
 	struct pios_i2c_adapter * i2c_adapter = (struct pios_i2c_adapter *)i2c_id;
 
 	bool valid = PIOS_I2C_validate(i2c_adapter);
@@ -1067,7 +1079,11 @@ void PIOS_I2C_ER_IRQ_Handler(uint32_t i2c_id)
 #endif
 		/* Fail hard on any errors for now */
 		i2c_adapter_inject_event(i2c_adapter, I2C_EVENT_BUS_ERROR);
-	}	
+	}
+
+#ifdef PIOS_INCLUDE_CHIBIOS
+	CH_IRQ_EPILOGUE();
+#endif
 }
 
 #endif

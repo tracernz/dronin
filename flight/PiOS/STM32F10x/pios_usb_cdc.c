@@ -196,6 +196,9 @@ static void PIOS_USB_CDC_RxStart(uintptr_t usbcdc_id, uint16_t rx_bytes_avail) {
 
 static void PIOS_USB_CDC_SendData(struct pios_usb_cdc_dev * usb_cdc_dev)
 {
+#ifdef PIOS_INCLUDE_CHIBIOS
+	CH_IRQ_PROLOGUE();
+#endif
 	uint16_t bytes_to_tx;
 
 	if (!usb_cdc_dev->tx_out_cb) {
@@ -221,6 +224,9 @@ static void PIOS_USB_CDC_SendData(struct pios_usb_cdc_dev * usb_cdc_dev)
 #if defined(PIOS_INCLUDE_FREERTOS)
 	portEND_SWITCHING_ISR(need_yield ? pdTRUE : pdFALSE);
 #endif	/* PIOS_INCLUDE_FREERTOS */
+#ifdef PIOS_INCLUDE_CHIBIOS
+	CH_IRQ_EPILOGUE();
+#endif
 }
 
 static void PIOS_USB_CDC_TxStart(uintptr_t usbcdc_id, uint16_t tx_bytes_avail)
@@ -254,6 +260,10 @@ static void PIOS_USB_CDC_DATA_EP_IN_Callback(void)
 
 static void PIOS_USB_CDC_DATA_EP_OUT_Callback(void)
 {
+#ifdef PIOS_INCLUDE_CHIBIOS
+	CH_IRQ_PROLOGUE();
+#endif
+
 	struct pios_usb_cdc_dev * usb_cdc_dev = (struct pios_usb_cdc_dev *)pios_usb_cdc_id;
 
 	bool valid = PIOS_USB_CDC_validate(usb_cdc_dev);
@@ -304,6 +314,9 @@ static void PIOS_USB_CDC_DATA_EP_OUT_Callback(void)
 #if defined(PIOS_INCLUDE_FREERTOS)
 	portEND_SWITCHING_ISR(need_yield ? pdTRUE : pdFALSE);
 #endif	/* PIOS_INCLUDE_FREERTOS */
+#ifdef PIOS_INCLUDE_CHIBIOS
+	CH_IRQ_EPILOGUE();
+#endif
 }
 
 static uint16_t control_line_state;

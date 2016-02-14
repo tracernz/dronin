@@ -140,6 +140,10 @@ out_fail:
 
 static void PIOS_USB_HID_SendReport(struct pios_usb_hid_dev * usb_hid_dev)
 {
+#ifdef PIOS_INCLUDE_CHIBIOS
+	CH_IRQ_PROLOGUE();
+#endif
+
 	uint16_t bytes_to_tx;
 
 	if (!usb_hid_dev->tx_out_cb) {
@@ -184,6 +188,9 @@ static void PIOS_USB_HID_SendReport(struct pios_usb_hid_dev * usb_hid_dev)
 #if defined(PIOS_INCLUDE_FREERTOS)
 	portEND_SWITCHING_ISR(need_yield ? pdTRUE : pdFALSE);
 #endif	/* PIOS_INCLUDE_FREERTOS */
+#ifdef PIOS_INCLUDE_CHIBIOS
+	CH_IRQ_EPILOGUE();
+#endif
 }
 
 static void PIOS_USB_HID_RxStart(uintptr_t usbhid_id, uint16_t rx_bytes_avail) {
@@ -283,6 +290,10 @@ static void PIOS_USB_HID_EP_IN_Callback(void)
  */
 static void PIOS_USB_HID_EP_OUT_Callback(void)
 {
+#ifdef PIOS_INCLUDE_CHIBIOS
+	CH_IRQ_PROLOGUE();
+#endif
+
 	struct pios_usb_hid_dev * usb_hid_dev = (struct pios_usb_hid_dev *)pios_usb_hid_id;
 
 	bool valid = PIOS_USB_HID_validate(usb_hid_dev);
@@ -343,6 +354,9 @@ static void PIOS_USB_HID_EP_OUT_Callback(void)
 #if defined(PIOS_INCLUDE_FREERTOS)
 	portEND_SWITCHING_ISR(need_yield ? pdTRUE : pdFALSE);
 #endif	/* PIOS_INCLUDE_FREERTOS */
+#ifdef PIOS_INCLUDE_CHIBIOS
+	CH_IRQ_EPILOGUE();
+#endif
 }
 
 #endif	/* PIOS_INCLUDE_USB_HID */

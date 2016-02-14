@@ -25,9 +25,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
-#include <sys/times.h>
-#include <unistd.h>
-#include <signal.h>
 
 #include "ch.h"
 #include "hal.h"
@@ -40,6 +37,9 @@
 /* Driver local variables and types.                                         */
 /*===========================================================================*/
 
+static struct timeval nextcnt;
+static struct timeval tick = {0, 1000000 / CH_FREQUENCY};
+
 /*===========================================================================*/
 /* Driver local functions.                                                   */
 /*===========================================================================*/
@@ -47,8 +47,6 @@
 /*===========================================================================*/
 /* Driver interrupt handlers.                                                */
 /*===========================================================================*/
-
-CH_IRQ_HANDLER(port_tick_signal_handler);
 
 /*===========================================================================*/
 /* Driver exported functions.                                                */
@@ -59,44 +57,48 @@ CH_IRQ_HANDLER(port_tick_signal_handler);
  */
 void hal_lld_init(void) {
 
-  struct sigaction sigtick = {
-    .sa_handler = port_tick_signal_handler,
-  };
-
-  if (sigaction(PORT_TIMER_SIGNAL, &sigtick, NULL) < 0)
-    port_halt();
-
-  const suseconds_t usecs = 1000000 / CH_FREQUENCY;
-  struct itimerval itimer, oitimer;
-
-  /* Initialize the structure with the current timer information. */
-  if (getitimer(PORT_TIMER_TYPE, &itimer) < 0)
-    port_halt();
-
-  /* Set the interval between timer events. */
-  itimer.it_interval.tv_sec = usecs / 1000000;
-  itimer.it_interval.tv_usec = usecs % 1000000;
-
-  /* Set the current count-down. */
-  itimer.it_value.tv_sec = usecs / 1000000;
-  itimer.it_value.tv_usec = usecs % 1000000;
-
-  /* Set-up the timer interrupt. */
-  if (setitimer(PORT_TIMER_TYPE, &itimer, &oitimer) < 0)
-    port_halt();
+#if defined(__APPLE__)
+  puts("ChibiOS/RT simulator (OS X)\n");
+#else
+  puts("ChibiOS/RT simulator (Linux)\n");
+#endif
+  gettimeofday(&nextcnt, NULL);
+  timeradd(&nextcnt, &tick, &nextcnt);
 }
 
-halrtcnt_t hal_lld_get_counter_value(void) {
-  struct tms temp;
+/**
+ * @brief Interrupt simulation.
+ */
+void ChkIntSources(void) {
+  struct timeval tv;
 
-  times(&temp);
+#if HAL_USE_SERIAL
+  if (sd_lld_interrupt_pending()) {
+    dbg_check_lock();
+    if (chSchIsPreemptionRequired())
+      chSchDoReschedule();
+    dbg_check_unlock();
+    return;
+  }
+#endif
 
-  return temp.tms_utime;
-}
+  gettimeofday(&tv, NULL);
+  if (timercmp(&tv, &nextcnt, >=)) {
+    timeradd(&nextcnt, &tick, &nextcnt);
 
-halclock_t hal_lld_get_counter_frequency(void) {
+    CH_IRQ_PROLOGUE();
 
-	return sysconf(_SC_CLK_TCK);
+    chSysLockFromIsr();
+    chSysTimerHandlerI();
+    chSysUnlockFromIsr();
+
+    CH_IRQ_EPILOGUE();
+
+    dbg_check_lock();
+    if (chSchIsPreemptionRequired())
+      chSchDoReschedule();
+    dbg_check_unlock();
+  }
 }
 
 /** @} */

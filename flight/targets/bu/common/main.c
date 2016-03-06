@@ -129,9 +129,9 @@ int main(void) {
 void error(int led) {
 	for (;;) {
 		PIOS_LED_On(led);
-		PIOS_DELAY_WaitmS(500);
+		PIOS_DELAY_WaitmS(200);
 		PIOS_LED_Off(led);
-		PIOS_DELAY_WaitmS(500);
+		PIOS_DELAY_WaitmS(200);
 	}
 }
 

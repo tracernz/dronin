@@ -50,6 +50,10 @@
 #define IAP_BOOTCOUNT   BKP_DR3
 #endif
 
+#define IAP_MAGIC_WORD_1	0x1122
+#define IAP_MAGIC_WORD_2	0xAA55
+#define IAP_MAGIC_WORD_3	0xBB11
+
 /****************************************************************************************
  *  Public Functions
  ****************************************************************************************/

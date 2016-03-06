@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @addtogroup TauLabsTargets Tau Labs Targets
+ * @addtogroup Targets Target Flight Controllers
  * @{
  * @addtogroup Naze family support files
  * @{

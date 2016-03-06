@@ -1,37 +1,43 @@
+#
+# Rules to (help) build the F10x device support.
+#
 
 #
-# Compiler options implied by the F4xx
+# Directory containing this makefile
 #
-CDEFS				+= -DSTM32F10X
-CDEFS				+= -DSTM32F10X_MD
-CDEFS				+= -DHSE_VALUE=$(OSCILLATOR_FREQ)
-CDEFS 				+= -DUSE_STDPERIPH_DRIVER
-ARCHFLAGS			+= -mcpu=cortex-m3
-FLOATABI			+= soft
+PIOS_DEVLIB         := $(dir $(lastword $(MAKEFILE_LIST)))
 
 #
-# PIOS device library source and includes
+# Compiler options implied by the F1xx
 #
-EXTRAINCDIRS		+=	$(PIOS_DEVLIB)/inc
+CDEFS               += -DUSE_STDPERIPH_DRIVER
+ARCHFLAGS           += -mcpu=cortex-m3 -march=armv7-m -mfloat-abi=soft
+FLOATABI            += soft
 
 #
-# CMSIS for the F4
+# PiOS device library source and includes
 #
-include $(PIOSCOMMONLIB)/CMSIS3/library.mk
-CMSIS_DEVICEDIR	:=	$(PIOS_DEVLIB)/Libraries/CMSIS/Core/CM3
-SRC			+=	$(BOARD_INFO_DIR)/cmsis_system.c
-EXTRAINCDIRS		+=	$(CMSIS_DEVICEDIR)
+PIOS_F1SRC           = $(filter-out $(PIOS_DEVLIB)pios_i2c.c, $(wildcard $(PIOS_DEVLIB)*.c))
+ifndef USE_USB
+PIOS_F1SRC          := $(filter-out $(PIOS_DEVLIB)pios_usb.c $(wildcard $(PIOS_DEVLIB)pios_usb*.c), $(PIOS_F1SRC))
+endif
+SRC                 += $(PIOS_F1SRC)
+
+EXTRAINCDIRS        += $(PIOS_DEVLIB)inc
 
 #
 # ST Peripheral library
 #
-PERIPHLIB			 =	$(PIOS_DEVLIB)/Libraries/STM32F10x_StdPeriph_Driver
-EXTRAINCDIRS		+=	$(PERIPHLIB)/inc
-SRC					+=	$(wildcard $(PERIPHLIB)/src/*.c)
+PERIPHLIB            = $(PIOS_DEVLIB)Libraries/STM32F10x_StdPeriph_Driver/
+EXTRAINCDIRS        += $(PERIPHLIB)inc
+SRC                 += $(wildcard $(PERIPHLIB)src/*.c)
 
+ifdef USE_USB
 #
 # ST USB Device library
 #
-USBDEVLIB			=	$(PIOS_DEVLIB)/Libraries/STM32_USB-FS-Device_Driver
-EXTRAINCDIRS			+=	$(USBDEVLIB)/inc
-SRC				+=	$(wildcard $(USBDEVLIB)/src/*.c)
+USBDEVLIB            = $(PIOS_DEVLIB)/Libraries/STM32_USB-FS-Device_Driver/
+EXTRAINCDIRS        += $(USBDEVLIB)inc
+SRC                 += $(wildcard $(USBDEVLIB)src/*.c)
+SRC                 += pios_usb_board_data.c
+endif

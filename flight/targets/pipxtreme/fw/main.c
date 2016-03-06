@@ -43,7 +43,6 @@
 
 /* Prototype of PIOS_Board_Init() function */
 extern void PIOS_Board_Init(void);
-extern void Stack_Change(void);
 
 /**
 * OpenPilot Main function:
@@ -70,9 +69,6 @@ int main()
 
 	/* Initialize modules */
 	MODULE_INITIALISE_ALL(PIOS_WDG_Clear);
-
-	/* swap the stack to use the IRQ stack */
-	Stack_Change();
 
 	/* Start the FreeRTOS scheduler which should never returns.*/
 	vTaskStartScheduler();

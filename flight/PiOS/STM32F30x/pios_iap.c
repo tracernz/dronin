@@ -38,11 +38,6 @@
  *  Private Definitions/Macros
  ****************************************************************************************/
 
-/* these definitions reside here for protection and privacy. */
-#define IAP_MAGIC_WORD_1	0x1122
-#define IAP_MAGIC_WORD_2	0xAA55
-#define IAP_MAGIC_WORD_3	0xBB11
-
 #define UPPERWORD16(lw)	(uint16_t)((uint32_t)(lw)>>16)
 #define LOWERWORD16(lw)	(uint16_t)((uint32_t)(lw)&0x0000ffff)
 #define UPPERBYTE(w)	(uint8_t)((w)>>8)

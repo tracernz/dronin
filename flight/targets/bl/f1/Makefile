@@ -77,6 +77,10 @@ SRC += $(PIOSSTM32F10X)/pios_usb_hid.c
 SRC += $(PIOSSTM32F10X)/pios_usb_hid_istr.c
 SRC += $(PIOSSTM32F10X)/pios_usb_hid_pwr.c
 
+## startup
+SRC += $(PIOSSTM32F10X)/startup.c
+SRC += $(PIOSSTM32F10X)/vectors_stm32f10x.c
+
 ## PIOS Hardware (Common)
 SRC += $(PIOSCOMMON)/pios_delay.c
 SRC += $(PIOSCOMMON)/pios_board_info.c
@@ -122,7 +126,7 @@ SRC += $(STMUSBSRCDIR)/usb_sil.c
 # Even though the DOS/Win* filesystem matches both .s and .S the same,
 # it will preserve the spelling of the filenames, and gcc itself does
 # care about how the name is spelled on its command-line.
-ASRC = $(PIOSSTM32F10X)/startup_stm32f10x_$(MODEL)$(MODEL_SUFFIX).S
+ASRC =
 
 # List any extra directories to look for include files here.
 #    Each directory must be seperated by a space.
@@ -219,7 +223,7 @@ LDFLAGS += -Wl,--fatal-warnings
 
 # Set linker-script name depending on selected submodel name
 LDFLAGS += -T$(LINKERSCRIPTPATH)/link_$(BOARD)_memory.ld
-LDFLAGS += -T$(LINKERSCRIPTPATH)/link_$(BOARD)_BL_sections.ld
+LDFLAGS += -T$(LINKERSCRIPTPATH)/link_STM32103CB_BL_sections.ld
 
 # List of all source files.
 ALLSRC     = $(ASRC) $(SRC)

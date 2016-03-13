@@ -1756,6 +1756,84 @@ bool get_use_can(uint32_t board_revision)
 }
 #endif /* PIOS_INCLUDE_CAN */
 
+
+/**
+ * Sensor configurations 
+ */
+
+/**
+ * Configuration for the MS5611 chip
+ */
+#if defined(PIOS_INCLUDE_MS5611)
+#include "pios_ms5611_priv.h"
+static const struct pios_ms5611_cfg pios_ms5611_cfg = {
+	.oversampling = MS5611_OSR_1024,
+	.temperature_interleaving = 1,
+};
+#endif /* PIOS_INCLUDE_MS5611 */
+
+
+/**
+ * Configuration for the MPU9250 chip
+ */
+#if defined(PIOS_INCLUDE_MPU)
+#include "pios_mpu.h"
+static const struct pios_exti_cfg pios_exti_mpu9250_cfg __exti_config = {
+	.vector = PIOS_MPU_IRQHandler,
+	.line = EXTI_Line5,
+	.pin = {
+		.gpio = GPIOC,
+		.init = {
+			.GPIO_Pin = GPIO_Pin_5,
+			.GPIO_Speed = GPIO_Speed_100MHz,
+			.GPIO_Mode = GPIO_Mode_IN,
+			.GPIO_OType = GPIO_OType_OD,
+			.GPIO_PuPd = GPIO_PuPd_NOPULL,
+		},
+	},
+	.irq = {
+		.init = {
+			.NVIC_IRQChannel = EXTI9_5_IRQn,
+			.NVIC_IRQChannelPreemptionPriority = PIOS_IRQ_PRIO_HIGH,
+			.NVIC_IRQChannelSubPriority = 0,
+			.NVIC_IRQChannelCmd = ENABLE,
+		},
+	},
+	.exti = {
+		.init = {
+			.EXTI_Line = EXTI_Line5, // matches above GPIO pin
+			.EXTI_Mode = EXTI_Mode_Interrupt,
+			.EXTI_Trigger = EXTI_Trigger_Rising,
+			.EXTI_LineCmd = ENABLE,
+		},
+	},
+};
+
+static struct pios_mpu_cfg pios_mpu9250_cfg = {
+	.exti_cfg = &pios_exti_mpu9250_cfg,
+	.default_samplerate = 500,
+#ifdef PIOS_INCLUDE_MPU_MAG
+	.use_internal_mag = true,
+#endif
+	.orientation = PIOS_MPU_TOP_180DEG
+};
+#endif /* PIOS_INCLUDE_MPU */
+
+/**
+ * Configuration for the external HMC5883 chip
+ */
+#if defined(PIOS_INCLUDE_HMC5883)
+#include "pios_hmc5883_priv.h"
+static const struct pios_hmc5883_cfg pios_hmc5883_external_cfg = {
+	.exti_cfg            = NULL,
+	.M_ODR               = PIOS_HMC5883_ODR_75,
+	.Meas_Conf           = PIOS_HMC5883_MEASCONF_NORMAL,
+	.Gain                = PIOS_HMC5883_GAIN_1_9,
+	.Mode                = PIOS_HMC5883_MODE_SINGLE,
+	.Default_Orientation = PIOS_HMC5883_TOP_0DEG,
+};
+#endif /* PIOS_INCLUDE_HMC5883 */
+
 /**
  * @}
  * @}

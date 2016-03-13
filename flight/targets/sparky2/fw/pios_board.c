@@ -49,84 +49,6 @@
 #include <pios_rfm22b_rcvr_priv.h>
 #include <pios_openlrs_rcvr_priv.h>
 
-/**
- * Sensor configurations 
- */
-
-/**
- * Configuration for the MS5611 chip
- */
-#if defined(PIOS_INCLUDE_MS5611)
-#include "pios_ms5611_priv.h"
-static const struct pios_ms5611_cfg pios_ms5611_cfg = {
-	.oversampling = MS5611_OSR_1024,
-	.temperature_interleaving = 1,
-};
-#endif /* PIOS_INCLUDE_MS5611 */
-
-
-/**
- * Configuration for the MPU9250 chip
- */
-#if defined(PIOS_INCLUDE_MPU9250_SPI)
-#include "pios_mpu9250.h"
-static const struct pios_exti_cfg pios_exti_mpu9250_cfg __exti_config = {
-	.vector = PIOS_MPU9250_IRQHandler,
-	.line = EXTI_Line5,
-	.pin = {
-		.gpio = GPIOC,
-		.init = {
-			.GPIO_Pin = GPIO_Pin_5,
-			.GPIO_Speed = GPIO_Speed_100MHz,
-			.GPIO_Mode = GPIO_Mode_IN,
-			.GPIO_OType = GPIO_OType_OD,
-			.GPIO_PuPd = GPIO_PuPd_NOPULL,
-		},
-	},
-	.irq = {
-		.init = {
-			.NVIC_IRQChannel = EXTI9_5_IRQn,
-			.NVIC_IRQChannelPreemptionPriority = PIOS_IRQ_PRIO_HIGH,
-			.NVIC_IRQChannelSubPriority = 0,
-			.NVIC_IRQChannelCmd = ENABLE,
-		},
-	},
-	.exti = {
-		.init = {
-			.EXTI_Line = EXTI_Line5, // matches above GPIO pin
-			.EXTI_Mode = EXTI_Mode_Interrupt,
-			.EXTI_Trigger = EXTI_Trigger_Rising,
-			.EXTI_LineCmd = ENABLE,
-		},
-	},
-};
-
-static struct pios_mpu9250_cfg pios_mpu9250_cfg = {
-	.exti_cfg = &pios_exti_mpu9250_cfg,
-	.default_samplerate = 500,
-	.interrupt_cfg = PIOS_MPU60X0_INT_CLR_ANYRD,
-
-	.use_magnetometer = true,
-	.default_gyro_filter = PIOS_MPU9250_GYRO_LOWPASS_184_HZ,
-	.default_accel_filter = PIOS_MPU9250_ACCEL_LOWPASS_184_HZ,
-	.orientation = PIOS_MPU9250_TOP_180DEG
-};
-#endif /* PIOS_INCLUDE_MPU9250_SPI */
-
-/**
- * Configuration for the external HMC5883 chip
- */
-#if defined(PIOS_INCLUDE_HMC5883)
-#include "pios_hmc5883_priv.h"
-static const struct pios_hmc5883_cfg pios_hmc5883_external_cfg = {
-	.exti_cfg            = NULL,
-	.M_ODR               = PIOS_HMC5883_ODR_75,
-	.Meas_Conf           = PIOS_HMC5883_MEASCONF_NORMAL,
-	.Gain                = PIOS_HMC5883_GAIN_1_9,
-	.Mode                = PIOS_HMC5883_MODE_SINGLE,
-	.Default_Orientation = PIOS_HMC5883_TOP_0DEG,
-};
-#endif /* PIOS_INCLUDE_HMC5883 */
 
 #define PIOS_COM_CAN_RX_BUF_LEN 256
 #define PIOS_COM_CAN_TX_BUF_LEN 256
@@ -664,15 +586,17 @@ void PIOS_Board_Init(void) {
 		PIOS_HAL_Panic(PIOS_LED_ALARM, PIOS_HAL_PANIC_BARO);
 #endif
 
-	uint8_t Magnetometer;
-	HwSparky2MagnetometerGet(&Magnetometer);
+	uint8_t selected_mag;
+	HwSparky2MagnetometerGet(&selected_mag);
 
-	if (Magnetometer != HWSPARKY2_MAGNETOMETER_INTERNAL)
-		pios_mpu9250_cfg.use_magnetometer = false;
+	if (selected_mag != HWSPARKY2_MAGNETOMETER_INTERNAL)
+		pios_mpu9250_cfg.use_internal_mag = false;
 
 
-#if defined(PIOS_INCLUDE_MPU9250_SPI)
-	if (PIOS_MPU9250_SPI_Init(pios_spi_gyro_id, 0, &pios_mpu9250_cfg) != 0)
+#if defined(PIOS_INCLUDE_MPU)
+	pios_mpu_dev_t mpu_dev = NULL;
+	int retval = PIOS_MPU_SPI_Init(&mpu_dev, pios_spi_gyro_id, 0, &pios_mpu9250_cfg);
+	if (retval != 0)
 		PIOS_HAL_Panic(PIOS_LED_ALARM, PIOS_HAL_PANIC_IMU);
 
 	// To be safe map from UAVO enum to driver enum
@@ -680,16 +604,16 @@ void PIOS_Board_Init(void) {
 	HwSparky2GyroRangeGet(&hw_gyro_range);
 	switch(hw_gyro_range) {
 		case HWSPARKY2_GYRORANGE_250:
-			PIOS_MPU9250_SetGyroRange(PIOS_MPU60X0_SCALE_250_DEG);
+			PIOS_MPU_SetGyroRange(PIOS_MPU_SCALE_250_DEG);
 			break;
 		case HWSPARKY2_GYRORANGE_500:
-			PIOS_MPU9250_SetGyroRange(PIOS_MPU60X0_SCALE_500_DEG);
+			PIOS_MPU_SetGyroRange(PIOS_MPU_SCALE_500_DEG);
 			break;
 		case HWSPARKY2_GYRORANGE_1000:
-			PIOS_MPU9250_SetGyroRange(PIOS_MPU60X0_SCALE_1000_DEG);
+			PIOS_MPU_SetGyroRange(PIOS_MPU_SCALE_1000_DEG);
 			break;
 		case HWSPARKY2_GYRORANGE_2000:
-			PIOS_MPU9250_SetGyroRange(PIOS_MPU60X0_SCALE_2000_DEG);
+			PIOS_MPU_SetGyroRange(PIOS_MPU_SCALE_2000_DEG);
 			break;
 	}
 
@@ -697,43 +621,43 @@ void PIOS_Board_Init(void) {
 	HwSparky2AccelRangeGet(&hw_accel_range);
 	switch(hw_accel_range) {
 		case HWSPARKY2_ACCELRANGE_2G:
-			PIOS_MPU9250_SetAccelRange(PIOS_MPU60X0_ACCEL_2G);
+			PIOS_MPU_SetAccelRange(PIOS_MPU_SCALE_2G);
 			break;
 		case HWSPARKY2_ACCELRANGE_4G:
-			PIOS_MPU9250_SetAccelRange(PIOS_MPU60X0_ACCEL_4G);
+			PIOS_MPU_SetAccelRange(PIOS_MPU_SCALE_4G);
 			break;
 		case HWSPARKY2_ACCELRANGE_8G:
-			PIOS_MPU9250_SetAccelRange(PIOS_MPU60X0_ACCEL_8G);
+			PIOS_MPU_SetAccelRange(PIOS_MPU_SCALE_8G);
 			break;
 		case HWSPARKY2_ACCELRANGE_16G:
-			PIOS_MPU9250_SetAccelRange(PIOS_MPU60X0_ACCEL_16G);
+			PIOS_MPU_SetAccelRange(PIOS_MPU_SCALE_16G);
 			break;
 	}
 
 	// the filter has to be set before rate else divisor calculation will fail
 	uint8_t hw_mpu9250_dlpf;
 	HwSparky2MPU9250GyroLPFGet(&hw_mpu9250_dlpf);
-	enum pios_mpu9250_gyro_filter mpu9250_gyro_lpf = \
-	    (hw_mpu9250_dlpf == HWSPARKY2_MPU9250GYROLPF_184) ? PIOS_MPU9250_GYRO_LOWPASS_184_HZ : \
-	    (hw_mpu9250_dlpf == HWSPARKY2_MPU9250GYROLPF_92) ? PIOS_MPU9250_GYRO_LOWPASS_92_HZ : \
-	    (hw_mpu9250_dlpf == HWSPARKY2_MPU9250GYROLPF_41) ? PIOS_MPU9250_GYRO_LOWPASS_41_HZ : \
-	    (hw_mpu9250_dlpf == HWSPARKY2_MPU9250GYROLPF_20) ? PIOS_MPU9250_GYRO_LOWPASS_20_HZ : \
-	    (hw_mpu9250_dlpf == HWSPARKY2_MPU9250GYROLPF_10) ? PIOS_MPU9250_GYRO_LOWPASS_10_HZ : \
-	    (hw_mpu9250_dlpf == HWSPARKY2_MPU9250GYROLPF_5) ? PIOS_MPU9250_GYRO_LOWPASS_5_HZ : \
-	    pios_mpu9250_cfg.default_gyro_filter;
-	PIOS_MPU9250_SetGyroLPF(mpu9250_gyro_lpf);
+	uint16_t gyro_bandwidth = \
+	    (hw_mpu9250_dlpf == HWSPARKY2_MPU9250GYROLPF_184) ? 184 : \
+	    (hw_mpu9250_dlpf == HWSPARKY2_MPU9250GYROLPF_92) ? 92 : \
+	    (hw_mpu9250_dlpf == HWSPARKY2_MPU9250GYROLPF_41) ? 41 : \
+	    (hw_mpu9250_dlpf == HWSPARKY2_MPU9250GYROLPF_20) ? 20 : \
+	    (hw_mpu9250_dlpf == HWSPARKY2_MPU9250GYROLPF_10) ? 10 : \
+	    (hw_mpu9250_dlpf == HWSPARKY2_MPU9250GYROLPF_5) ? 5 : \
+	    184;
+	PIOS_MPU_SetGyroBandwidth(gyro_bandwidth);
 
 	HwSparky2MPU9250AccelLPFGet(&hw_mpu9250_dlpf);
-	enum pios_mpu9250_accel_filter mpu9250_accel_lpf = \
-	    (hw_mpu9250_dlpf == HWSPARKY2_MPU9250ACCELLPF_460) ? PIOS_MPU9250_ACCEL_LOWPASS_460_HZ : \
-	    (hw_mpu9250_dlpf == HWSPARKY2_MPU9250ACCELLPF_184) ? PIOS_MPU9250_ACCEL_LOWPASS_184_HZ : \
-	    (hw_mpu9250_dlpf == HWSPARKY2_MPU9250ACCELLPF_92) ? PIOS_MPU9250_ACCEL_LOWPASS_92_HZ : \
-	    (hw_mpu9250_dlpf == HWSPARKY2_MPU9250ACCELLPF_41) ? PIOS_MPU9250_ACCEL_LOWPASS_41_HZ : \
-	    (hw_mpu9250_dlpf == HWSPARKY2_MPU9250ACCELLPF_20) ? PIOS_MPU9250_ACCEL_LOWPASS_20_HZ : \
-	    (hw_mpu9250_dlpf == HWSPARKY2_MPU9250ACCELLPF_10) ? PIOS_MPU9250_ACCEL_LOWPASS_10_HZ : \
-	    (hw_mpu9250_dlpf == HWSPARKY2_MPU9250ACCELLPF_5) ? PIOS_MPU9250_ACCEL_LOWPASS_5_HZ : \
-	    pios_mpu9250_cfg.default_accel_filter;
-	PIOS_MPU9250_SetAccelLPF(mpu9250_accel_lpf);
+	uint16_t accel_bandwidth = \
+	    (hw_mpu9250_dlpf == HWSPARKY2_MPU9250ACCELLPF_460) ? 460 : \
+	    (hw_mpu9250_dlpf == HWSPARKY2_MPU9250ACCELLPF_184) ? 184 : \
+	    (hw_mpu9250_dlpf == HWSPARKY2_MPU9250ACCELLPF_92) ? 92 : \
+	    (hw_mpu9250_dlpf == HWSPARKY2_MPU9250ACCELLPF_41) ? 41 : \
+	    (hw_mpu9250_dlpf == HWSPARKY2_MPU9250ACCELLPF_20) ? 20 : \
+	    (hw_mpu9250_dlpf == HWSPARKY2_MPU9250ACCELLPF_10) ? 10 : \
+	    (hw_mpu9250_dlpf == HWSPARKY2_MPU9250ACCELLPF_5) ? 5 : \
+	    184;
+	PIOS_MPU_SetAccelBandwidth(accel_bandwidth);
 
 	uint8_t hw_mpu9250_samplerate;
 	HwSparky2MPU9250RateGet(&hw_mpu9250_samplerate);
@@ -744,43 +668,43 @@ void PIOS_Board_Init(void) {
 	    (hw_mpu9250_samplerate == HWSPARKY2_MPU9250RATE_500) ? 500 : \
 	    (hw_mpu9250_samplerate == HWSPARKY2_MPU9250RATE_1000) ? 1000 : \
 	    pios_mpu9250_cfg.default_samplerate;
-	PIOS_MPU9250_SetSampleRate(mpu9250_samplerate);
-#endif /* PIOS_INCLUDE_MPU9250_SPI */
+	PIOS_MPU_SetSampleRate(mpu9250_samplerate);
+#endif /* PIOS_INCLUDE_MPU */
 
 
 	PIOS_WDG_Clear();
 
 #if defined(PIOS_INCLUDE_HMC5883)
 	{
-		uint8_t Magnetometer;
-		HwSparky2MagnetometerGet(&Magnetometer);
+		uint8_t selected_mag;
+		HwSparky2MagnetometerGet(&selected_mag);
 
-		if (Magnetometer == HWSPARKY2_MAGNETOMETER_EXTERNALI2CFLEXIPORT)
+		if (selected_mag == HWSPARKY2_MAGNETOMETER_EXTERNALI2CFLEXIPORT)
 		{
 			if (PIOS_HMC5883_Init(pios_i2c_flexiport_adapter_id, &pios_hmc5883_external_cfg) != 0)
 				PIOS_HAL_Panic(PIOS_LED_ALARM, PIOS_HAL_PANIC_MAG);
 			if (PIOS_HMC5883_Test() != 0)
 				PIOS_HAL_Panic(PIOS_LED_ALARM, PIOS_HAL_PANIC_MAG);
-		} else if (Magnetometer == HWSPARKY2_MAGNETOMETER_EXTERNALAUXI2C) {
+		} else if (selected_mag == HWSPARKY2_MAGNETOMETER_EXTERNALAUXI2C) {
 			if (PIOS_HMC5883_Init(pios_i2c_mag_pressure_adapter_id, &pios_hmc5883_external_cfg) != 0)
 				PIOS_HAL_Panic(PIOS_LED_ALARM, PIOS_HAL_PANIC_MAG);
 			if (PIOS_HMC5883_Test() != 0)
 				PIOS_HAL_Panic(PIOS_LED_ALARM, PIOS_HAL_PANIC_MAG);
 		}
 
-		if (Magnetometer != HWSPARKY2_MAGNETOMETER_INTERNAL) {
+		if (selected_mag != HWSPARKY2_MAGNETOMETER_INTERNAL) {
 			// setup sensor orientation
-			uint8_t ExtMagOrientation;
-			HwSparky2ExtMagOrientationGet(&ExtMagOrientation);
+			uint8_t ext_mag_orientation;
+			HwSparky2ExtMagOrientationGet(&ext_mag_orientation);
 			enum pios_hmc5883_orientation hmc5883_orientation = \
-				(ExtMagOrientation == HWSPARKY2_EXTMAGORIENTATION_TOP0DEGCW)      ? PIOS_HMC5883_TOP_0DEG      : \
-				(ExtMagOrientation == HWSPARKY2_EXTMAGORIENTATION_TOP90DEGCW)     ? PIOS_HMC5883_TOP_90DEG     : \
-				(ExtMagOrientation == HWSPARKY2_EXTMAGORIENTATION_TOP180DEGCW)    ? PIOS_HMC5883_TOP_180DEG    : \
-				(ExtMagOrientation == HWSPARKY2_EXTMAGORIENTATION_TOP270DEGCW)    ? PIOS_HMC5883_TOP_270DEG    : \
-				(ExtMagOrientation == HWSPARKY2_EXTMAGORIENTATION_BOTTOM0DEGCW)   ? PIOS_HMC5883_BOTTOM_0DEG   : \
-				(ExtMagOrientation == HWSPARKY2_EXTMAGORIENTATION_BOTTOM90DEGCW)  ? PIOS_HMC5883_BOTTOM_90DEG  : \
-				(ExtMagOrientation == HWSPARKY2_EXTMAGORIENTATION_BOTTOM180DEGCW) ? PIOS_HMC5883_BOTTOM_180DEG : \
-				(ExtMagOrientation == HWSPARKY2_EXTMAGORIENTATION_BOTTOM270DEGCW) ? PIOS_HMC5883_BOTTOM_270DEG : \
+				(ext_mag_orientation == HWSPARKY2_EXTMAGORIENTATION_TOP0DEGCW)      ? PIOS_HMC5883_TOP_0DEG      : \
+				(ext_mag_orientation == HWSPARKY2_EXTMAGORIENTATION_TOP90DEGCW)     ? PIOS_HMC5883_TOP_90DEG     : \
+				(ext_mag_orientation == HWSPARKY2_EXTMAGORIENTATION_TOP180DEGCW)    ? PIOS_HMC5883_TOP_180DEG    : \
+				(ext_mag_orientation == HWSPARKY2_EXTMAGORIENTATION_TOP270DEGCW)    ? PIOS_HMC5883_TOP_270DEG    : \
+				(ext_mag_orientation == HWSPARKY2_EXTMAGORIENTATION_BOTTOM0DEGCW)   ? PIOS_HMC5883_BOTTOM_0DEG   : \
+				(ext_mag_orientation == HWSPARKY2_EXTMAGORIENTATION_BOTTOM90DEGCW)  ? PIOS_HMC5883_BOTTOM_90DEG  : \
+				(ext_mag_orientation == HWSPARKY2_EXTMAGORIENTATION_BOTTOM180DEGCW) ? PIOS_HMC5883_BOTTOM_180DEG : \
+				(ext_mag_orientation == HWSPARKY2_EXTMAGORIENTATION_BOTTOM270DEGCW) ? PIOS_HMC5883_BOTTOM_270DEG : \
 				pios_hmc5883_external_cfg.Default_Orientation;
 			PIOS_HMC5883_SetOrientation(hmc5883_orientation);
 		}

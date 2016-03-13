@@ -1208,6 +1208,78 @@ const struct pios_usb_cdc_cfg pios_usb_cdc_cfg = {
 #endif	/* PIOS_INCLUDE_USB_CDC */
 
 /**
+ * Configuration for the MPU9150 chip
+ */
+#if defined(PIOS_INCLUDE_MPU)
+#include "pios_mpu.h"
+static const struct pios_exti_cfg pios_exti_mpu_cfg __exti_config = {
+	.vector = PIOS_MPU_IRQHandler,
+	.line = EXTI_Line15,
+	.pin = {
+		.gpio = GPIOA,
+		.init = {
+			.GPIO_Pin = GPIO_Pin_15,
+			.GPIO_Speed = GPIO_Speed_50MHz,
+			.GPIO_Mode = GPIO_Mode_IN,
+			.GPIO_OType = GPIO_OType_OD,
+			.GPIO_PuPd = GPIO_PuPd_NOPULL,
+		},
+	},
+	.irq = {
+		.init = {
+			.NVIC_IRQChannel = EXTI15_10_IRQn,
+			.NVIC_IRQChannelPreemptionPriority = PIOS_IRQ_PRIO_MID,
+			.NVIC_IRQChannelSubPriority = 0,
+			.NVIC_IRQChannelCmd = ENABLE,
+		},
+	},
+	.exti = {
+		.init = {
+			.EXTI_Line = EXTI_Line15, // matches above GPIO pin
+			.EXTI_Mode = EXTI_Mode_Interrupt,
+			.EXTI_Trigger = EXTI_Trigger_Rising,
+			.EXTI_LineCmd = ENABLE,
+		},
+	},
+};
+
+static struct pios_mpu_cfg pios_mpu9150_cfg = {
+	.exti_cfg = &pios_exti_mpu_cfg,
+	.default_samplerate = 444,
+	.orientation = PIOS_MPU_TOP_180DEG,
+#ifdef PIOS_INCLUDE_MPU_MAG
+	.use_internal_mag = true
+#endif
+};
+#endif /* PIOS_INCLUDE_MPU */
+
+/**
+ * Configuration for the MS5611 chip
+ */
+#if defined(PIOS_INCLUDE_MS5611)
+#include "pios_ms5611_priv.h"
+static const struct pios_ms5611_cfg pios_ms5611_cfg = {
+	.oversampling = MS5611_OSR_1024,
+	.temperature_interleaving = 1,
+};
+#endif /* PIOS_INCLUDE_MS5611 */
+
+/**
++ * Configuration for the external HMC5883 chip
++ */
+#if defined(PIOS_INCLUDE_HMC5883)
+#include "pios_hmc5883_priv.h"
+static const struct pios_hmc5883_cfg pios_hmc5883_external_cfg = {
+	.exti_cfg            = NULL,
+	.M_ODR               = PIOS_HMC5883_ODR_75,
+	.Meas_Conf           = PIOS_HMC5883_MEASCONF_NORMAL,
+	.Gain                = PIOS_HMC5883_GAIN_1_9,
+	.Mode                = PIOS_HMC5883_MODE_SINGLE,
+	.Default_Orientation = PIOS_HMC5883_TOP_0DEG,
+};
+#endif /* PIOS_INCLUDE_HMC5883 */
+
+/**
  * @}
  * @}
  */

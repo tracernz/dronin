@@ -81,15 +81,10 @@ ConfigInputWidget::ConfigInputWidget(QWidget *parent) : ConfigTaskWidget(parent)
     
     ExtensionSystem::PluginManager *pm=ExtensionSystem::PluginManager::instance();
     Q_ASSERT(pm);
-    Core::Internal::GeneralSettings * settings=pm->getObject<Core::Internal::GeneralSettings>();
-    if(!settings->useExpertMode())
-        m_config->saveRCInputToRAM->setVisible(false);
 
     // Get telemetry manager and make sure it is valid
     telMngr = pm->getObject<TelemetryManager>();
     Q_ASSERT(telMngr);
-
-    addApplySaveButtons(m_config->saveRCInputToRAM,m_config->saveRCInputToSD);
 
     //Generate the rows of buttons in the input channel form GUI
     unsigned int index=0;
@@ -160,10 +155,9 @@ ConfigInputWidget::ConfigInputWidget(QWidget *parent) : ConfigTaskWidget(parent)
     connect( ManualControlSettings::GetInstance(getObjectManager()),SIGNAL(objectUpdated(UAVObject*)),this,SLOT(updatePositionSlider()));
     enableControls(false);
 
+    autoLoadWidgets();
     populateWidgets();
     refreshWidgetsValues();
-    // Connect the help button
-    connect(m_config->inputHelp, SIGNAL(clicked()), this, SLOT(openHelp()));
 
     m_config->graphicsView->setScene(new QGraphicsScene(this));
     m_config->graphicsView->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
@@ -366,11 +360,6 @@ void ConfigInputWidget::resizeEvent(QResizeEvent *event)
 {
     QWidget::resizeEvent(event);
     m_config->graphicsView->fitInView(m_txBackground, Qt::KeepAspectRatio );
-}
-
-void ConfigInputWidget::openHelp()
-{
-    QDesktopServices::openUrl( QUrl("https://github.com/d-ronin/dRonin/wiki/OnlineHelp:-Input-Configuration", QUrl::StrictMode) );
 }
 
 void ConfigInputWidget::goToWizard()

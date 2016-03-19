@@ -183,7 +183,6 @@ private slots:
         void wzCancel();
         void goToWizard();
         void disableWizardButton(int);
-        void openHelp();
         void identifyControls();
         void identifyLimits();
         void moveTxControls();

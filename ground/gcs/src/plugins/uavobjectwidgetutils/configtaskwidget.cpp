@@ -47,6 +47,8 @@ ConfigTaskWidget::ConfigTaskWidget(QWidget *parent) : QWidget(parent),currentBoa
     objManager = pm->getObject<UAVObjectManager>();
     TelemetryManager* telMngr = pm->getObject<TelemetryManager>();
     utilMngr = pm->getObject<UAVObjectUtilManager>();
+    generalSettings = pm->getObject<Core::Internal::GeneralSettings>();
+
     connect(telMngr, SIGNAL(connected()), this, SLOT(onAutopilotConnect()),Qt::UniqueConnection);
     connect(telMngr, SIGNAL(disconnected()), this, SLOT(onAutopilotDisconnect()),Qt::UniqueConnection);
     connect(telMngr, SIGNAL(connected()), this, SIGNAL(autoPilotConnected()),Qt::UniqueConnection);
@@ -453,7 +455,7 @@ void ConfigTaskWidget::helpButtonPressed()
  * @param update pointer to the update button
  * @param save pointer to the save button
  */
-void ConfigTaskWidget::addApplySaveButtons(QPushButton *update, QPushButton *save)
+void ConfigTaskWidget::addApplySaveButtons(QPushButton *apply, QPushButton *save)
 {
     if(!smartsave)
     {
@@ -463,10 +465,10 @@ void ConfigTaskWidget::addApplySaveButtons(QPushButton *update, QPushButton *sav
         connect(smartsave,SIGNAL(beginOp()),this,SLOT(disableObjUpdates()));
         connect(smartsave,SIGNAL(endOp()),this,SLOT(enableObjUpdates()));
     }
-    if(update && save)
-        smartsave->addButtons(save,update);
-    else if (update)
-        smartsave->addApplyButton(update);
+    if(apply && save)
+        smartsave->addButtons(save, apply);
+    else if (apply)
+        smartsave->addApplyButton(apply);
     else if (save)
         smartsave->addSaveButton(save);
     if(objOfInterest.count()>0)
@@ -820,8 +822,12 @@ void ConfigTaskWidget::autoLoadWidgets()
                     break;
                 case apply_button:
                     applyButtonWidget=qobject_cast<QPushButton *>(widget);
-                    if(applyButtonWidget)
-                        addApplySaveButtons(applyButtonWidget,NULL);
+                    if(applyButtonWidget) {
+                        if (generalSettings->useExpertMode())
+                            addApplySaveButtons(applyButtonWidget,NULL);
+                        else
+                            applyButtonWidget->setVisible(false);
+                    }
                     break;
                 case default_button:
                     button=qobject_cast<QPushButton *>(widget);

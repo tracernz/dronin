@@ -1635,6 +1635,12 @@ channel value for each flight mode.</string>
        <property name="flat">
         <bool>true</bool>
        </property>
+       <property name="objrelation" stdset="0">
+        <stringlist notr="true">
+         <string>button:help</string>
+         <string>url:https://github.com/d-ronin/dRonin/wiki/OnlineHelp:-Input-Configuration</string>
+        </stringlist>
+       </property>
       </widget>
      </item>
      <item>
@@ -1661,6 +1667,11 @@ Be sure to set the Neutral position on all sliders before sending!</string>
        <property name="text">
         <string>Apply</string>
        </property>
+       <property name="objrelation" stdset="0">
+        <stringlist notr="true">
+         <string>button:apply</string>
+        </stringlist>
+       </property>
       </widget>
      </item>
      <item>
@@ -1686,6 +1697,11 @@ Applies and Saves all settings to SD</string>
        </property>
        <property name="text">
         <string>Save</string>
+       </property>
+       <property name="objrelation" stdset="0">
+        <stringlist notr="true">
+         <string>button:save</string>
+        </stringlist>
        </property>
       </widget>
      </item>

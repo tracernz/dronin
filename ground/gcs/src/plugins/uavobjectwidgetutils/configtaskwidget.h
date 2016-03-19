@@ -50,6 +50,7 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include <QEvent>
+#include <coreplugin/generalsettings.h>
 
 class UAVOBJECTWIDGETUTILS_EXPORT ConfigTaskWidget: public QWidget
 {
@@ -125,7 +126,7 @@ public:
     void addUAVObjectToWidgetRelation(UAVObject *obj, UAVObjectField * field, QWidget *widget, QString index);
 
     //BUTTONS//
-    void addApplySaveButtons(QPushButton * update,QPushButton * save);
+    void addApplySaveButtons(QPushButton * apply, QPushButton * save);
     void addReloadButton(QPushButton * button,int buttonGroup);
     void addDefaultButton(QPushButton * button,int buttonGroup);
     void addRebootButton(QPushButton * button);
@@ -217,6 +218,7 @@ protected:
     virtual QVariant getVariantFromWidget(QWidget *widget, double scale);
     virtual bool setWidgetFromVariant(QWidget *widget,QVariant value,double scale);
     UAVObjectUtilManager* utilMngr;
+    Core::Internal::GeneralSettings *generalSettings;
 };
 
 #endif // CONFIGTASKWIDGET_H

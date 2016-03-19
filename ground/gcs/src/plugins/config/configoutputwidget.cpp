@@ -61,9 +61,6 @@ ConfigOutputWidget::ConfigOutputWidget(QWidget *parent) : ConfigTaskWidget(paren
     m_config->setupUi(this);
     
     ExtensionSystem::PluginManager *pm=ExtensionSystem::PluginManager::instance();
-    Core::Internal::GeneralSettings * settings=pm->getObject<Core::Internal::GeneralSettings>();
-    if(!settings->useExpertMode())
-        m_config->saveRCOutputToRAM->setVisible(false);
 
     /* There's lots of situations where it's unsafe to run tests.
      * Import/export:
@@ -98,12 +95,6 @@ ConfigOutputWidget::ConfigOutputWidget(QWidget *parent) : ConfigTaskWidget(paren
 
     connect(m_config->channelOutTest, SIGNAL(toggled(bool)), this, SLOT(runChannelTests(bool)));
     connect(m_config->calibrateESC, SIGNAL(clicked()), this, SLOT(startESCCalibration()));
-
-    // Configure the task widget
-    // Connect the help button
-    connect(m_config->outputHelp, SIGNAL(clicked()), this, SLOT(openHelp()));
-
-    addApplySaveButtons(m_config->saveRCOutputToRAM,m_config->saveRCOutputToSD);
 
     // Track the ActuatorSettings object
     addUAVObject("ActuatorSettings");
@@ -159,6 +150,7 @@ ConfigOutputWidget::ConfigOutputWidget(QWidget *parent) : ConfigTaskWidget(paren
     connect(SystemSettings::GetInstance(objManager), SIGNAL(objectUpdated(UAVObject*)),this,SLOT(assignOutputChannels(UAVObject*)));
 
 
+    autoLoadWidgets();
     refreshWidgetsValues();
 }
 
@@ -625,11 +617,6 @@ quint32 ConfigOutputWidget::timerStringToFreq(QString str) const {
     if (str.compare(QString(tr("SyncPWM"))) == 0)
         return 0;
     return str.toUInt();
-}
-
-void ConfigOutputWidget::openHelp()
-{
-    QDesktopServices::openUrl( QUrl("https://github.com/d-ronin/dRonin/wiki/OnlineHelp:-Output-Configuration", QUrl::StrictMode) );
 }
 
 void ConfigOutputWidget::tabSwitchingAway()

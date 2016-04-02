@@ -581,16 +581,16 @@ void PIOS_Board_Init(void) {
 	uint8_t hw_accel_range;
 	HwFlyingF3AccelRangeGet(&hw_accel_range);
 	switch(hw_accel_range) {
-		case HWFLYINGF3_ACCELRANGE_2G:
+		case HWFLYINGF3_ACCELRANGE_2:
 			PIOS_LSM303_Accel_SetRange(PIOS_LSM303_ACCEL_2G);
 			break;
-		case HWFLYINGF3_ACCELRANGE_4G:
+		case HWFLYINGF3_ACCELRANGE_4:
 			PIOS_LSM303_Accel_SetRange(PIOS_LSM303_ACCEL_4G);
 			break;
-		case HWFLYINGF3_ACCELRANGE_8G:
+		case HWFLYINGF3_ACCELRANGE_8:
 			PIOS_LSM303_Accel_SetRange(PIOS_LSM303_ACCEL_8G);
 			break;
-		case HWFLYINGF3_ACCELRANGE_16G:
+		case HWFLYINGF3_ACCELRANGE_16:
 			PIOS_LSM303_Accel_SetRange(PIOS_LSM303_ACCEL_16G);
 			break;
 	}

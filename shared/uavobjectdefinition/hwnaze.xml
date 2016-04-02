@@ -2,14 +2,14 @@
 	<object name="HwNaze" singleinstance="true" settings="true" category="HardwareSettings">
 		<description>Selection of optional hardware configurations.</description>
 
-		<field name="MainPort" units="function" type="enum" elements="1" parent="HwShared.PortTypes" defaultvalue="Telemetry">
+		<field name="MainPort" type="enum" elements="1" parent="HwShared.PortTypes" defaultvalue="Telemetry">
 			<options>
 				<option>MSP</option>
 				<option>Telemetry</option>
 			</options>
 		</field>
 
-		<field name="RcvrPort" units="function" type="enum" elements="1" defaultvalue="PPM">
+		<field name="RcvrPort" type="enum" elements="1" defaultvalue="PPM">
 			<options>
 				<option>Disabled</option>
 				<option>Outputs</option>
@@ -22,7 +22,7 @@
 			</options>
 		</field>
 
-		<field name="RcvrSerial" units="function" type="enum" elements="1" parent="HwShared.PortTypes" defaultvalue="Disabled">
+		<field name="RcvrSerial" type="enum" elements="1" parent="HwShared.PortTypes" defaultvalue="Disabled">
 			<options>
 				<option>Disabled</option>
 				<option>ComBridge</option>
@@ -40,13 +40,13 @@
 			</options>
 		</field>
 
-		<field name="DSMxMode" units="mode" type="enum" elements="1" parent="HwShared.DSMxMode" defaultvalue="Autodetect"/>
+		<field name="DSMxMode" type="enum" elements="1" parent="HwShared.DSMxMode" defaultvalue="Autodetect"/>
 
 		<field name="GyroRange" units="deg/s" type="enum" elements="1" options="250,500,1000,2000" defaultvalue="1000"/>
-		<field name="AccelRange" units="*gravity m/s^2" type="enum" elements="1" options="2G,4G,8G,16G" defaultvalue="8G"/>
-		<field name="MPU6050Rate" units="" type="enum" elements="1" options="200,333,500" defaultvalue="333"/>
-		<field name="MPU6050DLPF" units="" type="enum" elements="1" options="256,188,98,42,20,10,5" defaultvalue="188"/>
-        <field name="MPU6050IntPin" units="" type="enum" elements="1" options="Auto,PB13,PC13" defaultvalue="Auto"/>
+		<field name="AccelRange" units="G" type="enum" elements="1" options="2,4,8,16" defaultvalue="8"/>
+		<field name="MPU6050Rate" units="Hz" type="enum" elements="1" options="200,333,500" defaultvalue="333"/>
+		<field name="MPU6050DLPF" units="Hz" type="enum" elements="1" options="256,188,98,42,20,10,5" defaultvalue="188"/>
+        <field name="MPU6050IntPin" type="enum" elements="1" options="Auto,PB13,PC13" defaultvalue="Auto"/>
 
 		<access gcs="readwrite" flight="readwrite"/>
 		<telemetrygcs acked="true" updatemode="onchange" period="0"/>

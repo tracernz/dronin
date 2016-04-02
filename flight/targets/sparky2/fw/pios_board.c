@@ -148,130 +148,130 @@ void set_vtx_channel(HwSparky2VTX_ChOptions channel)
 	uint8_t band = 0xFF; // Set to "A" band
 
 	switch (channel) {
-	case HWSPARKY2_VTX_CH_BOSCAMACH15725:
+	case HWSPARKY2_VTX_CH_BOSCAMA15725:
 		chan = 0;
 		band = 0;
-	case HWSPARKY2_VTX_CH_BOSCAMACH25745:
+	case HWSPARKY2_VTX_CH_BOSCAMA25745:
 		chan = 1;
 		band = 0;
 		break;
-	case HWSPARKY2_VTX_CH_BOSCAMACH35765:
+	case HWSPARKY2_VTX_CH_BOSCAMA35765:
 		chan = 2;
 		band = 0;
 		break;
-	case HWSPARKY2_VTX_CH_BOSCAMACH45785:
+	case HWSPARKY2_VTX_CH_BOSCAMA45785:
 		chan = 3;
 		band = 0;
 		break;
-	case HWSPARKY2_VTX_CH_BOSCAMACH55805:
+	case HWSPARKY2_VTX_CH_BOSCAMA55805:
 		chan = 4;
 		band = 0;
 		break;
-	case HWSPARKY2_VTX_CH_BOSCAMACH65825:
+	case HWSPARKY2_VTX_CH_BOSCAMA65825:
 		chan = 5;
 		band = 0;
 		break;
-	case HWSPARKY2_VTX_CH_BOSCAMACH75845:
+	case HWSPARKY2_VTX_CH_BOSCAMA75845:
 		chan = 6;
 		band = 0;
 		break;
-	case HWSPARKY2_VTX_CH_BOSCAMACH85865:
+	case HWSPARKY2_VTX_CH_BOSCAMA85865:
 		chan = 7;
 		band = 0;
 		break;
-	case HWSPARKY2_VTX_CH_BOSCAMBCH15733:
+	case HWSPARKY2_VTX_CH_BOSCAMB15733:
 		chan = 0;
 		band = 1;
 		break;
-	case HWSPARKY2_VTX_CH_BOSCAMBCH25752:
+	case HWSPARKY2_VTX_CH_BOSCAMB25752:
 		chan = 1;
 		band = 1;
 		break;
-	case HWSPARKY2_VTX_CH_BOSCAMBCH35771:
+	case HWSPARKY2_VTX_CH_BOSCAMB35771:
 		chan = 2;
 		band = 1;
 		break;
-	case HWSPARKY2_VTX_CH_BOSCAMBCH45790:
+	case HWSPARKY2_VTX_CH_BOSCAMB45790:
 		chan = 3;
 		band = 1;
 		break;
-	case HWSPARKY2_VTX_CH_BOSCAMBCH55809:
+	case HWSPARKY2_VTX_CH_BOSCAMB55809:
 		chan = 4;
 		band = 1;
 		break;
-	case HWSPARKY2_VTX_CH_BOSCAMBCH65828:
+	case HWSPARKY2_VTX_CH_BOSCAMB65828:
 		chan = 5;
 		band = 1;
 		break;
-	case HWSPARKY2_VTX_CH_BOSCAMBCH75847:
+	case HWSPARKY2_VTX_CH_BOSCAMB75847:
 		chan = 6;
 		band = 1;
 		break;
-	case HWSPARKY2_VTX_CH_BOSCAMBCH85866:
+	case HWSPARKY2_VTX_CH_BOSCAMB85866:
 		chan = 7;
 		band = 1;
 		break;
-	case HWSPARKY2_VTX_CH_BOSCAMECH15705:
+	case HWSPARKY2_VTX_CH_BOSCAME15705:
 		chan = 0;
 		band = 2;
 		break;
-	case HWSPARKY2_VTX_CH_BOSCAMECH25685:
+	case HWSPARKY2_VTX_CH_BOSCAME25685:
 		chan = 1;
 		band = 2;
 		break;
-	case HWSPARKY2_VTX_CH_BOSCAMECH35665:
+	case HWSPARKY2_VTX_CH_BOSCAME35665:
 		chan = 2;
 		band = 2;
 		break;
-	case HWSPARKY2_VTX_CH_BOSCAMECH45645:
+	case HWSPARKY2_VTX_CH_BOSCAME45645:
 		chan = 3;
 		band = 2;
 		break;
-	case HWSPARKY2_VTX_CH_BOSCAMECH55885:
+	case HWSPARKY2_VTX_CH_BOSCAME55885:
 		chan = 4;
 		band = 2;
 		break;
-	case HWSPARKY2_VTX_CH_BOSCAMECH65905:
+	case HWSPARKY2_VTX_CH_BOSCAME65905:
 		chan = 5;
 		band = 2;
 		break;
-	case HWSPARKY2_VTX_CH_BOSCAMECH75925:
+	case HWSPARKY2_VTX_CH_BOSCAME75925:
 		chan = 6;
 		band = 2;
 		break;
-	case HWSPARKY2_VTX_CH_BOSCAMECH85945:
+	case HWSPARKY2_VTX_CH_BOSCAME85945:
 		chan = 7;
 		band = 2;
 		break;
-	case HWSPARKY2_VTX_CH_AIRWAVECH15740:
+	case HWSPARKY2_VTX_CH_AIRWAVE15740:
 		chan = 0;
 		band = 3;
 		break;
-	case HWSPARKY2_VTX_CH_AIRWAVECH25760:
+	case HWSPARKY2_VTX_CH_AIRWAVE25760:
 		chan = 1;
 		band = 3;
 		break;
-	case HWSPARKY2_VTX_CH_AIRWAVECH35780:
+	case HWSPARKY2_VTX_CH_AIRWAVE35780:
 		chan = 2;
 		band = 3;
 		break;
-	case HWSPARKY2_VTX_CH_AIRWAVECH45800:
+	case HWSPARKY2_VTX_CH_AIRWAVE45800:
 		chan = 3;
 		band = 3;
 		break;
-	case HWSPARKY2_VTX_CH_AIRWAVECH55820:
+	case HWSPARKY2_VTX_CH_AIRWAVE55820:
 		chan = 4;
 		band = 3;
 		break;
-	case HWSPARKY2_VTX_CH_AIRWAVECH65840:
+	case HWSPARKY2_VTX_CH_AIRWAVE65840:
 		chan = 5;
 		band = 3;
 		break;
-	case HWSPARKY2_VTX_CH_AIRWAVECH75860:
+	case HWSPARKY2_VTX_CH_AIRWAVE75860:
 		chan = 6;
 		band = 3;
 		break;
-	case HWSPARKY2_VTX_CH_AIRWAVECH85860:
+	case HWSPARKY2_VTX_CH_AIRWAVE85860:
 		chan = 7;
 		band = 3;
 		break;
@@ -696,16 +696,16 @@ void PIOS_Board_Init(void) {
 	uint8_t hw_accel_range;
 	HwSparky2AccelRangeGet(&hw_accel_range);
 	switch(hw_accel_range) {
-		case HWSPARKY2_ACCELRANGE_2G:
+		case HWSPARKY2_ACCELRANGE_2:
 			PIOS_MPU9250_SetAccelRange(PIOS_MPU60X0_ACCEL_2G);
 			break;
-		case HWSPARKY2_ACCELRANGE_4G:
+		case HWSPARKY2_ACCELRANGE_4:
 			PIOS_MPU9250_SetAccelRange(PIOS_MPU60X0_ACCEL_4G);
 			break;
-		case HWSPARKY2_ACCELRANGE_8G:
+		case HWSPARKY2_ACCELRANGE_8:
 			PIOS_MPU9250_SetAccelRange(PIOS_MPU60X0_ACCEL_8G);
 			break;
-		case HWSPARKY2_ACCELRANGE_16G:
+		case HWSPARKY2_ACCELRANGE_16:
 			PIOS_MPU9250_SetAccelRange(PIOS_MPU60X0_ACCEL_16G);
 			break;
 	}

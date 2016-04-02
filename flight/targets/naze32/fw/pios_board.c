@@ -382,16 +382,16 @@ void PIOS_Board_Init(void) {
 	uint8_t hw_accel_range;
 	HwNazeAccelRangeGet(&hw_accel_range);
 	switch(hw_accel_range) {
-		case HWNAZE_ACCELRANGE_2G:
+		case HWNAZE_ACCELRANGE_2:
 			PIOS_MPU_SetAccelRange(PIOS_MPU_SCALE_2G);
 			break;
-		case HWNAZE_ACCELRANGE_4G:
+		case HWNAZE_ACCELRANGE_4:
 			PIOS_MPU_SetAccelRange(PIOS_MPU_SCALE_4G);
 			break;
-		case HWNAZE_ACCELRANGE_8G:
+		case HWNAZE_ACCELRANGE_8:
 			PIOS_MPU_SetAccelRange(PIOS_MPU_SCALE_8G);
 			break;
-		case HWNAZE_ACCELRANGE_16G:
+		case HWNAZE_ACCELRANGE_16:
 			PIOS_MPU_SetAccelRange(PIOS_MPU_SCALE_16G);
 			break;
 	}

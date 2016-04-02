@@ -2,7 +2,7 @@
 	<object name="HwSimulation" singleinstance="true" settings="false" category="HardwareStatus">
 		<description>Simulation status.</description>
 
-		<field name="LedState" units="" type="enum" elements="2" defaultvalue="Off">
+		<field name="LedState" type="enum" elements="2" defaultvalue="Off">
 			<elementnames>
 				<elementname>Heartbeat</elementname>
 				<elementname>Alarm</elementname>

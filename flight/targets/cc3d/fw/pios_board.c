@@ -414,16 +414,16 @@ void PIOS_Board_Init(void) {
 	uint8_t hw_accel_range;
 	HwCopterControlAccelRangeGet(&hw_accel_range);
 	switch(hw_accel_range) {
-		case HWCOPTERCONTROL_ACCELRANGE_2G:
+		case HWCOPTERCONTROL_ACCELRANGE_2:
 			PIOS_MPU6000_SetAccelRange(PIOS_MPU60X0_ACCEL_2G);
 			break;
-		case HWCOPTERCONTROL_ACCELRANGE_4G:
+		case HWCOPTERCONTROL_ACCELRANGE_4:
 			PIOS_MPU6000_SetAccelRange(PIOS_MPU60X0_ACCEL_4G);
 			break;
-		case HWCOPTERCONTROL_ACCELRANGE_8G:
+		case HWCOPTERCONTROL_ACCELRANGE_8:
 			PIOS_MPU6000_SetAccelRange(PIOS_MPU60X0_ACCEL_8G);
 			break;
-		case HWCOPTERCONTROL_ACCELRANGE_16G:
+		case HWCOPTERCONTROL_ACCELRANGE_16:
 			PIOS_MPU6000_SetAccelRange(PIOS_MPU60X0_ACCEL_16G);
 			break;
 	}

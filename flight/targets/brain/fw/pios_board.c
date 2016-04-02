@@ -693,16 +693,16 @@ void PIOS_Board_Init(void) {
 		uint8_t hw_accel_range;
 		HwBrainAccelFullScaleGet(&hw_accel_range);
 		switch(hw_accel_range) {
-			case HWBRAIN_ACCELFULLSCALE_2G:
+			case HWBRAIN_ACCELFULLSCALE_2:
 				PIOS_MPU9250_SetAccelRange(PIOS_MPU60X0_ACCEL_2G);
 				break;
-			case HWBRAIN_ACCELFULLSCALE_4G:
+			case HWBRAIN_ACCELFULLSCALE_4:
 				PIOS_MPU9250_SetAccelRange(PIOS_MPU60X0_ACCEL_4G);
 				break;
-			case HWBRAIN_ACCELFULLSCALE_8G:
+			case HWBRAIN_ACCELFULLSCALE_8:
 				PIOS_MPU9250_SetAccelRange(PIOS_MPU60X0_ACCEL_8G);
 				break;
-			case HWBRAIN_ACCELFULLSCALE_16G:
+			case HWBRAIN_ACCELFULLSCALE_16:
 				PIOS_MPU9250_SetAccelRange(PIOS_MPU60X0_ACCEL_16G);
 				break;
 		}

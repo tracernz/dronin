@@ -2,10 +2,10 @@
 	<object name="HwDiscoveryF4" singleinstance="true" settings="true" category="HardwareSettings">
 		<description>Selection of optional hardware configurations.</description>
 
-		<field name="MainPort" units="function" type="enum" elements="1" options="Disabled,Telemetry,DebugConsole" parent="HwShared.PortTypes" defaultvalue="DebugConsole"/>
+		<field name="MainPort" type="enum" elements="1" options="Disabled,Telemetry,DebugConsole" parent="HwShared.PortTypes" defaultvalue="DebugConsole"/>
 
-		<field name="USB_HIDPort" units="function" type="enum" elements="1" parent="HwShared.USB_HIDPort" defaultvalue="USBTelemetry"/>
-		<field name="USB_VCPPort" units="function" type="enum" elements="1" parent="HwShared.USB_VCPPort" defaultvalue="Disabled"/>
+		<field name="USB_HIDPort" type="enum" elements="1" parent="HwShared.USB_HIDPort" defaultvalue="USBTelemetry"/>
+		<field name="USB_VCPPort" type="enum" elements="1" parent="HwShared.USB_VCPPort" defaultvalue="Disabled"/>
 
 		<access gcs="readwrite" flight="readwrite"/>
 		<telemetrygcs acked="true" updatemode="onchange" period="0"/>

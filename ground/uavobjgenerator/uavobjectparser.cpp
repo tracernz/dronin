@@ -154,6 +154,10 @@ int UAVObjectParser::resolveFieldParent(ObjectInfo *item, FieldInfo *field)
         if (field->options.isEmpty()) {
             field->options.append(field->parent->options);
         }
+
+        // use parent units if not specified in child
+        if (!field->units.length())
+            field->units = field->parent->units;
     }
 
     return 0;
@@ -676,10 +680,9 @@ QString UAVObjectParser::processObjectFields(QDomNode& childNode, ObjectInfo* in
 
     // Get units attribute
     elemAttr = elemAttributes.namedItem("units");
-    if ( elemAttr.isNull() )
-        return QString("Object:field:units attribute is missing");
-
-    field->units = elemAttr.nodeValue();
+    if (!elemAttr.isNull()) {
+        field->units = elemAttr.nodeValue();
+    }
     all_units << field->units;
 
     // Get type attribute

@@ -134,8 +134,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>838</width>
-            <height>650</height>
+            <width>840</width>
+            <height>663</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -294,67 +294,67 @@ Leave at 50Hz for fixed wing.</string>
                 </item>
                 <item>
                  <property name="text">
-                  <string>50</string>
+                  <string>50 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>60</string>
+                  <string>60 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>125</string>
+                  <string>125 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>165</string>
+                  <string>165 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>270</string>
+                  <string>270 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>330</string>
+                  <string>330 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>400</string>
+                  <string>400 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>1000</string>
+                  <string>1000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>2000</string>
+                  <string>2000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>4000</string>
+                  <string>4000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>8000</string>
+                  <string>8000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>12000</string>
+                  <string>12000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>16666</string>
+                  <string>16666 Hz</string>
                  </property>
                 </item>
                </widget>
@@ -388,67 +388,67 @@ Leave at 50Hz for fixed wing.</string>
                 </item>
                 <item>
                  <property name="text">
-                  <string>50</string>
+                  <string>50 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>60</string>
+                  <string>60 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>125</string>
+                  <string>125 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>165</string>
+                  <string>165 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>270</string>
+                  <string>270 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>330</string>
+                  <string>330 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>400</string>
+                  <string>400 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>1000</string>
+                  <string>1000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>2000</string>
+                  <string>2000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>4000</string>
+                  <string>4000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>8000</string>
+                  <string>8000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>12000</string>
+                  <string>12000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>16666</string>
+                  <string>16666 Hz</string>
                  </property>
                 </item>
                </widget>
@@ -480,67 +480,67 @@ Leave at 50Hz for fixed wing.</string>
                 </property>
                 <item>
                  <property name="text">
-                  <string>50</string>
+                  <string>50 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>60</string>
+                  <string>60 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>125</string>
+                  <string>125 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>165</string>
+                  <string>165 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>270</string>
+                  <string>270 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>330</string>
+                  <string>330 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>400</string>
+                  <string>400 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>1000</string>
+                  <string>1000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>2000</string>
+                  <string>2000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>4000</string>
+                  <string>4000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>8000</string>
+                  <string>8000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>12000</string>
+                  <string>12000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>16666</string>
+                  <string>16666 Hz</string>
                  </property>
                 </item>
                </widget>
@@ -574,67 +574,67 @@ Leave at 50Hz for fixed wing.</string>
                 </item>
                 <item>
                  <property name="text">
-                  <string>50</string>
+                  <string>50 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>60</string>
+                  <string>60 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>125</string>
+                  <string>125 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>165</string>
+                  <string>165 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>270</string>
+                  <string>270 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>330</string>
+                  <string>330 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>400</string>
+                  <string>400 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>1000</string>
+                  <string>1000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>2000</string>
+                  <string>2000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>4000</string>
+                  <string>4000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>8000</string>
+                  <string>8000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>12000</string>
+                  <string>12000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>16666</string>
+                  <string>16666 Hz</string>
                  </property>
                 </item>
                </widget>
@@ -716,67 +716,67 @@ Leave at 50Hz for fixed wing.</string>
                 </item>
                 <item>
                  <property name="text">
-                  <string>50</string>
+                  <string>50 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>60</string>
+                  <string>60 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>125</string>
+                  <string>125 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>165</string>
+                  <string>165 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>270</string>
+                  <string>270 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>330</string>
+                  <string>330 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>400</string>
+                  <string>400 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>1000</string>
+                  <string>1000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>2000</string>
+                  <string>2000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>4000</string>
+                  <string>4000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>8000</string>
+                  <string>8000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>12000</string>
+                  <string>12000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>16666</string>
+                  <string>16666 Hz</string>
                  </property>
                 </item>
                </widget>
@@ -866,67 +866,67 @@ Leave at 50Hz for fixed wing.</string>
                 </item>
                 <item>
                  <property name="text">
-                  <string>50</string>
+                  <string>50 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>60</string>
+                  <string>60 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>125</string>
+                  <string>125 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>165</string>
+                  <string>165 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>270</string>
+                  <string>270 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>330</string>
+                  <string>330 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>400</string>
+                  <string>400 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>1000</string>
+                  <string>1000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>2000</string>
+                  <string>2000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>4000</string>
+                  <string>4000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>8000</string>
+                  <string>8000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>12000</string>
+                  <string>12000 Hz</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>16666</string>
+                  <string>16666 Hz</string>
                  </property>
                 </item>
                </widget>

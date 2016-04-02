@@ -6,12 +6,12 @@
 		<field name="End" units="m" type="float" elementnames="North,East,Down" default="0"/>
 		<field name="StartingVelocity" units="m/s" type="float" elements="1" default="0"/>
 		<field name="EndingVelocity" units="m/s" type="float" elements="1" default="0"/>
-		<field name="Waypoint" units="" type="int16" elements="1" default="-1"/>
+		<field name="Waypoint" type="int16" elements="1" default="-1"/>
 
 		<!-- Endpoint mode - move directly towards endpoint regardless of position -->
 		<!-- Straight Mode - move across linear path through Start towards the waypoint end, adjusting velocity - continue straight -->
 		<!-- Circle Mode - move a circular from start to end with the radius in the mode parameter -->
-		<field name="Mode" units="" type="enum" elements="1">
+		<field name="Mode" type="enum" elements="1">
 			<options>
 				<option>Endpoint</option>
 				<option>Vector</option>
@@ -28,7 +28,7 @@
 		<!--   For FlyEndpoint and FlyVector it does nothing -->
 		<!--   For FlyCircleRight and FlyCircleLeft it is the radius -->
 		<!--   For HoldPosition it is the time to stay there -->
-		<field name="ModeParameters" units="" type="float" elements="1" default="0"/>
+		<field name="ModeParameters" type="float" elements="1" default="0"/>
 
 		<access gcs="readwrite" flight="readwrite"/>
 		<telemetrygcs acked="false" updatemode="manual" period="0"/>

@@ -1,12 +1,13 @@
 <xml>
     <object name="GPSSatellites" singleinstance="true" settings="false">
         <description>Contains information about the GPS satellites in view from @ref GPSModule.</description>
-        <field name="SatsInView" units="" type="uint8" elements="1"/>
-        <field name="PRN" units="" type="uint8" elements="30"/>
+        <field name="SatsInView" type="uint8" elements="1"/>
+        <field name="PRN" type="uint8" elements="30"/>
         <field name="Elevation" units="degrees" type="int8" elements="30"/>
         <field name="Azimuth" units="degrees" type="int16" elements="30"/>
-        <!-- This is C/N0 - dB-Hz and not a conventional SNR -->
-        <field name="SNR" units="dB-Hz" type="int8" elements="30"/>
+        <field name="SNR" units="dB-Hz" type="int8" elements="30">
+            <description>This is C/N0 - dB-Hz and not a conventional SNR</description>
+        </field>
         <access gcs="readwrite" flight="readwrite"/>
         <telemetrygcs acked="false" updatemode="manual" period="0"/>
         <telemetryflight acked="false" updatemode="periodic" period="10000"/>

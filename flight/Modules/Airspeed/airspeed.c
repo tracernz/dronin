@@ -96,7 +96,7 @@ static bool module_enabled = false;
 volatile bool gpsNew = false;
 volatile bool settingsUpdated = false;
 static uint8_t airspeedSensorType;
-static uint16_t gpsSamplePeriod_ms;
+static uint16_t gpsSamplePeriod;
 
 #ifdef BARO_AIRSPEED_PRESENT
 static int8_t airspeedADCPin=-1;
@@ -135,8 +135,8 @@ static void doSettingsUpdate()
 
 	AirspeedSettingsGet(&settings);
 
-	airspeedSensorType=settings.AirspeedSensorType;
-	gpsSamplePeriod_ms=settings.GPSSamplePeriod_ms;
+	airspeedSensorType = settings.AirspeedSensorType;
+	gpsSamplePeriod = settings.GPSSamplePeriod;
 	
 #if defined(PIOS_INCLUDE_MPXV7002)
 	if (airspeedSensorType==AIRSPEEDSETTINGS_AIRSPEEDSENSORTYPE_DIYDRONESMPXV7002){
@@ -316,7 +316,7 @@ static void airspeedTask(void *parameters)
 			{
 				//...there's no airspeed sensor, so everything comes from GPS. In this
 				//case, filter the airspeed for smoother output
-				float alpha=gpsSamplePeriod_ms/(gpsSamplePeriod_ms + GPS_AIRSPEED_TIME_CONSTANT_MS); //Low pass filter.
+				float alpha = gpsSamplePeriod / (gpsSamplePeriod + GPS_AIRSPEED_TIME_CONSTANT_MS); //Low pass filter.
 				airspeedData.TrueAirspeed=v_air_GPS*(alpha) + airspeedData.TrueAirspeed*(1.0f-alpha);
 				
 				//Calculate calibrated airspeed from GPS, since we're not getting it from a discrete airspeed sensor

@@ -3,20 +3,20 @@
         <description>Maintains the telemetry statistics from the OPLM RadioComBridge.</description>
 
         <field name="TelemetryTxBytes" units="bytes" type="uint32" elements="1"/>
-        <field name="TelemetryTxFailures" units="count" type="uint32" elements="1"/>
-        <field name="TelemetryTxRetries" units="count" type="uint32" elements="1"/>
+        <field name="TelemetryTxFailures" type="uint32" elements="1"/>
+        <field name="TelemetryTxRetries" type="uint32" elements="1"/>
         <field name="TelemetryRxBytes" units="bytes" type="uint32" elements="1"/>
-        <field name="TelemetryRxFailures" units="count" type="uint32" elements="1"/>
-        <field name="TelemetryRxSyncErrors" units="count" type="uint32" elements="1"/>
-        <field name="TelemetryRxCrcErrors" units="count" type="uint32" elements="1"/>
-        
+        <field name="TelemetryRxFailures" type="uint32" elements="1"/>
+        <field name="TelemetryRxSyncErrors" type="uint32" elements="1"/>
+        <field name="TelemetryRxCrcErrors" type="uint32" elements="1"/>
+
         <field name="RadioTxBytes" units="bytes" type="uint32" elements="1"/>
-        <field name="RadioTxFailures" units="count" type="uint32" elements="1"/>
-        <field name="RadioTxRetries" units="count" type="uint32" elements="1"/>
+        <field name="RadioTxFailures" type="uint32" elements="1"/>
+        <field name="RadioTxRetries" type="uint32" elements="1"/>
         <field name="RadioRxBytes" units="bytes" type="uint32" elements="1"/>
-        <field name="RadioRxFailures" units="count" type="uint32" elements="1"/>
-        <field name="RadioRxSyncErrors" units="count" type="uint32" elements="1"/>
-        <field name="RadioRxCrcErrors" units="count" type="uint32" elements="1"/>
+        <field name="RadioRxFailures" type="uint32" elements="1"/>
+        <field name="RadioRxSyncErrors" type="uint32" elements="1"/>
+        <field name="RadioRxCrcErrors" type="uint32" elements="1"/>
 
         <access gcs="readonly" flight="readwrite"/>
         <telemetrygcs acked="false" updatemode="manual" period="0"/>

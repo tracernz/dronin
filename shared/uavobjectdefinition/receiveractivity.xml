@@ -3,7 +3,7 @@
         <description>Monitors which receiver channels have been active within the last second.</description>
 
 	<!-- these options sholud match those in ReceiverActivity -->
-	<field name="ActiveGroup" units="Channel Group" type="enum" elements="1" defaultvalue="None">
+	<field name="ActiveGroup" type="enum" elements="1" defaultvalue="None">
 		<options>
 			<option>PWM</option>
 			<option>PPM</option>
@@ -16,7 +16,7 @@
 			<option>None</option>
 		</options>
 	</field>
-	<field name="ActiveChannel" units="channel" type="uint8" elements="1"
+	<field name="ActiveChannel" type="uint8" elements="1"
 	       defaultvalue="255"/>
         <access gcs="readonly" flight="readwrite"/>
         <telemetrygcs acked="false" updatemode="manual" period="0"/>

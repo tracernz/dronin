@@ -1750,13 +1750,13 @@ static void onScreenDisplayTask(__attribute__((unused)) void *parameters)
 					case ONSCREENDISPLAYSETTINGS_STATSDISPLAYDURATION_OFF:
 						show_stats_until = 0;
 						break;
-					case ONSCREENDISPLAYSETTINGS_STATSDISPLAYDURATION_10S:
+					case ONSCREENDISPLAYSETTINGS_STATSDISPLAYDURATION_10:
 						show_stats_until = now + 10 * 1000 + STATS_DELAY_MS;
 						break;
-					case ONSCREENDISPLAYSETTINGS_STATSDISPLAYDURATION_20S:
+					case ONSCREENDISPLAYSETTINGS_STATSDISPLAYDURATION_20:
 						show_stats_until = now + 20 * 1000 + STATS_DELAY_MS;
 						break;
-					case ONSCREENDISPLAYSETTINGS_STATSDISPLAYDURATION_30S:
+					case ONSCREENDISPLAYSETTINGS_STATSDISPLAYDURATION_30:
 						show_stats_until = now + 30 * 1000 + STATS_DELAY_MS;
 						break;
 					}

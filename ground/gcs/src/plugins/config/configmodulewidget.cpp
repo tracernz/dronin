@@ -336,7 +336,7 @@ ConfigModuleWidget::ConfigModuleWidget(QWidget *parent) : ConfigTaskWidget(paren
 
     // Connect Airspeed Settings
     addUAVObjectToWidgetRelation(airspeedSettingsName, "AirspeedSensorType", ui->cb_airspeedSensorType);
-    addUAVObjectToWidgetRelation(airspeedSettingsName, "GPSSamplePeriod_ms", ui->sb_gpsUpdateRate);
+    addUAVObjectToWidgetRelation(airspeedSettingsName, "GPSSamplePeriod", ui->sb_gpsUpdateRate);
     addUAVObjectToWidgetRelation(airspeedSettingsName, "Scale", ui->sb_pitotScale);
     addUAVObjectToWidgetRelation(airspeedSettingsName, "ZeroPoint", ui->sb_pitotZeroPoint);
     addUAVObjectToWidgetRelation(airspeedSettingsName, "AnalogPin", ui->cbAirspeedAnalog);

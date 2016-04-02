@@ -45,7 +45,7 @@
 		</elementnames>
 		<description>The remaining free space in each task's stack. Disabled tasks will show 0 bytes free.</description>
 	</field> 
-	<field name="Running" units="bool" type="enum">
+	<field name="Running" type="enum">
 		<elementnames>
 			<elementname>System</elementname>
 			<elementname>Actuator</elementname>

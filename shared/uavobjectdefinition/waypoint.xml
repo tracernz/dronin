@@ -8,7 +8,7 @@
 		<!-- The velocity to try and have when passing through this waypoint -->
 		<field name="Velocity" units="m/s" type="float" elements="1" default="0"/>
 
-		<field name="Mode" units="" type="enum" elements="1">
+		<field name="Mode" type="enum" elements="1">
 			<options>
 				<option>Endpoint</option>
 				<option>Vector</option>
@@ -23,7 +23,7 @@
 		</field>
 
 
-		<field name="ModeParameters" units="" type="float" elements="1" default="0"/>
+		<field name="ModeParameters" type="float" elements="1" default="0"/>
 		<access gcs="readwrite" flight="readwrite"/>
 		<telemetrygcs acked="true" updatemode="manual" period="0"/>
 		<!-- previously acked.. not anymore.  Way too intrusive to send all waypoints at 4 second intervals and then demand acknowledgements for each -->

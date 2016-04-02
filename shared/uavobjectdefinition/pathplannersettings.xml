@@ -1,8 +1,8 @@
 <xml>
 	<object name="PathPlannerSettings" singleinstance="true" settings="true">
 		<description>Settings for the @ref PathPlanner Module</description>
-		<field name="PreprogrammedPath" units="" type="enum" elements="1" options="NONE,10M_BOX,LOGO" defaultvalue="NONE"/>
-		<field name="FlashOperation" units="" type="enum" elements="1" defaultvalue="NONE">
+		<field name="PreprogrammedPath" type="enum" elements="1" options="NONE,10M_BOX,LOGO" defaultvalue="NONE"/>
+		<field name="FlashOperation" type="enum" elements="1" defaultvalue="NONE">
 			<options>
  				<option>NONE</option>
 				<option>FAILED</option>

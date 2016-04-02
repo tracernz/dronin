@@ -1,7 +1,7 @@
 <xml>
 	<object name="HoTTSettings" singleinstance="true" settings="true">
 		<description>Settings for the @ref HoTT Telemetry Module</description>
-		<field name="Sensor" units="" type="enum" options="Disabled,Enabled" defaultvalue="Disabled">
+		<field name="Sensor" type="enum" options="Disabled,Enabled" defaultvalue="Disabled">
 			<elementnames>
 				<elementname>VARIO</elementname>
 				<elementname>GPS</elementname>
@@ -10,7 +10,7 @@
 				<elementname>ESC</elementname>
 			</elementnames>
 		</field>
-		<field name="Warning" units="" type="enum" options="Disabled,Enabled" defaultvalue="Disabled">
+		<field name="Warning" type="enum" options="Disabled,Enabled" defaultvalue="Disabled">
 			<elementnames>
 				<elementname>AltitudeBeep</elementname>
 				<elementname>MinSpeed</elementname>

@@ -138,7 +138,8 @@ ConfigOutputWidget::ConfigOutputWidget(QWidget *parent) : ConfigTaskWidget(paren
     for (resIter = resList.begin(); resIter != resList.end(); resIter++) {
         QComboBox *res = *resIter;
         res->clear();
-        res->addItems(resolutions->getOptions());
+        foreach (const QString option, resolutions->getOptions())
+            res->addItem(option + " " + resolutions->getUnits(), option);
         addWidget(res);
         connect(res, SIGNAL(currentIndexChanged(int)), this, SLOT(refreshWidgetRanges()));
     }
@@ -531,7 +532,7 @@ void ConfigOutputWidget::refreshWidgetRanges()
                 timerPeriodUs = 65535;
 
                 // And adjust units into microseconds if 12MHz timer.
-                if (timerRes == ActuatorSettings::TIMERPWMRESOLUTION_12MHZ)
+                if (timerRes == ActuatorSettings::TIMERPWMRESOLUTION_12)
                     timerPeriodUs = timerPeriodUs / 12;
 
                 if (timerFreq != 0)
@@ -618,12 +619,13 @@ void ConfigOutputWidget::updateObjectsFromWidgets()
 QString ConfigOutputWidget::timerFreqToString(quint32 freq) const {
     if (freq == 0)
         return QString(tr("SyncPWM"));
-    return QString::number(freq);
+    return QString::number(freq) + " Hz";
 }
 
 quint32 ConfigOutputWidget::timerStringToFreq(QString str) const {
     if (str.compare(QString(tr("SyncPWM"))) == 0)
         return 0;
+    str.chop(3);
     return str.toUInt();
 }
 

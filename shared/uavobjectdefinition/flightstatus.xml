@@ -1,10 +1,10 @@
 <xml>
 	<object name="FlightStatus" singleinstance="true" settings="false">
 		<description>Contains major flight status information for other modules.</description>
-		<field name="Armed" units="" type="enum" elements="1" options="Disarmed,Arming,Armed" defaultvalue="Disarmed"/>
+		<field name="Armed" type="enum" elements="1" options="Disarmed,Arming,Armed" defaultvalue="Disarmed"/>
 
 		<!-- Note these enumerated values should be the same as ManualControlSettings -->
-		<field name="FlightMode" units="" type="enum" elements="1">
+		<field name="FlightMode" type="enum" elements="1">
 			 <options>
 				<option>Manual</option>
 				<option>Acro</option>
@@ -28,7 +28,7 @@
 		</field>
 
 		<!-- Indicate what submodule is in control -->
-		<field name="ControlSource" units="" type="enum" elements="1" options="Geofence,Failsafe,Transmitter,Tablet" defaultvalue="Failsafe"/>
+		<field name="ControlSource" type="enum" elements="1" options="Geofence,Failsafe,Transmitter,Tablet" defaultvalue="Failsafe"/>
 
 		<access gcs="readwrite" flight="readwrite"/>
 		<telemetrygcs acked="false" updatemode="manual" period="0"/>

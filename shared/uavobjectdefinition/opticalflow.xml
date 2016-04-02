@@ -5,7 +5,7 @@
 		<field name="y" units="m/s" type="float" elements="1"/>
 		<field name="z" units="m/s" type="float" elements="1"/>
 
-		<field name="Quality" units="" type="uint8" elements="1"/>
+		<field name="Quality" type="uint8" elements="1"/>
 
 		<access gcs="readwrite" flight="readwrite"/>
 		<telemetrygcs acked="false" updatemode="manual" period="0"/>

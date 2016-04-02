@@ -1,11 +1,11 @@
 <xml>
 	<object name="PicoCStatus" singleinstance="true" settings="false">
 		<description>status information of the @ref PicoC Interpreter Module.</description>
-		<field name="ExitValue" units="" type="int16" elements="1" defaultvalue="0"/>
-		<field name="TestValue" units="" type="int16" elements="1" defaultvalue="0"/>
-		<field name="SectorID" units="" type="uint16" elements="1" defaultvalue="0"/>
-		<field name="FileID" units="" type="uint8" elements="1" defaultvalue="0"/>
-		<field name="Command" units="" type="enum" elements="1" defaultvalue="Idle">
+		<field name="ExitValue" type="int16" elements="1" defaultvalue="0"/>
+		<field name="TestValue" type="int16" elements="1" defaultvalue="0"/>
+		<field name="SectorID" type="uint16" elements="1" defaultvalue="0"/>
+		<field name="FileID" type="uint8" elements="1" defaultvalue="0"/>
+		<field name="Command" type="enum" elements="1" defaultvalue="Idle">
 			<options>
 				<option>Idle</option>
 				<option>StartScript</option>
@@ -18,8 +18,8 @@
 				<option>FormatPartition</option>
 			</options>
 		</field>
-		<field name="CommandError" units="" type="int8" elements="1" defaultvalue="0"/>
-		<field name="Sector" units="" type="uint8" elements="32"/>
+		<field name="CommandError" type="int8" elements="1" defaultvalue="0"/>
+		<field name="Sector" type="uint8" elements="32"/>
 		<access gcs="readwrite" flight="readwrite"/>
 		<telemetrygcs acked="true" updatemode="onchange" period="0"/>
 		<telemetryflight acked="true" updatemode="onchange" period="0"/>

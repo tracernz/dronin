@@ -1,8 +1,8 @@
 <xml>
     <object name="MixerSettings" singleinstance="true" settings="true">
         <description>Settings for the @ref ActuatorModule that controls the channel assignments for the mixer based on AircraftType</description>
-	<field name="ThrottleCurve1" units="percent" type="float" elementnames="0,25,50,75,100" defaultvalue="0,0,0,0,0"/>
-        <field name="Curve2Source" units="" type="enum" elements="1" defaultvalue="Throttle">
+	<field name="ThrottleCurve1" units="%" type="float" elementnames="0,25,50,75,100" defaultvalue="0,0,0,0,0"/>
+        <field name="Curve2Source" type="enum" elements="1" defaultvalue="Throttle">
 		<options>
 			<option>Throttle</option>
 		        <option>Roll</option>
@@ -17,8 +17,8 @@
 		        <option>Accessory5</option>
 		</options>
 	</field>
-        <field name="ThrottleCurve2" units="percent" type="float" elementnames="0,25,50,75,100" defaultvalue="0,0.25,0.5,0.75,1"/>
-	<field name="Mixer1Type" units="" type="enum" elements="1" defaultvalue="Disabled">
+        <field name="ThrottleCurve2" units="%" type="float" elementnames="0,25,50,75,100" defaultvalue="0,0.25,0.5,0.75,1"/>
+	<field name="Mixer1Type" type="enum" elements="1" defaultvalue="Disabled">
 		<options>
 			<option>Disabled</option>
 			<option>Motor</option>
@@ -34,7 +34,7 @@
 			<option>Accessory5</option>
 		</options>
 	</field>
-	<field name="Mixer1Vector" units="" type="int8" defaultvalue="0">
+	<field name="Mixer1Vector" type="int8" defaultvalue="0">
 		<elementnames>
 			<elementname>ThrottleCurve1</elementname>
 			<elementname>ThrottleCurve2</elementname>

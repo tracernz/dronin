@@ -1,7 +1,7 @@
 <xml>
 	<object name="SystemAlarms" singleinstance="true" settings="false">
 		<description>Alarms from OpenPilot to indicate failure conditions or warnings.  Set by various modules.</description>
-		<field name="Alarm" units="" type="enum" options="Uninitialised,OK,Warning,Error,Critical" defaultvalue="Uninitialised">
+		<field name="Alarm" type="enum" options="Uninitialised,OK,Warning,Error,Critical" defaultvalue="Uninitialised">
 			<elementnames>
 				<elementname>OutOfMemory</elementname>
 				<elementname>CPUOverload</elementname>
@@ -29,7 +29,7 @@
 				<elementname>Gimbal</elementname>
 			</elementnames>
 		</field>
-		<field name="ConfigError" units="" type="enum" elements="1" defaultvalue="None">
+		<field name="ConfigError" type="enum" elements="1" defaultvalue="None">
 			<options>
 				<option>Stabilization</option>
 				<option>Multirotor</option>
@@ -44,7 +44,7 @@
 				<option>None</option>
 			</options>
 		</field>
-		<field name="ManualControl" units="" type="enum" elements="1" defaultvalue="None">
+		<field name="ManualControl" type="enum" elements="1" defaultvalue="None">
 			<options>
 				<option>Settings</option>
 				<option>NoRx</option>
@@ -55,7 +55,7 @@
 				<option>None</option>
 			</options>
 		</field>
-		<field name="StateEstimation" units="" type="enum" elements="1" defaultvalue="None">
+		<field name="StateEstimation" type="enum" elements="1" defaultvalue="None">
 			<options>
 				<option>Gyro queue not updating</option>
 				<option>Accelerometer queue not updating</option>
@@ -70,7 +70,7 @@
 			</options>
 		</field>
 
-		<field name="RebootCause" units="" type="enum" elements="1" defaultvalue="Undefined">
+		<field name="RebootCause" type="enum" elements="1" defaultvalue="Undefined">
 			<options>
 				<option>Brown out</option>
 				<option>Pin reset</option>

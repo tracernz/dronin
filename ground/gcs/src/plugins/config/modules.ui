@@ -270,6 +270,7 @@
              <stringlist>
               <string>objname:ModuleSettings</string>
               <string>fieldname:TelemetrySpeed</string>
+              <string>showunits:yes</string>
              </stringlist>
             </property>
            </widget>
@@ -287,6 +288,7 @@
              <stringlist>
               <string>objname:ModuleSettings</string>
               <string>fieldname:GPSSpeed</string>
+              <string>showunits:yes</string>
              </stringlist>
             </property>
            </widget>
@@ -304,6 +306,7 @@
              <stringlist>
               <string>objname:ModuleSettings</string>
               <string>fieldname:ComUsbBridgeSpeed</string>
+              <string>showunits:yes</string>
              </stringlist>
             </property>
            </widget>
@@ -321,6 +324,7 @@
              <stringlist>
               <string>objname:ModuleSettings</string>
               <string>fieldname:LightTelemetrySpeed</string>
+              <string>showunits:yes</string>
              </stringlist>
             </property>
            </widget>
@@ -331,6 +335,7 @@
              <stringlist>
               <string>objname:ModuleSettings</string>
               <string>fieldname:MavlinkSpeed</string>
+              <string>showunits:yes</string>
              </stringlist>
             </property>
            </widget>
@@ -420,9 +425,6 @@
          </item>
          <item row="1" column="1">
           <widget class="QSpinBox" name="sb_batteryCapacity">
-           <property name="suffix">
-            <string>mAhr</string>
-           </property>
            <property name="minimum">
             <number>1</number>
            </property>
@@ -457,7 +459,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="label_14">
             <property name="text">
-             <string>Live reading (V):</string>
+             <string>Live reading:</string>
             </property>
            </widget>
           </item>
@@ -606,7 +608,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="label_9">
             <property name="text">
-             <string>Live reading (A):</string>
+             <string>Live reading:</string>
             </property>
            </widget>
           </item>
@@ -723,14 +725,14 @@
           <item row="1" column="0">
            <widget class="QLabel" name="label_36">
             <property name="text">
-             <string>Consumed capacity (mAh):</string>
+             <string>Consumed capacity:</string>
             </property>
            </widget>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="label_37">
             <property name="text">
-             <string>Remaining flight time (s):</string>
+             <string>Remaining flight time:</string>
             </property>
            </widget>
           </item>
@@ -1083,7 +1085,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>360</width>
+            <width>392</width>
             <height>714</height>
            </rect>
           </property>
@@ -2893,9 +2895,6 @@
           </item>
           <item row="0" column="1">
            <widget class="QSpinBox" name="sb_picocMaxFileSize">
-            <property name="suffix">
-             <string>Bytes</string>
-            </property>
             <property name="minimum">
              <number>2048</number>
             </property>
@@ -2913,9 +2912,6 @@
           </item>
           <item row="1" column="1">
            <widget class="QSpinBox" name="sb_picocTaskStackSize">
-            <property name="suffix">
-             <string>Bytes</string>
-            </property>
             <property name="minimum">
              <number>5120</number>
             </property>
@@ -2933,9 +2929,6 @@
           </item>
           <item row="2" column="1">
            <widget class="QSpinBox" name="sb_picocPicoCStackSize">
-            <property name="suffix">
-             <string>Bytes</string>
-            </property>
             <property name="minimum">
              <number>10240</number>
             </property>

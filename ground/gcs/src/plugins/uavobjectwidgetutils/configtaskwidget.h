@@ -71,6 +71,7 @@ public:
         double scale;
         bool isLimited;
         QList<shadow *> shadowsList;
+        bool showUnits;
     };
 
     struct temphelper
@@ -96,6 +97,8 @@ public:
         bool hasLimits;
         buttonTypeEnum buttonType;
         QList<int> buttonGroup;
+        bool showUnits;
+        int instanceId;
     };
 
     ConfigTaskWidget(QWidget *parent = 0);
@@ -115,11 +118,11 @@ public:
 
     void addWidget(QWidget * widget);
 
-    void addUAVObjectToWidgetRelation(QString object, QString field, QWidget *widget, int index = 0, double scale = 1, bool isLimited = false, QList<int>* defaultReloadGroups = 0, quint32 instID = 0);
-    void addUAVObjectToWidgetRelation(UAVObject *obj, UAVObjectField *field, QWidget *widget, int index = 0, double scale = 1, bool isLimited = false, QList<int> *defaultReloadGroups = 0, quint32 instID = 0);
+    void addUAVObjectToWidgetRelation(QString object, QString field, QWidget *widget, int index = 0, double scale = 1, bool isLimited = false, bool showUnits = false, QList<int>* defaultReloadGroups = 0, quint32 instID = 0);
+    void addUAVObjectToWidgetRelation(UAVObject *obj, UAVObjectField *field, QWidget *widget, int index = 0, double scale = 1, bool isLimited = false, bool showUnits = false, QList<int> *defaultReloadGroups = 0, quint32 instID = 0);
 
-    void addUAVObjectToWidgetRelation(QString object, QString field, QWidget *widget, QString element, double scale, bool isLimited = false, QList<int> *defaultReloadGroups = 0, quint32 instID = 0);
-    void addUAVObjectToWidgetRelation(UAVObject *obj, UAVObjectField *field, QWidget *widget, QString element, double scale, bool isLimited = false, QList<int> *defaultReloadGroups = 0, quint32 instID = 0);
+    void addUAVObjectToWidgetRelation(QString object, QString field, QWidget *widget, QString element, double scale, bool isLimited = false, bool showUnits = false, QList<int> *defaultReloadGroups = 0, quint32 instID = 0);
+    void addUAVObjectToWidgetRelation(UAVObject *obj, UAVObjectField *field, QWidget *widget, QString element, double scale, bool isLimited = false, bool showUnits = false, QList<int> *defaultReloadGroups = 0, quint32 instID = 0);
 
     void addUAVObjectToWidgetRelation(QString object, QString field, QWidget *widget, QString index);
     void addUAVObjectToWidgetRelation(UAVObject *obj, UAVObjectField * field, QWidget *widget, QString index);
@@ -200,7 +203,8 @@ private:
     bool setWidgetFromField(objectToWidget *ow);
     void connectWidgetUpdatesToSlot(QWidget *widget, const char *function);
     void disconnectWidgetUpdatesToSlot(QWidget *widget, const char *function);
-    void loadWidgetLimits(QWidget *widget, UAVObjectField *field, int index, bool hasLimits, double scale);
+    void loadWidgetLimits(objectToWidget *ow);
+    void addUAVObjectToWidgetRelation(QWidget *widget, uiRelationAutomation *relation);
     QString outOfLimitsStyle;
     QTimer * timeOut;
 protected slots:
@@ -214,9 +218,11 @@ protected slots:
     virtual void helpButtonPressed();
 protected:
     virtual void enableControls(bool enable);
-    void checkWidgetsLimits(QWidget *widget, UAVObjectField *field, int index, bool hasLimits, QVariant value, double scale);
+    void checkWidgetsLimits(objectToWidget *ow);
+    void checkWidgetsLimits(objectToWidget *ow, shadow *sh);
     virtual QVariant getVariantFromWidget(QWidget *widget, double scale);
     virtual bool setWidgetFromVariant(QWidget *widget,QVariant value,double scale);
+    void loadWidgetUnits(objectToWidget *ow);
     UAVObjectUtilManager* utilMngr;
 };
 

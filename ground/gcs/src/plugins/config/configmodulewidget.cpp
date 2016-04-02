@@ -126,7 +126,7 @@ ConfigModuleWidget::ConfigModuleWidget(QWidget *parent) : ConfigTaskWidget(paren
     connect(ui->cbCurrentPin, SIGNAL(currentIndexChanged(int)), this, SLOT(toggleBatteryMonitoringGb()));
 
     addUAVObjectToWidgetRelation(batterySettingsName, "NbCells", ui->sb_numBatteryCells);
-    addUAVObjectToWidgetRelation(batterySettingsName, "Capacity", ui->sb_batteryCapacity);
+    addUAVObjectToWidgetRelation(batterySettingsName, "Capacity", ui->sb_batteryCapacity , 0, 1, false, true);
     addUAVObjectToWidgetRelation(batterySettingsName, "VoltagePin", ui->cbVoltagePin);
     addUAVObjectToWidgetRelation(batterySettingsName, "CurrentPin", ui->cbCurrentPin);
     addUAVObjectToWidgetRelation(batterySettingsName, "VoltageThresholds", ui->sb_lowVoltageAlarm, FlightBatterySettings::VOLTAGETHRESHOLDS_ALARM);
@@ -138,11 +138,11 @@ ConfigModuleWidget::ConfigModuleWidget(QWidget *parent) : ConfigTaskWidget(paren
     addUAVObjectToWidgetRelation(batterySettingsName, "FlightTimeThresholds", ui->sb_flightTimeAlarm, FlightBatterySettings::FLIGHTTIMETHRESHOLDS_ALARM);
     addUAVObjectToWidgetRelation(batterySettingsName, "FlightTimeThresholds", ui->sb_flightTimeWarning, FlightBatterySettings::FLIGHTTIMETHRESHOLDS_WARNING);
 
-    addUAVObjectToWidgetRelation(batteryStateName, "Voltage", ui->le_liveVoltageReading);
-    addUAVObjectToWidgetRelation(batteryStateName, "Current", ui->le_liveCurrentReading);
+    addUAVObjectToWidgetRelation(batteryStateName, "Voltage", ui->le_liveVoltageReading, 0, 1, false, true);
+    addUAVObjectToWidgetRelation(batteryStateName, "Current", ui->le_liveCurrentReading, 0, 1, false, true);
 
-    addUAVObjectToWidgetRelation(batteryStateName, "ConsumedEnergy", ui->le_liveConsumedEnergy);
-    addUAVObjectToWidgetRelation(batteryStateName, "EstimatedFlightTime", ui->le_liveEstimatedFlightTime);
+    addUAVObjectToWidgetRelation(batteryStateName, "ConsumedEnergy", ui->le_liveConsumedEnergy, 0, 1, false, true);
+    addUAVObjectToWidgetRelation(batteryStateName, "EstimatedFlightTime", ui->le_liveEstimatedFlightTime, 0, 1, false, true);
 
     // connect the voltage ratio and factor boxes so they update each other when edited
     connect(ui->sb_voltageRatio, SIGNAL(editingFinished()), this, SLOT(updateVoltageRatio()));
@@ -326,13 +326,13 @@ ConfigModuleWidget::ConfigModuleWidget(QWidget *parent) : ConfigTaskWidget(paren
     ui->cb_ALTITUDEBEEP->setProperty(falseString.toLatin1(), "Disabled");
 
     // Connect PicoC settings
-    addUAVObjectToWidgetRelation(picoCSettingsName, "MaxFileSize", ui->sb_picocMaxFileSize);
-    addUAVObjectToWidgetRelation(picoCSettingsName, "TaskStackSize", ui->sb_picocTaskStackSize);
-    addUAVObjectToWidgetRelation(picoCSettingsName, "PicoCStackSize", ui->sb_picocPicoCStackSize);
+    addUAVObjectToWidgetRelation(picoCSettingsName, "MaxFileSize", ui->sb_picocMaxFileSize, 0, 1, false, true);
+    addUAVObjectToWidgetRelation(picoCSettingsName, "TaskStackSize", ui->sb_picocTaskStackSize, 0, 1, false, true);
+    addUAVObjectToWidgetRelation(picoCSettingsName, "PicoCStackSize", ui->sb_picocPicoCStackSize, 0, 1, false, true);
     addUAVObjectToWidgetRelation(picoCSettingsName, "BootFileID", ui->sb_picocBootFileID);
     addUAVObjectToWidgetRelation(picoCSettingsName, "Startup", ui->cb_picocStartup);
     addUAVObjectToWidgetRelation(picoCSettingsName, "Source", ui->cb_picocSource);
-    addUAVObjectToWidgetRelation(picoCSettingsName, "ComSpeed", ui->cb_picocComSpeed);
+    addUAVObjectToWidgetRelation(picoCSettingsName, "ComSpeed", ui->cb_picocComSpeed, 0, 1, false, true);
 
     // Connect Airspeed Settings
     addUAVObjectToWidgetRelation(airspeedSettingsName, "AirspeedSensorType", ui->cb_airspeedSensorType);

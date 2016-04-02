@@ -67,20 +67,12 @@ DefaultHwSettingsWidget::DefaultHwSettingsWidget(UAVObject *settingsObj, QWidget
         case UAVObjectField::INT32:
         case UAVObjectField::UINT8:
         case UAVObjectField::UINT16:
-        case UAVObjectField::UINT32: {
-            QSpinBox *sbx = new QSpinBox(this);
-            if (fields[i]->getUnits().length())
-                sbx->setSuffix(QString(" %1").arg(fields[i]->getUnits()));
-            wdg = sbx;
+        case UAVObjectField::UINT32:
+            wdg = new QSpinBox(this);
             break;
-        }
-        case UAVObjectField::FLOAT32: {
-            QDoubleSpinBox *sbx = new QDoubleSpinBox(this);
-            if (fields[i]->getUnits().length())
-                sbx->setSuffix(QString(" %1").arg(fields[i]->getUnits()));
-            wdg = sbx;
+        case UAVObjectField::FLOAT32:
+            wdg = new QDoubleSpinBox(this);
             break;
-        }
         case UAVObjectField::STRING:
             wdg = new QLineEdit(this);
             break;
@@ -93,6 +85,7 @@ DefaultHwSettingsWidget::DefaultHwSettingsWidget(UAVObject *settingsObj, QWidget
         objRelation.append(QString("fieldname:%1").arg(fields[i]->getName()));
         objRelation.append(QString("buttongroup:1"));
         objRelation.append(QString("haslimits:yes"));
+        objRelation.append(QString("showunits:yes"));
 
         wdg->setProperty("objrelation", objRelation);
 

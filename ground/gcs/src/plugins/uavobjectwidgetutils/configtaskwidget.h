@@ -88,12 +88,12 @@ public:
 
     struct uiRelationAutomation
     {
-        QString objname;
-        QString fieldname;
+        QString objName;
+        QString fieldName;
         QString element;
         QString url;
         double scale;
-        bool haslimits;
+        bool hasLimits;
         buttonTypeEnum buttonType;
         QList<int> buttonGroup;
     };
@@ -115,11 +115,11 @@ public:
 
     void addWidget(QWidget * widget);
 
-    void addUAVObjectToWidgetRelation(QString object,QString field,QWidget * widget,int index=0,double scale=1,bool isLimited=false,QList<int>* defaultReloadGroups=0,quint32 instID=0);
-    void addUAVObjectToWidgetRelation(UAVObject *obj, UAVObjectField * field, QWidget *widget, int index=0, double scale=1, bool isLimited=false, QList<int> *defaultReloadGroups=0, quint32 instID=0);
+    void addUAVObjectToWidgetRelation(QString object, QString field, QWidget *widget, int index = 0, double scale = 1, bool isLimited = false, QList<int>* defaultReloadGroups = 0, quint32 instID = 0);
+    void addUAVObjectToWidgetRelation(UAVObject *obj, UAVObjectField *field, QWidget *widget, int index = 0, double scale = 1, bool isLimited = false, QList<int> *defaultReloadGroups = 0, quint32 instID = 0);
 
-    void addUAVObjectToWidgetRelation(QString object,QString field,QWidget * widget,QString element,double scale,bool isLimited=false,QList<int>* defaultReloadGroups=0,quint32 instID=0);
-    void addUAVObjectToWidgetRelation(UAVObject *obj, UAVObjectField * field,QWidget * widget,QString element,double scale,bool isLimited=false,QList<int>* defaultReloadGroups=0,quint32 instID=0);
+    void addUAVObjectToWidgetRelation(QString object, QString field, QWidget *widget, QString element, double scale, bool isLimited = false, QList<int> *defaultReloadGroups = 0, quint32 instID = 0);
+    void addUAVObjectToWidgetRelation(UAVObject *obj, UAVObjectField *field, QWidget *widget, QString element, double scale, bool isLimited = false, QList<int> *defaultReloadGroups = 0, quint32 instID = 0);
 
     void addUAVObjectToWidgetRelation(QString object, QString field, QWidget *widget, QString index);
     void addUAVObjectToWidgetRelation(UAVObject *obj, UAVObjectField * field, QWidget *widget, QString index);
@@ -197,10 +197,10 @@ private:
     QList<QPushButton *> rebootButtonList;
     bool dirty;
     bool setFieldFromWidget(QWidget *widget, UAVObjectField *field, int index, double scale);
-    bool setWidgetFromField(QWidget *widget, UAVObjectField *field, int index, double scale, bool hasLimits);
+    bool setWidgetFromField(objectToWidget *ow);
     void connectWidgetUpdatesToSlot(QWidget *widget, const char *function);
     void disconnectWidgetUpdatesToSlot(QWidget *widget, const char *function);
-    void loadWidgetLimits(QWidget *widget, UAVObjectField *field, int index, bool hasLimits, double sclale);
+    void loadWidgetLimits(QWidget *widget, UAVObjectField *field, int index, bool hasLimits, double scale);
     QString outOfLimitsStyle;
     QTimer * timeOut;
 protected slots:

@@ -45,6 +45,7 @@ class UAVOBJECTS_EXPORT UAVObjectField: public QObject
 public:
     typedef enum { INT8 = 0, INT16, INT32, UINT8, UINT16, UINT32, FLOAT32, ENUM, BITFIELD, STRING } FieldType;
     typedef enum { EQUAL,NOT_EQUAL,BETWEEN,BIGGER,SMALLER } LimitType;
+    typedef enum { DEC, HEX, BIN, OCT } DisplayType;
     typedef struct
     {
         LimitType type;
@@ -52,8 +53,8 @@ public:
         int board;
     } LimitStruct;
 
-    UAVObjectField(const QString& name, const QString& units, FieldType type, quint32 numElements, const QStringList& options, const QList<int>& indices, const QString& limits=QString(), const QString& description=QString());
-    UAVObjectField(const QString& name, const QString& units, FieldType type, const QStringList& elementNames, const QStringList& options, const QList<int>& indices, const QString& limits=QString(), const QString& description=QString());
+    UAVObjectField(const QString& name, const QString& units, FieldType type, quint32 numElements, const QStringList& options, const QList<int>& indices, const QString& limits=QString(), const QString& description=QString(), const DisplayType display = DEC);
+    UAVObjectField(const QString& name, const QString& units, FieldType type, const QStringList& elementNames, const QStringList& options, const QList<int>& indices, const QString& limits=QString(), const QString& description=QString(), const DisplayType display = DEC);
     void initialize(quint8* data, quint32 dataOffset, UAVObject* obj);
     UAVObject* getObject();
     FieldType getType();
@@ -76,6 +77,8 @@ public:
     bool isText();
     QString toString();
     QString getDescription();
+    int getDisplayIntegerBase();
+    QString getDisplayPrefix();
 
     bool isWithinLimits(QVariant var, quint32 index, int board=0);
     QVariant getMaxLimit(quint32 index, int board=0);
@@ -97,8 +100,9 @@ protected:
     UAVObject* obj;
     QMap<quint32, QList<LimitStruct> > elementLimits;
     QString description;
+    DisplayType display;
     void clear();
-    void constructorInitialize(const QString& name, const QString& units, FieldType type, const QStringList& elementNames, const QStringList& options, const QList<int> &indices, const QString &limits, const QString &description);
+    void constructorInitialize(const QString& name, const QString& units, FieldType type, const QStringList& elementNames, const QStringList& options, const QList<int> &indices, const QString &limits, const QString &description, const DisplayType display);
     void limitsInitialize(const QString &limits);
 
 

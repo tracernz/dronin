@@ -30,7 +30,7 @@
 #include <QtEndian>
 #include <QDebug>
 
-UAVObjectField::UAVObjectField(const QString& name, const QString& units, FieldType type, quint32 numElements, const QStringList& options, const QList<int>& indices, const QString &limits, const QString &description)
+UAVObjectField::UAVObjectField(const QString& name, const QString& units, FieldType type, quint32 numElements, const QStringList& options, const QList<int>& indices, const QString &limits, const QString &description, const DisplayType display)
 {
     QStringList elementNames;
     // Set element names
@@ -39,16 +39,16 @@ UAVObjectField::UAVObjectField(const QString& name, const QString& units, FieldT
         elementNames.append(QString("%1").arg(n));
     }
     // Initialize
-    constructorInitialize(name, units, type, elementNames, options, indices, limits, description);
+    constructorInitialize(name, units, type, elementNames, options, indices, limits, description, display);
 
 }
 
-UAVObjectField::UAVObjectField(const QString& name, const QString& units, FieldType type, const QStringList& elementNames, const QStringList& options, const QList<int>& indices, const QString &limits, const QString &description)
+UAVObjectField::UAVObjectField(const QString& name, const QString& units, FieldType type, const QStringList& elementNames, const QStringList& options, const QList<int>& indices, const QString &limits, const QString &description, const DisplayType display)
 {
-    constructorInitialize(name, units, type, elementNames, options, indices, limits, description);
+    constructorInitialize(name, units, type, elementNames, options, indices, limits, description, display);
 }
 
-void UAVObjectField::constructorInitialize(const QString& name, const QString& units, FieldType type, const QStringList& elementNames, const QStringList& options, const QList<int>& indices, const QString &limits, const QString &description)
+void UAVObjectField::constructorInitialize(const QString& name, const QString& units, FieldType type, const QStringList& elementNames, const QStringList& options, const QList<int>& indices, const QString &limits, const QString &description, const DisplayType display)
 {
     // Copy params
     this->name = name;
@@ -62,6 +62,7 @@ void UAVObjectField::constructorInitialize(const QString& name, const QString& u
     this->obj = NULL;
     this->elementNames = elementNames;
     this->description = description;
+    this->display = display;
     // Set field size
     switch (type)
     {
@@ -1059,4 +1060,32 @@ void UAVObjectField::setDouble(double value, quint32 index)
 QString UAVObjectField::getDescription()
 {
     return description;
+}
+
+int UAVObjectField::getDisplayIntegerBase()
+{
+    switch (display) {
+    case HEX:
+        return 16;
+    case BIN:
+        return 2;
+    case OCT:
+        return 8;
+    default:
+        return 10;
+    }
+}
+
+QString UAVObjectField::getDisplayPrefix()
+{
+    switch (display) {
+    case HEX:
+        return "0x";
+    case BIN:
+        return "0b";
+    case OCT:
+        return "0o";
+    default:
+        return "";
+    }
 }

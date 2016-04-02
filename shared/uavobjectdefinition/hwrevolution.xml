@@ -99,7 +99,7 @@
 		<!--  3. PPM - PPM only (one way connection) -->
 		<field name="Radio" type="enum" elements="1" parent="HwShared.RadioPort" defaultvalue="Disabled"/>
 		<!-- ID of the coordinator to allow binding to. 0 indicates allow all connections -->
-		<field name="CoordID" type="uint32" elements="1" defaultvalue="0"/>
+		<field name="CoordID" type="uint32" elements="1" defaultvalue="0" display="hex"/>
 
 		<!-- radio settings -->
 		<field name="MaxRfSpeed" type="enum" elements="1" parent="HwShared.MaxRfSpeed" defaultvalue="64000"/>

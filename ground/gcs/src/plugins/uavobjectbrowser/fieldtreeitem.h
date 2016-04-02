@@ -179,6 +179,8 @@ public:
         QSpinBox *editor = new QSpinBox(parent);
         editor->setMinimum(m_minValue);
         editor->setMaximum(m_maxValue);
+        editor->setDisplayIntegerBase(m_field->getDisplayIntegerBase());
+        editor->setPrefix(m_field->getDisplayPrefix());
         return editor;
     }
 
@@ -249,6 +251,26 @@ public:
             }
             setHighlight(true);
         }
+    }
+    QString formattedData()
+    {
+        QString formatted = m_field->getDisplayPrefix();
+        switch (m_field->getType()) {
+        case UAVObjectField::INT8:
+        case UAVObjectField::INT16:
+        case UAVObjectField::INT32:
+            formatted += QString::number(TreeItem::data().toInt(), m_field->getDisplayIntegerBase());
+            break;
+        case UAVObjectField::UINT8:
+        case UAVObjectField::UINT16:
+        case UAVObjectField::UINT32:
+            formatted += QString::number(TreeItem::data().toUInt(), m_field->getDisplayIntegerBase());
+            break;
+        default:
+            Q_ASSERT(false);
+            break;
+        }
+        return formatted;
     }
 
 private:

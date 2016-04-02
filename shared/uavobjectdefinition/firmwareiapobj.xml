@@ -3,9 +3,9 @@
         <description>Queries board for SN, model, revision, and sends reset command</description> 
         <field name="Command" type="uint16" elements="1"/> 
         <field name="Description" type="uint8" elements="100"/> 
-        <field name="CPUSerial" type="uint8" elements="12" /> 
+        <field name="CPUSerial" type="uint8" elements="12" display="hex"/> 
         <field name="BoardRevision" type="uint16" elements="1"/> 
-        <field name="BoardType" type="uint8" elements="1"/> 
+        <field name="BoardType" type="uint8" elements="1" display="hex"/> 
         <field name="ArmReset" type="uint8" elements="1"/> 
         <field name="crc" type="uint32" elements="1"/> 
         <access gcs="readwrite" flight="readwrite"/> 

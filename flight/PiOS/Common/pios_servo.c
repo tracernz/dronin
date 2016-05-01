@@ -319,8 +319,12 @@ static uint32_t max_timer_clock(TIM_TypeDef *timer)
 static uint32_t max_timer_clock(TIM_TypeDef *timer)
 {
 	if (timer == TIM2 || timer == TIM3 || timer == TIM4) {
-		//those timers run at double APB1 speed if APB1 prescaler is != 1 which is usually the case
-		return PIOS_PERIPHERAL_APB1_CLOCK * 2;
+		if (PIOS_PERIPHERAL_APB1_CLOCK == PIOS_SYSCLK) {
+			return PIOS_PERIPHERAL_APB1_CLOCK;
+		} else {
+			//those timers run at double APB1 speed if APB1 prescaler is != 1 which is usually the case
+			return PIOS_PERIPHERAL_APB1_CLOCK * 2;
+		}
 	} else {
 		return PIOS_PERIPHERAL_APB2_CLOCK;
 	}

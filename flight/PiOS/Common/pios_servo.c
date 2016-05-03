@@ -160,7 +160,7 @@ void PIOS_Servo_SetMode(const uint16_t *out_rate, const int banks, const uint16_
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 	for (int i = 0; i < banks; i++) {
 		/* Calculate the maximum clock frequency for the timer */
-		volatile uint32_t max_tim_clock = max_timer_clock(timer_banks[i].timer);
+		uint32_t max_tim_clock = max_timer_clock(timer_banks[i].timer);
 		// check if valid timer
 		if (!max_tim_clock)
 			return;
@@ -171,8 +171,8 @@ void PIOS_Servo_SetMode(const uint16_t *out_rate, const int banks, const uint16_
 			 * Ensure a dead time of 2% + 10 us, e.g. 15us for 250us
 			 * long pulses, 50 us for 2000us long pulses
 			 */
-			volatile float period = 1.02f * timer_banks[i].max_pulse + 10.0f;
-			volatile float num_ticks = period / 1e6f * max_tim_clock;
+			float period = 1.02f * timer_banks[i].max_pulse + 10.0f;
+			float num_ticks = period / 1e6f * max_tim_clock;
 			// assume 16-bit timer
 			timer_banks[i].prescaler = num_ticks / 0xffff + 0.5f;
 			timer_banks[i].clk_rate = max_tim_clock / (timer_banks[i].prescaler + 1);
@@ -188,7 +188,7 @@ void PIOS_Servo_SetMode(const uint16_t *out_rate, const int banks, const uint16_
 			TIM_OC3PolarityConfig(timer_banks[i].timer, inverted_polarity);
 			TIM_OC4PolarityConfig(timer_banks[i].timer, inverted_polarity);
 		} else {
-			volatile float num_ticks = (float)max_tim_clock / (float)out_rate[i];
+			float num_ticks = (float)max_tim_clock / (float)out_rate[i];
 			// assume 16-bit timer
 			timer_banks[i].prescaler = num_ticks / 0xffff + 0.5f;
 			timer_banks[i].clk_rate = max_tim_clock / (timer_banks[i].prescaler + 1);

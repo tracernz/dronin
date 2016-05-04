@@ -42,6 +42,7 @@ public:
         TYPE_ONESHOT42,
         TYPE_ONESHOT125,
         TYPE_MULTISHOT,
+        TYPE_BRUSHED,
     };
 
     ActuatorUtils();

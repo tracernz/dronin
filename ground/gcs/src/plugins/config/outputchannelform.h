@@ -42,18 +42,20 @@ public:
 
     void setAssignment(const QString &assignment);
     int index() const;
+    int max() const;
+    int min() const;
+    int neutral() const;
+    int type() const;
+    const QString assignment();
+    bool assigned();
 
 public slots:
     void setMax(int maximum);
-    int max() const;
     void setMin(int minimum);
-    int min() const;
     void setMinmax(int minimum, int maximum);
     void setNeutral(int value);
-    int neutral() const;
     void enableChannelTest(bool state);
     void setType(int type);
-    int type() const;
     void updateMaxSpinboxValue(int maxPulseWidth);
 
 signals:

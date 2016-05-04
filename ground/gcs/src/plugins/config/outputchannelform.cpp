@@ -377,3 +377,13 @@ void OutputChannelForm::updateMaxSpinboxValue(int maxPulseWidth)
     setChannelRange();
     alignFields();
 }
+
+const QString OutputChannelForm::assignment()
+{
+    return ui.actuatorName->text();
+}
+
+bool OutputChannelForm::assigned()
+{
+    return ui.actuatorName->text() != "-";
+}

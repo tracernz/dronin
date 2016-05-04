@@ -34,6 +34,7 @@
 #include "uavobject.h"
 #include "uavobjectutilmanager.h"
 #include "cfg_vehicletypes/vehicleconfig.h"
+#include <utils/actuatorutils.h>
 #include <QWidget>
 #include <QList>
 
@@ -72,6 +73,8 @@ private:
 
     UAVObject::Metadata accInitialData;
 
+    QVector<QVector<int>> channelBanks;
+
     virtual void tabSwitchingAway();
 
 private slots:
@@ -85,9 +88,14 @@ private slots:
     void do_SetDirty();
     void assignOutputChannels(UAVObject *obj);
     void refreshWidgetRanges();
+    void autosetBank();
 
 protected:
     void enableControls(bool enable);
+    QMenu *buildAutosetMenu(int bank);
+
+    static const QList<ActuatorUtils::ActuatorType> BANK_TYPES;
+    static const QStringList BANK_TYPE_NAMES;
 };
 
 #endif

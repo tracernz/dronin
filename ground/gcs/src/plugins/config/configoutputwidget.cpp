@@ -45,6 +45,7 @@
 #include <QMessageBox>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QMenu>
 #include "mixersettings.h"
 #include "actuatorcommand.h"
 #include "actuatorsettings.h"
@@ -54,6 +55,23 @@
 #include <extensionsystem/pluginmanager.h>
 #include <coreplugin/generalsettings.h>
 #include <coreplugin/modemanager.h>
+
+const QList<ActuatorUtils::ActuatorType> ConfigOutputWidget::BANK_TYPES =
+        QList<ActuatorUtils::ActuatorType>() << ActuatorUtils::TYPE_PWMESC
+                                              << ActuatorUtils::TYPE_ONESHOT42
+                                              << ActuatorUtils::TYPE_ONESHOT125
+                                              << ActuatorUtils::TYPE_MULTISHOT
+                                              << ActuatorUtils::TYPE_ANALOGSERVO
+                                              << ActuatorUtils::TYPE_DIGITALSERVO
+                                              << ActuatorUtils::TYPE_BRUSHED;
+const QStringList ConfigOutputWidget::BANK_TYPE_NAMES =
+        QStringList() << "PWM ESC (1000-2000 us, 400 Hz)"
+                      << "Oneshot42 ESC (42-83 us, SyncPWM)"
+                      << "Oneshot125 ESC (125-250 us, SyncPWM)"
+                      << "Multishot ESC (5-25 us, SyncPWM)"
+                      << "Analog Servo (1000-2000 us, 50 Hz)"
+                      << "Digital Servo (1000-2000 us, 400 Hz)"
+                      << "Brushed Motor (0-60 us, 16.67 kHz)";
 
 ConfigOutputWidget::ConfigOutputWidget(QWidget *parent) : ConfigTaskWidget(parent)
 {
@@ -88,6 +106,7 @@ ConfigOutputWidget::ConfigOutputWidget(QWidget *parent) : ConfigTaskWidget(paren
     for (unsigned int i = 0; i < ActuatorCommand::CHANNEL_NUMELEM; i++)
     {
         OutputChannelForm *outputForm = new OutputChannelForm(i, this, i==0);
+        outputForm->setObjectName("formOutputChannel" + QString::number(i));
         m_config->channelLayout->addWidget(outputForm);
 
         connect(m_config->channelOutTest, SIGNAL(toggled(bool)), outputForm, SLOT(enableChannelTest(bool)));
@@ -140,6 +159,15 @@ ConfigOutputWidget::ConfigOutputWidget(QWidget *parent) : ConfigTaskWidget(paren
         this->setEnabled(false);
     connect(SystemSettings::GetInstance(objManager), SIGNAL(objectUpdated(UAVObject*)),this,SLOT(assignOutputChannels(UAVObject*)));
 
+    // connect autoset banks buttons
+    for (int i = 1; i <= lblList.length(); i++) {
+        QPushButton *btnAutoset = findChild<QPushButton *>("btnAutoset" + QString::number(i));
+        if (btnAutoset) {
+            btnAutoset->setMenu(buildAutosetMenu(i));
+        } else {
+            qWarning() << "[ConfigOutputWidget] Missing autoset button: " << i;
+        }
+    }
 
     refreshWidgetsValues();
 }
@@ -435,6 +463,7 @@ void ConfigOutputWidget::refreshWidgetsValues(UAVObject * obj)
         Core::IBoardType *board = utilMngr->getBoardType();
         if (board != NULL) {
             QStringList banks = board->queryChannelBanks();
+            channelBanks = board->getChannelBanks();
 
             // First reset & disable all channel fields/outputs, then repopulate (because
             // we might be for instance connecting various board types one after another)
@@ -614,4 +643,76 @@ void ConfigOutputWidget::stopTests()
 void ConfigOutputWidget::do_SetDirty()
 {
     setDirty(true);
+}
+
+void ConfigOutputWidget::autosetBank()
+{
+    Q_ASSERT(QObject::sender()->property("type").isValid());
+    Q_ASSERT(QObject::sender()->property("bank").isValid());
+
+    ActuatorUtils::ActuatorType type = static_cast<ActuatorUtils::ActuatorType>(QObject::sender()->property("type").toInt());
+    int bank = QObject::sender()->property("bank").toInt();
+
+    int output_rate = ActuatorUtils::outputRate(type);
+    double min_pulse = ActuatorUtils::minPulse(type);
+    double neutral_pulse = ActuatorUtils::neutralPulse(type);
+    double max_pulse = ActuatorUtils::maxPulse(type);
+
+    // TODO: check existing settings, confirm change
+    bool change = false;
+    QComboBox *rateBox = findChild<QComboBox *>("cb_outputRate" + QString::number(bank));
+    Q_ASSERT(rateBox);
+    change |= static_cast<int>(timerStringToFreq(rateBox->currentText())) != output_rate;
+
+    if (!channelBanks.length())
+        return;
+
+    Q_ASSERT(bank < channelBanks.length());
+    foreach (int chan, channelBanks[bank - 1]) {
+        OutputChannelForm *chanForm = findChild<OutputChannelForm *>("formOutputChannel" + QString::number(chan - 1));
+        Q_ASSERT(chanForm);
+        if (!chanForm->assigned())
+            continue;
+        change |= chanForm->min() != min_pulse && chanForm->min() != 0;
+        change |= chanForm->neutral() != neutral_pulse && chanForm->neutral() != 0;
+        change |= chanForm->max() != max_pulse && chanForm->max() != 0;
+        change |= chanForm->type() != 0; // TODO: magic number means PWM
+    }
+
+    if (change) {
+        QMessageBox msgBox;
+        msgBox.setText("If you continue, the channels on this bank will be reset to default values. Are you sure you want to continue?");
+        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox.setDefaultButton(QMessageBox::No);
+        if (msgBox.exec() == QMessageBox::No)
+            return;
+    }
+
+    // TODO: set new settings
+    rateBox->setCurrentText(timerFreqToString(output_rate));
+    foreach (int chan, channelBanks[bank - 1]) {
+        OutputChannelForm *chanForm = findChild<OutputChannelForm *>("formOutputChannel" + QString::number(chan - 1));
+        Q_ASSERT(chanForm);
+        if (!chanForm->assigned())
+            continue;
+        chanForm->setMin(min_pulse);
+        chanForm->setNeutral(neutral_pulse);
+        chanForm->setMax(max_pulse);
+        chanForm->setType(0); // TODO: magic number means PWM
+    }
+ }
+
+QMenu *ConfigOutputWidget::buildAutosetMenu(int bank)
+{
+    Q_ASSERT(BANK_TYPES.length() == BANK_TYPE_NAMES.length());
+
+    QMenu *menu = new QMenu(this);
+    for (int i = 0; i < BANK_TYPES.length(); i++) {
+        QAction *act = menu->addAction(BANK_TYPE_NAMES.at(i));
+        act->setProperty("bank", bank);
+        act->setProperty("type", BANK_TYPES.at(i));
+        connect(act, SIGNAL(triggered(bool)), this, SLOT(autosetBank()));
+    }
+
+    return menu;
 }

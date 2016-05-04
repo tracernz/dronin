@@ -52,6 +52,8 @@ int ActuatorUtils::outputRate(ActuatorType type)
     case TYPE_ONESHOT42:
     case TYPE_ONESHOT125:
         return 0; // syncpwm
+    case TYPE_BRUSHED:
+        return 16666;
     }
     return -1;
 }
@@ -73,7 +75,9 @@ double ActuatorUtils::minPulse(ActuatorType type)
     case TYPE_ONESHOT42:
         return 125.0 / 3.0; // oneshot42 is actually oneshot 125 / 3
     case TYPE_ONESHOT125:
-        return 125;
+        return 125.0;
+    case TYPE_BRUSHED:
+        return 0.0;
     }
     return 0.0;
 }
@@ -89,6 +93,8 @@ double ActuatorUtils::neutralPulse(ActuatorType type)
     case TYPE_ANALOGSERVO:
     case TYPE_DIGITALSERVO:
         return 1500.0;
+    case TYPE_BRUSHED:
+        return 3.0;
     default:
         return minPulse(type);
     }
@@ -113,6 +119,8 @@ double ActuatorUtils::maxPulse(ActuatorType type)
         return 250.0 / 3.0; // oneshot42 is actually oneshot 125 / 3
     case TYPE_ONESHOT125:
         return 250;
+    case TYPE_BRUSHED:
+        return 60.0;
     }
     return 0.0;
 }

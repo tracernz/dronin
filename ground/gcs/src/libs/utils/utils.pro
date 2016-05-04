@@ -31,7 +31,8 @@ SOURCES += \
     homelocationutil.cpp \
     mytabbedstackwidget.cpp \
     mytabwidget.cpp \
-    svgimageprovider.cpp
+    svgimageprovider.cpp \
+    actuatorutils.cpp
 
 SOURCES += xmlconfig.cpp
 
@@ -57,7 +58,8 @@ HEADERS += utils_global.h \
     homelocationutil.h \
     mytabbedstackwidget.h \
     mytabwidget.h \
-    svgimageprovider.h
+    svgimageprovider.h \
+    actuatorutils.h
 
 
 HEADERS += xmlconfig.h

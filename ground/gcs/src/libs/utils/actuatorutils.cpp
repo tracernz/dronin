@@ -43,6 +43,7 @@ ActuatorUtils::ActuatorUtils()
 int ActuatorUtils::outputRate(ActuatorType type)
 {
     switch (type) {
+    case TYPE_UNKNOWN:
     case TYPE_ANALOGSERVO:
         return 50;
     case TYPE_DIGITALSERVO:
@@ -77,6 +78,7 @@ double ActuatorUtils::minPulse(ActuatorType type)
     case TYPE_ONESHOT125:
         return 125.0;
     case TYPE_BRUSHED:
+    case TYPE_UNKNOWN:
         return 0.0;
     }
     return 0.0;
@@ -121,6 +123,8 @@ double ActuatorUtils::maxPulse(ActuatorType type)
         return 250;
     case TYPE_BRUSHED:
         return 60.0;
+    case TYPE_UNKNOWN:
+        return 0.0;
     }
     return 0.0;
 }

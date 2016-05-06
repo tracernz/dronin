@@ -47,7 +47,8 @@ HEADERS += calibration.h \
     configmodulewidget.h \
     configosdwidget.h \
     expocurve.h \
-    autotuneshareform.h
+    autotuneshareform.h \
+    outputbankform.h
 
 SOURCES += calibration.cpp \
     configplugin.cpp \
@@ -80,7 +81,8 @@ SOURCES += calibration.cpp \
     configmodulewidget.cpp \
     configosdwidget.cpp \
     expocurve.cpp \
-    autotuneshareform.cpp
+    autotuneshareform.cpp \
+    outputbankform.cpp
 
 FORMS += airframe.ui \
     ccpm.ui \
@@ -98,7 +100,8 @@ FORMS += airframe.ui \
     modules.ui \
     osd.ui \
     osdpage.ui \
-    autotuneshareform.ui
+    autotuneshareform.ui \
+    outputbankform.ui
 
 RESOURCES += configgadget.qrc
 

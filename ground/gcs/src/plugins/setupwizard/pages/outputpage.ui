@@ -86,7 +86,7 @@ p, li { white-space: pre-wrap; }
         <bool>true</bool>
        </property>
        <property name="checked">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="autoExclusive">
         <bool>true</bool>
@@ -148,6 +148,11 @@ p, li { white-space: pre-wrap; }
      </item>
      <item>
       <widget class="QToolButton" name="oneShot42Button">
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
        <property name="toolTip">
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Oneshot42 Synchronous PWM&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>

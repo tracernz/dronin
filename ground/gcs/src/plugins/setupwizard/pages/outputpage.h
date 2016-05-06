@@ -44,7 +44,7 @@ public:
     bool validatePage();
 
 private:
-    void setOutputRanges(quint16 minPulse, quint16 maxPulse);
+    void setOutputRanges(ActuatorUtils::ActuatorType type);
     Ui::OutputPage *ui;
 };
 

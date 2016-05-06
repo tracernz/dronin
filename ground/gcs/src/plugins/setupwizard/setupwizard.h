@@ -36,6 +36,7 @@
 #include <coreplugin/connectionmanager.h>
 #include "vehicleconfigurationsource.h"
 #include "vehicleconfigurationhelper.h"
+#include "utils/actuatorutils.h"
 
 /**
  * @brief The SetupWizard class is the main interface to the setup
@@ -88,11 +89,11 @@ public:
         return m_inputType;
     }
 
-    void setESCType(SetupWizard::ESC_TYPE type)
+    void setESCType(ActuatorUtils::ActuatorType type)
     {
         m_escType = type;
     }
-    SetupWizard::ESC_TYPE getESCType() const
+    ActuatorUtils::ActuatorType getESCType() const
     {
         return m_escType;
     }
@@ -177,7 +178,7 @@ private:
     VEHICLE_TYPE m_vehicleType;
     VEHICLE_SUB_TYPE m_vehicleSubType;
     Core::IBoardType::InputType m_inputType;
-    ESC_TYPE m_escType;
+    ActuatorUtils::ActuatorType m_escType;
 
     GPS_SETTING m_gpsSetting;
     RADIO_SETTING m_radioSetting;

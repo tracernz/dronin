@@ -55,6 +55,7 @@
 #include <extensionsystem/pluginmanager.h>
 #include <coreplugin/generalsettings.h>
 #include <coreplugin/modemanager.h>
+#include "outputbankform.h"
 
 const QList<ActuatorUtils::ActuatorType> ConfigOutputWidget::BANK_TYPES =
         QList<ActuatorUtils::ActuatorType>() << ActuatorUtils::TYPE_PWMESC
@@ -101,13 +102,17 @@ ConfigOutputWidget::ConfigOutputWidget(QWidget *parent) : ConfigTaskWidget(paren
     connect(modeMngr, SIGNAL(currentModeChanged(Core::IMode *)), this,
 		SLOT(stopTests()));
 
+    OutputBankForm *bankForm = new OutputBankForm(this);
+    bankForm->setChannels(QList<int>() << 2 << 3 << 4 << 7);
+    m_config->channelLayout->addWidget(bankForm);
+
     // NOTE: we have channel indices from 0 to 9, but the convention for OP is Channel 1 to Channel 10.
     // Register for ActuatorSettings changes:
     for (unsigned int i = 0; i < ActuatorCommand::CHANNEL_NUMELEM; i++)
     {
         OutputChannelForm *outputForm = new OutputChannelForm(i, this, i==0);
         outputForm->setObjectName("formOutputChannel" + QString::number(i));
-        m_config->channelLayout->addWidget(outputForm);
+        bankForm->addChannelWidget(outputForm);
 
         connect(m_config->channelOutTest, SIGNAL(toggled(bool)), outputForm, SLOT(enableChannelTest(bool)));
         connect(outputForm, SIGNAL(channelChanged(int,int)), this, SLOT(sendChannelTest(int,int)));
@@ -658,38 +663,45 @@ void ConfigOutputWidget::autosetBank()
     double neutral_pulse = ActuatorUtils::neutralPulse(type);
     double max_pulse = ActuatorUtils::maxPulse(type);
 
-    // TODO: check existing settings, confirm change
+    // check existing settings, confirm change
     bool change = false;
-    QComboBox *rateBox = findChild<QComboBox *>("cb_outputRate" + QString::number(bank));
-    Q_ASSERT(rateBox);
-    change |= static_cast<int>(timerStringToFreq(rateBox->currentText())) != output_rate;
 
+    // this happens if board plugin doesn't return channel banks
     if (!channelBanks.length())
         return;
 
+    QList<int> skipped;
     Q_ASSERT(bank < channelBanks.length());
     foreach (int chan, channelBanks[bank - 1]) {
         OutputChannelForm *chanForm = findChild<OutputChannelForm *>("formOutputChannel" + QString::number(chan - 1));
         Q_ASSERT(chanForm);
-        if (!chanForm->assigned())
+        if (!chanForm->assigned()) {
+            skipped.append(chan);
             continue;
+        }
         change |= chanForm->min() != min_pulse && chanForm->min() != 0;
         change |= chanForm->neutral() != neutral_pulse && chanForm->neutral() != 0;
         change |= chanForm->max() != max_pulse && chanForm->max() != 0;
         change |= chanForm->type() != 0; // TODO: magic number means PWM
     }
 
+    QComboBox *rateBox = findChild<QComboBox *>("cb_outputRate" + QString::number(bank));
+    Q_ASSERT(rateBox);
+
+    // only set the output rate if we set one or more channels
+    if (skipped.length() < channelBanks[bank - 1].length())
+        change |= static_cast<int>(timerStringToFreq(rateBox->currentText())) != output_rate;
+
     if (change) {
         QMessageBox msgBox;
-        msgBox.setText("If you continue, the channels on this bank will be reset to default values. Are you sure you want to continue?");
+        msgBox.setText(tr("If you continue, the channel settings on this bank will be overwritten with default values. Are you sure you want to continue?"));
         msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         msgBox.setDefaultButton(QMessageBox::No);
         if (msgBox.exec() == QMessageBox::No)
             return;
     }
 
-    // TODO: set new settings
-    rateBox->setCurrentText(timerFreqToString(output_rate));
+    // set new settings
     foreach (int chan, channelBanks[bank - 1]) {
         OutputChannelForm *chanForm = findChild<OutputChannelForm *>("formOutputChannel" + QString::number(chan - 1));
         Q_ASSERT(chanForm);
@@ -699,6 +711,23 @@ void ConfigOutputWidget::autosetBank()
         chanForm->setNeutral(neutral_pulse);
         chanForm->setMax(max_pulse);
         chanForm->setType(0); // TODO: magic number means PWM
+    }
+
+    // only set the output rate if we set one or more channels
+    if (skipped.length() < channelBanks[bank - 1].length())
+        rateBox->setCurrentText(timerFreqToString(output_rate));
+
+    if (skipped.length() > 0) {
+        QString skipped_list;
+        for (int i = 0; i < skipped.length(); i++) {
+            skipped_list += QString::number(skipped.at(i));
+            if (i < (skipped.length() - 1))
+                skipped_list += ", ";
+        }
+
+        QMessageBox msgBox;
+        msgBox.setText(tr("The following channels were not reconfigured as they are not assigned to a function (see Vehicle configuration): ") + skipped_list);
+        msgBox.exec();
     }
  }
 

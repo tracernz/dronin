@@ -198,21 +198,7 @@ void VehicleConfigurationHelper::applyActuatorConfiguration()
             data.TimerUpdateFreq[i] = LEGACY_ESC_FREQUENCY;
         }
 
-        qint16 updateFrequency = LEGACY_ESC_FREQUENCY;
-        switch (m_configSource->getESCType()) {
-        case VehicleConfigurationSource::ESC_LEGACY:
-            updateFrequency = LEGACY_ESC_FREQUENCY;
-            break;
-        case VehicleConfigurationSource::ESC_RAPID:
-            updateFrequency = RAPID_ESC_FREQUENCY;
-            break;
-        case VehicleConfigurationSource::ESC_ONESHOT42:
-        case VehicleConfigurationSource::ESC_ONESHOT125:
-            updateFrequency = ONESHOT_ESC_FREQUENCY;
-            break;
-        default:
-            break;
-        }
+        qint16 updateFrequency = ActuatorUtils::outputRate(m_configSource->getESCType());
 
         // TOOD: vehicle specific sets of update frequencies
         switch (m_configSource->getVehicleSubType()) {

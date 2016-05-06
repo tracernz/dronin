@@ -33,6 +33,7 @@
 #include <QString>
 #include <coreplugin/iboardtype.h>
 #include "actuatorsettings.h"
+#include "utils/actuatorutils.h"
 
 struct accelGyroBias {
     float m_accelerometerXBias;
@@ -63,7 +64,6 @@ public:
                             MULTI_ROTOR_HEXA, MULTI_ROTOR_HEXA_H, MULTI_ROTOR_HEXA_COAX_Y, MULTI_ROTOR_OCTO,
                             MULTI_ROTOR_OCTO_V, MULTI_ROTOR_OCTO_COAX_X, MULTI_ROTOR_OCTO_COAX_PLUS, FIXED_WING_AILERON,
                             FIXED_WING_VTAIL, HELI_CCPM };
-    enum ESC_TYPE { ESC_RAPID, ESC_LEGACY, ESC_ONESHOT125, ESC_ONESHOT42, ESC_UNKNOWN };
 
     enum GPS_SETTING { GPS_UBX, GPS_NMEA, GPS_DISABLED };
     enum RADIO_SETTING { RADIO_TELEMETRY, RADIO_DISABLED };
@@ -72,7 +72,7 @@ public:
     virtual VehicleConfigurationSource::VEHICLE_TYPE getVehicleType() const = 0;
     virtual VehicleConfigurationSource::VEHICLE_SUB_TYPE getVehicleSubType() const = 0;
     virtual Core::IBoardType::InputType getInputType() const       = 0;
-    virtual VehicleConfigurationSource::ESC_TYPE getESCType() const           = 0;
+    virtual ActuatorUtils::ActuatorType getESCType() const           = 0;
 
     virtual VehicleConfigurationSource::GPS_SETTING getGPSSetting() const     = 0;
     virtual VehicleConfigurationSource::RADIO_SETTING getRadioSetting() const = 0;

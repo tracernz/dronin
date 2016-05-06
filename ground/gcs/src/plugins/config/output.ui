@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>868</width>
+    <width>959</width>
     <height>751</height>
    </rect>
   </property>
@@ -134,7 +134,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>840</width>
+            <width>931</width>
             <height>659</height>
            </rect>
           </property>
@@ -914,12 +914,20 @@ Leave at 50Hz for fixed wing.</string>
                 <property name="text">
                  <string>Reconfigure</string>
                 </property>
+                <property name="icon">
+                 <iconset resource="configgadget.qrc">
+                  <normaloff>:/configgadget/images/ic_menu_48px.svg</normaloff>:/configgadget/images/ic_menu_48px.svg</iconset>
+                </property>
                </widget>
               </item>
               <item row="1" column="2">
                <widget class="QPushButton" name="btnAutoset2">
                 <property name="text">
                  <string>Reconfigure</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="configgadget.qrc">
+                  <normaloff>:/configgadget/images/ic_menu_48px.svg</normaloff>:/configgadget/images/ic_menu_48px.svg</iconset>
                 </property>
                </widget>
               </item>
@@ -928,12 +936,20 @@ Leave at 50Hz for fixed wing.</string>
                 <property name="text">
                  <string>Reconfigure</string>
                 </property>
+                <property name="icon">
+                 <iconset resource="configgadget.qrc">
+                  <normaloff>:/configgadget/images/ic_menu_48px.svg</normaloff>:/configgadget/images/ic_menu_48px.svg</iconset>
+                </property>
                </widget>
               </item>
               <item row="1" column="4">
                <widget class="QPushButton" name="btnAutoset4">
                 <property name="text">
                  <string>Reconfigure</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="configgadget.qrc">
+                  <normaloff>:/configgadget/images/ic_menu_48px.svg</normaloff>:/configgadget/images/ic_menu_48px.svg</iconset>
                 </property>
                </widget>
               </item>
@@ -942,12 +958,20 @@ Leave at 50Hz for fixed wing.</string>
                 <property name="text">
                  <string>Reconfigure</string>
                 </property>
+                <property name="icon">
+                 <iconset resource="configgadget.qrc">
+                  <normaloff>:/configgadget/images/ic_menu_48px.svg</normaloff>:/configgadget/images/ic_menu_48px.svg</iconset>
+                </property>
                </widget>
               </item>
               <item row="1" column="6">
                <widget class="QPushButton" name="btnAutoset6">
                 <property name="text">
                  <string>Reconfigure</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="configgadget.qrc">
+                  <normaloff>:/configgadget/images/ic_menu_48px.svg</normaloff>:/configgadget/images/ic_menu_48px.svg</iconset>
                 </property>
                </widget>
               </item>
@@ -970,7 +994,7 @@ Leave at 50Hz for fixed wing.</string>
            <item>
             <widget class="QGroupBox" name="groupBox_3">
              <property name="title">
-              <string/>
+              <string>Channel Banks</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout">
               <property name="leftMargin">
@@ -1277,6 +1301,7 @@ Applies and Saves all settings to SD</string>
  </tabstops>
  <resources>
   <include location="../coreplugin/core.qrc"/>
+  <include location="configgadget.qrc"/>
   <include location="../coreplugin/core.qrc"/>
  </resources>
  <connections/>

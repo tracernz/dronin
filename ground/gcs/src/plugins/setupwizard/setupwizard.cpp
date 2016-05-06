@@ -54,7 +54,7 @@
 
 SetupWizard::SetupWizard(QWidget *parent) : QWizard(parent), VehicleConfigurationSource(),
     m_controllerType(NULL),
-    m_vehicleType(VEHICLE_UNKNOWN), m_inputType(Core::IBoardType::INPUT_TYPE_UNKNOWN), m_escType(ESC_UNKNOWN),
+    m_vehicleType(VEHICLE_UNKNOWN), m_inputType(Core::IBoardType::INPUT_TYPE_UNKNOWN), m_escType(ActuatorUtils::TYPE_UNKNOWN),
     m_calibrationPerformed(false), m_restartNeeded(false), m_connectionManager(0)
 {
     setWindowTitle(tr("dRonin Setup Wizard"));
@@ -262,27 +262,32 @@ QString SetupWizard::getSummaryText()
     summary.append("<br>");
     summary.append("<b>").append(tr("ESC type: ")).append("</b>");
     switch (getESCType()) {
-    case ESC_LEGACY:
-        summary.append(tr("Legacy ESC (50 Hz)"));
+    case ActuatorUtils::TYPE_ANALOGSERVO:
+        summary.append(tr("Analog Servo (50 Hz)"));
         break;
-    case ESC_RAPID:
+    case ActuatorUtils::TYPE_BRUSHED:
+        summary.append(tr("Brushed Motor (16.67 kHz)"));
+        break;
+    case ActuatorUtils::TYPE_DIGITALSERVO:
+        summary.append(tr("Digital Servo (400 Hz)"));
+        break;
+    case ActuatorUtils::TYPE_MULTISHOT:
+        summary.append((tr("Multishot (SyncPWM)")));
+        break;
+    case ActuatorUtils::TYPE_PWMESC:
         summary.append(tr("Rapid ESC (400 Hz)"));
         break;
-    case ESC_ONESHOT125:
-        summary.append(tr("Oneshot125 (SyncPwm + 125-250us)"));
+    case ActuatorUtils::TYPE_ONESHOT125:
+        summary.append(tr("Oneshot125 (SyncPWM)"));
         break;
-    case ESC_ONESHOT42:
-        summary.append(tr("Oneshot42 (SyncPWM + 42-83us"));
+    case ActuatorUtils::TYPE_ONESHOT42:
+        summary.append(tr("Oneshot42 (SyncPWM)"));
         break;
-    default:
+    case ActuatorUtils::TYPE_UNKNOWN:
         summary.append(tr("Unknown"));
+        break;
     }
 
-    /*
-       summary.append("<br>");
-       summary.append("<b>").append(tr("Reboot required: ")).append("</b>");
-       summary.append(isRestartNeeded() ? tr("<font color='red'>Yes</font>") : tr("<font color='green'>No</font>"));
-     */
     return summary;
 }
 

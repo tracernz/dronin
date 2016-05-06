@@ -36,6 +36,7 @@ class ActuatorUtils
 {
 public:
     enum ActuatorType {
+        TYPE_UNKNOWN,
         TYPE_PWMESC,
         TYPE_ANALOGSERVO,
         TYPE_DIGITALSERVO,

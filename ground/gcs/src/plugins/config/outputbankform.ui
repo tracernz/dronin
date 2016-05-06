@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>OutputBankForm</class>
+ <widget class="QWidget" name="OutputBankForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>921</width>
+    <height>340</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="gbBank">
+     <property name="title">
+      <string>Channels 1-3</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="1" column="4">
+       <widget class="QPushButton" name="btnReconfigure">
+        <property name="text">
+         <string>Reconfigure Bank</string>
+        </property>
+        <property name="icon">
+         <iconset resource="configgadget.qrc">
+          <normaloff>:/configgadget/images/ic_menu_48px.svg</normaloff>:/configgadget/images/ic_menu_48px.svg</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="lblUpdateRate">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Update Rate</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="2">
+       <widget class="QComboBox" name="cbUpdateRate">
+        <item>
+         <property name="text">
+          <string>SyncPWM</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>50</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>60</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>125</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>165</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>270</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>333</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>400</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>1000</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>2000</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>4000</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>8000</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>12000</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>16666</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="4">
+       <layout class="QVBoxLayout" name="layoutChannels"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="configgadget.qrc"/>
+ </resources>
+ <connections/>
+</ui>

@@ -17,14 +17,16 @@ HEADERS += uploadergadget.h \
     uploader_global.h \
     bl_messages.h \
     tl_dfu.h \
-    upgradeassistantdialog.h
+    upgradeassistantdialog.h \
+    protocols/stm_usart.h
 
 SOURCES += uploadergadget.cpp \
     uploadergadgetfactory.cpp \
     uploadergadgetwidget.cpp \
     uploaderplugin.cpp \
     upgradeassistantdialog.cpp \
-    tl_dfu.cpp
+    tl_dfu.cpp \
+    protocols/stm_usart.cpp
 
 OTHER_FILES += Uploader.pluginspec \
     Uploader.json

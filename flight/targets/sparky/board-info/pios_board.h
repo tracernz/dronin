@@ -34,8 +34,9 @@
 #include <stdbool.h>
 
 #if defined(PIOS_INCLUDE_DEBUG_CONSOLE)
-#define DEBUG_LEVEL 0
-#define DEBUG_PRINTF(level, ...) {if(level <= DEBUG_LEVEL && pios_com_aux_id > 0) { PIOS_COM_SendFormattedStringNonBlocking(pios_com_aux_id, __VA_ARGS__); }}
+//extern uintptr_t pios_com_aux_id;
+#define DEBUG_LEVEL 5
+#define DEBUG_PRINTF(level, ...) {if(level <= DEBUG_LEVEL && pios_com_debug_id > 0) { PIOS_COM_SendFormattedStringNonBlocking(pios_com_debug_id, __VA_ARGS__); }}
 #else
 #define DEBUG_PRINTF(level, ...)
 #endif	/* PIOS_INCLUDE_DEBUG_CONSOLE */
@@ -118,6 +119,7 @@ extern uintptr_t pios_com_lighttelemetry_id;
 extern uintptr_t pios_com_frsky_sport_id;
 extern uintptr_t pios_com_openlog_logging_id;
 extern uintptr_t pios_com_storm32bgc_id;
+extern uintptr_t pios_com_escbridge_id;
 
 #define PIOS_COM_GPS                    (pios_com_gps_id)
 #define PIOS_COM_TELEM_USB              (pios_com_telem_usb_id)

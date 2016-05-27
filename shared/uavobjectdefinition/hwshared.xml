@@ -24,6 +24,7 @@
 				<option>PicoC</option>
 				<option>OpenLog</option>
 				<option>Storm32Bgc</option>
+				<option>EscBridge</option>
 <!-- These last couple are special cases, really.  le sigh -->
 				<option>I2C</option>
 				<option>PPM</option>
@@ -50,7 +51,16 @@
 
 		<field name="MagOrientation" units="function" type="enum" elements="1" options="Top0degCW,Top90degCW,Top180degCW,Top270degCW,Bottom0degCW,Bottom90degCW,Bottom180degCW,Bottom270degCW" defaultvalue="Top0degCW" />
 		<field name="USB_HIDPort" units="function" type="enum" elements="1" options="USBTelemetry,Disabled" defaultvalue="USBTelemetry"/>
-		<field name="USB_VCPPort" units="function" type="enum" elements="1" options="USBTelemetry,ComBridge,DebugConsole,PicoC,Disabled" defaultvalue="Disabled"/>
+		<field name="USB_VCPPort" units="function" type="enum" elements="1" defaultvalue="Disabled">
+			<options>
+				<option>USBTelemetry</option>
+				<option>ComBridge</option>
+				<option>DebugConsole</option>
+				<option>PicoC</option>
+				<option>EscBridge</option>
+				<option>Disabled</option>
+			</options>
+		</field>
 		<field name="RadioPort" units="" type="enum" elements="1" options="Disabled,Telem,Telem+PPM,PPM,OpenLRS" defaultvalue="Disabled"/>
 		<!-- these must match the ordering of options in the rfm22b module -->
 		<field name="MaxRfSpeed" units="bps" type="enum" elements="1" options="9600,19200,32000,64000,100000,192000" defaultvalue="64000"/>

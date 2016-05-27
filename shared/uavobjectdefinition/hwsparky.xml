@@ -33,6 +33,7 @@
 				<option>S.Bus</option>
 				<option>S.Bus Non Inverted</option>
 				<option>Storm32Bgc</option>
+				<option>EscBridge</option>
 				<option>Telemetry</option>
 			</options>
 		</field>
@@ -55,6 +56,7 @@
 				<option>S.Bus</option>
 				<option>S.Bus Non Inverted</option>
 				<option>Storm32Bgc</option>
+				<option>EscBridge</option>
 				<option>Telemetry</option>
 			</options>
 		</field>

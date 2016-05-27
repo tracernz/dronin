@@ -92,6 +92,10 @@ uintptr_t pios_com_picoc_id;
 uintptr_t pios_com_storm32bgc_id;
 #endif
 
+#if defined(PIOS_INCLUDE_ESCBLHELIBRIDGE)
+uintptr_t pios_com_escbridge_id;
+#endif
+
 #if defined(PIOS_INCLUDE_USB_HID) || defined(PIOS_INCLUDE_USB_CDC)
 uintptr_t pios_com_telem_usb_id;
 #endif
@@ -689,6 +693,15 @@ void PIOS_HAL_ConfigurePort(HwSharedPortTypesOptions port_type,
 #endif  /* PIOS_INCLUDE_STORM32BGC */
 		break;
 
+	case HWSHARED_PORTTYPES_ESCBRIDGE:
+#if defined(PIOS_INCLUDE_ESCBLHELIBRIDGE)
+		usart_port_params.init.USART_BaudRate = 38400;
+		PIOS_HAL_ConfigureCom(usart_port_cfg, &usart_port_params, 64, 64, com_driver, &port_driver_id);
+		target = &pios_com_escbridge_id;
+		PIOS_Modules_Enable(PIOS_MODULE_ESCBLHELIBRIDGE);
+#endif /* PIOS_INCLUDE_ESCBLHELIBRIDGE */
+		break;
+
 	case HWSHARED_PORTTYPES_TELEMETRY:
 		PIOS_HAL_ConfigureCom(usart_port_cfg, &usart_port_params, PIOS_COM_TELEM_RF_RX_BUF_LEN, PIOS_COM_TELEM_RF_TX_BUF_LEN, com_driver, &port_driver_id);
 		target = &pios_com_telem_serial_id;
@@ -776,6 +789,23 @@ void PIOS_HAL_ConfigureCDC(HwSharedUSB_VCPPortOptions port_type,
 			}
 		}
 #endif  /* PIOS_INCLUDE_PICOC */
+		break;
+
+	case HWSHARED_USB_VCPPORT_ESCBRIDGE:
+#if defined(PIOS_INCLUDE_ESCBLHELIBRIDGE)
+		{
+			uint8_t * rx_buffer = (uint8_t *) PIOS_malloc(64);
+			uint8_t * tx_buffer = (uint8_t *) PIOS_malloc(64);
+			PIOS_Assert(rx_buffer);
+			PIOS_Assert(tx_buffer);
+			if (PIOS_COM_Init(&pios_com_escbridge_id, &pios_usb_cdc_com_driver, pios_usb_cdc_id,
+						rx_buffer, 64,
+						tx_buffer, 64)) {
+				PIOS_Assert(0);
+			}
+		}
+		PIOS_Modules_Enable(PIOS_MODULE_ESCBLHELIBRIDGE);
+#endif /* PIOS_INCLUDE_ESCBLHELIBRIDGE */
 		break;
 	}
 }

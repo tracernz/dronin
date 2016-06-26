@@ -32,10 +32,10 @@
 #include "configoutputwidget.h"
 #include "actuatorsettings.h"
 
-OutputChannelForm::OutputChannelForm(const int index, QWidget *parent, const bool showLegend) :
+OutputChannelForm::OutputChannelForm(const int channel, QWidget *parent, const bool showLegend) :
         ConfigTaskWidget(parent),
         ui(),
-        m_index(index),
+        m_channel(channel),
         m_inChannelTest(false)
 {
     ui.setupUi(this);
@@ -67,7 +67,7 @@ OutputChannelForm::OutputChannelForm(const int index, QWidget *parent, const boo
     }
 
     // The convention is Channel 1 to Channel 10.
-    ui.actuatorNumber->setText(QString("%1:").arg(m_index+1));
+    ui.actuatorNumber->setText(QString("%1:").arg(m_channel));
 
     // Register for ActuatorSettings changes:
     connect(ui.actuatorMin, SIGNAL(editingFinished()), this, SLOT(setChannelRange()));
@@ -354,7 +354,7 @@ void OutputChannelForm::sendChannelTest(int value)
     if (!m_inChannelTest)
         return;	// we are not in Test Output mode
 
-    emit channelChanged(index(), value);
+    emit channelChanged(channel(), value);
 }
 
 /**

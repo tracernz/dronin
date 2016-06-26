@@ -36,12 +36,12 @@ class OutputChannelForm : public ConfigTaskWidget
     Q_OBJECT
 
 public:
-    explicit OutputChannelForm(const int index, QWidget *parent = NULL, const bool showLegend = false);
+    explicit OutputChannelForm(const int channel, QWidget *parent = NULL, const bool showLegend = false);
     ~OutputChannelForm();
     friend class ConfigOnputWidget;
 
     void setAssignment(const QString &assignment);
-    int index() const;
+    int channel() const;
 
 public slots:
     void setMax(int maximum);
@@ -57,13 +57,13 @@ public slots:
     void updateMaxSpinboxValue(int maxPulseWidth);
 
 signals:
-    void channelChanged(int index, int value);
+    void channelChanged(int channel, int value);
     void formChanged();
 
 private:
     Ui::outputChannelForm ui;
-    /// Channel index
-    int m_index;
+    /// Channel number (1-based)
+    int m_channel;
     bool m_inChannelTest;
 
     void alignFields();
@@ -77,9 +77,9 @@ private slots:
     void notifyFormChanged();
 };
 
-inline int OutputChannelForm::index() const
+inline int OutputChannelForm::channel() const
 {
-    return m_index;
+    return m_channel;
 }
 
 inline int OutputChannelForm::max() const

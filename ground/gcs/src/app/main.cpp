@@ -71,6 +71,8 @@
 #undef USE_CRASHREPORTING
 #endif
 #endif
+#undef USE_CRASHREPORTING
+
 
 enum { OptionIndent = 4, DescriptionIndent = 24 };
 

@@ -32,6 +32,7 @@
 
 #include "configoutputwidget.h"
 #include "outputchannelform.h"
+#include "outputbankform.h"
 #include "configvehicletypewidget.h"
 
 #include "uavtalk/telemetrymanager.h"
@@ -221,7 +222,7 @@ OutputChannelForm* ConfigOutputWidget::getOutputChannelForm(const int index) con
     QList<OutputChannelForm*> outputChannelForms = findChildren<OutputChannelForm*>();
     foreach(OutputChannelForm *outputChannelForm, outputChannelForms)
     {
-        if( outputChannelForm->index() == index)
+        if( outputChannelForm->channel() == index)
             return outputChannelForm;
     }
 
@@ -248,18 +249,18 @@ void ConfigOutputWidget::assignOutputChannels(UAVObject *obj)
     QList<OutputChannelForm*> outputChannelForms = findChildren<OutputChannelForm*>();
     foreach(OutputChannelForm *outputChannelForm, outputChannelForms)
     {
-        outputChannelForm->setAssignment(ChannelDesc[outputChannelForm->index()]);
+        outputChannelForm->setAssignment(ChannelDesc[outputChannelForm->channel()]);
 
         // init min,max,neutral
-        quint32 minValue = actuatorSettingsData.ChannelMin[outputChannelForm->index()];
-        quint32 maxValue = actuatorSettingsData.ChannelMax[outputChannelForm->index()];
+        quint32 minValue = actuatorSettingsData.ChannelMin[outputChannelForm->channel()];
+        quint32 maxValue = actuatorSettingsData.ChannelMax[outputChannelForm->channel()];
         outputChannelForm->setMinmax(minValue, maxValue);
 
-        quint32 neutral = actuatorSettingsData.ChannelNeutral[outputChannelForm->index()];
+        quint32 neutral = actuatorSettingsData.ChannelNeutral[outputChannelForm->channel()];
         outputChannelForm->setNeutral(neutral);
 
         // init type
-        quint16 type = actuatorSettingsData.ChannelType[outputChannelForm->index()];
+        quint16 type = actuatorSettingsData.ChannelType[outputChannelForm->channel()];
         outputChannelForm->setType(type);
     }
 
@@ -455,6 +456,19 @@ void ConfigOutputWidget::refreshWidgetsValues(UAVObject * obj)
                 }
                 ccmb->setCurrentIndex(ccmb->findText(setting));
             }
+
+            QRegularExpression reBanks("OutputBank[0-9]");
+            QList<OutputBankForm *>oldForms = findChildren<OutputBankForm *>(reBanks);
+            foreach(OutputBankForm *form, oldForms) {
+                m_config->channelLayout->removeWidget(form);
+                form->deleteLater();
+            }
+
+            int i = 1;
+            foreach (QVector<int> bank, board->getChannelBanks()) {
+                OutputBankForm *bankForm = new OutputBankForm(i++, bank.toList(), this);
+                m_config->channelLayout->addWidget(bankForm);
+            }
         }
     }
 
@@ -464,12 +478,12 @@ void ConfigOutputWidget::refreshWidgetsValues(UAVObject * obj)
     QList<OutputChannelForm*> outputChannelForms = findChildren<OutputChannelForm*>();
     foreach(OutputChannelForm *outputChannelForm, outputChannelForms)
     {
-        quint32 minValue = actuatorSettingsData.ChannelMin[outputChannelForm->index()];
-        quint32 maxValue = actuatorSettingsData.ChannelMax[outputChannelForm->index()];
+        quint32 minValue = actuatorSettingsData.ChannelMin[outputChannelForm->channel()];
+        quint32 maxValue = actuatorSettingsData.ChannelMax[outputChannelForm->channel()];
 
         outputChannelForm->setMinmax(minValue, maxValue);
 
-        quint32 neutral = actuatorSettingsData.ChannelNeutral[outputChannelForm->index()];
+        quint32 neutral = actuatorSettingsData.ChannelNeutral[outputChannelForm->channel()];
         outputChannelForm->setNeutral(neutral);
     }
 
@@ -524,7 +538,7 @@ void ConfigOutputWidget::refreshWidgetRanges()
                     foreach(OutputChannelForm *outputChannelForm, outputChannelForms)
                     {
                         // Don't like the bogus index adjustments
-                        if (outputChannelForm->index() != channel-1) continue;
+                        if (outputChannelForm->channel() != channel-1) continue;
 
                         outputChannelForm->updateMaxSpinboxValue(floor(maxPulseWidth));
                     }
@@ -549,10 +563,10 @@ void ConfigOutputWidget::updateObjectsFromWidgets()
 
         foreach(OutputChannelForm *outputChannelForm, outputChannelForms)
         {
-            actuatorSettingsData.ChannelMax[outputChannelForm->index()] = outputChannelForm->max();
-            actuatorSettingsData.ChannelMin[outputChannelForm->index()] = outputChannelForm->min();
-            actuatorSettingsData.ChannelNeutral[outputChannelForm->index()] = outputChannelForm->neutral();
-            actuatorSettingsData.ChannelType[outputChannelForm->index()] = outputChannelForm->type();
+            actuatorSettingsData.ChannelMax[outputChannelForm->channel()] = outputChannelForm->max();
+            actuatorSettingsData.ChannelMin[outputChannelForm->channel()] = outputChannelForm->min();
+            actuatorSettingsData.ChannelNeutral[outputChannelForm->channel()] = outputChannelForm->neutral();
+            actuatorSettingsData.ChannelType[outputChannelForm->channel()] = outputChannelForm->type();
         }
 
         // Set update rates

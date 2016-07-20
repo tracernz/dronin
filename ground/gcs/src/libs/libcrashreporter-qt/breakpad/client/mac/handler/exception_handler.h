@@ -214,6 +214,8 @@ class ExceptionHandler {
   bool SuspendThreads();
   bool ResumeThreads();
 
+  bool AmIBeingDebugged();
+
   // The destination directory for the minidump
   string dump_path_;
 

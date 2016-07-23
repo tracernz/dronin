@@ -1,12 +1,12 @@
 /**
  ******************************************************************************
- * @file       droninplugin.cpp
+ * @file       targets/playuavosd/bl/pios_usb_board_data.h
  * @author     dRonin, http://dRonin.org/, Copyright (C) 2016
- * @addtogroup GCSPlugins GCS Plugins
+ * @addtogroup Bootloader Bootloaders
  * @{
- * @addtogroup Boards_dRonin dRonin board support plugin
+ * @addtogroup PlayUavOsd
  * @{
- * @brief Supports dRonin board configuration
+ * @brief Bootloader for PlayUavOsd board
  *****************************************************************************/
 /*
  * This program is free software; you can redistribute it and/or modify
@@ -28,42 +28,32 @@
  * of this source file; otherwise redistribution is prohibited.
  */
 
-#include "droninplugin.h"
-#include "simulation.h"
-#include "playuavosd.h"
-#include <QtPlugin>
+#ifndef PIOS_USB_BOARD_DATA_H
+#define PIOS_USB_BOARD_DATA_H
 
+#define PIOS_USB_BOARD_HID_DATA_LENGTH 64
 
-DroninPlugin::DroninPlugin()
-{
-}
+#define PIOS_USB_BOARD_EP_NUM 2
 
-DroninPlugin::~DroninPlugin()
-{
-}
+#include "pios_usb_defs.h" 	/* struct usb_* */
 
-bool DroninPlugin::initialize(const QStringList &arguments, QString *errorString)
-{
-   Q_UNUSED(arguments);
-   Q_UNUSED(errorString);
-   return true;
-}
+#define PIOS_USB_BOARD_VENDOR_ID USB_VENDOR_ID_CLAYLOGIC
+#define PIOS_USB_BOARD_PRODUCT_ID USB_PRODUCT_ID_PLAYUAVOSD
+#define PIOS_USB_BOARD_DEVICE_VER USB_OP_DEVICE_VER(0, USB_OP_BOARD_MODE_BL)
+#define PIOS_USB_BOARD_SN_SUFFIX "+BL"
 
-void DroninPlugin::extensionsInitialized()
-{
-    // Init boards
-    Simulation *sim = new Simulation();
-    addAutoReleasedObject(sim);
+/*
+ * The bootloader uses a simplified report structure
+ *   BL: <REPORT_ID><DATA>...<DATA>
+ *   FW: <REPORT_ID><LENGTH><DATA>...<DATA>
+ * This define changes the behaviour in pios_usb_hid.c
+ */
+#define PIOS_USB_BOARD_BL_HID_HAS_NO_LENGTH_BYTE
 
-    PlayUavOsd *playuav = new PlayUavOsd();
-    addAutoReleasedObject(playuav);
-}
-
-void DroninPlugin::shutdown()
-{
-}
+#endif	/* PIOS_USB_BOARD_DATA_H */
 
 /**
  * @}
  * @}
  */
+

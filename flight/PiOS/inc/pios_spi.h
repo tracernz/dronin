@@ -42,6 +42,8 @@ typedef enum {
 	PIOS_SPI_PRESCALER_256 = 7
 } SPIPrescalerTypeDef;
 
+struct pios_spi_dev;
+
 /* Public Functions */
 extern int32_t PIOS_SPI_SetClockSpeed(uint32_t spi_id, uint32_t speed);
 extern int32_t PIOS_SPI_RC_PinSet(uint32_t spi_id, uint32_t slave_id, uint8_t pin_value);

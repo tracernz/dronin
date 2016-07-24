@@ -1156,7 +1156,7 @@ void render_user_page(OnScreenDisplayPageSettingsData * page)
 	}
 
 	// Arming Status
-	if (page->ArmStatus) {
+	if (page->ArmStatus && FlightStatusHandle()) {
 		FlightStatusArmedGet(&tmp_uint8);
 		if (tmp_uint8 != FLIGHTSTATUS_ARMED_DISARMED)
 			write_string("ARMED", page->ArmStatusPosX, page->ArmStatusPosY, 0, 0, TEXT_VA_TOP, (int)page->ArmStatusAlign, 0,
@@ -1164,7 +1164,7 @@ void render_user_page(OnScreenDisplayPageSettingsData * page)
 	}
 
 	// Artificial Horizon (and centermark)
-	if (page->ArtificialHorizon || page->CenterMark) {
+	if ((page->ArtificialHorizon || page->CenterMark) && AttitudeActualHandle()) {
 		AttitudeActualRollGet(&tmp);
 		AttitudeActualPitchGet(&tmp1);
 		simple_artificial_horizon(tmp, tmp1, GRAPHICS_X_MIDDLE, GRAPHICS_Y_MIDDLE, GRAPHICS_BOTTOM * 0.8f, GRAPHICS_RIGHT * 0.8f,
@@ -1208,7 +1208,7 @@ void render_user_page(OnScreenDisplayPageSettingsData * page)
 	}
 
 	// Compass
-	if (page->Compass && has_mag) {
+	if (page->Compass && has_mag && AttitudeActualHandle()) {
 		AttitudeActualYawGet(&tmp);
 		if (tmp < 0)
 			tmp += 360;
@@ -1228,7 +1228,7 @@ void render_user_page(OnScreenDisplayPageSettingsData * page)
 	}
 
 	// Home arrow
-	if (has_nav && page->HomeArrow) {
+	if (has_nav && page->HomeArrow && AttitudeActualHandle()) {
 		if (!page->Compass) {
 			AttitudeActualYawGet(&tmp);
 		}
@@ -1250,7 +1250,7 @@ void render_user_page(OnScreenDisplayPageSettingsData * page)
 	}
 
 	// G Force
-	if (page->GForce) {
+	if (page->GForce && AccelsHandle()) {
 		AccelsData accelsData;
 		AccelsGet(&accelsData);
 		// apply low pass filter to reduce noise bias
@@ -1341,7 +1341,7 @@ void render_user_page(OnScreenDisplayPageSettingsData * page)
 	}
 
 	// RSSI
-	if (page->Rssi) {
+	if (page->Rssi && ManualControlCommandHandle()) {
 		ManualControlCommandRssiGet(&tmp_int16);
 		if (tmp_int16 > osd_settings.RssiWarnThreshold || blink) {
 			sprintf(tmp_str, "%3d", tmp_int16);
@@ -1580,8 +1580,12 @@ int32_t OnScreenDisplayStart(void)
 {
 	if (module_enabled) {
 		onScreenDisplaySemaphore = PIOS_Semaphore_Create();
+		if (!onScreenDisplaySemaphore)
+			return -2;
 
 		taskHandle = PIOS_Thread_Create(onScreenDisplayTask, "OnScreenDisplay", STACK_SIZE_BYTES, NULL, TASK_PRIORITY);
+		if (!taskHandle)
+			return -3;
 		TaskMonitorAdd(TASKINFO_RUNNING_ONSCREENDISPLAY, taskHandle);
 
 #if defined(PIOS_INCLUDE_WDG) && defined(OSD_USE_WDG)
@@ -1658,6 +1662,7 @@ MODULE_INITCALL(OnScreenDisplayInitialize, OnScreenDisplayStart);
 static void onScreenDisplayTask(__attribute__((unused)) void *parameters)
 {
 	AccessoryDesiredData accessory;
+	(void)accessory;
 	OnScreenDisplayPageSettingsData osd_page_settings;
 
 	uint32_t now;
@@ -1667,6 +1672,7 @@ static void onScreenDisplayTask(__attribute__((unused)) void *parameters)
 	uint8_t last_arm_status = FLIGHTSTATUS_ARMED_DISARMED;
 	uint8_t current_page = 0;
 	uint8_t last_page = -1;
+	(void)last_page;
 	uint8_t page_when_stats_enabled = 0;
 	float tmp;
 
@@ -1709,7 +1715,7 @@ static void onScreenDisplayTask(__attribute__((unused)) void *parameters)
 
 	// intro
 	while (PIOS_Thread_Systime() <= BLANK_TIME + INTRO_TIME) {
-		if (PIOS_Semaphore_Take(onScreenDisplaySemaphore, LONG_TIME) == true) {
+		if (PIOS_Semaphore_Take(onScreenDisplaySemaphore, PIOS_SEMAPHORE_TIMEOUT_MAX) == true) {
 			clearGraphics();
 			if (PIOS_Video_GetType() == VIDEO_TYPE_NTSC) {
 				introGraphics(GRAPHICS_RIGHT / 2, GRAPHICS_BOTTOM / 2 - 20);
@@ -1735,7 +1741,8 @@ static void onScreenDisplayTask(__attribute__((unused)) void *parameters)
 	home_baro_altitude /= frame_counter;
 
 	while (1) {
-		if (PIOS_Semaphore_Take(onScreenDisplaySemaphore, LONG_TIME) == true) {
+		if (PIOS_Semaphore_Take(onScreenDisplaySemaphore, 20) == true) {
+			GPIO_ToggleBits(GPIOA, GPIO_Pin_0);
 			now = PIOS_Thread_Systime();
 #ifdef DEBUG_TIMING
 			in_ticks = PIOS_Thread_Systime();
@@ -1781,7 +1788,7 @@ static void onScreenDisplayTask(__attribute__((unused)) void *parameters)
 			// decide whether to show blinking elements
 			blink = frame_counter % BLINK_INTERVAL_FRAMES < BLINK_INTERVAL_FRAMES / 2;
 
-			if (frame_counter % 5 == 0) {
+			/*if (frame_counter % 5 == 0) {
 				// determine current page to use
 				AccessoryDesiredInstGet(osd_settings.PageSwitch, &accessory);
 				current_page = (uint8_t)roundf(((accessory.AccessoryVal + 1.0f) / 2.0f) * (osd_settings.NumPages - 1));
@@ -1789,7 +1796,7 @@ static void onScreenDisplayTask(__attribute__((unused)) void *parameters)
 
 				if (current_page != last_page)
 					osd_page_updated = true;
-			}
+			}*/
 
 			if (osd_page_updated) {
 				switch (current_page) {

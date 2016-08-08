@@ -37,6 +37,7 @@ uintptr_t pios_com_telem_usb_id;
 
 void PIOS_Board_Init()
 {
+	/* Don't pull USB LOW! */
 	GPIO_InitTypeDef GPIO_InitStructure;
 	GPIO_StructInit(&GPIO_InitStructure);
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;

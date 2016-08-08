@@ -125,6 +125,7 @@ void OSD_configure_bw_levels(void)
 #include <pios_board_info.h>
 
 void PIOS_Board_Init(void) {
+	/* Don't pull USB LOW! */
 	GPIO_InitTypeDef GPIO_InitStructure;
 	GPIO_StructInit(&GPIO_InitStructure);
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
@@ -134,6 +135,7 @@ void PIOS_Board_Init(void) {
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 	GPIO_ResetBits(GPIOB, GPIO_Pin_12);
+	
 	/* Delay system */
 	PIOS_DELAY_Init();
 

@@ -676,7 +676,11 @@ static void process_transmitter_events(ManualControlCommandData * cmd, ManualCon
 		}
 
 		if (valid && ok_to_arm()) {
-			// Only update arming edge detector on valid rx
+			/* Only update arming edge detector on valid rx and ok_to_arm, to avoid surprise arming
+			 * During boot: ok_to_arm causes arming_position to be false while attitude module is 
+			 *   still starting (it has an error).
+			 * After failsafe: ok_to_arm causes arming_position to be false for one cycle while rx
+			 *   is valid because we are still in failsafe flight mode. */
 			last_arm = arm;
 		}
 	}

@@ -675,7 +675,7 @@ static void process_transmitter_events(ManualControlCommandData * cmd, ManualCon
 			arm_state = ARM_STATE_ARMING;
 		}
 
-		if (valid) {
+		if (valid && ok_to_arm()) {
 			// Only update arming edge detector on valid rx
 			last_arm = arm;
 		}

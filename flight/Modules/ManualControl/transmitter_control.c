@@ -682,6 +682,8 @@ static void process_transmitter_events(ManualControlCommandData * cmd, ManualCon
 			 * After failsafe: ok_to_arm causes arming_position to be false for one cycle while rx
 			 *   is valid because we are still in failsafe flight mode. */
 			last_arm = arm;
+		} else {
+			last_arm = true; /* force a toggle of the arm switch */
 		}
 	}
 		break;

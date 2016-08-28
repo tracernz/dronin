@@ -237,6 +237,28 @@ static int32_t check_stabilization_settings(int index, bool multirotor)
 	return SYSTEMALARMS_CONFIGERROR_NONE;
 }
 
+bool can_arm_in_mode(uint8_t flight_mode)
+{
+	switch (flight_mode) {
+	case FLIGHTSTATUS_FLIGHTMODE_MANUAL:
+	case FLIGHTSTATUS_FLIGHTMODE_ACRO:
+	case FLIGHTSTATUS_FLIGHTMODE_ACROPLUS:
+	case FLIGHTSTATUS_FLIGHTMODE_LEVELING:
+	case FLIGHTSTATUS_FLIGHTMODE_HORIZON:
+	case FLIGHTSTATUS_FLIGHTMODE_AXISLOCK:
+	case FLIGHTSTATUS_FLIGHTMODE_VIRTUALBAR:
+	case FLIGHTSTATUS_FLIGHTMODE_STABILIZED1:
+	case FLIGHTSTATUS_FLIGHTMODE_STABILIZED2:
+	case FLIGHTSTATUS_FLIGHTMODE_STABILIZED3:
+	case FLIGHTSTATUS_FLIGHTMODE_ALTITUDEHOLD:
+		return true;
+	default:
+		/* don't allow arming in failsafe, autotune, autonomous modes etc. */
+		break;
+	}
+	return false;
+}
+
 /**
  * If the system is disarmed, look for a variety of conditions that
  * make it unsafe to arm (that might not be dangerous to engage once
@@ -248,38 +270,16 @@ static int32_t check_stabilization_settings(int index, bool multirotor)
  */
 static int32_t check_safe_to_arm()
 {
-	FlightStatusData flightStatus;
-	FlightStatusGet(&flightStatus);
+	uint8_t flight_mode;
+	FlightStatusFlightModeGet(&flight_mode);
 
-	// Only arm in traditional modes where pilot has control
-	if (flightStatus.Armed != FLIGHTSTATUS_ARMED_ARMED) {
-		switch (flightStatus.FlightMode) {
-			case FLIGHTSTATUS_FLIGHTMODE_MANUAL:
-			case FLIGHTSTATUS_FLIGHTMODE_ACRO:
-			case FLIGHTSTATUS_FLIGHTMODE_ACROPLUS:
-			case FLIGHTSTATUS_FLIGHTMODE_LEVELING:
-			case FLIGHTSTATUS_FLIGHTMODE_HORIZON:
-			case FLIGHTSTATUS_FLIGHTMODE_AXISLOCK:
-			case FLIGHTSTATUS_FLIGHTMODE_VIRTUALBAR:
-			case FLIGHTSTATUS_FLIGHTMODE_STABILIZED1:
-			case FLIGHTSTATUS_FLIGHTMODE_STABILIZED2:
-			case FLIGHTSTATUS_FLIGHTMODE_STABILIZED3:
-			case FLIGHTSTATUS_FLIGHTMODE_ALTITUDEHOLD:
-				break;
+	bool can_arm = can_arm_in_mode(flight_mode);
+	/* for failsafe, we don't want to prevent arming here 
+	 * because it makes an ugly looking GCS config error.
+	 * it's done in manualcontrol instead */
+	can_arm |= flight_mode == FLIGHTSTATUS_FLIGHTMODE_FAILSAFE;
 
-			case FLIGHTSTATUS_FLIGHTMODE_FAILSAFE:
-				/* for failsafe, we don't want to prevent
-				 * arming here because it makes an ugly looking
-				 * GCS config error.
-				 */
-				break;
-			default:
-				// Any mode not specifically allowed prevents arming
-				return SYSTEMALARMS_CONFIGERROR_UNSAFETOARM;
-		}
-	}
-
-	return SYSTEMALARMS_CONFIGERROR_NONE;
+	return can_arm ? SYSTEMALARMS_CONFIGERROR_NONE : SYSTEMALARMS_CONFIGERROR_UNSAFETOARM;
 }
 
 /**

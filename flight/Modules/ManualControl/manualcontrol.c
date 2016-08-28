@@ -40,6 +40,7 @@
 
 #include "pios_thread.h"
 #include "pios_rcvr.h"
+#include "sanitycheck.h"
 
 #include "control.h"
 #include "failsafe_control.h"
@@ -294,12 +295,7 @@ bool ok_to_arm(void)
 	uint8_t flight_mode;
 	FlightStatusFlightModeGet(&flight_mode);
 
-	if (flight_mode == FLIGHTSTATUS_FLIGHTMODE_FAILSAFE) {
-		/* Separately mask FAILSAFE arming here. */
-		return false;
-	}
-
-	return true;
+	return can_arm_in_mode(flight_mode);
 }
 
 /**

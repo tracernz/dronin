@@ -32,6 +32,13 @@
 extern int32_t configuration_check();
 void set_config_error(SystemAlarmsConfigErrorOptions error_code);
 
+/**
+ * @brief Checks if we can safely arm in the given flight mode
+ * @param[in] flight_mode The flight mode to check
+ * @retval true if arming is safe, false otherwise
+ */
+bool can_arm_in_mode(uint8_t flight_mode);
+
 #endif /* SANITYCHECK_H */
 
 /**

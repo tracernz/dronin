@@ -99,7 +99,7 @@ static uint8_t                    connected_count = 0;
 static struct rcvr_activity_fsm   activity_fsm;
 static uint32_t               lastActivityTime;
 static uint32_t               lastSysTime;
-static float                      flight_mode_value;
+static FlightStatusFlightModeOptions provisional_flight_mode;
 static enum control_events        pending_control_event;
 static bool                       settings_updated;
 
@@ -119,7 +119,7 @@ static bool updateRcvrActivity(struct rcvr_activity_fsm * fsm);
 static void set_loiter_command(ManualControlCommandData *cmd, SystemSettingsAirframeTypeOptions *airframe_type);
 
 // Exposed from manualcontrol to prevent attempts to arm when unsafe
-extern bool ok_to_arm();
+extern bool ok_to_arm(uint8_t flight_mode);
 
 #define assumptions (assumptions1 && assumptions3 && assumptions5 && assumptions_flightmode && assumptions_channelcount)
 DONT_BUILD_IF(!assumptions, TransmitterControlAssumptions);
@@ -184,7 +184,7 @@ static float get_thrust_source(ManualControlCommandData *manual_control_command,
   * fall back to the failsafe module.  If the flight mode is in tablet
   * control position then control will be ceeded to that module.
   */
-int32_t transmitter_control_update()
+int32_t transmitter_control_update(uint8_t *flight_mode)
 {
 	lastSysTime = PIOS_Thread_Systime();
 
@@ -387,7 +387,7 @@ int32_t transmitter_control_update()
 		cmd.Throttle       = scaledChannel[MANUALCONTROLSETTINGS_CHANNELGROUPS_THROTTLE];
 		cmd.ArmSwitch      = scaledChannel[MANUALCONTROLSETTINGS_CHANNELGROUPS_ARMING] > 0 ?
 		                     MANUALCONTROLCOMMAND_ARMSWITCH_ARMED : MANUALCONTROLCOMMAND_ARMSWITCH_DISARMED;
-		flight_mode_value  = scaledChannel[MANUALCONTROLSETTINGS_CHANNELGROUPS_FLIGHTMODE];
+		provisional_flight_mode = transmitter_control_get_flight_mode(scaledChannel[MANUALCONTROLSETTINGS_CHANNELGROUPS_FLIGHTMODE]);
 
 		// Apply deadband for Roll/Pitch/Yaw stick inputs
 		if (settings.Deadband) {
@@ -434,6 +434,8 @@ int32_t transmitter_control_update()
 
 	// Update cmd object
 	ManualControlCommandSet(&cmd);
+
+	*flight_mode = provisional_flight_mode;
 
 	return 0;
 }
@@ -503,7 +505,7 @@ enum control_events transmitter_control_get_events()
 }
 
 //! Determine which of N positions the flight mode switch is in but do not set it
-uint8_t transmitter_control_get_flight_mode()
+uint8_t transmitter_control_get_flight_mode(float flight_mode_value)
 {
 	// Convert flightMode value into the switch position in the range [0..N-1]
 	uint8_t pos = ((int16_t)(flight_mode_value * 256.0f) + 256) * settings.FlightModeNumber >> 9;
@@ -538,7 +540,7 @@ static void set_armed_if_changed(uint8_t new_arm) {
 static bool arming_position(ManualControlCommandData * cmd, ManualControlSettingsData * settings) {
 
 	// If system is not appropriate to arm, do not even attempt
-	if (!ok_to_arm())
+	if (!ok_to_arm(provisional_flight_mode))
 		return false;
 
 	bool lowThrottle = cmd->Throttle <= 0;
@@ -675,7 +677,7 @@ static void process_transmitter_events(ManualControlCommandData * cmd, ManualCon
 			arm_state = ARM_STATE_ARMING;
 		}
 
-		if (valid && ok_to_arm()) {
+		if (valid && ok_to_arm(provisional_flight_mode)) {
 			/* Only update arming edge detector on valid rx and ok_to_arm, to avoid surprise arming
 			 * During boot: ok_to_arm causes arming_position to be false while attitude module is 
 			 *   still starting (it has an error).
@@ -814,13 +816,11 @@ static void process_transmitter_events(ManualControlCommandData * cmd, ManualCon
 //! Determine which of N positions the flight mode switch is in and set flight mode accordingly
 static void set_flight_mode()
 {
-	uint8_t new_mode = transmitter_control_get_flight_mode();
-
 	FlightStatusData flightStatus;
 	FlightStatusGet(&flightStatus);
 
-	if (flightStatus.FlightMode != new_mode) {
-		flightStatus.FlightMode = new_mode;
+	if (flightStatus.FlightMode != provisional_flight_mode) {
+		flightStatus.FlightMode = provisional_flight_mode;
 		FlightStatusSet(&flightStatus);
 	}
 }

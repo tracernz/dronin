@@ -68,7 +68,7 @@ static struct pios_thread *taskHandle;
 
 // Private functions
 static void manualControlTask(void *parameters);
-static FlightStatusControlSourceOptions control_source_select();
+static FlightStatusControlSourceOptions control_source_select(uint8_t flight_mode);
 
 // Private functions for control events
 static int32_t control_event_arm();
@@ -76,7 +76,7 @@ static int32_t control_event_arming();
 static int32_t control_event_disarm();
 
 // This is exposed to transmitter_control
-bool ok_to_arm(void);
+bool ok_to_arm(uint8_t flight_mode);
 
 /**
  * Module starting
@@ -126,11 +126,13 @@ static void manualControlTask(void *parameters)
 	failsafe_control_select(true);
 
 	while (1) {
+		uint8_t flight_mode;
+		FlightStatusFlightModeGet(&flight_mode);
 
 		// Process periodic data for each of the controllers, including reading
 		// all available inputs
 		failsafe_control_update();
-		transmitter_control_update();
+		transmitter_control_update(&flight_mode);
 		tablet_control_update();
 		geofence_control_update();
 
@@ -139,7 +141,7 @@ static void manualControlTask(void *parameters)
 		enum control_events control_events = CONTROL_EVENTS_NONE;
 
 		// Control logic to select the valid controller
-		FlightStatusControlSourceOptions control_selection = control_source_select();
+		FlightStatusControlSourceOptions control_selection = control_source_select(flight_mode);
 		bool reset_controller = control_selection != last_control_selection;
 
 		// This logic would be better collapsed into control_source_select but
@@ -204,12 +206,12 @@ static void manualControlTask(void *parameters)
 //! When the control system requests to arm the FC
 static int32_t control_event_arm()
 {
-	if(ok_to_arm()) {
-		FlightStatusData flightStatus;
-		FlightStatusGet(&flightStatus);
-		if (flightStatus.Armed != FLIGHTSTATUS_ARMED_ARMED) {
-			flightStatus.Armed = FLIGHTSTATUS_ARMED_ARMED;
-			FlightStatusSet(&flightStatus);
+	FlightStatusData flight_status;
+	FlightStatusGet(&flight_status);
+	if(ok_to_arm(flight_status.FlightMode)) {
+		if (flight_status.Armed != FLIGHTSTATUS_ARMED_ARMED) {
+			flight_status.Armed = FLIGHTSTATUS_ARMED_ARMED;
+			FlightStatusSet(&flight_status);
 		}
 	}
 	return 0;
@@ -249,7 +251,7 @@ static int32_t control_event_disarm()
  * selects modes such as failsafe, transmitter control, geofencing
  * and potentially other high level modes in the future
  */
-static FlightStatusControlSourceOptions control_source_select()
+static FlightStatusControlSourceOptions control_source_select(uint8_t flight_mode)
 {
 	// If the geofence controller is triggered, it takes precendence
 	// over even transmitter or failsafe. This means this must be
@@ -263,8 +265,7 @@ static FlightStatusControlSourceOptions control_source_select()
 	ManualControlCommandGet(&cmd);
 	if (cmd.Connected != MANUALCONTROLCOMMAND_CONNECTED_TRUE) {
 		return FLIGHTSTATUS_CONTROLSOURCE_FAILSAFE;
-	} else if (transmitter_control_get_flight_mode() ==
-	           MANUALCONTROLSETTINGS_FLIGHTMODEPOSITION_TABLETCONTROL) {
+	} else if (flight_mode == FLIGHTSTATUS_FLIGHTMODE_TABLETCONTROL) {
 		return FLIGHTSTATUS_CONTROLSOURCE_TABLET;
 	} else {
 		return FLIGHTSTATUS_CONTROLSOURCE_TRANSMITTER;
@@ -272,10 +273,11 @@ static FlightStatusControlSourceOptions control_source_select()
 
 }
 /**
- * @brief Determine if the aircraft is safe to arm based on alarms
+ * @brief Determine if the aircraft is safe to arm based on alarms and flight mode
+ * @param[in] flight_mode The flight mode to consider (might not be the actual flight mode yet)
  * @returns True if safe to arm, false otherwise
  */
-bool ok_to_arm(void)
+bool ok_to_arm(uint8_t flight_mode)
 {
 	// read alarms
 	SystemAlarmsData alarms;
@@ -291,9 +293,6 @@ bool ok_to_arm(void)
 			return false;
 		}
 	}
-
-	uint8_t flight_mode;
-	FlightStatusFlightModeGet(&flight_mode);
 
 	return can_arm_in_mode(flight_mode);
 }

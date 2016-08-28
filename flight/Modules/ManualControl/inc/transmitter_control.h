@@ -101,7 +101,7 @@ int32_t transmitter_control_update();
 int32_t transmitter_control_select(bool reset_controller);
 
 //! Query what the flight mode _would_ be if this is selected
-uint8_t transmitter_control_get_flight_mode();
+uint8_t transmitter_control_get_flight_mode(float flight_mode_value);
 
 //! Get any control events
 enum control_events transmitter_control_get_events();

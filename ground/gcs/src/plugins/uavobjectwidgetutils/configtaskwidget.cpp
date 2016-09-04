@@ -571,21 +571,28 @@ void ConfigTaskWidget::widgetsContentsChanged()
     }
     if(smartsave)
         smartsave->resetIcons();
-    setDirty(true);
+    setDirty(true, qobject_cast<QWidget *>(sender())->objectName());
 }
 /**
  * SLOT function used clear the forms dirty status flag
  */
 void ConfigTaskWidget::clearDirty()
 {
+    dirtySources.clear();
     setDirty(false);
 }
 /**
  * Sets the form's dirty status flag
  * @param value
  */
-void ConfigTaskWidget::setDirty(bool value)
+void ConfigTaskWidget::setDirty(bool value, QString source)
 {
+    if (!source.length())
+        source = "Unknown";
+    if (value)
+        dirtySources.append(source);
+    else
+        dirtySources.clear();
     dirty=value;
 }
 /**

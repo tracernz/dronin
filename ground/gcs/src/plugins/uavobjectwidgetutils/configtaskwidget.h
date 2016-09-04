@@ -141,7 +141,7 @@ public:
 
     bool isAutopilotConnected();
     bool isDirty();
-    void setDirty(bool value);
+    void setDirty(bool value, QString source = "");
 
     bool allObjectsUpdated();
     void setOutOfLimitsStyle(QString style){outOfLimitsStyle=style;}
@@ -152,6 +152,8 @@ public:
     void setNotMandatory(QString object);
 
     virtual void tabSwitchingAway() {}
+
+    QStringList getDirtySources() { return dirtySources; }
 
 public slots:
     void onAutopilotDisconnect();
@@ -203,6 +205,7 @@ private:
     void loadWidgetLimits(QWidget *widget, UAVObjectField *field, int index, bool hasLimits, double sclale);
     QString outOfLimitsStyle;
     QTimer * timeOut;
+    QStringList dirtySources;
 protected slots:
     virtual void disableObjUpdates();
     virtual void enableObjUpdates();

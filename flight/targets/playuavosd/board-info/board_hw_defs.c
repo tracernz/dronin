@@ -170,12 +170,11 @@ const struct pios_flash_partition *PIOS_BOARD_HW_DEFS_GetPartitionTable (uint32_
 
 #endif	/* PIOS_INCLUDE_FLASH */
 
+#ifdef PIOS_INCLUDE_USART
 #include <pios_usart_priv.h>
 
-#ifdef PIOS_INCLUDE_COM_TELEM
-
-/*
- * MAIN USART
+/**
+ * MAIN USART (P3, pin 6 = tx, pin 7 = rx)
  */
 static const struct pios_usart_cfg pios_usart_main_cfg = {
 	.regs = USART3,
@@ -209,7 +208,44 @@ static const struct pios_usart_cfg pios_usart_main_cfg = {
 		},
 	},
 };
-#endif /* PIOS_INCLUDE_COM_TELEM */
+
+/**
+ * FLEXI USART (P3, pin 4 = tx, pin 5 = rx)
+ */
+static const struct pios_usart_cfg pios_usart_flexi_cfg = {
+	.regs = UART4,
+	.remap = GPIO_AF_UART4,
+	.irq = {
+		.init = {
+			.NVIC_IRQChannel = UART4_IRQn,
+			.NVIC_IRQChannelPreemptionPriority = PIOS_IRQ_PRIO_MID,
+			.NVIC_IRQChannelSubPriority = 0,
+			.NVIC_IRQChannelCmd = ENABLE,
+		},
+	},
+	.rx = {
+		.gpio = GPIOA,
+		.init = {
+			.GPIO_Pin   = GPIO_Pin_1,
+			.GPIO_Speed = GPIO_Speed_2MHz,
+			.GPIO_Mode  = GPIO_Mode_AF,
+			.GPIO_OType = GPIO_OType_PP,
+			.GPIO_PuPd  = GPIO_PuPd_UP
+		},
+	},
+	.tx = {
+		.gpio = GPIOA,
+		.init = {
+			.GPIO_Pin   = GPIO_Pin_0,
+			.GPIO_Speed = GPIO_Speed_2MHz,
+			.GPIO_Mode  = GPIO_Mode_AF,
+			.GPIO_OType = GPIO_OType_PP,
+			.GPIO_PuPd  = GPIO_PuPd_UP
+		},
+	},
+};
+
+#endif /* PIOS_INCLUDE_USART */
 
 
 #if defined(PIOS_INCLUDE_COM)

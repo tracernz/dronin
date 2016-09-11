@@ -278,18 +278,33 @@ void PIOS_Board_Init(void) {
 	/* Main Port */
 	uint8_t hw_mainport;
 	HwPlayUavOsdMainPortGet(&hw_mainport);
-
 	PIOS_HAL_ConfigurePort(hw_mainport,          // port type protocol
-			&pios_usart_main_cfg,                  // usart_port_cfg
+			&pios_usart_main_cfg,                // usart_port_cfg
 			&pios_usart_com_driver,              // com_driver
 			NULL,                                // i2c_id
 			NULL,                                // i2c_cfg
 			NULL,                                // ppm_cfg
 			NULL,                                // pwm_cfg
 			PIOS_LED_ALARM,                      // led_id
-			NULL,          // dsm_cfg
+			NULL,                                // dsm_cfg
 			0,                                   // dsm_mode
-			NULL);        // sbus_cfg
+			NULL);                               // sbus_cfg
+
+	/* Flexi Port */
+	/* TODO support 2 Outputs, PPM + 1 Output, ADCs?, Serial RX */
+	uint8_t hw_flexiport;
+	HwPlayUavOsdFlexiPortGet(&hw_flexiport);
+	PIOS_HAL_ConfigurePort(hw_flexiport,         // port type protocol
+			&pios_usart_flexi_cfg,               // usart_port_cfg
+			&pios_usart_com_driver,              // com_driver
+			NULL,                                // i2c_id
+			NULL,                                // i2c_cfg
+			NULL,                                // ppm_cfg TODO: add PPM
+			NULL,                                // pwm_cfg
+			PIOS_LED_ALARM,                      // led_id
+			NULL,                                // dsm_cfg TODO: add DSM
+			0,                                   // dsm_mode
+			NULL);                               // sbus_cfg TODO: add S.BUS
 
 
 	//I2C is slow, sensor init as well, reset watchdog to prevent reset here

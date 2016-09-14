@@ -25,6 +25,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
+#include <cstring>
 #include "debuggadgetfactory.h"
 #include "debuggadgetwidget.h"
 #include "debuggadget.h"
@@ -44,16 +45,23 @@ void customMessageHandler(QtMsgType type, const QMessageLogContext &context, con
         break;
     case QtWarningMsg:
         level = DebugEngine::WARNING;
-        QTextStream(stderr) << "[Warning] " << msg << endl;
+        QTextStream(stderr) << "[Warning] ";
         break;
     case QtCriticalMsg:
         level = DebugEngine::CRITICAL;
-        QTextStream(stderr) << "[Critical] " << msg << endl;
+        QTextStream(stderr) << "[Critical] ";
         break;
     case QtFatalMsg:
         level = DebugEngine::FATAL;
-        QTextStream(stderr) << "[FATAL] " << msg << endl;
+        QTextStream(stderr) << "[FATAL] ";
         break;
+    }
+    if (level >= DebugEngine::WARNING) {
+        QTextStream(stderr) << msg << endl;
+        if (context.function)
+            QTextStream(stderr) << "    from: " << context.function << " | " << context.file << ":" << context.line << endl;
+        else if (context.category)
+            QTextStream(stderr) << "    from: " << context.category << endl;
     }
     DebugEngine::getInstance()->message(level, msg, QString(context.file), context.line, QString(context.function));
 }

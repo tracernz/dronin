@@ -50,6 +50,8 @@ DebugGadgetWidget::DebugGadgetWidget(QWidget *parent) : QLabel(parent)
                 Qt::QueuedConnection);
     connect(m_config->saveToFile, SIGNAL(clicked()), this, SLOT(saveLog()));
     connect(m_config->clearLog, SIGNAL(clicked()), this, SLOT(clearLog()));
+
+    m_config->tbDebugLog->document()->setDefaultStyleSheet(m_config->tbDebugLog->styleSheet());
 }
 
 DebugGadgetWidget::~DebugGadgetWidget()
@@ -67,7 +69,7 @@ void DebugGadgetWidget::saveLog()
 
     QFile file(fileName);
     if (file.open(QIODevice::WriteOnly) &&
-        (file.write(m_config->plainTextEdit->toHtml().toLatin1()) != -1)) {
+        (file.write(m_config->tbDebugLog->toHtml().toLatin1()) != -1)) {
         file.close();
     } else {
         QMessageBox::critical(0,
@@ -80,47 +82,41 @@ void DebugGadgetWidget::saveLog()
 
 void DebugGadgetWidget::clearLog()
 {
-    m_config->plainTextEdit->clear();
+    m_config->tbDebugLog->clear();
 }
 
 void DebugGadgetWidget::message(DebugEngine::Level level, const QString &msg, const QString &file, const int line, const QString &function)
 {
-    QColor color;
+    Q_UNUSED(file); Q_UNUSED(line);
+
     QString type;
     switch (level) {
     case DebugEngine::DEBUG:
-        color = Qt::blue;
         type = "debug";
         break;
     case DebugEngine::INFO:
-        color = Qt::black;
         type = "info";
         break;
     case DebugEngine::WARNING:
-        color = Qt::red;
-        type = "WARNING";
+        type = "warning";
         break;
     case DebugEngine::CRITICAL:
-        color = Qt::red;
-        type = "CRITICAL";
+        type = "critical";
         break;
     case DebugEngine::FATAL:
-        color = Qt::red;
-        type = "FATAL";
+        type = "fatal";
         break;
     }
 
-    QString source;
-#ifdef QT_DEBUG // only display this extended info to devs
-    source = QString("[%0:%1 %2]").arg(file).arg(line).arg(function);
-#else
-    Q_UNUSED(file); Q_UNUSED(line); Q_UNUSED(function);
-#endif
+    QString out = QString("<span class='timestamp'>%0</span>").arg(QTime::currentTime().toString());
+    out += QString("<span class='%0'>[%1]</span>").arg(type).arg(level >= DebugEngine::WARNING ? type.toUpper() : type);
+    if (function.length())
+        out += QString("<span class='function'>&lt;%0&gt;</span>").arg(function);
+    out += QString("<span class='message'>%0</span>").arg(msg);
 
-    m_config->plainTextEdit->setTextColor(color);
-    m_config->plainTextEdit->append(QString("%0[%1]%2 %3").arg(QTime::currentTime().toString()).arg(type).arg(source).arg(msg));
+    m_config->tbDebugLog->append(out);
 
-    QScrollBar *sb = m_config->plainTextEdit->verticalScrollBar();
+    QScrollBar *sb = m_config->tbDebugLog->verticalScrollBar();
     sb->setValue(sb->maximum());
 }
 

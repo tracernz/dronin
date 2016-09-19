@@ -6,7 +6,7 @@
  * @brief  STM32F4xx PIOS IAP Functions
  * @{
  *
- * @file       pios_iap.c  
+ * @file       STM32F4xx/pios_iap.c  
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2012.
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2014
  * @brief      In application programming functions

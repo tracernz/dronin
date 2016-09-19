@@ -6,7 +6,7 @@
  * @brief PIOS System Initialization code
  * @{
  *
- * @file       pios_sys.h  
+ * @file       posix/inc/pios_sys.h  
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2010.
  * 	       Parts by Thorsten Klose (tk@midibox.org)
  * @brief      System and hardware Init functions header.

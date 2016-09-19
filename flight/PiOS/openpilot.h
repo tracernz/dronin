@@ -3,7 +3,7 @@
  * @addtogroup PIOS PIOS Core hardware abstraction layer
  * @{
  *
- * @file       openpilot.h
+ * @file       PiOS/openpilot.h
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2010.
  * @brief      Includes PiOS and core architecture components
  * @see        The GNU Public License (GPL) Version 3

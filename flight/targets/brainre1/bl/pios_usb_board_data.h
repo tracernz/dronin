@@ -5,7 +5,7 @@
  * @addtogroup FlyingF4BL FlyingF4 bootloader
  * @{
  *
- * @file       pios_usb_board_data.h
+ * @file       brainre1/bl/pios_usb_board_data.h
  * @author     dRonin, http://dRonin.org/, Copyright (C) 2016
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2010.
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2013

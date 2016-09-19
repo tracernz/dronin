@@ -5,7 +5,7 @@
  * @addtogroup CC3D OpenPilot coptercontrol 3D support files
  * @{
  *
- * @file       pios_usb_board_data.c 
+ * @file       cc3d/fw/pios_usb_board_data.c 
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2011.
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2013
  * @author     dRonin, http://dronin.org Copyright (C) 2016

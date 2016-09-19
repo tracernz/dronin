@@ -6,7 +6,7 @@
  * @brief PIOS USB device implementation
  * @{
  *
- * @file       pios_usb.c
+ * @file       STM32F30x/pios_usb.c
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2010.
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2013
  * @brief      USB device functions (STM32 dependent code)

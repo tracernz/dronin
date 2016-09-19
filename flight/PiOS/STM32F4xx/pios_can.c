@@ -6,7 +6,7 @@
  * @brief CAN interface for PiOS
  * @{
  *
- * @file       pios_can.c
+ * @file       STM32F4xx/pios_can.c
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2013-2014
  * @brief      PiOS CAN interface header
  * @see        The GNU Public License (GPL) Version 3

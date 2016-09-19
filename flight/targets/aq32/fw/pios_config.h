@@ -5,7 +5,7 @@
  * @addtogroup Aq32 Aq32 support files
  * @{
  *
- * @file       pios_config.h
+ * @file       aq32/fw/pios_config.h
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2014
  * @brief      Board specific options that modify PiOS capabilities
  * @see        The GNU Public License (GPL) Version 3

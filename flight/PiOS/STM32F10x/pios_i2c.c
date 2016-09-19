@@ -6,7 +6,7 @@
  * @brief STM32 Hardware dependent I2C functionality
  * @{
  *
- * @file       pios_i2c.c  
+ * @file       STM32F10x/pios_i2c.c  
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2010.
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2013-2014
  * @brief      I2C Enable/Disable routines

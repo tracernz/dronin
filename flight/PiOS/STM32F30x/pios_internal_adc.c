@@ -5,7 +5,7 @@
  * @addtogroup PIOS_ADC ADC Functions
  * @{
  *
- * @file       pios_internal_adc.c
+ * @file       STM32F30x/pios_internal_adc.c
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2013
  * @author     dRonin, http://dronin.org Copyright (C) 2015
  * @brief      STM32F30x internal ADC PIOS interface

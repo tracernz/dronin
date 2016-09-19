@@ -6,7 +6,7 @@
  * @brief CAN interface for PiOS
  * @{
  *
- * @file       pios_can.c
+ * @file       STM32F30x/pios_can.c
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2013-2014
  * @author     dRonin, http://dronin.org, Copyright (C) 2016
  * @brief      PiOS CAN interface header

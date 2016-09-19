@@ -5,7 +5,7 @@
  * @addtogroup Sparky2 Tau Labs Sparky2 support files
  * @{
  *
- * @file       main.c 
+ * @file       sparky2/fw/main.c 
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2015
  * @brief      Start up file for Sparky2
  * @see        The GNU Public License (GPL) Version 3

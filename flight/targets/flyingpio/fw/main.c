@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file       main.c
+ * @file       flyingpio/fw/main.c
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2014
  * @author     dRonin, http://dronin.org, Copyright (C) 2016
  * @addtogroup Targets

@@ -6,7 +6,7 @@
  * @brief PIOS interface to read and write from SPI ports
  * @{
  *
- * @file       pios_spi.c
+ * @file       STM32/pios_spi.c
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2012.
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2013
  * @author     dRonin, http://dronin.org, Copyright (C) 2016

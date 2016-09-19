@@ -1,7 +1,7 @@
 /**
  ******************************************************************************
  *
- * @file       pios_board.h 
+ * @file       flyingpio/board-info/pios_board.h 
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2015
  * @addtogroup Targets
  * @{

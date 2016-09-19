@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file       main.c
+ * @file       bl/common/main.c
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2014
  * @addtogroup Bootloader
  * @{

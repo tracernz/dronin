@@ -6,7 +6,7 @@
  * @brief PIOS System Initialization code
  * @{
  *
- * @file       pios_sys.c  
+ * @file       STM32F10x/pios_sys.c  
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2010.
  * 	        Parts by Thorsten Klose (tk@midibox.org) (tk@midibox.org)
  * @brief      Sets up basic STM32 system hardware, functions are called from Main.

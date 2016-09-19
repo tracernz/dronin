@@ -5,7 +5,7 @@
  * @addtogroup Revolution OpenPilot Revolution support files
  * @{
  *
- * @file       pios_usb_board_data.c 
+ * @file       revolution/fw/pios_usb_board_data.c 
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2011.
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2013
  * @brief      Board specific USB specifications

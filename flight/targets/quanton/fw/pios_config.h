@@ -5,7 +5,7 @@
  * @addtogroup Quanton Quanton support files
  * @{
  *
- * @file       pios_config.h 
+ * @file       quanton/fw/pios_config.h 
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2015
  * @author     dRonin, http://dronin.org Copyright (C) 2015
  * @brief      Board specific options that modify PiOS capabilities

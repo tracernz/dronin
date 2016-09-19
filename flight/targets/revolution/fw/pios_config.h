@@ -5,7 +5,7 @@
  * @addtogroup Revolution OpenPilot Revolution support files
  * @{
  *
- * @file       pios_config.h 
+ * @file       revolution/fw/pios_config.h 
  *
  * @author     dRonin, http://dRonin.org/, Copyright (C) 2015
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2011.

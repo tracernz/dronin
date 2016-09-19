@@ -5,7 +5,7 @@
  * @addtogroup Sparky Tau Labs Sparky support files
  * @{
  *
- * @file       board_hw_defs.c 
+ * @file       sparky/board-info/board_hw_defs.c 
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2011.
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2014
  * @author     dRonin, http://dronin.org Copyright (C) 2015

@@ -6,7 +6,7 @@
  * @brief Glue between PiOS and STM32 libs
  * @{
  *
- * @file       pios_usbhook.c
+ * @file       STM32F4xx/pios_usbhook.c
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2010.
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2013
  * @brief      Glue between PiOS and STM32 libs

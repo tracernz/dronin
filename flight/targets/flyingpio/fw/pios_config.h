@@ -1,7 +1,7 @@
 /**
  ******************************************************************************
  *
- * @file       pios_config.h 
+ * @file       flyingpio/fw/pios_config.h 
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2015
  * @author     dRonin, http://dRonin.org, Copyright (C) 2016
  * @addtogroup Targets

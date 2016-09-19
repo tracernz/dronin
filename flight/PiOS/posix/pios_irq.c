@@ -6,7 +6,7 @@
  * @brief STM32 Hardware code to enable and disable interrupts
  * @{
  *
- * @file       pios_irq.c  
+ * @file       posix/pios_irq.c  
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2010.
  * 	        Parts by Thorsten Klose (tk@midibox.org) (tk@midibox.org)
  * @brief      IRQ Enable/Disable routines

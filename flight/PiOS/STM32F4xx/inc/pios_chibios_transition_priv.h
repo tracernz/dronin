@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file       pios_chibios_transition_priv.h
+ * @file       STM32F4xx/inc/pios_chibios_transition_priv.h
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2014
  * @brief ChibiOS transition header, mapping ISR names.
  *****************************************************************************/

@@ -3,7 +3,7 @@
  * @addtogroup lux Lumenier Lux support files
  * @{
  *
- * @file       pios_config.h 
+ * @file       lux/fw/pios_config.h 
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2015
  * @author     dRonin, http://dRonin.org/, Copyright (C) 2016
  * @brief      Board specific options that modify PiOS capabilities

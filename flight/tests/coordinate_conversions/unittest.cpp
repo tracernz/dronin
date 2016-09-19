@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file       unittest.cpp
+ * @file       coordinate_conversions/unittest.cpppp
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2013
  * @addtogroup UnitTests
  * @{

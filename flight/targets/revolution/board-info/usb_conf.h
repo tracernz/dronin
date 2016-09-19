@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    usb_conf.h
+  * @file    revolution/board-info/usb_conf.h
   * @author  MCD Application Team
   * @version V2.1.0
   * @date    19-March-2012

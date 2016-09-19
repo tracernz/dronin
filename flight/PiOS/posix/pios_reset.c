@@ -6,7 +6,7 @@
  * @brief Hardware functions to deal with the reset register
  * @{
  *
- * @file       pios_reset.c
+ * @file       posix/pios_reset.c
  * @author     Tau Labs, Copyright (C) 2015.
  * @brief      Reset information
  *

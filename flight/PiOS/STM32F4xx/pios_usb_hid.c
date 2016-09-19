@@ -7,7 +7,7 @@
  * @notes      This implements serial emulation over HID reports
  * @{
  *
- * @file       pios_usb_hid.c
+ * @file       STM32F4xx/pios_usb_hid.c
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2010.
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2014
  * @brief      USB COM functions (STM32 dependent code)

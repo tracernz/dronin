@@ -3,7 +3,7 @@
  * @addtogroup DTFc DTF support files
  * @{
  *
- * @file       board_hw_defs.c 
+ * @file       dtfc/board-info/board_hw_defs.c 
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2011.
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2015
  * @author     dRonin, http://dRonin.org/, Copyright (C) 2016

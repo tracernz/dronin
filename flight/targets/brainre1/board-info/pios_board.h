@@ -5,7 +5,7 @@
  * @addtogroup BrainFPV-RE1 BrainFPV-RE1 support files
  * @{
  *
- * @file       pios_board.h 
+ * @file       brainre1/board-info/pios_board.h 
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2015
  * @author     BrainFPV, Copyright (C) 2015
  * @brief      Board define file for FlyingF4

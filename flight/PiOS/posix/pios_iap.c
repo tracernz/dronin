@@ -6,7 +6,7 @@
  * @brief OSX SITL PIOS IAP Functions
  * @{
  *
- * @file       pios_iap.c
+ * @file       posix/pios_iap.c
  * @author     joe 2010
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2014
  * @brief      In application programming functions

@@ -6,7 +6,7 @@
  * @brief GPIO hardware code for STM32
  * @{
  *
- * @file       pios_gpio.c
+ * @file       STM32F10x/pios_gpio.c
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2010.
  * @brief      GPIO functions, init, toggle, on & off.
  * @see        The GNU Public License (GPL) Version 3

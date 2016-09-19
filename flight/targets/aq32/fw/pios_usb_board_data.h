@@ -5,7 +5,7 @@
  * @addtogroup Aq32 Aq32 support files
  * @{
  *
- * @file       pios_usb_board_data.h
+ * @file       aq32/fw/pios_usb_board_data.h
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2013
  * @brief      Defines for board specific usb information
  * @see        The GNU Public License (GPL) Version 3

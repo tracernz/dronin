@@ -5,7 +5,7 @@
  * @addtogroup BrainRE1 support files
  * @{
  *
- * @file       pios_usb_board_data.c 
+ * @file       brainre1/fw/pios_usb_board_data.c 
  * @author     dRonin, http://dRonin.org/, Copyright (C) 2016
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2013
  * @brief      Board specific USB specifications

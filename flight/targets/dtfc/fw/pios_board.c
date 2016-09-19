@@ -5,7 +5,7 @@
  * @addtogroup DTFc DTF support files
  * @{
  *
- * @file       pios_board.c
+ * @file       dtfc/fw/pios_board.c
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2014
  * @author     dRonin, http://dRonin.org/, Copyright (C) 2016
  * @brief      The board specific initialization routines

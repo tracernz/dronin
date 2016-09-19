@@ -5,7 +5,7 @@
  * @addtogroup PIOS_IRQ IRQ Setup Functions
  * @{
  *
- * @file       pios_irq.h  
+ * @file       PiOS/inc/pios_irq.h  
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2010.
  * 	       Parts by Thorsten Klose (tk@midibox.org)
  * @brief      IRQ functions header.

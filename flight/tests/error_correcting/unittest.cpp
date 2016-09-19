@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file       unittest.cpp
+ * @file       error_correcting/unittest.cpppp
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2013
  * @addtogroup UnitTests
  * @{

@@ -6,7 +6,7 @@
  * @brief Code to do set RC servo output
  * @{
  *
- * @file       pios_servo.c  
+ * @file       posix/pios_servo.c  
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2010.
  * @brief      RC Servo routines (STM32 dependent)
  * @see        The GNU Public License (GPL) Version 3

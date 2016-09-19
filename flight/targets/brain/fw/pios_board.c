@@ -5,7 +5,7 @@
  * @addtogroup FlyingF4 FlyingF4 support files
  * @{
  *
- * @file       pios_board.c
+ * @file       brain/fw/pios_board.c
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2013
  * @author     dRonin, http://dronin.org Copyright (C) 2015
  * @brief      The board specific initialization routines

@@ -5,7 +5,7 @@
  * @addtogroup BrainRE1 support files
  * @{
  *
- * @file       board_hw_defs.c 
+ * @file       brainre1/board-info/board_hw_defs.c 
  * @author     dRonin, http://dRonin.org/, Copyright (C) 2016
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2015
  * @author     BrainFPV, Copyright (C) 2015

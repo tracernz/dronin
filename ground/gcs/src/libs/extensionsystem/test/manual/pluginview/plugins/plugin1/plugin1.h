@@ -1,7 +1,7 @@
 /**
  ******************************************************************************
  *
- * @file       plugin1.h
+ * @file       plugins/plugin1/plugin1.h
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2010.
  *             Parts by Nokia Corporation (qt-info@nokia.com) Copyright (C) 2009.
  * @brief      

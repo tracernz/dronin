@@ -6,7 +6,7 @@
  * @brief STM32F1xx PIOS IAP Functions
  * @{
  *
- * @file       pios_iap.c
+ * @file       STM32F10x/pios_iap.c
  * @author     joe 2010
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2014
  * @brief      In application programming functions

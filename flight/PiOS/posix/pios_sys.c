@@ -6,7 +6,7 @@
  * @brief PIOS System Initialization code
  * @{
  *
- * @file       pios_sys.c  
+ * @file       posix/pios_sys.c  
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2010.
  * 	        Parts by Thorsten Klose (tk@midibox.org) (tk@midibox.org)
  * @author     dRonin, http://dRonin.org/, Copyright (C) 2016

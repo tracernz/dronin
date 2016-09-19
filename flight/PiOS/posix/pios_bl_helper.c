@@ -6,7 +6,7 @@
  * @brief HAL code to interface to the OpenPilot AHRS module
  * @{
  *
- * @file       pios_bl_helper.c
+ * @file       posix/pios_bl_helper.c
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2012.
  * @brief      Bootloader Helper Functions
  * @see        The GNU Public License (GPL) Version 3

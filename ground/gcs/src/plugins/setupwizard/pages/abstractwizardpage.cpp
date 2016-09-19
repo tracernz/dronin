@@ -1,7 +1,7 @@
 /**
  ******************************************************************************
  *
- * @file       abstractwizardpage.cpp
+ * @file       pages/abstractwizardpage.cpppp
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2012.
  * @see        The GNU Public License (GPL) Version 3
  *

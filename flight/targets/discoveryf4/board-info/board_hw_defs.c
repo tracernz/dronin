@@ -5,7 +5,7 @@
  * @addtogroup DiscoveryF4 DiscoveryF4 support files
  * @{
  *
- * @file       board_hw_defs.c 
+ * @file       discoveryf4/board-info/board_hw_defs.c 
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2013
  * @brief      Defines board specific static initializers for hardware for the
  *             DiscoveryF4 board.

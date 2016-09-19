@@ -6,7 +6,7 @@
  * @brief STM32 Hardware LED handling code
  * @{
  *
- * @file       pios_led.c   
+ * @file       STM32/pios_led.c   
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2012.
  * @brief      LED functions, init, toggle, on & off.
  * @see        The GNU Public License (GPL) Version 3

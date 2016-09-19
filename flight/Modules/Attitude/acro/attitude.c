@@ -11,7 +11,7 @@
  * them, and then updates a Complementary filter to estimate @ref AttitudeActual
  * and sets that.
  *
- * @file       attitude.c
+ * @file       acro/attitude.c
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2010.
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2013-2016
  * @author     dRonin, http://dronin.org Copyright (C) 2015-2016

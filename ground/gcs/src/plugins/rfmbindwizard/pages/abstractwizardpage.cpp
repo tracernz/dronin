@@ -1,7 +1,7 @@
 /**
  ******************************************************************************
  *
- * @file       abstractwizardpage.cpp
+ * @file       pages/abstractwizardpage.cpppp
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2014
  * @see        The GNU Public License (GPL) Version 3
  *

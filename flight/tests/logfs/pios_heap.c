@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file       pios_heap.c
+ * @file       logfs/pios_heap.c
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2013-2014
  * @addtogroup PIOS PIOS Core hardware abstraction layer
  * @{

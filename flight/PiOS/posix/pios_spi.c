@@ -6,7 +6,7 @@
  * @brief PIOS interface to read and write from SPI ports
  * @{
  *
- * @file       pios_spi.c
+ * @file       posix/pios_spi.c
  * @author     dRonin, http://dronin.org, Copyright (C) 2016
  * @brief      Driver for Linux spidev interface
  * @see        The GNU Public License (GPL) Version 3

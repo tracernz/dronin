@@ -5,7 +5,7 @@
  * @addtogroup BootloaderUpdate Update the bootloader stored in a target
  * @{
  *
- * @file       pios_config.h
+ * @file       common/pios_config.h
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2010.
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2013
  * @brief      Non pinout-specific configuration of PiOS for bootloader updater

@@ -5,7 +5,7 @@
 * @addtogroup FlyingF4 FlyingF4 support files
 * @{
 *
-* @file       main.c
+* @file       brainre1/fw/main.c
 * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2013
 *             AJ Christensen <aj@junglistheavy.industries>
 * @brief      Start ChiBiOS/RT and the Modules.

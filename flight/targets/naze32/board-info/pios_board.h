@@ -5,7 +5,7 @@
  * @addtogroup Naze32 family support files
  * @{
  *
- * @file       pios_board.h 
+ * @file       naze32/board-info/pios_board.h 
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2015
  * @brief      Board header file for Naze32
  * @see        The GNU Public License (GPL) Version 3

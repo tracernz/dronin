@@ -6,7 +6,7 @@
  * @brief PIOS System Initialization code
  * @{
  *
- * @file       pios_sys.c
+ * @file       STM32F4xx/pios_sys.c
  * @author     Michael Smith Copyright (C) 2011
  * 			The OpenPilot Team, http://www.openpilot.org Copyright (C) 2012.
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2014

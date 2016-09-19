@@ -6,7 +6,7 @@
  * @brief Debugging functionality
  * @{
  *
- * @file       pios_debug.c
+ * @file       STM32/pios_debug.c
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2010.
  * @brief      Debugging Functions
  * @see        The GNU Public License (GPL) Version 3

@@ -1,7 +1,7 @@
 /**
  ******************************************************************************
  *
- * @file       abstractwizardpage.h
+ * @file       rfmbindwizard/pages/abstractwizardpage.h
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2014
  * @see        The GNU Public License (GPL) Version 3
  *

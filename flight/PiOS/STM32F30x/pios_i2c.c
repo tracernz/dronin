@@ -6,7 +6,7 @@
  * @brief STM32F4xx Hardware dependent I2C functionality
  * @{
  *
- * @file       pios_i2c.c
+ * @file       STM32F30x/pios_i2c.c
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2012.
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2014
  * @author     dRonin, http://dronin.org, Copyright (C) 2016

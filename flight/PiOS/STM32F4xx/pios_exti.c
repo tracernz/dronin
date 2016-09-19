@@ -7,7 +7,7 @@
  * @brief External interrupt handler functions
  * @{
  *
- * @file       pios_exti.c
+ * @file       STM32F4xx/pios_exti.c
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2010.
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2014
  * @brief      External Interrupt Handlers

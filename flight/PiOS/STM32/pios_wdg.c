@@ -6,7 +6,7 @@
  * @brief PIOS Comamnds to initialize and clear watchdog timer
  * @{
  *
- * @file       pios_spi.c
+ * @file       STM32/pios_wdg.c
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2012-2016
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2012.
  * 	        Parts by Thorsten Klose (tk@midibox.org) (tk@midibox.org)

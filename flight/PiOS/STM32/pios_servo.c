@@ -6,7 +6,7 @@
  * @brief Code to do set RC servo output
  * @{
  *
- * @file       pios_servo.c
+ * @file       STM32/pios_servo.c
  * @author     The OpenPilot Team, http://www.openpilot.org Copyright (C) 2012.
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2014-2015
  * @author     dRonin, http://dRonin.org, Copyright (C) 2016

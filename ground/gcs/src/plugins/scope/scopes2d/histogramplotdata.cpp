@@ -203,3 +203,8 @@ void HistogramData::clearPlots()
     histogramBins->clear();
     histogramInterval->clear();
 }
+
+/**
+ * @}
+ * @}
+ */

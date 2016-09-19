@@ -252,3 +252,8 @@ protected:
 };
 
 #endif // UAVOBJECT_H
+
+/**
+ * @}
+ * @}
+ */

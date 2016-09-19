@@ -48,3 +48,8 @@ public:
 };
 
 #endif // MagicWaypointGADGETFACTORY_H_
+
+/**
+ * @}
+ * @}
+ */

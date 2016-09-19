@@ -87,3 +87,8 @@ private:
 };
 
 #endif // UPGRADEASSISTANT_H
+
+/**
+ * @}
+ * @}
+ */

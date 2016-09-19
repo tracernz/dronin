@@ -529,3 +529,8 @@ void Core::ConnectionManager::connectionsCallBack()
 }
 
 } //namespace Core
+
+/**
+ * @}
+ * @}
+ */

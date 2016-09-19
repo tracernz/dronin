@@ -161,4 +161,3 @@ int ginv (int elt)
 { 
   return (gexp[255-glog[elt]]);
 }
-

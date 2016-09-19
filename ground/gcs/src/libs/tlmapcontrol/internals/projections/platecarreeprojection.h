@@ -54,3 +54,8 @@ private:
 };
 }
 #endif // PLATECARREEPROJECTION_H
+
+/**
+ * @}
+ * @}
+ */

@@ -137,3 +137,8 @@ void UavTalkRelayOptionsPage::deleteRule()
 {
     m_page->twRules->removeRow(m_page->twRules->currentRow());
 }
+
+/**
+ * @}
+ * @}
+ */

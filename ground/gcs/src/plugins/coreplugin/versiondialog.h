@@ -45,3 +45,8 @@ public:
 } // namespace Core
 
 #endif // VERSIONDIALOG_H
+
+/**
+ * @}
+ * @}
+ */

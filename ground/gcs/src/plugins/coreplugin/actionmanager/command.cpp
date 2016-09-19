@@ -507,3 +507,8 @@ bool OverrideableAction::isActive() const
 {
     return m_active;
 }
+
+/**
+ * @}
+ * @}
+ */

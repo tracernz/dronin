@@ -33,3 +33,8 @@ AbstractWizardPage::AbstractWizardPage(RfmBindWizard *wizard, QWidget *parent) :
 {
     m_wizard = wizard;
 }
+
+/**
+ * @}
+ * @}
+ */

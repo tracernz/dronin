@@ -118,3 +118,8 @@ void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
     painter->drawLine(line);
 
 }
+
+/**
+ * @}
+ * @}
+ */

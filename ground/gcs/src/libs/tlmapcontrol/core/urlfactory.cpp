@@ -732,3 +732,8 @@ double UrlFactory::GetElevationFromCoordinate(const internals::PointLatLng &coor
         return 0;
 }
 }
+
+/**
+ * @}
+ * @}
+ */

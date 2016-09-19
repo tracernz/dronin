@@ -59,3 +59,8 @@ void LineardialGadget::loadConfiguration(IUAVGadgetConfiguration* config)
     m_widget->setDialFont(m->getFont());
     m_widget->connectInput(m->getSourceDataObject(), m->getSourceObjectField());
 }
+
+/**
+ * @}
+ * @}
+ */

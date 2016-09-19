@@ -96,3 +96,8 @@ private:
 };
 
 #endif /* MODELVIEWGADGETWIDGET_H_ */
+
+/**
+ * @}
+ * @}
+ */

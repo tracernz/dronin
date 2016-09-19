@@ -41,3 +41,8 @@ TelemetrySchedulerGadget::~TelemetrySchedulerGadget()
 {
     delete m_widget;
 }
+
+/**
+ * @}
+ * @}
+ */

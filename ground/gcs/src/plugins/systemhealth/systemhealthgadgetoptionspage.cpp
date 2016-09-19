@@ -74,3 +74,8 @@ void SystemHealthGadgetOptionsPage::finish()
 {
     delete options_page;
 }
+
+/**
+ * @}
+ * @}
+ */

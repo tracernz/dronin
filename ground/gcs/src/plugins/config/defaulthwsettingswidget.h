@@ -48,3 +48,8 @@ private:
 };
 
 #endif // DEFAULTHWSETTINGSt_H
+
+/**
+ * @}
+ * @}
+ */

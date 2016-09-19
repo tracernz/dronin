@@ -41,3 +41,8 @@ FixedWingPage::~FixedWingPage()
 {
     delete ui;
 }
+
+/**
+ * @}
+ * @}
+ */

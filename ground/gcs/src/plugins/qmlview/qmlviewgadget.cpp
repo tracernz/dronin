@@ -54,3 +54,8 @@ void QmlViewGadget::loadConfiguration(IUAVGadgetConfiguration* config)
     QmlViewGadgetConfiguration *m = qobject_cast<QmlViewGadgetConfiguration*>(config);
     m_widget->setQmlFile(m->dialFile());
 }
+
+/**
+ * @}
+ * @}
+ */

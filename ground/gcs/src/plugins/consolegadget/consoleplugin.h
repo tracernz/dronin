@@ -48,3 +48,8 @@ private:
     ConsoleGadgetFactory *mf;
 };
 #endif /* CONSOLEPLUGIN_H_ */
+
+/**
+ * @}
+ * @}
+ */

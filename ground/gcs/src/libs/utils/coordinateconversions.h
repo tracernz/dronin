@@ -58,3 +58,8 @@ private:
 }
 
 #endif /* COORDINATECONVERSIONS_H */
+
+/**
+ * @}
+ * @}
+ */

@@ -57,3 +57,7 @@ IOptionsPage * OPMapGadgetFactory::createOptionsPage(IUAVGadgetConfiguration *co
     return new OPMapGadgetOptionsPage(qobject_cast<OPMapGadgetConfiguration*>(config));
 }
 
+/**
+ * @}
+ * @}
+ */

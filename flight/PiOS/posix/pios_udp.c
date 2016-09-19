@@ -238,3 +238,8 @@ static void PIOS_UDP_RegisterTxCallback(uint32_t udp_id, pios_com_callback tx_ou
 
 
 #endif
+
+/**
+ * @}
+ * @}
+ */

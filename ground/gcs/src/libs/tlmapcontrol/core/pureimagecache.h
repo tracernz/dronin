@@ -66,3 +66,8 @@ namespace core {
 
 }
 #endif // PUREIMAGECACHE_H
+
+/**
+ * @}
+ * @}
+ */

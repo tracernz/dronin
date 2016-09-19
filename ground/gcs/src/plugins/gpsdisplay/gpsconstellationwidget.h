@@ -65,3 +65,8 @@ protected:
 
 };
 #endif /* GPSCONSTELLATIONWIDGET_H_ */
+
+/**
+ * @}
+ * @}
+ */

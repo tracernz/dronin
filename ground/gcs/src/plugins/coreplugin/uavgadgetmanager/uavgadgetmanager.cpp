@@ -442,3 +442,8 @@ void UAVGadgetManager::gotoOtherSplit()
         }
     }
 }
+
+/**
+ * @}
+ * @}
+ */

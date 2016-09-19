@@ -38,3 +38,8 @@
 #endif
 
 #endif // SERIAL_GLOBAL_H
+
+/**
+ * @}
+ * @}
+ */

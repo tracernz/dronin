@@ -37,3 +37,7 @@
 
 #endif // PATHPLANNER_GLOBAL_H
 
+/**
+ * @}
+ * @}
+ */

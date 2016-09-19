@@ -41,3 +41,8 @@ int32_t PIOS_STREAMFS_Read(uintptr_t fs_id, uint8_t *data, uint32_t len);
 
 
 #endif	/* PIOS_FLASHFS_STREAMFS_H_ */
+
+/**
+ * @}
+ * @}
+ */

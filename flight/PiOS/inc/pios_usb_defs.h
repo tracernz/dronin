@@ -419,3 +419,8 @@ enum usb_op_board_modes {
 		((board_mode & 0xFF) << 0))
 
 #endif /* PIOS_USB_DEFS_H */
+
+/**
+ * @}
+ * @}
+ */

@@ -315,3 +315,8 @@ static void vtxConfigTask(void *parameters)
 		state_prev = state;
 	}
 }
+
+/**
+ * @}
+ * @}
+ */

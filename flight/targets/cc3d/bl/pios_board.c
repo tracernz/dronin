@@ -124,3 +124,8 @@ void PIOS_Board_Init(void)
 void PIOS_ADC_DMA_Handler()
 {
 }
+
+/**
+ * @}
+ * @}
+ */

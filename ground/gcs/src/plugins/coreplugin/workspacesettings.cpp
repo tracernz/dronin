@@ -251,3 +251,8 @@ void WorkspaceSettings::newModeOrder(QVector<IMode*> modes)
         }
     } while (swapped);
 }
+
+/**
+ * @}
+ * @}
+ */

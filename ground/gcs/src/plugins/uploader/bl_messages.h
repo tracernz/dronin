@@ -213,3 +213,8 @@ PACK(struct bl_messages {
 } /* namespace tl_dfu */
 
 #endif // BL_MESSAGES_H
+
+/**
+ * @}
+ * @}
+ */

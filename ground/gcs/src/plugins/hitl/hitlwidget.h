@@ -69,3 +69,8 @@ private:
 };
 
 #endif /* HITLWIDGET_H */
+
+/**
+ * @}
+ * @}
+ */

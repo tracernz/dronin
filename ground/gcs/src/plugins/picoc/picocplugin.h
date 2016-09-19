@@ -49,3 +49,8 @@ private:
 };
 
 #endif /* PICOCPLUGIN_H_ */
+
+/**
+ * @}
+ * @}
+ */

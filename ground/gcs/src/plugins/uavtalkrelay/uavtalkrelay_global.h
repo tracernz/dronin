@@ -46,3 +46,8 @@ public:
 };
 
 #endif // UAVTALKRELAY_GLOBAL_H
+
+/**
+ * @}
+ * @}
+ */

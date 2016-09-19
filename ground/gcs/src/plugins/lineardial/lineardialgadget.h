@@ -54,3 +54,8 @@ private:
 
 
 #endif // LINEARDIALGADGET_H_
+
+/**
+ * @}
+ * @}
+ */

@@ -569,3 +569,8 @@ float PathFillet::angle_between_2d_vectors(float a[2], float b[2])
     float theta = atan2f(a[0]*b[1] - a[1]*b[0],(a[0]*b[0] + a[1]*b[1]));
     return theta;
 }
+
+/**
+ * @}
+ * @}
+ */

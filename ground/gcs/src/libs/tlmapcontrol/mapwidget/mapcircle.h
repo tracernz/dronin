@@ -65,3 +65,8 @@ public slots:
 }
 
 #endif // MAPCIRCLE_H
+
+/**
+ * @}
+ * @}
+ */

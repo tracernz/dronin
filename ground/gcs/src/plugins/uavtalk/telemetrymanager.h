@@ -75,3 +75,8 @@ private:
 };
 
 #endif // TELEMETRYMANAGER_H
+
+/**
+ * @}
+ * @}
+ */

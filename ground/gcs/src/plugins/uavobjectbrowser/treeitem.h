@@ -372,3 +372,8 @@ public:
     CategoryTreeItem(const QVariant &data, TreeItem *parent = 0) : TreeItem(data, parent) { }
 };
 #endif // TREEITEM_H
+
+/**
+ * @}
+ * @}
+ */

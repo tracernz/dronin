@@ -52,3 +52,8 @@ private:
 };
 
 #endif // INPUTPAGENOTSUPPORTED_H
+
+/**
+ * @}
+ * @}
+ */

@@ -38,3 +38,8 @@
 #endif
 
 #endif // AGGREGATION_GLOBAL_H
+
+/**
+ * @}
+ * @}
+ */

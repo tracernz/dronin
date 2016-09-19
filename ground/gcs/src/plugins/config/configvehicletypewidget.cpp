@@ -976,3 +976,7 @@ void ConfigVehicleTypeWidget::addToDirtyMonitor()
     addWidget(m_heli->m_ccpm->ccpmAdvancedSettingsTable);
 }
 
+/**
+ * @}
+ * @}
+ */

@@ -36,3 +36,8 @@
 uint8_t * PIOS_USB_UTIL_AsciiToUtf8(uint8_t * dst, uint8_t * src, uint16_t srclen);
 
 #endif	/* PIOS_USB_UTIL_H */
+
+/**
+ * @}
+ * @}
+ */

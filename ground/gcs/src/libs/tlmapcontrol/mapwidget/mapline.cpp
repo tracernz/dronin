@@ -129,3 +129,8 @@ void MapLine::setOpacitySlot(qreal opacity)
 }
 
 }
+
+/**
+ * @}
+ * @}
+ */

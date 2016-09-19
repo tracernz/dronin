@@ -52,3 +52,8 @@ private slots:
 };
 
 #endif // SUMMARYPAGE_H
+
+/**
+ * @}
+ * @}
+ */

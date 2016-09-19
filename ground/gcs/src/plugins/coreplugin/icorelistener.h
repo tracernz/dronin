@@ -70,3 +70,8 @@ public:
 } // namespace Core
 
 #endif // ICORELISTENER_H
+
+/**
+ * @}
+ * @}
+ */

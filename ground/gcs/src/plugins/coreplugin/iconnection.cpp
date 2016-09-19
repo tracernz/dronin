@@ -28,3 +28,7 @@
 
 #include "iconnection.h"
 
+/**
+ * @}
+ * @}
+ */

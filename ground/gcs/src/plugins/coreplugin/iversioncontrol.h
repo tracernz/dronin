@@ -116,3 +116,8 @@ signals:
 } // namespace Core
 
 #endif // IVERSIONCONTROL_H
+
+/**
+ * @}
+ * @}
+ */

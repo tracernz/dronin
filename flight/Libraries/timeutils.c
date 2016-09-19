@@ -97,3 +97,8 @@ void date_from_timestamp(uint32_t timestamp, DateTimeT *date_time)
 	date_time->mon = y;
 	date_time->mday = days + 1;
 }
+
+/**
+ * @}
+ * @}
+ */

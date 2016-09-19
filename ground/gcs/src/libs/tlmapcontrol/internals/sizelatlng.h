@@ -135,3 +135,7 @@ private:
 }
 #endif // SIZELATLNG_H
 
+/**
+ * @}
+ * @}
+ */

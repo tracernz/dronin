@@ -60,3 +60,7 @@ IOptionsPage *HITLFactory::createOptionsPage(IUAVGadgetConfiguration *config)
     return new HITLOptionsPage(qobject_cast<HITLConfiguration*>(config));
 }
 
+/**
+ * @}
+ * @}
+ */

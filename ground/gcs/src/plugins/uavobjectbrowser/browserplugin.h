@@ -47,3 +47,8 @@ private:
    UAVObjectBrowserFactory *mf;
 };
 #endif /* UAVOBJECTBROWSERPLUGIN_H_ */
+
+/**
+ * @}
+ * @}
+ */

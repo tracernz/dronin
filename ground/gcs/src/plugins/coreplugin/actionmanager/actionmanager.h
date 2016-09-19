@@ -65,3 +65,8 @@ public:
 } // namespace Core
 
 #endif // ACTIONMANAGER_H
+
+/**
+ * @}
+ * @}
+ */

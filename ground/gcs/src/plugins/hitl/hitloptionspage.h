@@ -64,3 +64,8 @@ private:
 };
 
 #endif // HITLOPTIONSPAGE_H
+
+/**
+ * @}
+ * @}
+ */

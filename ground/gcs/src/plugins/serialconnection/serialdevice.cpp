@@ -29,3 +29,8 @@
 SerialDevice::SerialDevice()
 {
 }
+
+/**
+ * @}
+ * @}
+ */

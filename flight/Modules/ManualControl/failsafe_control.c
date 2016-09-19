@@ -113,4 +113,3 @@ enum control_events failsafe_control_get_events()
  * @}
  * @}
  */
-

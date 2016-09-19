@@ -72,3 +72,8 @@ private:
 } // namespace Core
 
 #endif //ICONTEXT_H
+
+/**
+ * @}
+ * @}
+ */

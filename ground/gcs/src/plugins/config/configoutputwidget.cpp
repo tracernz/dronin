@@ -615,3 +615,8 @@ void ConfigOutputWidget::do_SetDirty()
 {
     setDirty(true);
 }
+
+/**
+ * @}
+ * @}
+ */

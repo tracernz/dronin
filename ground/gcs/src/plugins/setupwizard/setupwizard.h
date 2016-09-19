@@ -196,3 +196,8 @@ private:
 };
 
 #endif // SETUPWIZARD_H
+
+/**
+ * @}
+ * @}
+ */

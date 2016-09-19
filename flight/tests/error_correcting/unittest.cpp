@@ -104,3 +104,8 @@ TEST_F(EncodeDecode, Recover) {
     EXPECT_EQ(p[i], p2[i]);
 
 };
+
+/**
+ * @}
+ * @}
+ */

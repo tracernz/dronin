@@ -66,3 +66,8 @@ private slots:
 };
 
 #endif // COORDINATORPAGE_H
+
+/**
+ * @}
+ * @}
+ */

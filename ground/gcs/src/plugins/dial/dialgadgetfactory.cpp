@@ -59,3 +59,7 @@ IOptionsPage *DialGadgetFactory::createOptionsPage(IUAVGadgetConfiguration *conf
     return new DialGadgetOptionsPage(qobject_cast<DialGadgetConfiguration*>(config));
 }
 
+/**
+ * @}
+ * @}
+ */

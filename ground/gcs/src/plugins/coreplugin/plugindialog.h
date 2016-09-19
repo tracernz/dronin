@@ -68,3 +68,8 @@ private:
 } // namespace Core
 
 #endif // PLUGINDIALOG_H
+
+/**
+ * @}
+ * @}
+ */

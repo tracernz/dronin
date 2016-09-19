@@ -70,3 +70,8 @@ private:
 
 
 #endif // PLOTDATA3D_H
+
+/**
+ * @}
+ * @}
+ */

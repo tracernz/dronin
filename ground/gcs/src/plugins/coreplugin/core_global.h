@@ -38,3 +38,8 @@
 #endif
 
 #endif // CORE_GLOBAL_H
+
+/**
+ * @}
+ * @}
+ */

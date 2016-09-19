@@ -48,3 +48,8 @@ private:
 };
 
 #endif // OPMAP_STATUSBAR_WIDGET_H
+
+/**
+ * @}
+ * @}
+ */

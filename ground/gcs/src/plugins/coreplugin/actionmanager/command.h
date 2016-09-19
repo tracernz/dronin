@@ -84,3 +84,8 @@ signals:
 } // namespace Core
 
 #endif // COMMAND_H
+
+/**
+ * @}
+ * @}
+ */

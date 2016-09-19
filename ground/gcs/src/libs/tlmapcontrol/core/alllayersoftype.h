@@ -42,3 +42,8 @@ namespace core {
 
 }
 #endif // ALLLAYERSOFTYPE_H
+
+/**
+ * @}
+ * @}
+ */

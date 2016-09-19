@@ -52,3 +52,8 @@ public:
 };
 
 #endif // DEVICEDESCRIPTORSTRUCT_H
+
+/**
+ * @}
+ * @}
+ */

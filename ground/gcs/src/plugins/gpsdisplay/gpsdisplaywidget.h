@@ -59,3 +59,8 @@ private:
     QGraphicsSvgItem *marker;
 };
 #endif /* GPSDISPLAYWIDGET_H_ */
+
+/**
+ * @}
+ * @}
+ */

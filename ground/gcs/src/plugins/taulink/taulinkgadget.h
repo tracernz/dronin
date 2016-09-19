@@ -55,3 +55,8 @@ private:
 
 
 #endif // TAULINKGADGET_H_
+
+/**
+ * @}
+ * @}
+ */

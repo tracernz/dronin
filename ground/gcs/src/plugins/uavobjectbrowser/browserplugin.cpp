@@ -59,3 +59,8 @@ void BrowserPlugin::shutdown()
 {
    // Do nothing
 }
+
+/**
+ * @}
+ * @}
+ */

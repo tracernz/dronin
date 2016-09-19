@@ -36,3 +36,8 @@ static const int USB_USAGE          = 0x0001;
 static const int USB_DEV_SERIAL_LEN = 24;
 
 #endif // RAWHID_CONST_H
+
+/**
+ * @}
+ * @}
+ */

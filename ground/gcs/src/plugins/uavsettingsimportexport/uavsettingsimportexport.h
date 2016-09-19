@@ -56,3 +56,8 @@ private:
 };
 
 #endif // UAVSETTINGSIMPORTEXPORT_H
+
+/**
+ * @}
+ * @}
+ */

@@ -45,3 +45,8 @@ IUAVGadget* TelemetrySchedulerGadgetFactory::createGadget(QWidget *parent) {
     TelemetrySchedulerGadgetWidget* gadgetWidget = new TelemetrySchedulerGadgetWidget(parent);
     return new TelemetrySchedulerGadget(QString("TelemetrySchedulerGadget"), gadgetWidget, parent);
 }
+
+/**
+ * @}
+ * @}
+ */

@@ -60,3 +60,8 @@ private:
 };
 
 #endif // OUTPUTCALIBRATIONUTIL_H
+
+/**
+ * @}
+ * @}
+ */

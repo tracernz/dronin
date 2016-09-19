@@ -59,3 +59,8 @@ signals:
 } // Core
 
 #endif // EVENTFILTERINGMAINWINDOW_H
+
+/**
+ * @}
+ * @}
+ */

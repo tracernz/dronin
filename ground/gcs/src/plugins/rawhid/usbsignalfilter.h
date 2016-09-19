@@ -55,3 +55,8 @@ public:
     USBSignalFilter(QList<int> vid, int pid, int boardModel, int runState);
 };
 #endif // USBSIGNALFILTER_H
+
+/**
+ * @}
+ * @}
+ */

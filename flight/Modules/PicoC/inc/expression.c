@@ -1583,4 +1583,3 @@ long ExpressionParseInt(struct ParseState *Parser)
     
     return Result;
 }
-

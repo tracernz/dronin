@@ -50,3 +50,8 @@ public:
 };
 
 #endif // SYSTEMHEALTHGADGETFACTORY_H_
+
+/**
+ * @}
+ * @}
+ */

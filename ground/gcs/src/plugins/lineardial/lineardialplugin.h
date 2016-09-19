@@ -48,3 +48,8 @@ private:
    LineardialGadgetFactory *mf;
 };
 #endif /* LINEARDIALPLUGIN_H_ */
+
+/**
+ * @}
+ * @}
+ */

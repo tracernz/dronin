@@ -265,3 +265,8 @@ static void collectStats(FlightStatsData *stats)
 	// update things for next call
 	lastPositionActual = positionActual;
 }
+
+/**
+ * @}
+ * @}
+ */

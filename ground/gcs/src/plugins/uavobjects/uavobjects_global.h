@@ -38,3 +38,8 @@
 #endif
 
 #endif // UAVOBJECTS_GLOBAL_H
+
+/**
+ * @}
+ * @}
+ */

@@ -536,3 +536,8 @@ namespace mapcontrol
 
     int WayPointItem::snumber=0;
 }
+
+/**
+ * @}
+ * @}
+ */

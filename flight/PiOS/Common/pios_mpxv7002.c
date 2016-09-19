@@ -105,3 +105,8 @@ float PIOS_MPXV7002_ReadAirspeed(uint8_t airspeedADCPin)
 }
 
 #endif /* PIOS_INCLUDE_MPXV7002 */
+
+/**
+ * @}
+ * @}
+ */

@@ -338,3 +338,8 @@ void ModeManager::triggerAction(const QString &actionId)
         }
     }
 }
+
+/**
+ * @}
+ * @}
+ */

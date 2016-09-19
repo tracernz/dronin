@@ -326,3 +326,8 @@ QString PathChooser::makeDialogTitle(const QString &title)
 }
 
 } // namespace Utils
+
+/**
+ * @}
+ * @}
+ */

@@ -166,3 +166,8 @@ void DialGadgetConfiguration::saveConfig(QSettings* settings) const {
 
 	settings->setValue("beSmooth", beSmooth);
 }
+
+/**
+ * @}
+ * @}
+ */

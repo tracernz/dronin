@@ -58,3 +58,8 @@ private:
 
 
 #endif // LoggingGADGET_H_
+
+/**
+ * @}
+ * @}
+ */

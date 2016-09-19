@@ -45,3 +45,8 @@ public:
 } // namespace ExtensionSystem
 
 #endif // PLUGINVIEW_P_H
+
+/**
+ * @}
+ * @}
+ */

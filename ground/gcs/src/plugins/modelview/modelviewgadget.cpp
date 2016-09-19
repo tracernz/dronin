@@ -47,3 +47,8 @@ void ModelViewGadget::loadConfiguration(IUAVGadgetConfiguration *config)
     m_widget->setVboEnable(m->vboEnabled());
     m_widget->reloadScene();
 }
+
+/**
+ * @}
+ * @}
+ */

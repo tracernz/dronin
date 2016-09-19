@@ -61,3 +61,8 @@ private:
 } // namespace ExtensionSystem
 
 #endif
+
+/**
+ * @}
+ * @}
+ */

@@ -80,3 +80,8 @@ private slots:
 };
 
 #endif // HISTOGRAMSCOPECONFIG_H
+
+/**
+ * @}
+ * @}
+ */

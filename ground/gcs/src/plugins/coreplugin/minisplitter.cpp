@@ -101,3 +101,8 @@ MiniSplitter::MiniSplitter(Qt::Orientation orientation)
     setChildrenCollapsible(false);
     setProperty("minisplitter", true);
 }
+
+/**
+ * @}
+ * @}
+ */

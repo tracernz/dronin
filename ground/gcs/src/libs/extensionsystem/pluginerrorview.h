@@ -59,3 +59,8 @@ private:
 } // namespace ExtensionSystem
 
 #endif // PLUGINERRORVIEW_H
+
+/**
+ * @}
+ * @}
+ */

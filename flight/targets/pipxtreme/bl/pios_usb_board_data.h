@@ -51,3 +51,8 @@
 #define PIOS_USB_BOARD_BL_HID_HAS_NO_LENGTH_BYTE
 
 #endif	/* PIOS_USB_BOARD_DATA_H */
+
+/**
+ * @}
+ * @}
+ */

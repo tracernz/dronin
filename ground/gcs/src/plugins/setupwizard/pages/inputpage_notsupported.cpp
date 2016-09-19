@@ -51,3 +51,8 @@ bool InputPageNotSupported::validatePage()
 {
     return true;
 }
+
+/**
+ * @}
+ * @}
+ */

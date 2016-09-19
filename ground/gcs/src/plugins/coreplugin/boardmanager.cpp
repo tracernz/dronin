@@ -131,3 +131,8 @@ IBoardType *BoardManager::getBoard(int type)
 
 
 } // Core
+
+/**
+ * @}
+ * @}
+ */

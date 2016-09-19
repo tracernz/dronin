@@ -632,3 +632,8 @@ void  NotifyPluginOptionsPage::on_FinishedPlaying()
 {
     _testSound->stop();
 }
+
+/**
+ * @}
+ * @}
+ */

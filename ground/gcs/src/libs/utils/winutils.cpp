@@ -113,3 +113,8 @@ QTCREATOR_UTILS_EXPORT QString winGetDLLVersion(WinDLLVersionType t,
 }
 
 } // namespace Utils
+
+/**
+ * @}
+ * @}
+ */

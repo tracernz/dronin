@@ -258,3 +258,8 @@ void Aggregate::remove(QObject *component)
     m_components.removeAll(component);
     disconnect(component, SIGNAL(destroyed(QObject*)), this, SLOT(deleteSelf(QObject*)));
 }
+
+/**
+ * @}
+ * @}
+ */

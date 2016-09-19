@@ -96,3 +96,8 @@ private:
 } // namespace Core
 
 #endif // WORKSPACESETTINGS_H
+
+/**
+ * @}
+ * @}
+ */

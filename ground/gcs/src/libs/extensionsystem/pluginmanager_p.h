@@ -90,3 +90,8 @@ private:
 } // namespace ExtensionSystem
 
 #endif // PLUGINMANAGER_P_H
+
+/**
+ * @}
+ * @}
+ */

@@ -45,3 +45,8 @@ void TauLinkGadget::loadConfiguration(IUAVGadgetConfiguration* config)
 {
     Q_UNUSED(config);
 }
+
+/**
+ * @}
+ * @}
+ */

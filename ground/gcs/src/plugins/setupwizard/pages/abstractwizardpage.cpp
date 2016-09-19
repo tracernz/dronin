@@ -45,3 +45,8 @@ Core::IBoardType *AbstractWizardPage::getControllerType() const
     UAVObjectUtilManager *utilMngr = pm->getObject<UAVObjectUtilManager>();
     return utilMngr->getBoardType();
 }
+
+/**
+ * @}
+ * @}
+ */

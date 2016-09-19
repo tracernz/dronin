@@ -50,3 +50,8 @@ private:
 };
 
 #endif // USBDEVICE_H
+
+/**
+ * @}
+ * @}
+ */

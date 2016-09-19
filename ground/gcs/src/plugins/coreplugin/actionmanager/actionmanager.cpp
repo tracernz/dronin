@@ -497,3 +497,8 @@ void ActionManagerPrivate::saveSettings(QSettings *settings)
 
     settings->endArray();
 }
+
+/**
+ * @}
+ * @}
+ */

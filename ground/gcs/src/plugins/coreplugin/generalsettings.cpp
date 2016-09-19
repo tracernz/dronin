@@ -393,3 +393,8 @@ void GeneralSettings::slotAutoConnect(int value)
     else
         m_page->checkAutoSelect->setEnabled(true);
 }
+
+/**
+ * @}
+ * @}
+ */

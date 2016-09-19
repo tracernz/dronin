@@ -113,3 +113,8 @@ void PIOS_Board_Init() {
 
 #endif	/* PIOS_INCLUDE_USB */
 }
+
+/**
+ * @}
+ * @}
+ */

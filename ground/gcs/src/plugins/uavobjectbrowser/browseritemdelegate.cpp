@@ -98,3 +98,8 @@ QSize BrowserItemDelegate::sizeHint(const QStyleOptionViewItem & option, const Q
     Q_UNUSED(index);
     return QSpinBox().sizeHint();
 }
+
+/**
+ * @}
+ * @}
+ */

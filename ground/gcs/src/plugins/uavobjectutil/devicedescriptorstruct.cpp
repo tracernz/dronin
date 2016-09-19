@@ -75,3 +75,8 @@ QPixmap deviceDescriptorStruct::idToBoardPicture(quint16 id)
     qDebug() << "Not found";
     return QPixmap();
 }
+
+/**
+ * @}
+ * @}
+ */

@@ -1439,3 +1439,8 @@ bool MainWindow::showWarningWithOptions(const QString &title,
     }
     return false;
 }
+
+/**
+ * @}
+ * @}
+ */

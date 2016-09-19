@@ -48,3 +48,8 @@ public:
 };
 
 #endif // TELEMETRYSCHEDULERGADGETFACTORY_H_
+
+/**
+ * @}
+ * @}
+ */

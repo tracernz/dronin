@@ -62,3 +62,8 @@ private:
 };
 
 #endif /* LoggingGADGETWIDGET_H_ */
+
+/**
+ * @}
+ * @}
+ */

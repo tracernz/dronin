@@ -176,3 +176,8 @@ void ScopeGadgetConfiguration::saveConfig(QSettings* qSettings) const {
 
     m_scope->saveConfiguration(qSettings);
 }
+
+/**
+ * @}
+ * @}
+ */

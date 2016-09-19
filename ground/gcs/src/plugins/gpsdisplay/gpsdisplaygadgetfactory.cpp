@@ -56,3 +56,8 @@ IOptionsPage *GpsDisplayGadgetFactory::createOptionsPage(IUAVGadgetConfiguration
 {
     return new GpsDisplayGadgetOptionsPage(qobject_cast<GpsDisplayGadgetConfiguration *>(config));
 }
+
+/**
+ * @}
+ * @}
+ */

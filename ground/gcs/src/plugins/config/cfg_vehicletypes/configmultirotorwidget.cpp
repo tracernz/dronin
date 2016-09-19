@@ -1096,3 +1096,8 @@ bool ConfigMultiRotorWidget::throwConfigError(int numMotors)
     }
     return error;
 }
+
+/**
+ * @}
+ * @}
+ */

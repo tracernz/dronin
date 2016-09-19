@@ -137,3 +137,7 @@ void PluginDialog::openErrorDetails()
     dialog.exec();
 }
 
+/**
+ * @}
+ * @}
+ */

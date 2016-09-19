@@ -163,3 +163,8 @@ protected:
 
 };
 #endif // GUIVEHICLECONFIG_H
+
+/**
+ * @}
+ * @}
+ */

@@ -53,3 +53,8 @@ private:
 };
 
 #endif // LoggingGADGETFACTORY_H_
+
+/**
+ * @}
+ * @}
+ */

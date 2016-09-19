@@ -49,3 +49,8 @@ void UploaderGadget::loadConfiguration(IUAVGadgetConfiguration* config)
 }
 
 }
+
+/**
+ * @}
+ * @}
+ */

@@ -78,3 +78,8 @@ private:
 };
 
 #endif // CONFIGGADGETWIDGET_H
+
+/**
+ * @}
+ * @}
+ */

@@ -349,3 +349,8 @@ void ConfigGadgetWidget::tabAboutToChange(int i, bool * proceed)
         }
     }
 }
+
+/**
+ * @}
+ * @}
+ */

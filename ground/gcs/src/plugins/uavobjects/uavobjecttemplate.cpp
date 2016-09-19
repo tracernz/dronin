@@ -155,3 +155,8 @@ $(NAME)* $(NAME)::GetInstance(UAVObjectManager* objMngr, quint32 instID)
 }
 
 $(PROPERTIES_IMPL)
+
+/**
+ * @}
+ * @}
+ */

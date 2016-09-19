@@ -54,3 +54,8 @@ private:
 };
 }
 #endif // PLATECARREEPROJECTIONPERGO_H
+
+/**
+ * @}
+ * @}
+ */

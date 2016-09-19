@@ -57,3 +57,8 @@ private:
 };
 
 #endif // SYSTEMHEALTHGADGETCONFIGURATION_H
+
+/**
+ * @}
+ * @}
+ */

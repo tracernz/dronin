@@ -467,3 +467,8 @@ bool flash_read(uint8_t * buffer, uint32_t adr, DFUProgType type) {
 		return false;
 	}
 }
+
+/**
+ * @}
+ * @}
+ */

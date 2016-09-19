@@ -55,3 +55,8 @@ void ConfigGadgetOptionsPage::apply()
 void ConfigGadgetOptionsPage::finish(){
     //todo:implement
 }
+
+/**
+ * @}
+ * @}
+ */

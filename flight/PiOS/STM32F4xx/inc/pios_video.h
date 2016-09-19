@@ -150,3 +150,8 @@ extern const struct pios_video_type_boundary *pios_video_type_boundary_act;
 #define SWAP_BUFFS(tmp, a, b) { tmp = a; a = b; b = tmp; }
 
 #endif /* PIOS_VIDEO_H */
+
+/**
+ * @}
+ * @}
+ */

@@ -94,3 +94,8 @@ private:
 };
 
 #endif /* WAYPOINT_DIALOG_H */
+
+/**
+ * @}
+ * @}
+ */

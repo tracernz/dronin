@@ -103,3 +103,8 @@ private:
 };
 
 #endif // MIXERCURVE_H
+
+/**
+ * @}
+ * @}
+ */

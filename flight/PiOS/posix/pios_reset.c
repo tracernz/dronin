@@ -49,3 +49,8 @@ int16_t PIOS_RESET_GetResetReason (void)
 {
 	return PIOS_RESET_FLAG_SOFTWARE;
 }
+
+/**
+ * @}
+ * @}
+ */

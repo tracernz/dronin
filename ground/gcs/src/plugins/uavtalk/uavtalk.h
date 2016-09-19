@@ -144,3 +144,8 @@ protected:
 };
 
 #endif // UAVTALK_H
+
+/**
+ * @}
+ * @}
+ */

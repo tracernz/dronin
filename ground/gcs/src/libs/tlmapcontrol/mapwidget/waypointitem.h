@@ -220,3 +220,8 @@ signals:
 };
 }
 #endif // WAYPOINTITEM_H
+
+/**
+ * @}
+ * @}
+ */

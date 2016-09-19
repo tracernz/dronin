@@ -398,4 +398,3 @@ int32_t AlarmString(SystemAlarmsData *alarm, char *buf, size_t buflen, bool blin
 /**
  * @}
  */
-

@@ -57,3 +57,7 @@ private:
 }
 #endif // UPLOADERGADGET_H
 
+/**
+ * @}
+ * @}
+ */

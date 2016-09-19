@@ -53,3 +53,8 @@ void MapRipForm::SetNumberOfTiles(const int &total, const int &actual)
 {
     ui->statuslabel->setText(QString("Downloading tile %1 of %2").arg(actual).arg(total));
 }
+
+/**
+ * @}
+ * @}
+ */

@@ -49,3 +49,8 @@ public:
 };
 
 #endif // CONFIGGADGETOPTIONSPAGE_H
+
+/**
+ * @}
+ * @}
+ */

@@ -52,3 +52,8 @@ uint16_t PIOS_WDG_GetActiveFlags();
 void PIOS_WDG_Clear(void);
 
 #endif
+
+/**
+ * @}
+ * @}
+ */

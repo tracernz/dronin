@@ -485,3 +485,8 @@ void NMEAParser::nmeaProcessGPZDA(char *packet)
     GpsData.GPSdate = day * 10000 + month * 100 + (year - 2000);
     emit datetime(GpsData.GPSdate, GpsData.GPStime);
 }
+
+/**
+ * @}
+ * @}
+ */

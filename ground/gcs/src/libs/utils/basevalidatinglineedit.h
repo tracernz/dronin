@@ -99,3 +99,8 @@ private:
 } // namespace Utils
 
 #endif // BASEVALIDATINGLINEEDIT_H
+
+/**
+ * @}
+ * @}
+ */

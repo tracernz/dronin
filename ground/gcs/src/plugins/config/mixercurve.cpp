@@ -481,3 +481,8 @@ void MixerCurve::resizeEvent(QResizeEvent* event)
 
     m_curve->resizeEvent(event);
 }
+
+/**
+ * @}
+ * @}
+ */

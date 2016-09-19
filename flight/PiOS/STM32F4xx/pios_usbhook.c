@@ -490,3 +490,7 @@ static USBD_Class_cb_TypeDef class_callbacks = {
 #endif	/* USB_SUPPORT_USER_STRING_DESC */
 };
 
+/**
+ * @}
+ * @}
+ */

@@ -58,3 +58,7 @@ IOptionsPage *SystemHealthGadgetFactory::createOptionsPage(IUAVGadgetConfigurati
     return new SystemHealthGadgetOptionsPage(qobject_cast<SystemHealthGadgetConfiguration*>(config));
 }
 
+/**
+ * @}
+ * @}
+ */

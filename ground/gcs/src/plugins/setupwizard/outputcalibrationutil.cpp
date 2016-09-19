@@ -112,3 +112,8 @@ void OutputCalibrationUtil::setChannelOutputValue(quint16 value)
         actuatorCommand->setData(data);
     }
 }
+
+/**
+ * @}
+ * @}
+ */

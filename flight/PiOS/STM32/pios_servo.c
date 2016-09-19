@@ -427,7 +427,7 @@ static uint32_t max_timer_clock(TIM_TypeDef *timer)
 		return apb_clock * 2;
 }
 
-/*
+/**
  * @}
  * @}
  */

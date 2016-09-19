@@ -45,3 +45,8 @@ void PathPlannerGadget::loadConfiguration(IUAVGadgetConfiguration* config)
 {
     Q_UNUSED(config);
 }
+
+/**
+ * @}
+ * @}
+ */

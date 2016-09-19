@@ -56,3 +56,8 @@ private:
 } // namespace ExtensionSystem
 
 #endif // OPTIONSPARSER_H
+
+/**
+ * @}
+ * @}
+ */

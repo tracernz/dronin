@@ -64,3 +64,8 @@ private:
     Noise noise;
 };
 #endif // HITLNOISEGENERATION_H
+
+/**
+ * @}
+ * @}
+ */

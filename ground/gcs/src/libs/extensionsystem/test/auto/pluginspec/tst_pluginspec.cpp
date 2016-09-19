@@ -272,3 +272,8 @@ void tst_PluginSpec::initializeExtensions()
 QTEST_MAIN(tst_PluginSpec)
 
 #include "tst_pluginspec.moc"
+
+/**
+ * @}
+ * @}
+ */

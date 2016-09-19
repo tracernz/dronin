@@ -68,3 +68,8 @@ private slots:
 };
 
 #endif /* PICOCGADGETWIDGET_H_ */
+
+/**
+ * @}
+ * @}
+ */

@@ -845,3 +845,8 @@ bool FlightDataModel::replaceData(FlightDataModel *newModel)
 
     return true;
 }
+
+/**
+ * @}
+ * @}
+ */

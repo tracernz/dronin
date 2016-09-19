@@ -120,3 +120,8 @@ void MapCircle::setOpacitySlot(qreal opacity)
 }
 
 }
+
+/**
+ * @}
+ * @}
+ */

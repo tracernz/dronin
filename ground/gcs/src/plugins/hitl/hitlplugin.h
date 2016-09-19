@@ -73,3 +73,8 @@ private:
 
 };
 #endif /* HITLPLUGIN_H */
+
+/**
+ * @}
+ * @}
+ */

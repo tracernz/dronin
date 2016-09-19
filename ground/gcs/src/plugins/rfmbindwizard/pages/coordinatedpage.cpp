@@ -118,3 +118,7 @@ bool CoordinatedPage::bindCoordinator()
     return true;
 }
 
+/**
+ * @}
+ * @}
+ */

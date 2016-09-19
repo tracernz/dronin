@@ -1471,3 +1471,8 @@ void lla_to_ned(int32_t lattitude, int32_t longitude, float altitude, float *NED
 	NED[1] = T[1] * dL[1];
 	NED[2] = T[2] * dL[2];
 }
+
+/**
+ * @}
+ * @}
+ */

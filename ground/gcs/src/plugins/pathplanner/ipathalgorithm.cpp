@@ -29,3 +29,8 @@ IPathAlgorithm::IPathAlgorithm(QObject *parent) :
     QObject(parent)
 {
 }
+
+/**
+ * @}
+ * @}
+ */

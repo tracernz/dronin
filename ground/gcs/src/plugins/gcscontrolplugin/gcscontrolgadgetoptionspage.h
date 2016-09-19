@@ -98,3 +98,8 @@ protected slots:
 };
 
 #endif // GCSCONTROLGADGETOPTIONSPAGE_H
+
+/**
+ * @}
+ * @}
+ */

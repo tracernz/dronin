@@ -53,3 +53,8 @@ public slots:
 };
 
 #endif // TELEMETRYPARSER_H
+
+/**
+ * @}
+ * @}
+ */

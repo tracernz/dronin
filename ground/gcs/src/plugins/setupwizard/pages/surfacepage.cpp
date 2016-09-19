@@ -41,3 +41,8 @@ SurfacePage::~SurfacePage()
 {
     delete ui;
 }
+
+/**
+ * @}
+ * @}
+ */

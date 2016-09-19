@@ -199,4 +199,3 @@ extern "C" {
   #endif
 
 #endif  /* POLARST_H  */
-

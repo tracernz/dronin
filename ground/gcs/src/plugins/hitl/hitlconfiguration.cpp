@@ -176,3 +176,7 @@ void HITLConfiguration::saveConfig(QSettings* qSettings) const {
     qSettings->setValue("airspeedActualRate", settings.airspeedActualRate);
 }
 
+/**
+ * @}
+ * @}
+ */

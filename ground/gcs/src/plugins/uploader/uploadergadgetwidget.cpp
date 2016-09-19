@@ -2035,3 +2035,8 @@ bool UploaderGadgetWidget::FirmwareCheckForUpdate(deviceDescriptorStruct device)
     }
     return false;
 }
+
+/**
+ * @}
+ * @}
+ */

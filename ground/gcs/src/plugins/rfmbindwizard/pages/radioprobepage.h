@@ -80,3 +80,8 @@ signals:
 };
 
 #endif // RADIOPROBEPAGE_H
+
+/**
+ * @}
+ * @}
+ */

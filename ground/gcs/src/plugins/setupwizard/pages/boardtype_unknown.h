@@ -58,3 +58,8 @@ private:
 };
 
 #endif // BOARDTYPE_UNKNOWN_H
+
+/**
+ * @}
+ * @}
+ */

@@ -54,3 +54,8 @@ private slots:
 };
 
 #endif // CONFIGCAMERASTABILIZATIONWIDGET_H
+
+/**
+ * @}
+ * @}
+ */

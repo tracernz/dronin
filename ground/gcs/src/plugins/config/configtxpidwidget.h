@@ -47,3 +47,8 @@ private slots:
 };
 
 #endif // CONFIGTXPIDWIDGET_H
+
+/**
+ * @}
+ * @}
+ */

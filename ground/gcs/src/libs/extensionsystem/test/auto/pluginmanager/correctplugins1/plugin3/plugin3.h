@@ -51,3 +51,8 @@ private:
 } // namespace Plugin3
 
 #endif // PLUGIN3_H
+
+/**
+ * @}
+ * @}
+ */

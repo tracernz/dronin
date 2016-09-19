@@ -123,3 +123,8 @@ bool PIOS_SENSORS_GetMissing(enum pios_sensor_type type)
 	return false;
 #endif
 }
+
+/**
+ * @}
+ * @}
+ */

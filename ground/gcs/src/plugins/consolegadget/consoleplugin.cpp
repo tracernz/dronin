@@ -63,3 +63,7 @@ void ConsolePlugin::shutdown()
 }
 Q_EXPORT_PLUGIN(ConsolePlugin)
 
+/**
+ * @}
+ * @}
+ */

@@ -67,3 +67,8 @@ private:
 };
 
 #endif // OPMAP_GADGETOPTIONSPAGE_H
+
+/**
+ * @}
+ * @}
+ */

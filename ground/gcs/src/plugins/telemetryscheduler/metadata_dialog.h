@@ -64,3 +64,8 @@ private:
 
 
 #endif /* METADATA_DIALOG_H_ */
+
+/**
+ * @}
+ * @}
+ */

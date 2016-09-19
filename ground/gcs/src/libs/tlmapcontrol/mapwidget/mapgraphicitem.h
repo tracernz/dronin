@@ -213,3 +213,8 @@ namespace mapcontrol
     };
 }
 #endif // MAPGRAPHICITEM_H
+
+/**
+ * @}
+ * @}
+ */

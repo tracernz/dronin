@@ -55,3 +55,8 @@ bool UAVObjectUtilPlugin::initialize(const QStringList & arguments, QString * er
 void UAVObjectUtilPlugin::shutdown()
 {
 }
+
+/**
+ * @}
+ * @}
+ */

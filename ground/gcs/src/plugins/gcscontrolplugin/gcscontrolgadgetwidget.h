@@ -77,3 +77,8 @@ private:
 };
 
 #endif /* GCSControlGADGETWIDGET_H_ */
+
+/**
+ * @}
+ * @}
+ */

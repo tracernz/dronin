@@ -136,3 +136,8 @@ private:
 } // namespace Core
 
 #endif // UAVGADGETMANAGER_H
+
+/**
+ * @}
+ * @}
+ */

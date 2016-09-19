@@ -432,3 +432,8 @@ void LineardialGadgetWidget::moveIndex()
     
     update();
 }
+
+/**
+ * @}
+ * @}
+ */

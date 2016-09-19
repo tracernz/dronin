@@ -471,3 +471,8 @@ void ConfigStabilizationWidget::hangtimeToggle(bool enabled)
     else if(m_stabilization->sbHangtimeDuration->value() == 0.0)
         m_stabilization->sbHangtimeDuration->setValue(2.5); // default duration in s
 }
+
+/**
+ * @}
+ * @}
+ */

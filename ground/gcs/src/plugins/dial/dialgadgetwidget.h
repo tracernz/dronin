@@ -150,3 +150,8 @@ private:
    bool beSmooth;
 };
 #endif /* DIALGADGETWIDGET_H_ */
+
+/**
+ * @}
+ * @}
+ */

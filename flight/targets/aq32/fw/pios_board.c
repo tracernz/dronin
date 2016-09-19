@@ -619,4 +619,5 @@ pios_mpu_cfg.default_samplerate;
 
 /**
  * @}
+ * @}
  */

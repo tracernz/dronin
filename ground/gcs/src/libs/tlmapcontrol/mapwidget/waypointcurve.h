@@ -90,3 +90,8 @@ public slots:
 }
 
 #endif // WAYPOINTCURVE_H
+
+/**
+ * @}
+ * @}
+ */

@@ -62,3 +62,8 @@ void GpsDisplayPlugin::shutdown()
 {
     // Do nothing
 }
+
+/**
+ * @}
+ * @}
+ */

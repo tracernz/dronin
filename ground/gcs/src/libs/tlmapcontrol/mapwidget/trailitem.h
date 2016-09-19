@@ -62,4 +62,7 @@ namespace mapcontrol
 }
 #endif // TRAILITEM_H
 
-
+/**
+ * @}
+ * @}
+ */

@@ -115,3 +115,8 @@ DefaultHwSettingsWidget::~DefaultHwSettingsWidget()
 {
     delete defaultHWSettingsWidget;
 }
+
+/**
+ * @}
+ * @}
+ */

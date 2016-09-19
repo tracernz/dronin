@@ -58,3 +58,7 @@ IOptionsPage *QmlViewGadgetFactory::createOptionsPage(IUAVGadgetConfiguration *c
     return new QmlViewGadgetOptionsPage(qobject_cast<QmlViewGadgetConfiguration*>(config));
 }
 
+/**
+ * @}
+ * @}
+ */

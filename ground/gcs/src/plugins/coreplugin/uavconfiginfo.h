@@ -94,3 +94,8 @@ private:
 } // namespace Core
 
 #endif // UAVCONFIGINFO_H
+
+/**
+ * @}
+ * @}
+ */

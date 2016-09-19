@@ -330,3 +330,8 @@ TEST_F(DsmTest, DX7_DSM2_10BIT) {
 
   fclose(fid);
 }
+
+/**
+ * @}
+ * @}
+ */

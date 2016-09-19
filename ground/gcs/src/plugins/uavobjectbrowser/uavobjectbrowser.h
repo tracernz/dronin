@@ -58,3 +58,8 @@ private:
 
 
 #endif // UAVOBJECTBROWSER_H_
+
+/**
+ * @}
+ * @}
+ */

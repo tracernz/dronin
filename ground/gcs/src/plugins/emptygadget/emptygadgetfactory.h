@@ -48,3 +48,8 @@ public:
 };
 
 #endif // EMPTYGADGETFACTORY_H_
+
+/**
+ * @}
+ * @}
+ */

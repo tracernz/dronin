@@ -45,3 +45,8 @@ IUAVGadget* TauLinkGadgetFactory::createGadget(QWidget *parent) {
     TauLinkGadgetWidget *gadgetWidget = new TauLinkGadgetWidget(parent);
     return new TauLinkGadget(QString("TauLinkGadget"), gadgetWidget, parent);
 }
+
+/**
+ * @}
+ * @}
+ */

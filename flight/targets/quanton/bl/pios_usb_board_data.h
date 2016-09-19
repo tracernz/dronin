@@ -52,4 +52,7 @@
 
 #endif	/* PIOS_USB_BOARD_DATA_H */
 
-
+/**
+ * @}
+ * @}
+ */

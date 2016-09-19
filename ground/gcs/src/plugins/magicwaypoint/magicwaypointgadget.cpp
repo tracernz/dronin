@@ -47,3 +47,8 @@ void MagicWaypointGadget::loadConfiguration(IUAVGadgetConfiguration* config)
 {
     Q_UNUSED(config);
 }
+
+/**
+ * @}
+ * @}
+ */

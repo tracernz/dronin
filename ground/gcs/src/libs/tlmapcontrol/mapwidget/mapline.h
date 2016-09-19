@@ -63,3 +63,8 @@ public slots:
 };
 }
 #endif // MAPLINE_H
+
+/**
+ * @}
+ * @}
+ */

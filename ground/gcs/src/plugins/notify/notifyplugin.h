@@ -107,3 +107,8 @@ private:
 }; 
 
 #endif // SOUNDNOTIFYPLUGIN_H
+
+/**
+ * @}
+ * @}
+ */

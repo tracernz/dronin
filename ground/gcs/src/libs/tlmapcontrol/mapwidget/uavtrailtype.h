@@ -91,3 +91,8 @@ namespace mapcontrol {
 }
 
 #endif // UAVTRAILTYPE_H
+
+/**
+ * @}
+ * @}
+ */

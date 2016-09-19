@@ -47,3 +47,8 @@ private:
    QmlViewGadgetFactory *mf;
 };
 #endif /* QMLVIEWPLUGIN_H_ */
+
+/**
+ * @}
+ * @}
+ */

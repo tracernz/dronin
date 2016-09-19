@@ -519,4 +519,3 @@ static void SettingsUpdatedCb(UAVObjEvent * ev, void *ctx, void *obj, int len)
  * @}
  * @}
  */
-

@@ -36,3 +36,8 @@ DebugGadget::~DebugGadget()
 {
     delete m_widget;
 }
+
+/**
+ * @}
+ * @}
+ */

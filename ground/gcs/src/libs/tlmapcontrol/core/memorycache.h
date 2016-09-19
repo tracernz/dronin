@@ -50,3 +50,8 @@ namespace core {
 
 }
 #endif // MEMORYCACHE_H
+
+/**
+ * @}
+ * @}
+ */

@@ -64,3 +64,8 @@ void UploaderPlugin::testStuff()
 {
     QCOMPARE(QString("hello").toUpper(), QString("HELLO"));
 }
+
+/**
+ * @}
+ * @}
+ */

@@ -55,3 +55,8 @@ private:
 };
 
 #endif // PICOCGADGET_H_
+
+/**
+ * @}
+ * @}
+ */

@@ -71,3 +71,8 @@ private slots:
 };
 
 #endif // DIALGADGETOPTIONSPAGE_H
+
+/**
+ * @}
+ * @}
+ */

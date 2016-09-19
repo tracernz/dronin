@@ -62,3 +62,8 @@ void QmlViewGadgetConfiguration::saveConfig(QSettings* qSettings) const {
     QString dialFile = Utils::PathUtils().RemoveDataPath(m_defaultDial);
     qSettings->setValue("dialFile", dialFile);
 }
+
+/**
+ * @}
+ * @}
+ */

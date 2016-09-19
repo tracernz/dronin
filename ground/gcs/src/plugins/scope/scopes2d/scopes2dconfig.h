@@ -70,3 +70,8 @@ private:
 };
 
 #endif // SCOPES2D_H
+
+/**
+ * @}
+ * @}
+ */

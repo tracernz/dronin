@@ -188,3 +188,8 @@ void OPMapGadgetOptionsPage::finish()
 {
     delete m_page;
 }
+
+/**
+ * @}
+ * @}
+ */

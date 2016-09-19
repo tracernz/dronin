@@ -38,3 +38,8 @@
 #endif
 
 #endif // WELCOME_GLOBAL_H
+
+/**
+ * @}
+ * @}
+ */

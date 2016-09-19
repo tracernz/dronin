@@ -36,3 +36,8 @@
 #endif
 
 #endif // GCSCONTROL_GLOBAL_H
+
+/**
+ * @}
+ * @}
+ */

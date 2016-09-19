@@ -113,3 +113,8 @@ void PIOS_LED_Toggle(uint32_t led)
 }
 
 #endif
+
+/**
+ * @}
+ * @}
+ */

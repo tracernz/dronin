@@ -105,3 +105,8 @@ protected:
 };
 
 #endif // UAVOBJECTFIELD_H
+
+/**
+ * @}
+ * @}
+ */

@@ -255,3 +255,8 @@ static void PIOS_SERIAL_RegisterTxCallback(uintptr_t serial_id, pios_com_callbac
 }
 
 #endif
+
+/**
+ * @}
+ * @}
+ */

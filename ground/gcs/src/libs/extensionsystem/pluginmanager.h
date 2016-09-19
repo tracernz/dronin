@@ -133,3 +133,8 @@ private:
 } // namespace ExtensionSystem
 
 #endif // EXTENSIONSYSTEM_PLUGINMANAGER_H
+
+/**
+ * @}
+ * @}
+ */

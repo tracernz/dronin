@@ -53,3 +53,8 @@ private:
 
 }
 #endif // MERCATORPROJECTION_H
+
+/**
+ * @}
+ * @}
+ */

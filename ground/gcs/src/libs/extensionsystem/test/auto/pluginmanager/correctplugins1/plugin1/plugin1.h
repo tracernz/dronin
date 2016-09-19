@@ -52,3 +52,8 @@ private:
 } // namespace Plugin1
 
 #endif // PLUGIN1_H
+
+/**
+ * @}
+ * @}
+ */

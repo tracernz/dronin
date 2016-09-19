@@ -37,3 +37,8 @@ EmptyGadget::~EmptyGadget()
 {
     delete m_widget;
 }
+
+/**
+ * @}
+ * @}
+ */

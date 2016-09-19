@@ -89,3 +89,8 @@ public:
 };
 
 #endif // VEHICLECONFIGURATIONSOURCE_H
+
+/**
+ * @}
+ * @}
+ */

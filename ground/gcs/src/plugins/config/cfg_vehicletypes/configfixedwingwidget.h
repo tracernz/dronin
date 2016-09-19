@@ -69,3 +69,8 @@ private slots:
 
 
 #endif // CONFIGFIXEDWINGWIDGET_H
+
+/**
+ * @}
+ * @}
+ */

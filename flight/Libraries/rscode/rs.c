@@ -204,4 +204,3 @@ encode_data (unsigned char msg[], int nbytes, unsigned char dst[])
 	
   build_codeword(msg, nbytes, dst);
 }
-

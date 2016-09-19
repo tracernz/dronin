@@ -78,3 +78,8 @@ namespace core {
         return b;
     }
 }
+
+/**
+ * @}
+ * @}
+ */

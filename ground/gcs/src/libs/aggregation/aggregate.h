@@ -128,3 +128,8 @@ template <typename T> QList<T *> query_all(QObject *obj)
 } // namespace Aggregation
 
 #endif // QAGGREGATION_H
+
+/**
+ * @}
+ * @}
+ */

@@ -200,3 +200,8 @@ void MixerNode::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     update();
     QGraphicsItem::mouseReleaseEvent(event);
 }
+
+/**
+ * @}
+ * @}
+ */

@@ -68,3 +68,8 @@ namespace core {
 
 }
 #endif // CACHEITEMQUEUE_H
+
+/**
+ * @}
+ * @}
+ */

@@ -62,3 +62,8 @@ void QmlViewPlugin::shutdown()
 {
    // Do nothing
 }
+
+/**
+ * @}
+ * @}
+ */

@@ -316,3 +316,7 @@ void FGSimulator::processUpdate(const QByteArray& inp)
     updateUAVOs(out);
 }
 
+/**
+ * @}
+ * @}
+ */

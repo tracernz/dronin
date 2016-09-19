@@ -58,3 +58,8 @@ void DebugPlugin::shutdown()
 {
     qInstallMessageHandler(0);
 }
+
+/**
+ * @}
+ * @}
+ */

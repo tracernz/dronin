@@ -1825,3 +1825,8 @@ void ConfigInputWidget::checkReprojection()
                           .arg(prefix.right(1)).arg(rep->currentText()).arg(axes.join(", ")));
     }
 }
+
+/**
+ * @}
+ * @}
+ */

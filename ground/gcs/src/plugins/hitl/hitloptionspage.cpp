@@ -176,3 +176,8 @@ void HITLOptionsPage::finish()
 {
     delete m_optionsPage;
 }
+
+/**
+ * @}
+ * @}
+ */

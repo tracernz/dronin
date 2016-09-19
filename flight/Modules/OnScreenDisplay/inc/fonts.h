@@ -58,3 +58,8 @@ struct FontEntry {
 
 
 #endif /* FONTS_H */
+
+/**
+ * @}
+ * @}
+ */

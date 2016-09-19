@@ -188,3 +188,8 @@ void ConnectionDiagram::on_saveButton_clicked()
         image.save(fileName);
     }
 }
+
+/**
+ * @}
+ * @}
+ */

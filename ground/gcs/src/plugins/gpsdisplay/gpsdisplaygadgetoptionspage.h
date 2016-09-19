@@ -64,3 +64,8 @@ private slots:
 };
 
 #endif // GPSDISPLAYGADGETOPTIONSPAGE_H
+
+/**
+ * @}
+ * @}
+ */

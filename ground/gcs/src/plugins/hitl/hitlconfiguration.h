@@ -61,3 +61,8 @@ private:
 };
 
 #endif // HITLCONFIGURATION_H
+
+/**
+ * @}
+ * @}
+ */

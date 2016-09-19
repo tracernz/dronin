@@ -57,3 +57,8 @@ namespace core {
 
 }
 #endif // KIBERTILECACHE_H
+
+/**
+ * @}
+ * @}
+ */

@@ -66,3 +66,8 @@ private slots:
 };
 
 #endif // CONTROLLERPAGE_H
+
+/**
+ * @}
+ * @}
+ */

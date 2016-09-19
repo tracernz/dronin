@@ -728,3 +728,8 @@ QString UAVObjectUtilManager::getGcsHash()
 }
 
 // ******************************
+
+/**
+ * @}
+ * @}
+ */

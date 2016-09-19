@@ -45,3 +45,8 @@ IUAVGadget* ConsoleGadgetFactory::createGadget(QWidget *parent) {
     ConsoleGadgetWidget* gadgetWidget = new ConsoleGadgetWidget(parent);
     return new ConsoleGadget(QString("ConsoleGadget"), gadgetWidget, parent);
 }
+
+/**
+ * @}
+ * @}
+ */

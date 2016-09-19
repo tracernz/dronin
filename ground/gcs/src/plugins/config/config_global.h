@@ -39,3 +39,8 @@
 
 
 #endif // CONFIG_GLOBAL_H
+
+/**
+ * @}
+ * @}
+ */

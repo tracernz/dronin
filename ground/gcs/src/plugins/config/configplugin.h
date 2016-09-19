@@ -71,3 +71,8 @@ private slots:
 };
 
 #endif // CONFIGPLUGIN_H
+
+/**
+ * @}
+ * @}
+ */

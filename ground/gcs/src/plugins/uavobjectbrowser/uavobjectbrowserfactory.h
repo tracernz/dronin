@@ -50,3 +50,8 @@ public:
 };
 
 #endif // UAVOBJECTBROWSERFACTORY_H_
+
+/**
+ * @}
+ * @}
+ */

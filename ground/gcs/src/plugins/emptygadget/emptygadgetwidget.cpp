@@ -48,3 +48,7 @@ EmptyGadgetWidget::~EmptyGadgetWidget()
    // Do nothing
 }
 
+/**
+ * @}
+ * @}
+ */

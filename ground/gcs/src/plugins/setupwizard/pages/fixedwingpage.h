@@ -47,3 +47,8 @@ private:
 };
 
 #endif // FIXEDWINGPAGE_H
+
+/**
+ * @}
+ * @}
+ */

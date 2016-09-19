@@ -33,3 +33,8 @@
 uint16_t PIOS_FrSkyRssi_Get();
 
 #endif /* PIOS_FRSKY_RSSI_H */
+
+/**
+ * @}
+ * @}
+ */

@@ -54,3 +54,8 @@ IUAVGadgetConfiguration *UploaderGadgetFactory::createConfiguration(QSettings* q
     Q_UNUSED(qSettings);
     return NULL;
 }
+
+/**
+ * @}
+ * @}
+ */

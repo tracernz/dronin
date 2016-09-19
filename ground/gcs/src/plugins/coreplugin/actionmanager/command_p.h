@@ -158,3 +158,8 @@ private:
 } // namespace Core
 
 #endif // COMMAND_P_H
+
+/**
+ * @}
+ * @}
+ */

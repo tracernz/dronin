@@ -88,3 +88,8 @@ public slots:
 
 
 #endif // SMARTSAVEBUTTON_H
+
+/**
+ * @}
+ * @}
+ */

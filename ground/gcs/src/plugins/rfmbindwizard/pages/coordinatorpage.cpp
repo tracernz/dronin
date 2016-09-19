@@ -110,3 +110,8 @@ bool CoordinatorPage::configureCoordinator()
 
     return true;
 }
+
+/**
+ * @}
+ * @}
+ */

@@ -41,3 +41,8 @@ extern bool PIOS_LED_GetStatus(uint32_t led_id); // Currently sim only
 
 
 #endif /* PIOS_LED_H */
+
+/**
+ * @}
+ * @}
+ */

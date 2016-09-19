@@ -299,4 +299,3 @@ int Convert_UPS_To_Geodetic(char   Hemisphere,
   }  /*  END OF if(!Error_Code) */
   return (Error_Code);
 }  /*  END OF Convert_UPS_To_Geodetic  */ 
-

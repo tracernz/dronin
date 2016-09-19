@@ -173,3 +173,8 @@ void GpsDisplayGadget::processNewSerialData(QByteArray serialData)
         parser->processInputStream(data[pos]);
     }
 }
+
+/**
+ * @}
+ * @}
+ */

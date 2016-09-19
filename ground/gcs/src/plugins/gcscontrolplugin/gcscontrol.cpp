@@ -224,3 +224,8 @@ void GCSControl::receiverActivitySlot()
     if(m_gcsReceiver)
         m_gcsReceiver->updated();
 }
+
+/**
+ * @}
+ * @}
+ */

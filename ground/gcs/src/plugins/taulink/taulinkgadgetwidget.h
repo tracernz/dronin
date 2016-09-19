@@ -51,3 +51,8 @@ private:
 };
 
 #endif /* TAULINKGADGETWIDGET_H_ */
+
+/**
+ * @}
+ * @}
+ */

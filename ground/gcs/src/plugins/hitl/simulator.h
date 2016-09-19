@@ -366,3 +366,8 @@ private:
 };
 
 #endif // ISIMULATOR_H
+
+/**
+ * @}
+ * @}
+ */

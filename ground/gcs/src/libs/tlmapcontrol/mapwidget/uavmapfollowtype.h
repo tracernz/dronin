@@ -87,3 +87,8 @@ namespace mapcontrol {
 }
 
 #endif // UAVMAPFOLLOWTYPE_H
+
+/**
+ * @}
+ * @}
+ */

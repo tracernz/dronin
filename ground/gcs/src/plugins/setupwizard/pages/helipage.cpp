@@ -41,3 +41,8 @@ HeliPage::~HeliPage()
 {
     delete ui;
 }
+
+/**
+ * @}
+ * @}
+ */

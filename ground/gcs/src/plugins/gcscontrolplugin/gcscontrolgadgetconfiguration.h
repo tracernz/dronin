@@ -95,3 +95,8 @@ class GCSControlGadgetConfiguration : public IUAVGadgetConfiguration
 };
 
 #endif // GCSCONTROLGADGETCONFIGURATION_H
+
+/**
+ * @}
+ * @}
+ */

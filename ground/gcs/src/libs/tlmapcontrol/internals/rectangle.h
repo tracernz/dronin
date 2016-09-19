@@ -156,3 +156,8 @@ private:
 };
 }
 #endif // RECTANGLE_H
+
+/**
+ * @}
+ * @}
+ */

@@ -94,3 +94,7 @@ void RfmBindWizard::pageChanged(int currId)
     button(QWizard::CancelButton)->setVisible(currId != PAGE_END);
 }
 
+/**
+ * @}
+ * @}
+ */

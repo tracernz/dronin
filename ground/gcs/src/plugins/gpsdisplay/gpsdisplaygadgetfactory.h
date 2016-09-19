@@ -49,3 +49,8 @@ public:
 };
 
 #endif // GPSDISPLAYGADGETFACTORY_H_
+
+/**
+ * @}
+ * @}
+ */

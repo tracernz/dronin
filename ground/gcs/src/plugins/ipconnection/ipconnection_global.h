@@ -37,3 +37,8 @@
 #endif
 
 #endif // IPconnection_GLOBAL_H
+
+/**
+ * @}
+ * @}
+ */

@@ -425,3 +425,8 @@ TEST_F(LogfsTestCookedMultiPart, WriteLarge) {
   memset(obj4_check, 0, sizeof(obj4_check));
   EXPECT_EQ(0, PIOS_FLASHFS_ObjLoad(fs_id_b, OBJ4_ID, 0, obj4_check, sizeof(obj4_check)));
 }
+
+/**
+ * @}
+ * @}
+ */

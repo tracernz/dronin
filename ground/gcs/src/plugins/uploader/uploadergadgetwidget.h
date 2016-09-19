@@ -148,3 +148,8 @@ private:
 };
 }
 #endif // UPLOADERGADGETWIDGET_H
+
+/**
+ * @}
+ * @}
+ */

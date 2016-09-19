@@ -82,3 +82,8 @@ private:
 };
 
 #endif // TELEMETRYMONITORWIDGET_H
+
+/**
+ * @}
+ * @}
+ */

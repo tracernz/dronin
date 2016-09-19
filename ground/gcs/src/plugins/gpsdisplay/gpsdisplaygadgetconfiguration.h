@@ -135,3 +135,8 @@ private:
 };
 
 #endif // GPSDISPLAYGADGETCONFIGURATION_H
+
+/**
+ * @}
+ * @}
+ */

@@ -48,3 +48,8 @@ public:
 };
 
 #endif // CONSOLEGADGETFACTORY_H_
+
+/**
+ * @}
+ * @}
+ */

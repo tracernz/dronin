@@ -37,3 +37,7 @@
 
 #endif // PICOC_GLOBAL_H
 
+/**
+ * @}
+ * @}
+ */

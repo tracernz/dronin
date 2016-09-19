@@ -174,3 +174,8 @@ void ControllerPage::connectDisconnect()
     }
     emit completeChanged();
 }
+
+/**
+ * @}
+ * @}
+ */

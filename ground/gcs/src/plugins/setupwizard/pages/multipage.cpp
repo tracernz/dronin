@@ -182,3 +182,8 @@ void MultiPage::updateImageAndDescription()
 
     ui->typeDescription->setText(description);
 }
+
+/**
+ * @}
+ * @}
+ */

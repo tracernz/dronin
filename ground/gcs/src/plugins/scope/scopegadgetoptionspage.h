@@ -103,3 +103,8 @@ private slots:
 };
 
 #endif // SCOPEGADGETOPTIONSPAGE_H
+
+/**
+ * @}
+ * @}
+ */

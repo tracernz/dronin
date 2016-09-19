@@ -55,3 +55,8 @@ IOptionsPage *ModelViewGadgetFactory::createOptionsPage(IUAVGadgetConfiguration 
 {
     return new ModelViewGadgetOptionsPage(qobject_cast<ModelViewGadgetConfiguration *>(config));
 }
+
+/**
+ * @}
+ * @}
+ */

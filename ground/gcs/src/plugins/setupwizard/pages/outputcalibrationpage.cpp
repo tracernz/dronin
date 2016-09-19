@@ -410,3 +410,8 @@ void OutputCalibrationPage::on_servoMaxAngleSlider_valueChanged(int position)
         debugLogChannelValues();
     }
 }
+
+/**
+ * @}
+ * @}
+ */

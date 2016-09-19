@@ -59,3 +59,8 @@ private:
 };
 
 #endif /* MagicWaypointGADGETWIDGET_H_ */
+
+/**
+ * @}
+ * @}
+ */

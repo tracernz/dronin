@@ -47,3 +47,8 @@ IUAVGadget* LoggingGadgetFactory::createGadget(QWidget *parent) {
     gadgetWidget->setPlugin(loggingPlugin);
     return new LoggingGadget(QString("LoggingGadget"), gadgetWidget, parent);
 }
+
+/**
+ * @}
+ * @}
+ */

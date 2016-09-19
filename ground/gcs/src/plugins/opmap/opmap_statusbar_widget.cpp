@@ -40,3 +40,8 @@ opmap_statusbar_widget::~opmap_statusbar_widget()
 {
     delete ui;
 }
+
+/**
+ * @}
+ * @}
+ */

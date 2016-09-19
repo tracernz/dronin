@@ -54,3 +54,8 @@ public:
 };
 
 #endif // NOTIFYPLUGINFACTORY_H
+
+/**
+ * @}
+ * @}
+ */

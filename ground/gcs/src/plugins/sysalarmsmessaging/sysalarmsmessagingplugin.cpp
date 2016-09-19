@@ -133,3 +133,8 @@ void SysAlarmsMessagingPlugin::onAutopilotDisconnect()
     foreach(GlobalMessage * msg,warningMessages.values())
         msg->setActive(false);
 }
+
+/**
+ * @}
+ * @}
+ */

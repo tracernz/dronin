@@ -87,3 +87,8 @@ namespace core {
     };
 }
 #endif // ACCESSMODE_H
+
+/**
+ * @}
+ * @}
+ */

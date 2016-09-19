@@ -313,3 +313,8 @@ Point PureProjection::FromLatLngToPixel(const PointLatLng &p,const int &zoom)
         return qMin(qMax(val, minValue), maxValue);
     }
 }
+
+/**
+ * @}
+ * @}
+ */

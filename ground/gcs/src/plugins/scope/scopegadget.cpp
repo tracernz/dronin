@@ -67,3 +67,8 @@ ScopeGadget::~ScopeGadget()
 {
    delete scopeGadgetWidget;
 }
+
+/**
+ * @}
+ * @}
+ */

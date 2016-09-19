@@ -56,3 +56,8 @@ private:
 };
 
 #endif // CONFIGCCHWWIDGET_H
+
+/**
+ * @}
+ * @}
+ */

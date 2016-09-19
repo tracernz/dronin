@@ -53,3 +53,8 @@ public:
 };
 
 #endif // GCSControlGADGETFACTORY_H_
+
+/**
+ * @}
+ * @}
+ */

@@ -119,3 +119,8 @@ private:
 
 
 #endif // PATHCHOOSER_H
+
+/**
+ * @}
+ * @}
+ */

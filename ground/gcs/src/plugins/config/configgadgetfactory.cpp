@@ -86,3 +86,8 @@ void ConfigGadgetFactory::startInputWizard()
         gadgetWidget->startInputWizard();
     }
 }
+
+/**
+ * @}
+ * @}
+ */

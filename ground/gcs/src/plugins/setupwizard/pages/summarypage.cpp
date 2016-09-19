@@ -60,3 +60,8 @@ void SummaryPage::showDiagram()
 
     diagram.exec();
 }
+
+/**
+ * @}
+ * @}
+ */

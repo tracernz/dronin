@@ -48,3 +48,8 @@ private:
 };
 
 #endif /* DEBUGPLUGIN_H_ */
+
+/**
+ * @}
+ * @}
+ */

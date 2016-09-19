@@ -92,3 +92,8 @@ namespace core {
 
 }
 #endif // PROVIDERSTRINGS_H
+
+/**
+ * @}
+ * @}
+ */

@@ -47,3 +47,8 @@
 #define BOOTLOADER_PAUSE_DELAY 500
 
 #endif /* PIOS_CONFIG_H */
+
+/**
+ * @}
+ * @}
+ */

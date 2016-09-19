@@ -50,3 +50,8 @@ bool EventFilteringMainWindow::winEvent(MSG *msg, long *result)
     return false;
 }
 #endif
+
+/**
+ * @}
+ * @}
+ */

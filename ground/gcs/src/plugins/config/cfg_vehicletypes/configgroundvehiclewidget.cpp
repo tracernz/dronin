@@ -511,3 +511,7 @@ bool ConfigGroundVehicleWidget::throwConfigError(SystemSettings::AirframeTypeOpt
     return error;
 }
 
+/**
+ * @}
+ * @}
+ */

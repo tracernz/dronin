@@ -63,3 +63,8 @@ private:
 } // namespace Core
 
 #endif // BASEVIEW_H
+
+/**
+ * @}
+ * @}
+ */

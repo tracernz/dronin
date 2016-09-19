@@ -507,3 +507,8 @@ bool SoundNotifyPlugin::playNotification(NotificationItem* notification)
 
     return false;
 }
+
+/**
+ * @}
+ * @}
+ */

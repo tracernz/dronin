@@ -59,3 +59,8 @@ void Configuration::SetUseMemoryCache(bool const& value)
     core::TLMaps::Instance()->setUseMemoryCache(value);
 }
 }
+
+/**
+ * @}
+ * @}
+ */

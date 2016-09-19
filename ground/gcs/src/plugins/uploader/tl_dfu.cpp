@@ -850,3 +850,8 @@ QString DFUObject::StatusToString(tl_dfu::Status const & status)
         return "unknown";
     }
 }
+
+/**
+ * @}
+ * @}
+ */

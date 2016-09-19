@@ -74,3 +74,8 @@ private:
 
 
 #endif // GPSDISPLAYGADGET_H_
+
+/**
+ * @}
+ * @}
+ */

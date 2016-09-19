@@ -379,4 +379,7 @@ void smartSaveButton::save()
     processOperation(NULL,true);
 }
 
-
+/**
+ * @}
+ * @}
+ */

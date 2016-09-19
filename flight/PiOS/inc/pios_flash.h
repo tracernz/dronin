@@ -52,3 +52,8 @@ extern int32_t PIOS_FLASH_write_data(uintptr_t partition_id, uint32_t offset, co
 extern int32_t PIOS_FLASH_read_data(uintptr_t partition_id, uint32_t offset, uint8_t *data, uint16_t len);
 
 #endif	/* PIOS_FLASH_H_ */
+
+/**
+ * @}
+ * @}
+ */

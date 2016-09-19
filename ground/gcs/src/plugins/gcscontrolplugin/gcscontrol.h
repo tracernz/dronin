@@ -76,3 +76,8 @@ private slots:
 };
 
 #endif // GCSCONTROL_H
+
+/**
+ * @}
+ * @}
+ */

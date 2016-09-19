@@ -74,3 +74,8 @@ private:
    QString getAlarmDescriptionFileName(const QString itemId);
 };
 #endif /* SYSTEMHEALTHGADGETWIDGET_H_ */
+
+/**
+ * @}
+ * @}
+ */

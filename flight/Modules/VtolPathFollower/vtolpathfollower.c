@@ -246,4 +246,3 @@ static void vtolPathFollowerTask(void *parameters)
  * @}
  * @}
  */
-

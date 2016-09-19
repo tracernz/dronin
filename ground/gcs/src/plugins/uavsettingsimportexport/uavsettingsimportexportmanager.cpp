@@ -535,3 +535,8 @@ void UAVSettingsImportExportManager::exportUAVData()
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.exec();
 }
+
+/**
+ * @}
+ * @}
+ */

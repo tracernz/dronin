@@ -321,4 +321,3 @@ correct_errors_erasures (unsigned char codeword[],
     return(0);
   }
 }
-

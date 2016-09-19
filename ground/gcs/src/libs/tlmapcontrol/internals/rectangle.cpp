@@ -78,3 +78,8 @@ uint qHash(Rectangle const& rect)
                         (((quint32) rect.height <<  7) | ((quint32) rect.height >> 25)));
       }
 }
+
+/**
+ * @}
+ * @}
+ */

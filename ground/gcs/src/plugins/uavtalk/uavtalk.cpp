@@ -859,3 +859,8 @@ quint8 UAVTalk::updateCRC(quint8 crc, const quint8* data, qint32 length)
         crc = crc_table[crc ^ *data++];
     return crc;
 }
+
+/**
+ * @}
+ * @}
+ */

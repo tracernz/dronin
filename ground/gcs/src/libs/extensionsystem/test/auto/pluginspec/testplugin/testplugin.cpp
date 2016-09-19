@@ -50,3 +50,7 @@ void MyPluginImpl::extensionsInitialized()
 
 Q_EXPORT_PLUGIN(MyPluginImpl)
 
+/**
+ * @}
+ * @}
+ */

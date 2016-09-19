@@ -77,3 +77,8 @@ int32_t PIOS_RE1FPGA_SetIRProtocol(enum pios_re1fpga_ir_protocols ir_protocol);
 int32_t PIOS_RE1FPGA_SetIRData(const uint8_t * ir_data, uint8_t n_bytes);
 
 #endif /* PIOS_RE1FPGA_H */
+
+/**
+ * @}
+ * @}
+ */

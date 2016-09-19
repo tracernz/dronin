@@ -1260,3 +1260,8 @@ void VehicleConfigurationHelper::setupOctoCopter()
     applyMixerConfiguration(channels);
     applyMultiGUISettings(frame, guiSettings);
 }
+
+/**
+ * @}
+ * @}
+ */

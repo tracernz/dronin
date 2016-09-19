@@ -461,3 +461,8 @@ static void PIOS_BMP085_Task(void *parameters)
 }
 
 #endif /* PIOS_INCLUDE_BMP085 */
+
+/**
+ * @}
+ * @}
+ */

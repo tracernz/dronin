@@ -174,3 +174,8 @@ private:
 } //namespace Core
 
 #endif // CONNECTIONMANAGER_H
+
+/**
+ * @}
+ * @}
+ */

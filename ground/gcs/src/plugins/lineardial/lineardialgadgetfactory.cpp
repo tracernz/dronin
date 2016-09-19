@@ -58,3 +58,7 @@ IOptionsPage *LineardialGadgetFactory::createOptionsPage(IUAVGadgetConfiguration
     return new LineardialGadgetOptionsPage(qobject_cast<LineardialGadgetConfiguration*>(config));
 }
 
+/**
+ * @}
+ * @}
+ */

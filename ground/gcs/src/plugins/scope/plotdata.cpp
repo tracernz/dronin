@@ -165,3 +165,8 @@ double PlotData::valueAsDouble(UAVObject* obj, UAVObjectField* field, bool haveS
 
     return value.toDouble();
 }
+
+/**
+ * @}
+ * @}
+ */

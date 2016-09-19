@@ -67,3 +67,8 @@ public:
 } // namespace Core
 
 #endif // ACTIONCONTAINER_H
+
+/**
+ * @}
+ * @}
+ */

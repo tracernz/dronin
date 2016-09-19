@@ -97,3 +97,8 @@ private:
 };
 }
 #endif // GLOBALMESSAGING_H
+
+/**
+ * @}
+ * @}
+ */

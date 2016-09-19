@@ -583,3 +583,8 @@ bool ConfigFixedWingWidget::throwConfigError(SystemSettings::AirframeTypeOptions
 
     return error;
 }
+
+/**
+ * @}
+ * @}
+ */

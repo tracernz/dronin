@@ -66,3 +66,8 @@ private:
 };
 
 #endif // ALARMSMONITORWIDGET_H
+
+/**
+ * @}
+ * @}
+ */

@@ -100,3 +100,8 @@ public:
 
 };
 #endif // FGSIMULATOR_H
+
+/**
+ * @}
+ * @}
+ */

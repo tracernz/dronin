@@ -175,3 +175,8 @@ USBMonitor* USBMonitor::instance()
 {
     return m_instance;
 }
+
+/**
+ * @}
+ * @}
+ */

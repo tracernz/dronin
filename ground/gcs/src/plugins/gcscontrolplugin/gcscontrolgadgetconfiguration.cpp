@@ -175,3 +175,8 @@ void GCSControlGadgetConfiguration::saveConfig(QSettings* settings) const {
     }
 
 }
+
+/**
+ * @}
+ * @}
+ */

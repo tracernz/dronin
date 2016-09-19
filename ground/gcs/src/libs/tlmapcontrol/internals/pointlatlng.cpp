@@ -54,3 +54,8 @@ PointLatLng operator-(PointLatLng pt, SizeLatLng sz)
    return PointLatLng::Subtract(pt, sz);
 }
 }
+
+/**
+ * @}
+ * @}
+ */

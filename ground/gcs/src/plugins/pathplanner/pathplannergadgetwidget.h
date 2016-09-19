@@ -83,3 +83,8 @@ signals:
 };
 
 #endif /* PathPlannerGADGETWIDGET_H_ */
+
+/**
+ * @}
+ * @}
+ */

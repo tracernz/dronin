@@ -46,3 +46,8 @@ struct diagnostics
 };
 
 #endif // DIAGNOSTICS_H
+
+/**
+ * @}
+ * @}
+ */

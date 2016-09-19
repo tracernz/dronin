@@ -57,3 +57,8 @@ private:
 };
 
 #endif // NOTIFYITEMDELEGATE_H
+
+/**
+ * @}
+ * @}
+ */

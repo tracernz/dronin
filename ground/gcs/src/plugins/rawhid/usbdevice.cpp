@@ -29,3 +29,8 @@
 USBDevice::USBDevice()
 {
 }
+
+/**
+ * @}
+ * @}
+ */

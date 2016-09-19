@@ -336,3 +336,8 @@ void GCSControlGadgetOptionsPage::updateButtonAction(int controlID)
 
 
 }
+
+/**
+ * @}
+ * @}
+ */

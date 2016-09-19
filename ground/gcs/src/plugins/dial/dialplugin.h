@@ -49,3 +49,8 @@ private:
    DialGadgetFactory *mf;
 };
 #endif /* DIALPLUGIN_H_ */
+
+/**
+ * @}
+ * @}
+ */

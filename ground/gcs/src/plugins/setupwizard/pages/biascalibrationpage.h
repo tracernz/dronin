@@ -61,3 +61,8 @@ private:
 };
 
 #endif // BIASCALIBRATIONPAGE_H
+
+/**
+ * @}
+ * @}
+ */

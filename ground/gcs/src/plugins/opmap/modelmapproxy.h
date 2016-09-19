@@ -97,3 +97,8 @@ private:
 };
 
 #endif // MODELMAPPROXY_H
+
+/**
+ * @}
+ * @}
+ */

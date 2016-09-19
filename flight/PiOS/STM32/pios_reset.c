@@ -61,3 +61,8 @@ int16_t PIOS_RESET_GetResetReason (void)
 
 	return reboot_reason;
 }
+
+/**
+ * @}
+ * @}
+ */

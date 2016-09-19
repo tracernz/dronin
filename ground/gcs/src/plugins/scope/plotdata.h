@@ -172,3 +172,8 @@ public:
 };
 
 #endif // PLOTDATA_H
+
+/**
+ * @}
+ * @}
+ */

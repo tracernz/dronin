@@ -740,3 +740,7 @@ PluginSpec *PluginManagerPrivate::pluginByName(const QString &name) const
     return 0;
 }
 
+/**
+ * @}
+ * @}
+ */

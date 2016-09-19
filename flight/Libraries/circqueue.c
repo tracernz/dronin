@@ -357,4 +357,3 @@ uint16_t circ_queue_read_data(circ_queue_t q, void *buf, uint16_t num) {
 
 	return total_read;
 }
-

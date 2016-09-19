@@ -151,3 +151,8 @@ void StyleAnimator::startAnimation(Animation *t)
         animationTimer.start(35, this);
     }
 }
+
+/**
+ * @}
+ * @}
+ */

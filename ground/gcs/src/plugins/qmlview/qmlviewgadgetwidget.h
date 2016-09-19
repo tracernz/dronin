@@ -59,3 +59,8 @@ private:
    QString m_fn;
 };
 #endif /* QmlViewGADGETWIDGET_H_ */
+
+/**
+ * @}
+ * @}
+ */

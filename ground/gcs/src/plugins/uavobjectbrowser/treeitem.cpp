@@ -286,3 +286,8 @@ QList<DataObjectTreeItem *> TopTreeItem::getDataObjectItems()
 {
     return m_objectTreeItemsPerObjectIds.values();
 }
+
+/**
+ * @}
+ * @}
+ */

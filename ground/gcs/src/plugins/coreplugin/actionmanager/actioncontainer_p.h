@@ -125,3 +125,8 @@ private:
 } // namespace Core
 
 #endif // ACTIONCONTAINER_P_H
+
+/**
+ * @}
+ * @}
+ */

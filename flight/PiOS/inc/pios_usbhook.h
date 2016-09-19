@@ -77,3 +77,7 @@ extern void PIOS_USBHOOK_Deactivate(void);
 
 #endif /* PIOS_USBHOOK_H */
 
+/**
+ * @}
+ * @}
+ */

@@ -93,3 +93,8 @@ private slots:
 };
 
 #endif // CONFIGATTITUDEWIDGET_H
+
+/**
+ * @}
+ * @}
+ */

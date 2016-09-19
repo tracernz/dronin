@@ -95,3 +95,8 @@ private:
 };
 
 #endif // LEVELLINGUTIL_H
+
+/**
+ * @}
+ * @}
+ */

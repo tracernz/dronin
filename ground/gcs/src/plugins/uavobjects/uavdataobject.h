@@ -64,3 +64,8 @@ private:
 };
 
 #endif // UAVDATAOBJECT_H
+
+/**
+ * @}
+ * @}
+ */

@@ -57,3 +57,8 @@ signals:
 
 }
 #endif // UPLOADERGADGETFACTORY_H
+
+/**
+ * @}
+ * @}
+ */

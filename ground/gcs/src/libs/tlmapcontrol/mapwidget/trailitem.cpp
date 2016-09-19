@@ -60,3 +60,8 @@ TrailItem::TrailItem(internals::PointLatLng const& coord,int const& altitude, QB
         setPos(m_map->FromLatLngToLocal(this->coord).X(),m_map->FromLatLngToLocal(this->coord).Y());
     }
 }
+
+/**
+ * @}
+ * @}
+ */

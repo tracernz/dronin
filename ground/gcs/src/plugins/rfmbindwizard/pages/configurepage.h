@@ -53,3 +53,8 @@ private:
 };
 
 #endif // CONFIGUREPAGE_H
+
+/**
+ * @}
+ * @}
+ */

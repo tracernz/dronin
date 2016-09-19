@@ -144,3 +144,8 @@ private slots:
 };
 
 #endif // CONFIGAUTOTUNE_H
+
+/**
+ * @}
+ * @}
+ */

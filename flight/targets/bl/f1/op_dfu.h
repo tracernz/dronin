@@ -63,3 +63,8 @@ bool flash_read(uint8_t * buffer, uint32_t adr, DFUProgType type);
 #endif /* __OP_DFU_H */
 
 /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/
+
+/**
+ * @}
+ * @}
+ */

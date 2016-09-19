@@ -88,3 +88,8 @@ private:
 };
 
 #endif // UAVOBJECTBROWSERCONFIGURATION_H
+
+/**
+ * @}
+ * @}
+ */

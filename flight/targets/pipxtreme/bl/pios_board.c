@@ -81,3 +81,8 @@ void PIOS_Board_Init(void)
 
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_CRC, ENABLE);//TODO Tirar
 }
+
+/**
+ * @}
+ * @}
+ */

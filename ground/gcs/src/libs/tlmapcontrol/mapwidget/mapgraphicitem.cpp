@@ -589,3 +589,8 @@ namespace mapcontrol
         return rsize;
     }
 }
+
+/**
+ * @}
+ * @}
+ */

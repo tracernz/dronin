@@ -102,3 +102,8 @@ bool ConfigurePage::validatePage()
 
     return true;
 }
+
+/**
+ * @}
+ * @}
+ */

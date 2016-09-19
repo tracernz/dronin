@@ -33,3 +33,8 @@
 void UAVObjectsInitialize(UAVObjectManager* objMngr);
 
 #endif // UAVOBJECTSINIT_H
+
+/**
+ * @}
+ * @}
+ */

@@ -46,3 +46,8 @@ void MyTabWidget::myTabMoved(int from, int to)
 {
     emit tabMoved(from, to);
 }
+
+/**
+ * @}
+ * @}
+ */

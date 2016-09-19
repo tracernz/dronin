@@ -113,3 +113,8 @@ private:
 };
 
 #endif // TELEMETRYMONITOR_H
+
+/**
+ * @}
+ * @}
+ */

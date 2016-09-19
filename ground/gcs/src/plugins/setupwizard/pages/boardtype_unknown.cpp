@@ -64,3 +64,8 @@ void BoardtypeUnknown::setFailureType(FailureType type)
         break;
     }
 }
+
+/**
+ * @}
+ * @}
+ */

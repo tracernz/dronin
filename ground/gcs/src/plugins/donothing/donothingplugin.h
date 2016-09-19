@@ -43,3 +43,8 @@ public:
 }; 
 
 #endif // DONOTHINGPLUGIN_H
+
+/**
+ * @}
+ * @}
+ */

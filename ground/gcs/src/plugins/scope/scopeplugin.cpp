@@ -63,3 +63,8 @@ void ScopePlugin::shutdown()
 {
     // Do nothing
 }
+
+/**
+ * @}
+ * @}
+ */

@@ -204,3 +204,8 @@ void LineardialGadgetOptionsPage::finish()
 {
 
 }
+
+/**
+ * @}
+ * @}
+ */

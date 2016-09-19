@@ -118,4 +118,7 @@ void UAVDataObject::setIsPresentOnHardware(bool value)
         emit presentOnHardwareChanged(this);
 }
 
-
+/**
+ * @}
+ * @}
+ */

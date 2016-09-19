@@ -76,3 +76,8 @@ private:
 } // namespace Core
 
 #endif // IUAVGADGETCONFIGURATION_H
+
+/**
+ * @}
+ * @}
+ */

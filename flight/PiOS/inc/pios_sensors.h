@@ -123,3 +123,8 @@ void PIOS_SENSORS_SetMissing(enum pios_sensor_type type);
 bool PIOS_SENSORS_GetMissing(enum pios_sensor_type type);
 
 #endif /* PIOS_SENSOR_H */
+
+/**
+ * @}
+ * @}
+ */

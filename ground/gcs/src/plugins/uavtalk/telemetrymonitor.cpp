@@ -681,3 +681,7 @@ void TelemetryMonitor::processStatsUpdates()
     }
 }
 
+/**
+ * @}
+ * @}
+ */

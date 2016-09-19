@@ -65,3 +65,8 @@ private:
 
 
 #endif // DEBUGGADGET_H_
+
+/**
+ * @}
+ * @}
+ */

@@ -528,3 +528,8 @@ namespace mapcontrol
     };
 }
 #endif // TLMAPWIDGET_H
+
+/**
+ * @}
+ * @}
+ */

@@ -484,3 +484,8 @@ void ScopeGadgetWidget::startTimer(int refreshInterval){
 
     }
 }
+
+/**
+ * @}
+ * @}
+ */

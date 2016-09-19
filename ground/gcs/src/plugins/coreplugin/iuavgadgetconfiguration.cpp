@@ -37,3 +37,8 @@ IUAVGadgetConfiguration::IUAVGadgetConfiguration(QString classId, QObject *paren
     m_provisionalName(tr("default"))
 {
 }
+
+/**
+ * @}
+ * @}
+ */

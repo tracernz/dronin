@@ -107,3 +107,7 @@ void UAVGadgetOptionsPageDecorator::textEdited(QString name)
     m_instanceManager->configurationNameEdited(name);
 }
 
+/**
+ * @}
+ * @}
+ */

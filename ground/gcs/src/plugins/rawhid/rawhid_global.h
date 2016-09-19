@@ -37,3 +37,8 @@
 #endif
 
 #endif // RAWHID_GLOBAL_H
+
+/**
+ * @}
+ * @}
+ */

@@ -75,3 +75,8 @@ extern uintptr_t pios_com_msp_id;
 #define DEBUG_PRINTF(level, ...) do { (void) (level); fprintf(stderr, __VA_ARGS__); } while (0)
 
 #endif /* PIOS_BOARD_H */
+
+/**
+ * @}
+ * @}
+ */

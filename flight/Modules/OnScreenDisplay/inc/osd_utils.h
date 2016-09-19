@@ -194,4 +194,7 @@ void draw_polygon(int16_t x, int16_t y, float angle, const point_t * points, uin
 void lla_to_ned(int32_t lat, int32_t lon, float alt, float *NED);
 #endif /* OSDUTILS_H */
 
-
+/**
+ * @}
+ * @}
+ */

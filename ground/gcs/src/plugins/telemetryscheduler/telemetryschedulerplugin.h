@@ -47,3 +47,8 @@ private:
    TelemetrySchedulerGadgetFactory *mf;
 };
 #endif /* TELEMETRYSCHEDULERPLUGIN_H_ */
+
+/**
+ * @}
+ * @}
+ */

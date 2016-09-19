@@ -31,3 +31,8 @@
 
 VehicleConfigurationSource::VehicleConfigurationSource()
 {}
+
+/**
+ * @}
+ * @}
+ */

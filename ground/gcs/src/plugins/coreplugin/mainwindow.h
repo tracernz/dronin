@@ -229,3 +229,8 @@ private:
 } // namespace Core
 
 #endif // MAINWINDOW_H
+
+/**
+ * @}
+ * @}
+ */

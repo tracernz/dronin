@@ -160,3 +160,8 @@ void WelcomeMode::modesChanged()
 }
 
 } // namespace Welcome
+
+/**
+ * @}
+ * @}
+ */

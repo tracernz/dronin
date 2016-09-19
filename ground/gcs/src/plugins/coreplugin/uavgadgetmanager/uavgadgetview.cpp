@@ -269,3 +269,8 @@ void UAVGadgetView::currentGadgetChanged(IUAVGadget *gadget)
 {
     m_activeLabel->setVisible(m_uavGadget == gadget);
 }
+
+/**
+ * @}
+ * @}
+ */

@@ -58,3 +58,8 @@ namespace core {
     Point Point::Empty=Point();
 
 }
+
+/**
+ * @}
+ * @}
+ */

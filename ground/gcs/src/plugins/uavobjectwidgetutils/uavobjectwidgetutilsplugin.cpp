@@ -52,3 +52,8 @@ bool UAVObjectWidgetUtilsPlugin::initialize(const QStringList & arguments, QStri
 void UAVObjectWidgetUtilsPlugin::shutdown()
 {
 }
+
+/**
+ * @}
+ * @}
+ */

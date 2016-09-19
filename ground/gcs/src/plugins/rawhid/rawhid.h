@@ -88,3 +88,8 @@ protected:
 };
 
 #endif // RAWHID_H
+
+/**
+ * @}
+ * @}
+ */

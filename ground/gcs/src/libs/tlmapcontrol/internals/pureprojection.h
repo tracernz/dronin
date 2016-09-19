@@ -104,3 +104,8 @@ private:
 
 
 #endif // PUREPROJECTION_H
+
+/**
+ * @}
+ * @}
+ */

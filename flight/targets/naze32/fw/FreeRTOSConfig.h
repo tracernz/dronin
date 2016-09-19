@@ -95,9 +95,10 @@ do {\
 #define configCHECK_FOR_STACK_OVERFLOW	0
 #endif
 
-
 /**
-  * @}
-  */
+ * @}
+ * @}
+ */
 
 #endif /* FREERTOS_CONFIG_H */
+  

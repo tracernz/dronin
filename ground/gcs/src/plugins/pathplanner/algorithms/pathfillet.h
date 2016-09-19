@@ -98,3 +98,8 @@ private:
 };
 
 #endif // PATHFILLET_H
+
+/**
+ * @}
+ * @}
+ */

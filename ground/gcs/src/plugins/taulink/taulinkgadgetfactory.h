@@ -49,3 +49,8 @@ private:
 };
 
 #endif // TAULINKGADGETFACTORY_H_
+
+/**
+ * @}
+ * @}
+ */

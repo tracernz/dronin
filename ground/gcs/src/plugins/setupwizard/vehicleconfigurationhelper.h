@@ -123,3 +123,8 @@ private slots:
 };
 
 #endif // VEHICLECONFIGURATIONHELPER_H
+
+/**
+ * @}
+ * @}
+ */

@@ -70,3 +70,8 @@ private slots:
 };
 
 #endif // LINEARDIALGADGETOPTIONSPAGE_H
+
+/**
+ * @}
+ * @}
+ */

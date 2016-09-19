@@ -712,3 +712,8 @@ void ObjectTransactionInfo::timeout()
     if (!telem.isNull())
         telem->transactionTimeout(this);
 }
+
+/**
+ * @}
+ * @}
+ */

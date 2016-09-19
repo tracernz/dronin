@@ -61,3 +61,8 @@ void homeEditor::on_buttonBox_rejected()
 {
     this->close();
 }
+
+/**
+ * @}
+ * @}
+ */

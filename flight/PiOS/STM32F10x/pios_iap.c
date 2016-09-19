@@ -164,3 +164,8 @@ void PIOS_IAP_WriteBootCount (uint16_t boot_count)
 {
 	BKP_WriteBackupRegister ( IAP_BOOTCOUNT, boot_count );
 }
+
+/**
+ * @}
+ * @}
+ */

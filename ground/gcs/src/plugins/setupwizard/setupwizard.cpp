@@ -339,3 +339,7 @@ bool SetupWizard::saveHardwareSettings() const
     return helper.setupHardwareSettings();
 }
 
+/**
+ * @}
+ * @}
+ */

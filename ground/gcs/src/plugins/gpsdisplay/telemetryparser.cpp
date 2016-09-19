@@ -123,3 +123,8 @@ void TelemetryParser::updateSats( UAVObject* object1) {
     }
 
 }
+
+/**
+ * @}
+ * @}
+ */

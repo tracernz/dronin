@@ -419,3 +419,8 @@ static void PIOS_USB_CDC_CTRL_EP_IN_Callback(void)
 }
 
 #endif	/* PIOS_INCLUDE_USB_CDC */
+
+/**
+ * @}
+ * @}
+ */

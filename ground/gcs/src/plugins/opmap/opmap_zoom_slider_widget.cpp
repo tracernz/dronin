@@ -41,3 +41,8 @@ opmap_zoom_slider_widget::~opmap_zoom_slider_widget()
 {
     delete ui;
 }
+
+/**
+ * @}
+ * @}
+ */

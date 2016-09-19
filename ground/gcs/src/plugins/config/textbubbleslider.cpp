@@ -210,3 +210,8 @@ void TextBubbleSlider::paintEvent(QPaintEvent *paintEvent)
     painter.drawText(QRectF(valuePos + maximumFontWidth - textWidth, ceil((sliderHeight - maximumFontHeight)/2.0), textWidth, maximumFontHeight),
                      neutralStringWidth);
 }
+
+/**
+ * @}
+ * @}
+ */

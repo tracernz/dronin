@@ -47,3 +47,8 @@ TrailLineItem::TrailLineItem(internals::PointLatLng const& coord1,internals::Poi
         setLine(m_map->FromLatLngToLocal(this->coord1).X(),m_map->FromLatLngToLocal(this->coord1).Y(),m_map->FromLatLngToLocal(this->coord2).X(),m_map->FromLatLngToLocal(this->coord2).Y());
     }
 }
+
+/**
+ * @}
+ * @}
+ */

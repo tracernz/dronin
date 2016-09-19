@@ -268,3 +268,8 @@ void NotifyTableModel::dropRows(int position, int count) const
         _list.removeAt(position);
     }
 }
+
+/**
+ * @}
+ * @}
+ */

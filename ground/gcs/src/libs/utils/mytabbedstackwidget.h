@@ -80,3 +80,8 @@ private:
 };
 
 #endif // MYTABBEDSTACKWIDGET_H
+
+/**
+ * @}
+ * @}
+ */

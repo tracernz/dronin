@@ -63,3 +63,8 @@ QString UniqueIDManager::stringForUniqueIdentifier(int uid)
 {
     return m_uniqueIdentifiers.key(uid);
 }
+
+/**
+ * @}
+ * @}
+ */

@@ -1660,3 +1660,7 @@ static const struct FontEntry font_font_outlined8x8 = {
 
 const struct FontEntry* fonts[NUM_FONTS] = {&font_font8x10, &font_font_outlined8x14, &font_font12x18, &font_font_outlined8x8};
 
+/**
+ * @}
+ * @}
+ */

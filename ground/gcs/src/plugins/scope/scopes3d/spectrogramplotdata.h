@@ -93,3 +93,8 @@ private:
 };
 
 #endif // SPECTROGRAMDATA_H
+
+/**
+ * @}
+ * @}
+ */

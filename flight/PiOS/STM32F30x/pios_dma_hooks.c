@@ -109,3 +109,8 @@ static void PIOS_DMA_25_irq_handler(void){
 	PIOS_DMA_Mapper(11);
 }
 #endif /* PIOS_INCLUDE_DMA_CB_SUBSCRIBING_FUNCTION */
+
+/**
+ * @}
+ * @}
+ */

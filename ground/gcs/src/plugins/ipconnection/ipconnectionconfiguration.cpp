@@ -91,3 +91,7 @@ void IPconnectionConfiguration::restoresettings()
 
 }
 
+/**
+ * @}
+ * @}
+ */

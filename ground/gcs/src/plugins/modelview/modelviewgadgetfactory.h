@@ -49,3 +49,8 @@ public:
 };
 
 #endif // MODELVIEWGADGETFACTORY_H_
+
+/**
+ * @}
+ * @}
+ */

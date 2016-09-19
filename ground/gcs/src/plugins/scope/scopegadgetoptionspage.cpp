@@ -691,3 +691,8 @@ void ScopeGadgetOptionsPage::on_cmb3dPlotType_currentIndexChanged(QString curren
         options_page->stackedWidget3dPlots->setCurrentWidget(options_page->sw3dTimeSeriesStack);
     }
 }
+
+/**
+ * @}
+ * @}
+ */

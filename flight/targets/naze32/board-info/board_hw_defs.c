@@ -1123,3 +1123,8 @@ const struct pios_sbus_cfg *get_sbus_cfg(enum board_revision board_rev)
 }
 
 #endif  /* PIOS_INCLUDE_SBUS */
+
+/**
+ * @}
+ * @}
+ */

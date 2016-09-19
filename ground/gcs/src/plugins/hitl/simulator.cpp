@@ -863,3 +863,8 @@ UAVObjectUtilManager* Simulator::getObjectUtilManager() {
     Q_ASSERT(utilMngr);
     return utilMngr;
 }
+
+/**
+ * @}
+ * @}
+ */

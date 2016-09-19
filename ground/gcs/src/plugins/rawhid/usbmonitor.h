@@ -134,3 +134,8 @@ private:
     bool enumerating;
 };
 #endif // USBMONITOR_H
+
+/**
+ * @}
+ * @}
+ */

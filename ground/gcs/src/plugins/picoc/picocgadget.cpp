@@ -37,3 +37,8 @@ PicoCGadget::~PicoCGadget()
 {
     delete m_widget;
 }
+
+/**
+ * @}
+ * @}
+ */

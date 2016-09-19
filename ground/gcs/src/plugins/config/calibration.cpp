@@ -1676,3 +1676,8 @@ void Calibration::setMetadata(QMap<QString, UAVObject::Metadata> metaList)
     loop.exec();
     emit calibrationBusy(false);
 }
+
+/**
+ * @}
+ * @}
+ */

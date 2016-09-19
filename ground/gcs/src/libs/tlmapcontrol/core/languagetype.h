@@ -133,3 +133,8 @@ namespace core {
     
 }
 #endif // LANGUAGETYPE_H
+
+/**
+ * @}
+ * @}
+ */

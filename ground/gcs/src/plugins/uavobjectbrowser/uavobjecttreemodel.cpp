@@ -587,3 +587,8 @@ void UAVObjectTreeModel::presentOnHardwareChangedCB(UAVDataObject * obj)
     Q_UNUSED(obj);
     emit presentOnHardwareChanged();
 }
+
+/**
+ * @}
+ * @}
+ */

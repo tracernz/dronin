@@ -111,3 +111,8 @@ private:
 };
 
 #endif  // MIXERCURVEPOINT_H
+
+/**
+ * @}
+ * @}
+ */

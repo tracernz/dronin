@@ -61,3 +61,8 @@ void EmptyPlugin::shutdown()
 {
    // Do nothing
 }
+
+/**
+ * @}
+ * @}
+ */

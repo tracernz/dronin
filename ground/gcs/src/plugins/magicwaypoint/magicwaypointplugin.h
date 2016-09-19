@@ -47,3 +47,8 @@ private:
    MagicWaypointGadgetFactory *mf;
 };
 #endif /* GCSControlPLUGIN_H_ */
+
+/**
+ * @}
+ * @}
+ */

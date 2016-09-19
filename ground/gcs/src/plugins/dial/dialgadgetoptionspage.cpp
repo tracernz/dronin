@@ -275,3 +275,8 @@ void DialGadgetOptionsPage::finish()
 {
 
 }
+
+/**
+ * @}
+ * @}
+ */

@@ -187,3 +187,8 @@ public:
 };
 }
 #endif // CONFIGURATION_H
+
+/**
+ * @}
+ * @}
+ */

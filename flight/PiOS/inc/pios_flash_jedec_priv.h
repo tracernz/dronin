@@ -56,3 +56,8 @@ int32_t PIOS_Flash_Jedec_ReadOTPData(uintptr_t chip_id, uint32_t chip_offset, ui
 uint32_t PIOS_Flash_Jedec_GetCapacity(uintptr_t chip_id);
 
 #endif	/* PIOS_FLASH_JEDEC_H_ */
+
+/**
+ * @}
+ * @}
+ */

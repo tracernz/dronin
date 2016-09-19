@@ -62,3 +62,8 @@ namespace core {
 
 }
 #endif // CACHE_H
+
+/**
+ * @}
+ * @}
+ */

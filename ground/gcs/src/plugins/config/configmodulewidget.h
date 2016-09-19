@@ -81,3 +81,8 @@ protected:
 };
 
 #endif // CONFIGMODULEWIDGET_H
+
+/**
+ * @}
+ * @}
+ */

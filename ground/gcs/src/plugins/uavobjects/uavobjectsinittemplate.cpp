@@ -41,3 +41,8 @@ void UAVObjectsInitialize(UAVObjectManager* objMngr)
 {
 $(OBJINIT)
 }
+
+/**
+ * @}
+ * @}
+ */

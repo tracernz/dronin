@@ -36,3 +36,8 @@ void PIOS_MPXV7002_UpdateCalibration(uint16_t zeroPoint);
 float PIOS_MPXV7002_ReadAirspeed (uint8_t airspeedADCPin);
 
 #endif // PIOS_MPXV7002_H__
+
+/**
+ * @}
+ * @}
+ */

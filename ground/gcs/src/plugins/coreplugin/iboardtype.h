@@ -265,3 +265,8 @@ protected:
 
 
 #endif // IBOARDTYPE_H
+
+/**
+ * @}
+ * @}
+ */

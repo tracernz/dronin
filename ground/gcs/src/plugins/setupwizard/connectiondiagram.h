@@ -68,3 +68,8 @@ private slots:
 };
 
 #endif // CONNECTIONDIAGRAM_H
+
+/**
+ * @}
+ * @}
+ */

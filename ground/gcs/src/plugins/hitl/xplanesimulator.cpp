@@ -393,3 +393,8 @@ void TraceBuf(const char* buf,int len)
         qDebug() << str;
     }
 }
+
+/**
+ * @}
+ * @}
+ */

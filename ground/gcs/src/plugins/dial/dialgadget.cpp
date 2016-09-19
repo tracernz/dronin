@@ -71,3 +71,8 @@ void DialGadget::loadConfiguration(IUAVGadgetConfiguration* config)
                              m->getN3DataObject(),m->getN3ObjField()
                              );
 }
+
+/**
+ * @}
+ * @}
+ */

@@ -169,3 +169,8 @@ void WayPointCurve::setOpacitySlot(qreal opacity)
 }
 
 }
+
+/**
+ * @}
+ * @}
+ */

@@ -107,3 +107,8 @@ void GpsDisplayGadgetConfiguration::saveConfig(QSettings *settings) const
     settings->setValue("defaultPort", m_defaultPort);
     settings->setValue("connectionMode", m_connectionMode);
 }
+
+/**
+ * @}
+ * @}
+ */

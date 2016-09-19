@@ -40,3 +40,8 @@ extern int32_t PIOS_IRQ_Enable(void);
 extern bool PIOS_IRQ_InISR(void);
 
 #endif /* PIOS_IRQ_H */
+
+/**
+ * @}
+ * @}
+ */

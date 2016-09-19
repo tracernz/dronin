@@ -384,3 +384,8 @@ void SettingsDialog::done(int val)
     settings->setValue("General/SettingsWindowHeight", this->height());
     QDialog::done(val);
 }
+
+/**
+ * @}
+ * @}
+ */

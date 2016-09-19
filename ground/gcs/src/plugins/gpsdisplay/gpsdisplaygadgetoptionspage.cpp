@@ -171,3 +171,8 @@ void GpsDisplayGadgetOptionsPage::finish()
 {
     delete options_page;
 }
+
+/**
+ * @}
+ * @}
+ */

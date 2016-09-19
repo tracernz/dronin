@@ -58,3 +58,8 @@ private:
 } // namespace Internal
 
 #endif // WELCOMEPLUGIN_H
+
+/**
+ * @}
+ * @}
+ */

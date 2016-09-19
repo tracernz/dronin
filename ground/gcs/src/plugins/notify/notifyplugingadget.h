@@ -55,3 +55,8 @@ private:
 
 
 #endif // NOTIFYPLUGINGADGET_H
+
+/**
+ * @}
+ * @}
+ */

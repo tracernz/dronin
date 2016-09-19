@@ -518,6 +518,3 @@ int Convert_Polar_Stereographic_To_Geodetic (double Easting,
   }
   return (Error_Code);
 } /* END OF Convert_Polar_Stereographic_To_Geodetic */
-
-
-

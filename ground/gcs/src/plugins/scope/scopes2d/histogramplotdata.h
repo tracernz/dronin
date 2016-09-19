@@ -74,3 +74,8 @@ private slots:
 };
 
 #endif // HISTOGRAMDATA_H
+
+/**
+ * @}
+ * @}
+ */

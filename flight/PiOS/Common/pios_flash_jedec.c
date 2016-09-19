@@ -540,3 +540,8 @@ const struct pios_flash_driver pios_jedec_flash_driver = {
 };
 
 #endif	/* PIOS_INCLUDE_FLASH_JEDEC */
+
+/**
+ * @}
+ * @}
+ */

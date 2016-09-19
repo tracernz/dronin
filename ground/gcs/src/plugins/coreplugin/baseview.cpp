@@ -89,3 +89,7 @@ void BaseView::setDefaultPosition(IView::ViewPosition position)
     m_defaultPosition = position;
 }
 
+/**
+ * @}
+ * @}
+ */

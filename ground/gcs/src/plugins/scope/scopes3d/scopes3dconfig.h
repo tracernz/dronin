@@ -68,3 +68,8 @@ private:
 };
 
 #endif // SCOPES3DCONFIG_H
+
+/**
+ * @}
+ * @}
+ */

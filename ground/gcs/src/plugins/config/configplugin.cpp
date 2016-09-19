@@ -205,3 +205,7 @@ void ConfigPlugin::eraseDone(UAVObject * obj)
     msgBox.exec();
 }
 
+/**
+ * @}
+ * @}
+ */

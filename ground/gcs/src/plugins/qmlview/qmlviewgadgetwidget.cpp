@@ -92,3 +92,7 @@ void QmlViewGadgetWidget::mouseReleaseEvent(QMouseEvent *event)
     QQuickView::mouseReleaseEvent(event);
 }
 
+/**
+ * @}
+ * @}
+ */

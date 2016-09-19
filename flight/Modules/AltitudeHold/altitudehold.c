@@ -288,4 +288,3 @@ static void altitudeHoldTask(void *parameters)
  * @}
  * @}
  */
-

@@ -316,3 +316,8 @@ qint32 UAVObjectManager::getNumInstances(const QString* name, quint32 objId)
         return objects.value(objId).count();
     return -1;
 }
+
+/**
+ * @}
+ * @}
+ */

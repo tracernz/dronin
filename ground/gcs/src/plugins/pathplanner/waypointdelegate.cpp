@@ -170,3 +170,8 @@ void WaypointDelegate::loadComboBox(QComboBox *combo) const
     foreach (const int k, keys)
         combo->addItem(FlightDataModel::modeNames.value(k), k);
 }
+
+/**
+ * @}
+ * @}
+ */

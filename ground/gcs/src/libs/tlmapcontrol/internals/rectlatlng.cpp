@@ -47,3 +47,8 @@ bool operator!=(RectLatLng const& left,RectLatLng const& right)
 }
 
 }
+
+/**
+ * @}
+ * @}
+ */

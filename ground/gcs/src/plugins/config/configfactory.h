@@ -28,3 +28,8 @@
 #define CONFIGFACTORY_H
 
 #endif // CONFIGFACTORY_H
+
+/**
+ * @}
+ * @}
+ */

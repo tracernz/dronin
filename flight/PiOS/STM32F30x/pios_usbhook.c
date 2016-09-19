@@ -555,3 +555,8 @@ static const uint8_t *PIOS_USBHOOK_GetProtocolValue(uint16_t Length)
 }
 
 /******************* (C) COPYRIGHT 2010 STMicroelectronics *****END OF FILE****/
+
+/**
+ * @}
+ * @}
+ */

@@ -182,3 +182,8 @@ QPointF GpsConstellationWidget::polarToCoord(int elevation, int azimuth)
     return QPointF(x,y);
 
 }
+
+/**
+ * @}
+ * @}
+ */

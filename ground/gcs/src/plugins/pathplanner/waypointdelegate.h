@@ -71,3 +71,8 @@ class WaypointDelegate : public QStyledItemDelegate
 
 
 #endif // WAYPOINTDELEGATE_H
+
+/**
+ * @}
+ * @}
+ */

@@ -156,3 +156,8 @@ void BaseValidatingLineEdit::triggerChanged()
 }
 
 } // namespace Utils
+
+/**
+ * @}
+ * @}
+ */

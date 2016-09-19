@@ -37,3 +37,8 @@
 #endif
 
 #endif // UAVTALK_GLOBAL_H
+
+/**
+ * @}
+ * @}
+ */

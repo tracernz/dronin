@@ -112,4 +112,7 @@ UAVObject::Metadata UAVMetaObject::getData()
     return parentMetadata;
 }
 
-
+/**
+ * @}
+ * @}
+ */

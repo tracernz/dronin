@@ -58,3 +58,8 @@ public:
 } // namespace Utils
 
 #endif // TREEWIDGETCOLUMNSTRETCHER_H
+
+/**
+ * @}
+ * @}
+ */

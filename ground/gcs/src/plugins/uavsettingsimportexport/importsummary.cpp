@@ -243,3 +243,7 @@ void ImportSummaryDialog::showEvent(QShowEvent *event)
     ui->importSummaryList->setColumnWidth(1,width-15);
 }
 
+/**
+ * @}
+ * @}
+ */

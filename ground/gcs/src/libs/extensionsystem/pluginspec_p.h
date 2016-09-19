@@ -100,3 +100,8 @@ private:
 } // namespace ExtensionSystem
 
 #endif // PLUGINSPEC_P_H
+
+/**
+ * @}
+ * @}
+ */

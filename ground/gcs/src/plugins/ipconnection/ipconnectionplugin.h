@@ -103,3 +103,8 @@ private:
 
 
 #endif // IPconnectionPLUGIN_H
+
+/**
+ * @}
+ * @}
+ */

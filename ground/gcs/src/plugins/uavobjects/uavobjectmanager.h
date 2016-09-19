@@ -81,3 +81,8 @@ private:
 
 
 #endif // UAVOBJECTMANAGER_H
+
+/**
+ * @}
+ * @}
+ */

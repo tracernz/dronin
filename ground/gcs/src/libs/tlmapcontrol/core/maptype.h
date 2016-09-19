@@ -132,3 +132,8 @@ namespace core {
 
 }
 #endif // MAPTYPE_H
+
+/**
+ * @}
+ * @}
+ */

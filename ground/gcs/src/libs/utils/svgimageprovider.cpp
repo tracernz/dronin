@@ -248,3 +248,8 @@ QRectF SvgImageProvider::scaledElementBounds(const QString &svgFile, const QStri
                   elementBounds.width()/docSize.width(),
                   elementBounds.height()/docSize.height());
 }
+
+/**
+ * @}
+ * @}
+ */

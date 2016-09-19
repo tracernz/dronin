@@ -155,3 +155,8 @@ VersionDialog::VersionDialog(QWidget *parent)
     layout->addWidget(copyRightLabel, 3, 0, 1, 2);
     layout->addWidget(buttonBox, 5, 0, 1, 2);
 }
+
+/**
+ * @}
+ * @}
+ */

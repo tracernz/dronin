@@ -658,3 +658,7 @@ void MixerCurveWidget::cmdActivated(MixerNode* node)
     emit commandActivated(node);
 }
 
+/**
+ * @}
+ * @}
+ */

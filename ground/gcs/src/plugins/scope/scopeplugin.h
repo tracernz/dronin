@@ -50,3 +50,8 @@ private:
 
 };
 #endif /* SCOPEPLUGIN_H_ */
+
+/**
+ * @}
+ * @}
+ */

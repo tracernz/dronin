@@ -221,3 +221,7 @@ void TelemetryMonitorWidget::resizeEvent(QResizeEvent* event)
     fitInView(graph, Qt::KeepAspectRatio);
 }
 
+/**
+ * @}
+ * @}
+ */

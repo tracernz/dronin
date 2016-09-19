@@ -69,3 +69,8 @@ private:
 };
 
 #endif // SERIALpluginOPTIONSPAGE_H
+
+/**
+ * @}
+ * @}
+ */

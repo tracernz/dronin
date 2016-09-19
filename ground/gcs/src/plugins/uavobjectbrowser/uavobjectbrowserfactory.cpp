@@ -57,3 +57,7 @@ IOptionsPage *UAVObjectBrowserFactory::createOptionsPage(IUAVGadgetConfiguration
     return new UAVObjectBrowserOptionsPage(qobject_cast<UAVObjectBrowserConfiguration*>(config));
 }
 
+/**
+ * @}
+ * @}
+ */

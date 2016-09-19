@@ -154,3 +154,8 @@ void OPMapGadgetConfiguration::saveConfig(QSettings* qSettings) const {
    qSettings->setValue("userImageLocation", m_userImageLocation);
    qSettings->setValue("geolanguage",m_geoLanguage);
 }
+
+/**
+ * @}
+ * @}
+ */

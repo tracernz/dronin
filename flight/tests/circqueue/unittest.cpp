@@ -196,3 +196,8 @@ TEST_F(CircQueueTest, CircQueueSpin) {
     }
   }
 }
+
+/**
+ * @}
+ * @}
+ */

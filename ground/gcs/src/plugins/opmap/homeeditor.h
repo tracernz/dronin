@@ -56,3 +56,8 @@ private:
 };
 
 #endif // HOMEEDITOR_H
+
+/**
+ * @}
+ * @}
+ */

@@ -88,3 +88,7 @@ namespace internals {
 Q_DECLARE_METATYPE(internals::MouseWheelZoomType::Types)
 #endif // MOUSEWHEELZOOMTYPE_H
 
+/**
+ * @}
+ * @}
+ */

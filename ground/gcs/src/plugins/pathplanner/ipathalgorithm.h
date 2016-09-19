@@ -64,3 +64,8 @@ public slots:
 };
 
 #endif // IPATHALGORITHM_H
+
+/**
+ * @}
+ * @}
+ */

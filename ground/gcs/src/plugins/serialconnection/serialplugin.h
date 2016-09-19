@@ -126,3 +126,8 @@ private:
 
 
 #endif // SERIALPLUGIN_H
+
+/**
+ * @}
+ * @}
+ */

@@ -89,3 +89,8 @@ signals:
 
 
 #endif // CONFIGMULTIROTORWIDGET_H
+
+/**
+ * @}
+ * @}
+ */

@@ -95,3 +95,8 @@ signals:
 } //namespace Core
 
 #endif // ICONNECTION_H
+
+/**
+ * @}
+ * @}
+ */

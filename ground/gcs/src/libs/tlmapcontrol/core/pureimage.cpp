@@ -45,3 +45,8 @@ bool PureImageProxy::Save(const QByteArray &array, QPixmap &pic)
     return true;
 }
 }
+
+/**
+ * @}
+ * @}
+ */

@@ -42,3 +42,8 @@ private:
 };
 
 #endif /* CONSOLEGADGETWIDGET_H_ */
+
+/**
+ * @}
+ * @}
+ */

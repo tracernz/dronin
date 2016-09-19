@@ -103,3 +103,8 @@ private:
 };
 
 #endif // LINEARDIALGADGETCONFIGURATION_H
+
+/**
+ * @}
+ * @}
+ */

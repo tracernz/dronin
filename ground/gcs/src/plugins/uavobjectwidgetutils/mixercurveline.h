@@ -69,3 +69,7 @@ private:
 
 #endif // MIXERCURVELINE_H
 
+/**
+ * @}
+ * @}
+ */

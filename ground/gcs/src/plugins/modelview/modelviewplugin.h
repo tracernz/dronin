@@ -48,3 +48,8 @@ private:
 };
 
 #endif /* MODELVIEWPLUGIN_H_ */
+
+/**
+ * @}
+ * @}
+ */

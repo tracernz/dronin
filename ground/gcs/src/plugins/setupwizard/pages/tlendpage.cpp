@@ -63,3 +63,8 @@ void TLEndPage::openInputWizard()
         msgBox.exec();
     }
 }
+
+/**
+ * @}
+ * @}
+ */

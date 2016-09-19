@@ -155,3 +155,8 @@ static bool PIOS_WDG_Check()
 	}
 	return wdg_expired;
 }
+
+/**
+ * @}
+ * @}
+ */

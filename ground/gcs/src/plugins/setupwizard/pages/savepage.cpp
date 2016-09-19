@@ -103,3 +103,8 @@ void SavePage::saveProgress(int total, int current, QString description)
         ui->saveProgressLabel->setText(description);
     }
 }
+
+/**
+ * @}
+ * @}
+ */

@@ -53,3 +53,8 @@ struct deviceInfo
 #endif
 
 #endif
+
+/**
+ * @}
+ * @}
+ */

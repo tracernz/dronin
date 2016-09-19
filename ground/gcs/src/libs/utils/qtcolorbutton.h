@@ -76,3 +76,8 @@ private:
 } // namespace Utils
 
 #endif // QTCOLORBUTTON_H
+
+/**
+ * @}
+ * @}
+ */

@@ -64,3 +64,8 @@ signals:
 };
 
 #endif // UAVSETTINGSIMPORTEXPORTFACTORY_H
+
+/**
+ * @}
+ * @}
+ */

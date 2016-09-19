@@ -651,3 +651,8 @@ static void PIOS_BMI160_Task(void *parameters)
 }
 
 #endif /* PIOS_INCLUDE_BMI160 */
+
+/**
+ * @}
+ * @}
+ */

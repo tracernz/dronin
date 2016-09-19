@@ -112,3 +112,8 @@ void TempCompCurve::clearCurves()
         fitCurve = NULL;
     }
 }
+
+/**
+ * @}
+ * @}
+ */

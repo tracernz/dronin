@@ -189,3 +189,8 @@ void ExpoCurve::showCurve(const QVariant & itemInfo, bool on, int index)
 
     replot();
 }
+
+/**
+ * @}
+ * @}
+ */

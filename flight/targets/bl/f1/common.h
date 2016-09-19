@@ -115,3 +115,8 @@ typedef enum {
 #define MAX_WRI_RETRYS					3
 
 #endif /* COMMON_H_ */
+
+/**
+ * @}
+ * @}
+ */

@@ -91,3 +91,8 @@ private:
 } // namespace Core
 
 #endif // SETTINGSDIALOG_H
+
+/**
+ * @}
+ * @}
+ */

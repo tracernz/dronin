@@ -151,3 +151,8 @@ private:
 };
 
 #endif /* UAVOBJECTBROWSERWIDGET_H_ */
+
+/**
+ * @}
+ * @}
+ */

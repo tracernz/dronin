@@ -64,3 +64,8 @@ struct LoadTask
   };
 }
 #endif // LOADTASK_H
+
+/**
+ * @}
+ * @}
+ */

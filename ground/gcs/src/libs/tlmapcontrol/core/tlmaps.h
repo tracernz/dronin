@@ -98,3 +98,8 @@ namespace core {
 
 }
 #endif // OPMaps_H
+
+/**
+ * @}
+ * @}
+ */

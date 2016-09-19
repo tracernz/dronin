@@ -75,3 +75,8 @@ private:
 }
 
 #endif // IDEVICE_H
+
+/**
+ * @}
+ * @}
+ */

@@ -133,3 +133,8 @@ public:
 };
 
 #endif // CONFIGVEHICLETYPEWIDGET_H
+
+/**
+ * @}
+ * @}
+ */

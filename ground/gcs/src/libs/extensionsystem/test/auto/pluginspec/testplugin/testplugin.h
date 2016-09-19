@@ -56,3 +56,8 @@ private:
 } // namespace
 
 #endif // TESTPLUGIN_H
+
+/**
+ * @}
+ * @}
+ */

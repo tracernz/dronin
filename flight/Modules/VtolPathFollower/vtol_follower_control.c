@@ -771,4 +771,3 @@ void vtol_follower_control_settings_updated(UAVObjEvent * ev,
  * @}
  * @}
  */
-

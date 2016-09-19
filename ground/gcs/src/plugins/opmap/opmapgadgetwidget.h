@@ -334,3 +334,8 @@ private:
 };
 
 #endif /* OPMAP_GADGETWIDGET_H_ */
+
+/**
+ * @}
+ * @}
+ */

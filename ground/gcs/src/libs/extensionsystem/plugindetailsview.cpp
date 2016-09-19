@@ -87,3 +87,8 @@ void PluginDetailsView::update(PluginSpec *spec)
     }
     m_ui->dependencies->addItems(depStrings);
 }
+
+/**
+ * @}
+ * @}
+ */

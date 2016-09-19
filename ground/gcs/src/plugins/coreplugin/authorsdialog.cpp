@@ -88,3 +88,8 @@ AuthorsDialog::AuthorsDialog(QWidget *parent)
     layout->addWidget(creditsArea,    3, 0, 2, 5);
     layout->addWidget(buttonBox,      6, 0, 1, 5);
 }
+
+/**
+ * @}
+ * @}
+ */

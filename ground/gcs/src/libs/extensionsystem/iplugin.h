@@ -70,3 +70,8 @@ private:
 } // namespace ExtensionSystem
 
 #endif // IPLUGIN_H
+
+/**
+ * @}
+ * @}
+ */

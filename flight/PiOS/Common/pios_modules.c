@@ -47,6 +47,6 @@ bool PIOS_Modules_IsEnabled(enum pios_modules module)
 }
 
 /**
- * @ }
- * @ }
+ * @}
+ * @}
  */

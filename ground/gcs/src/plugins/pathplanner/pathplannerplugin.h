@@ -55,3 +55,8 @@ private:
    WaypointDialog           *waypointDialog;
 };
 #endif /* PathPlannerPLUGIN_H_ */
+
+/**
+ * @}
+ * @}
+ */

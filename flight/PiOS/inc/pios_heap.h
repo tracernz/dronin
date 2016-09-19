@@ -44,3 +44,8 @@ extern void PIOS_heap_initialize_blocks(void);
 extern void PIOS_heap_increase_size(size_t bytes);
 
 #endif	/* PIOS_HEAP_H */
+
+/**
+ * @}
+ * @}
+ */

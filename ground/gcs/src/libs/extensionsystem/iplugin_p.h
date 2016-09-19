@@ -52,3 +52,8 @@ public:
 } // namespace ExtensionSystem
 
 #endif // IPLUGIN_P_H
+
+/**
+ * @}
+ * @}
+ */

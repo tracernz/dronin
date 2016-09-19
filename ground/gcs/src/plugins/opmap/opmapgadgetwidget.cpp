@@ -2227,3 +2227,8 @@ void OPMapGadgetWidget::updateWindspeed(UAVObject *obj)
     double windVelocity_NED[3]={windVelocityActualData.North, windVelocityActualData.East, windVelocityActualData.Down};
     m_map->setWindVelocity(windVelocity_NED);
 }
+
+/**
+ * @}
+ * @}
+ */

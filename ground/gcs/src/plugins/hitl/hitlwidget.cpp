@@ -203,3 +203,8 @@ void HITLWidget::onSimulatorDisconnect()
     widget->simLabel->setStyleSheet(strStyleDisable);
     widget->simLabel->setText(" " + simulator->Name() +" disconnected ");
 }
+
+/**
+ * @}
+ * @}
+ */

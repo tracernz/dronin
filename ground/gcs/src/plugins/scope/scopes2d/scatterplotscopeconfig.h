@@ -88,3 +88,8 @@ private slots:
 };
 
 #endif // SCATTERPLOTSCOPECONFIG_H
+
+/**
+ * @}
+ * @}
+ */

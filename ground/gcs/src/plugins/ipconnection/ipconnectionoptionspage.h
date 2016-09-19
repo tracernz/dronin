@@ -69,3 +69,8 @@ private:
 };
 
 #endif // IPconnectionOPTIONSPAGE_H
+
+/**
+ * @}
+ * @}
+ */

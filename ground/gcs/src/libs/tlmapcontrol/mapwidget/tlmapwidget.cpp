@@ -667,3 +667,8 @@ namespace mapcontrol
             emit selectedWPChanged(wplist);
     }
 }
+
+/**
+ * @}
+ * @}
+ */

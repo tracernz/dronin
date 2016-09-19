@@ -218,3 +218,8 @@ private:
 Q_DECLARE_METATYPE(NotificationItem*)
 
 #endif // NotificationItem_H
+
+/**
+ * @}
+ * @}
+ */

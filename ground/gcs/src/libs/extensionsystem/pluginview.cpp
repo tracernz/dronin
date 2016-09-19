@@ -154,3 +154,7 @@ void PluginView::activatePlugin(QTreeWidgetItem *item)
     emit pluginActivated(item->data(0, Qt::UserRole).value<PluginSpec *>());
 }
 
+/**
+ * @}
+ * @}
+ */

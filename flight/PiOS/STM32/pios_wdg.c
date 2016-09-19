@@ -210,3 +210,8 @@ void PIOS_WDG_Clear(void)
 	IWDG_ReloadCounter();
 #endif
 }
+
+/**
+ * @}
+ * @}
+ */

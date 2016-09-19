@@ -263,3 +263,8 @@ bool SerialPlugin::initialize(const QStringList &arguments, QString *errorString
     addObject(m_connection->Optionspage());
     return true;
 }
+
+/**
+ * @}
+ * @}
+ */

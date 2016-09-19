@@ -291,3 +291,8 @@ namespace internals {
 
 }
 #endif // CORE_H
+
+/**
+ * @}
+ * @}
+ */

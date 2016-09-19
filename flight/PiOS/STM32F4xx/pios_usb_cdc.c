@@ -631,3 +631,8 @@ static bool PIOS_USB_CDC_DATA_EP_OUT_Callback(uintptr_t usb_cdc_id, uint8_t epnu
 }
 
 #endif	/* PIOS_INCLUDE_USB_CDC */
+
+/**
+ * @}
+ * @}
+ */

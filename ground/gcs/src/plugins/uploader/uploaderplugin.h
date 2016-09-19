@@ -70,3 +70,8 @@ private slots:
    void testStuff();
 };
 #endif // UPLOADERPLUGIN_H
+
+/**
+ * @}
+ * @}
+ */

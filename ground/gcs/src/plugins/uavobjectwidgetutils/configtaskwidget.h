@@ -223,3 +223,8 @@ protected:
 };
 
 #endif // CONFIGTASKWIDGET_H
+
+/**
+ * @}
+ * @}
+ */

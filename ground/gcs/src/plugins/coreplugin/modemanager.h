@@ -110,3 +110,8 @@ private:
 } // namespace Core
 
 #endif // MODEMANAGER_H
+
+/**
+ * @}
+ * @}
+ */

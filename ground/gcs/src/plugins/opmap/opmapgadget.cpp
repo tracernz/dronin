@@ -76,3 +76,7 @@ void OPMapGadget::loadConfiguration(IUAVGadgetConfiguration *config)
     m_widget->setGeoCodingLanguage(m_config->geoLanguage());
 }
 
+/**
+ * @}
+ * @}
+ */

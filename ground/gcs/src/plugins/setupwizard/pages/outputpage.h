@@ -49,3 +49,8 @@ private:
 };
 
 #endif // OUTPUTPAGE_H
+
+/**
+ * @}
+ * @}
+ */

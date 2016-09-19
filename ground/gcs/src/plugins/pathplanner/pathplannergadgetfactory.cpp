@@ -44,3 +44,8 @@ IUAVGadget* PathPlannerGadgetFactory::createGadget(QWidget *parent) {
     PathPlannerGadgetWidget* gadgetWidget = new PathPlannerGadgetWidget(parent);
     return new PathPlannerGadget(QString("PathPlannerGadget"), gadgetWidget, parent);
 }
+
+/**
+ * @}
+ * @}
+ */

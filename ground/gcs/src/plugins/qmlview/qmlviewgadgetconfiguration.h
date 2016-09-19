@@ -52,3 +52,8 @@ private:
 };
 
 #endif // QmlViewGADGETCONFIGURATION_H
+
+/**
+ * @}
+ * @}
+ */

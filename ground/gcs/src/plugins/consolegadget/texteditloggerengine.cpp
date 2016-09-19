@@ -133,3 +133,8 @@ void TextEditLoggerEngine::writeToTextEdit(const QString& level, const QList<QVa
     if (scroll)
         sb->setValue(sb->maximum());
 }
+
+/**
+ * @}
+ * @}
+ */

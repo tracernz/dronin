@@ -215,3 +215,8 @@ namespace mapcontrol
     };
 }
 #endif // GPSITEM_H
+
+/**
+ * @}
+ * @}
+ */

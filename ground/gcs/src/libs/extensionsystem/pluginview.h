@@ -76,3 +76,8 @@ private:
 } // namespae ExtensionSystem
 
 #endif // PLUGIN_VIEW_H
+
+/**
+ * @}
+ * @}
+ */

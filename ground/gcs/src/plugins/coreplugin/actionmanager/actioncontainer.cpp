@@ -467,3 +467,7 @@ bool MenuBarActionContainer::canBeAddedToMenu() const
     return false;
 }
 
+/**
+ * @}
+ * @}
+ */

@@ -228,3 +228,8 @@ void AlarmsMonitorWidget::processAlerts()
     else
         info_sym->setOpacity(DIMMED_SYMBOL);
 }
+
+/**
+ * @}
+ * @}
+ */

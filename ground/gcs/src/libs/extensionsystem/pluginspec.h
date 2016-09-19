@@ -114,3 +114,7 @@ private:
 
 #endif // PLUGINSPEC_H
 
+/**
+ * @}
+ * @}
+ */

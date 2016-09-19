@@ -42,3 +42,8 @@ private:
 };
 
 #endif /* EMPTYGADGETWIDGET_H_ */
+
+/**
+ * @}
+ * @}
+ */

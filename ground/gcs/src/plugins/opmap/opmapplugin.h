@@ -48,3 +48,8 @@ private:
    OPMapGadgetFactory *mf;
 };
 #endif /* OPMAP_PLUGIN_H_ */
+
+/**
+ * @}
+ * @}
+ */

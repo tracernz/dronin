@@ -64,3 +64,8 @@ private:
 
 
 #endif // QMLVIEWQMLGADGET_H_
+
+/**
+ * @}
+ * @}
+ */

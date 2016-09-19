@@ -58,3 +58,8 @@ signals:
 };
 
 #endif // SCOPEGADGETFACTORY_H_
+
+/**
+ * @}
+ * @}
+ */

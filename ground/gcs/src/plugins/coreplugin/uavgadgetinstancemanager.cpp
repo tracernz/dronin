@@ -516,3 +516,8 @@ int UAVGadgetInstanceManager::indexForConfig(QList<IUAVGadgetConfiguration*> con
     }
     return -1;
 }
+
+/**
+ * @}
+ * @}
+ */

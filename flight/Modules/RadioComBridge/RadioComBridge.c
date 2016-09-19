@@ -770,3 +770,8 @@ static void objectPersistenceUpdatedCb(UAVObjEvent * objEv, void *ctx,
 		}
 	}
 }
+
+/**
+ * @}
+ * @}
+ */

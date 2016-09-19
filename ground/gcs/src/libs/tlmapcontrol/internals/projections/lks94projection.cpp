@@ -762,3 +762,8 @@ Size LKS94Projection::GetTileMatrixMaxXY(int const& zoom)
 }
 
 }
+
+/**
+ * @}
+ * @}
+ */

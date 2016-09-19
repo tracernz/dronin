@@ -71,3 +71,8 @@ private slots:
 };
 
 #endif // DOUBLESPINDELEGATE_H
+
+/**
+ * @}
+ * @}
+ */

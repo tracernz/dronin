@@ -59,3 +59,8 @@ private:
 };
 
 #endif // UAVTALKPLUGIN_H
+
+/**
+ * @}
+ * @}
+ */

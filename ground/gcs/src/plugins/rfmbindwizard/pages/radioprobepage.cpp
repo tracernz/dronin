@@ -132,3 +132,8 @@ void RadioProbePage::transactionReceived(UAVObject *obj, bool success)
         emit probeChanged(true);
     }
 }
+
+/**
+ * @}
+ * @}
+ */

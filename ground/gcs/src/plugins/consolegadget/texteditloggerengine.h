@@ -55,3 +55,8 @@ private:
 };
 
 #endif // TEXTEDITLOGGERENGINE_H
+
+/**
+ * @}
+ * @}
+ */

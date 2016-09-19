@@ -48,3 +48,8 @@ QTCREATOR_UTILS_EXPORT QString winGetDLLVersion(WinDLLVersionType t,
                                                 QString *errorMessage);
 } // namespace Utils
 #endif // WINUTILS_H
+
+/**
+ * @}
+ * @}
+ */

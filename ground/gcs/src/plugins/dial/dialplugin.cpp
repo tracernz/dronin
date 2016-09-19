@@ -64,3 +64,7 @@ void DialPlugin::shutdown()
    // Do nothing
 }
 
+/**
+ * @}
+ * @}
+ */

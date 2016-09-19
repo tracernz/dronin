@@ -60,3 +60,8 @@ void UAVObjectsPlugin::shutdown()
 {
 
 }
+
+/**
+ * @}
+ * @}
+ */

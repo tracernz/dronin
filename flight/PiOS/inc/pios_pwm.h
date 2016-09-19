@@ -31,3 +31,8 @@
 #define PIOS_PWM_H
 
 #endif /* PIOS_PWM_H */
+
+/**
+ * @}
+ * @}
+ */

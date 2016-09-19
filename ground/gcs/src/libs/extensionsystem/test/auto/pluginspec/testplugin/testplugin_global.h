@@ -38,3 +38,8 @@
 #endif
 
 #endif // TESTPLUGIN_GLOBAL_H
+
+/**
+ * @}
+ * @}
+ */

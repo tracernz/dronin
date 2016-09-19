@@ -59,3 +59,8 @@ bool operator!=(SizeLatLng const&  sz1, SizeLatLng const&  sz2)
 }
 SizeLatLng SizeLatLng::Empty=SizeLatLng();
 }
+
+/**
+ * @}
+ * @}
+ */

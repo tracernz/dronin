@@ -40,3 +40,8 @@ TLStartPage::~TLStartPage()
 {
     delete ui;
 }
+
+/**
+ * @}
+ * @}
+ */

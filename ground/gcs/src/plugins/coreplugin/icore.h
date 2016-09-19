@@ -120,3 +120,8 @@ signals:
 } // namespace Core
 
 #endif // ICORE_H
+
+/**
+ * @}
+ * @}
+ */

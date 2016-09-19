@@ -49,3 +49,8 @@ public:
 };
 
 #endif // UAVOBJECTSPLUGIN_H
+
+/**
+ * @}
+ * @}
+ */

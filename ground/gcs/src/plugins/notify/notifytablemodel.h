@@ -92,3 +92,8 @@ private:
 };
 
 #endif // NOTIFYTABLEMODEL_H
+
+/**
+ * @}
+ * @}
+ */

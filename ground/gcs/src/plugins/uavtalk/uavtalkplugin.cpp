@@ -84,3 +84,8 @@ void UAVTalkPlugin::onDeviceDisconnect()
 {
     telMngr->stop();
 }
+
+/**
+ * @}
+ * @}
+ */

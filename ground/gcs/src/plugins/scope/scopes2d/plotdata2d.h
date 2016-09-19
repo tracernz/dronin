@@ -56,3 +56,8 @@ private:
 };
 
 #endif // PLOTDATA2D_H
+
+/**
+ * @}
+ * @}
+ */

@@ -882,3 +882,7 @@ void PluginSpecPrivate::kill()
     state = PluginSpec::Deleted;
 }
 
+/**
+ * @}
+ * @}
+ */

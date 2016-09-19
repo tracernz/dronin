@@ -50,3 +50,7 @@ void HITLGadget::loadConfiguration(IUAVGadgetConfiguration* config)
 	m_widget->setSettingParameters(m->Settings());
 }
 
+/**
+ * @}
+ * @}
+ */

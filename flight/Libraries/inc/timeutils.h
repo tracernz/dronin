@@ -45,3 +45,8 @@ void date_from_timestamp(uint32_t timestamp, DateTimeT *date_time);
 
 
 #endif /* _TIMEUTILS_H */
+
+/**
+ * @}
+ * @}
+ */

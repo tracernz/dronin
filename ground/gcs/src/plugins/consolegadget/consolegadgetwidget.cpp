@@ -42,3 +42,7 @@ ConsoleGadgetWidget::~ConsoleGadgetWidget()
    // Do nothing
 }
 
+/**
+ * @}
+ * @}
+ */

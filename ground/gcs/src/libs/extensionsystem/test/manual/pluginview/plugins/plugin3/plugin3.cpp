@@ -70,3 +70,8 @@ void MyPlugin3::extensionsInitialized()
 }
 
 Q_EXPORT_PLUGIN(MyPlugin3)
+
+/**
+ * @}
+ * @}
+ */

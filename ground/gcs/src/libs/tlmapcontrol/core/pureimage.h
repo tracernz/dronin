@@ -43,3 +43,8 @@ namespace core {
 
 }
 #endif // PUREIMAGE_H
+
+/**
+ * @}
+ * @}
+ */

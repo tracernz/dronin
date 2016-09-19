@@ -43,3 +43,8 @@ void ConfigGadgetConfiguration::saveConfig(QSettings* settings) const {
 
     Q_UNUSED(settings)
 }
+
+/**
+ * @}
+ * @}
+ */

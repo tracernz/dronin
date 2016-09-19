@@ -81,3 +81,8 @@ extern int32_t PIOS_BMI160_Init(uint32_t spi_id, uint32_t slave_num, const struc
 extern bool PIOS_BMI160_IRQHandler(void);
 
 #endif /* PIOS_BMI160_H */
+
+/**
+ * @}
+ * @}
+ */

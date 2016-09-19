@@ -116,5 +116,7 @@ uint16_t PIOS_FrSkyRssi_Get()
 }
 #endif /* PIOS_INCLUDE_FRSKY_RSSI */
 
-
-
+/**
+ * @}
+ * @}
+ */

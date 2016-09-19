@@ -61,3 +61,8 @@ void OPMapPlugin::shutdown()
 {
    // Do nothing
 }
+
+/**
+ * @}
+ * @}
+ */

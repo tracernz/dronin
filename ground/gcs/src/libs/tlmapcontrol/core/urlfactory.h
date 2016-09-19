@@ -96,3 +96,8 @@ namespace core {
 
 }
 #endif // URLFACTORY_H
+
+/**
+ * @}
+ * @}
+ */

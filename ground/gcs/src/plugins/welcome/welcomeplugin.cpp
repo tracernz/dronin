@@ -96,3 +96,8 @@ void WelcomePlugin::extensionsInitialized()
 {
     Core::ModeManager::instance()->activateMode(m_welcomeMode->uniqueModeName());
 }
+
+/**
+ * @}
+ * @}
+ */

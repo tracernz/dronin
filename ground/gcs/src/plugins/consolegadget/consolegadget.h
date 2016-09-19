@@ -57,3 +57,8 @@ private:
 
 
 #endif // CONSOLEGADGET_H_
+
+/**
+ * @}
+ * @}
+ */

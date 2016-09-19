@@ -381,3 +381,7 @@ Waypoint::DataFields PathCompiler::InternalToUavo(waypoint internal)
     return uavo;
 }
 
+/**
+ * @}
+ * @}
+ */

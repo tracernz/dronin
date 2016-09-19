@@ -59,3 +59,8 @@ public slots:
 };
 
 #endif // SERIALPLUGINCONFIGURATION_H
+
+/**
+ * @}
+ * @}
+ */

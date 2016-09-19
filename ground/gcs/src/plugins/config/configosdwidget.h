@@ -112,3 +112,8 @@ protected:
 
 #endif // CONFIGOSDWIDGET_H
  
+
+/**
+ * @}
+ * @}
+ */

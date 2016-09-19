@@ -140,3 +140,8 @@ void BiasCalibrationPage::stopCalibration()
         enableButtons(true);
     }
 }
+
+/**
+ * @}
+ * @}
+ */

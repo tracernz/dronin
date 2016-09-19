@@ -76,3 +76,8 @@ bool OutputPage::validatePage()
 
     return true;
 }
+
+/**
+ * @}
+ * @}
+ */

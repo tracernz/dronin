@@ -102,3 +102,8 @@ private:
 }
 }
 #endif // UAVGADGETVIEW_H
+
+/**
+ * @}
+ * @}
+ */

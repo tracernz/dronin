@@ -71,3 +71,8 @@ public:
 } // namespace Core
 
 #endif // IWIZARD_H
+
+/**
+ * @}
+ * @}
+ */

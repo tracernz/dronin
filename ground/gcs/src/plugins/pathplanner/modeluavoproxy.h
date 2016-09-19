@@ -70,3 +70,8 @@ private:
 };
 
 #endif // ModelUavoProxy_H
+
+/**
+ * @}
+ * @}
+ */

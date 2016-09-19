@@ -484,3 +484,8 @@ double GCSControlGadget::wrap(double input)
     while (input <-1.0)input += 2.0;
     return input;
 }
+
+/**
+ * @}
+ * @}
+ */

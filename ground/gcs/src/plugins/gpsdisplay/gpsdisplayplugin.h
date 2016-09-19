@@ -48,3 +48,8 @@ private:
 };
 
 #endif /* GPSDISPLAYPLUGIN_H_ */
+
+/**
+ * @}
+ * @}
+ */

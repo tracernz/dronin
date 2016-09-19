@@ -748,3 +748,8 @@ AutotuneFinalPage::AutotuneFinalPage(QWidget *parent) :
                 tr("\"Done\"")));
 #endif
 }
+
+/**
+ * @}
+ * @}
+ */

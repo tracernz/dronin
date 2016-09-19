@@ -70,3 +70,7 @@ void HITLPlugin::shutdown()
    // Do nothing
 }
 
+/**
+ * @}
+ * @}
+ */

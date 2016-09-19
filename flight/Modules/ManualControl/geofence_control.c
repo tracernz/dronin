@@ -136,4 +136,3 @@ enum control_events geofence_control_get_events()
  * @}
  * @}
  */
-

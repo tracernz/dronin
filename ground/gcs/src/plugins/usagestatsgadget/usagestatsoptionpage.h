@@ -66,3 +66,8 @@ private:
 };
 
 #endif // USAGESTATSOPTIONPAGE_H
+
+/**
+ * @}
+ * @}
+ */

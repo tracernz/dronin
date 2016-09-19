@@ -390,3 +390,8 @@ private:
     {0.5000, 0, 0} }
 
 #endif // KMLEXPORT_H
+
+/**
+ * @}
+ * @}
+ */

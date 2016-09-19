@@ -90,3 +90,8 @@ private:
 };
 
 #endif // EXPOCURVE_H
+
+/**
+ * @}
+ * @}
+ */

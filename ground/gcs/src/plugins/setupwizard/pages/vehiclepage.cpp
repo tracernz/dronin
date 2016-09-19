@@ -56,3 +56,8 @@ bool VehiclePage::validatePage()
     }
     return true;
 }
+
+/**
+ * @}
+ * @}
+ */

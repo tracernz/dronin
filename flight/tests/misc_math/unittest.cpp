@@ -351,3 +351,8 @@ TEST_F(LinearInterpolate, CollectiveCurve1to1) {
     EXPECT_NEAR(range_max, linear_interpolate(input, curve, curve_numpts, range_min, range_max), eps);
   }
 };
+
+/**
+ * @}
+ * @}
+ */

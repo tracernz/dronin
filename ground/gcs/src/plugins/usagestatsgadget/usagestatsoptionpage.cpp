@@ -74,3 +74,8 @@ void UsageStatsOptionPage::finish()
 {
     delete m_page;
 }
+
+/**
+ * @}
+ * @}
+ */

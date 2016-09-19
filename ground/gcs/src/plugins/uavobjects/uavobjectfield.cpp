@@ -1061,3 +1061,8 @@ QString UAVObjectField::getDescription()
 {
     return description;
 }
+
+/**
+ * @}
+ * @}
+ */

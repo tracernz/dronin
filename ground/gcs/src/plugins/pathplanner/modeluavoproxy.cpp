@@ -274,3 +274,7 @@ bool ModelUavoProxy::getHomeLocation(double *homeLLA)
     return true;
 }
 
+/**
+ * @}
+ * @}
+ */

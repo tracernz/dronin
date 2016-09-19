@@ -54,3 +54,8 @@ private:
 
 
 #endif // SYSTEMHEALTHGADGET_H_
+
+/**
+ * @}
+ * @}
+ */

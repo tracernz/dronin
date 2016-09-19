@@ -40,3 +40,8 @@ static const QString arcGisCopyright = QString("%1 ESRI - Map data %1 ArcGIS").a
 
 }
 #endif // COPYRIGHTSTRINGS_H
+
+/**
+ * @}
+ * @}
+ */

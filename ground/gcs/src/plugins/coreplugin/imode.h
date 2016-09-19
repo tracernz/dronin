@@ -56,3 +56,8 @@ public:
 } // namespace Core
 
 #endif // IMODE_H
+
+/**
+ * @}
+ * @}
+ */

@@ -63,3 +63,8 @@ private slots:
 };
 
 #endif // SYSTEMHEALTHGADGETOPTIONSPAGE_H
+
+/**
+ * @}
+ * @}
+ */

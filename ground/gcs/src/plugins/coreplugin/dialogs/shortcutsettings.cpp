@@ -326,3 +326,8 @@ int ShortcutSettings::translateModifiers(Qt::KeyboardModifiers state,
         result |= Qt::ALT;
     return result;
 }
+
+/**
+ * @}
+ * @}
+ */

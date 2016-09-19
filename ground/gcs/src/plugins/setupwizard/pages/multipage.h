@@ -64,3 +64,8 @@ private slots:
 };
 
 #endif // MULTIPAGE_H
+
+/**
+ * @}
+ * @}
+ */

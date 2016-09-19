@@ -117,3 +117,8 @@ private:
 } // namespace Core
 
 #endif // ACTIONMANAGERPRIVATE_H
+
+/**
+ * @}
+ * @}
+ */

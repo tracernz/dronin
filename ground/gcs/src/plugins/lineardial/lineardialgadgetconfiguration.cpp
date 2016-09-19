@@ -114,3 +114,8 @@ void LineardialGadgetConfiguration::saveConfig(QSettings* qSettings) const {
    qSettings->setValue("decimalPlaces", decimalPlaces);
    qSettings->setValue("factor", factor);
 }
+
+/**
+ * @}
+ * @}
+ */

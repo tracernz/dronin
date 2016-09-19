@@ -132,3 +132,8 @@ private:
 
 
 #endif /* SCOPEGADGETWIDGET_H_ */
+
+/**
+ * @}
+ * @}
+ */

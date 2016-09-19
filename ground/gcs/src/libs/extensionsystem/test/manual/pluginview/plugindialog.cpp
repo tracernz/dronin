@@ -136,3 +136,8 @@ int main(int argc, char *argv[])
     dialog.show();
     app.exec();
 }
+
+/**
+ * @}
+ * @}
+ */

@@ -34,3 +34,8 @@
 void render_osd_menu();
 
 #endif /* OSDMENU_H */
+
+/**
+ * @}
+ * @}
+ */

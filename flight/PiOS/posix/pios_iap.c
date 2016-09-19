@@ -100,3 +100,8 @@ uint16_t PIOS_IAP_ReadBootCount(void)
 void PIOS_IAP_WriteBootCount (uint16_t boot_count)
 {
 }
+
+/**
+ * @}
+ * @}
+ */

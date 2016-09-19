@@ -57,3 +57,8 @@ private:
 
 
 #endif // HITL_H
+
+/**
+ * @}
+ * @}
+ */

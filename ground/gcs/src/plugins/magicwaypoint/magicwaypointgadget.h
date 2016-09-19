@@ -58,3 +58,8 @@ private:
 
 
 #endif // MagicWaypointGADGET_H_
+
+/**
+ * @}
+ * @}
+ */

@@ -66,3 +66,8 @@ void PIOS_BL_HELPER_CRC_Ini()
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_CRC, ENABLE);
 }
 #endif
+
+/**
+ * @}
+ * @}
+ */

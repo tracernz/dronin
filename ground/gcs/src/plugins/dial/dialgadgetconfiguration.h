@@ -141,3 +141,8 @@ private:
 };
 
 #endif // DIALGADGETCONFIGURATION_H
+
+/**
+ * @}
+ * @}
+ */

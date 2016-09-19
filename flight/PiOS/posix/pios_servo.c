@@ -89,3 +89,8 @@ void PIOS_Servo_Update(void)
 }
 
 #endif
+
+/**
+ * @}
+ * @}
+ */

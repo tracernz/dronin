@@ -36,3 +36,8 @@ public:
 };
 
 #endif // LOGGINGDEVICE_H
+
+/**
+ * @}
+ * @}
+ */

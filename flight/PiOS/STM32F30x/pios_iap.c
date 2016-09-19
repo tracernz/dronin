@@ -163,3 +163,8 @@ void PIOS_IAP_WriteBootCount (uint16_t boot_count)
 {
 	RTC_WriteBackupRegister ( IAP_BOOTCOUNT, boot_count );
 }
+
+/**
+ * @}
+ * @}
+ */

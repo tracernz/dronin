@@ -325,3 +325,8 @@ int32_t PIOS_USB_DESC_HID_CDC_Init(void)
 
 	return 0;
 }
+
+/**
+ * @}
+ * @}
+ */

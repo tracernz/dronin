@@ -264,3 +264,8 @@ namespace mapcontrol
     };
 }
 #endif // UAVITEM_H
+
+/**
+ * @}
+ * @}
+ */

@@ -44,3 +44,8 @@ extern uint8_t PIOS_BL_HELPER_FLASH_Start();
 extern void PIOS_BL_HELPER_CRC_Ini();
 
 #endif /* PIOS_BL_HELPER_H_ */
+
+/**
+ * @}
+ * @}
+ */

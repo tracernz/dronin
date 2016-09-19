@@ -44,3 +44,8 @@ QNoDebug qNotifyDebug()
     return QNoDebug();
 }
 #endif
+
+/**
+ * @}
+ * @}
+ */

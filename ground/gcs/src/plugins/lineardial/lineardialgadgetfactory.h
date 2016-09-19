@@ -50,3 +50,8 @@ public:
 };
 
 #endif // LINEARDIALGADGETFACTORY_H_
+
+/**
+ * @}
+ * @}
+ */

@@ -131,3 +131,8 @@ protected:
 };
 
 #endif // CONFIGccpmWIDGET_H
+
+/**
+ * @}
+ * @}
+ */

@@ -385,3 +385,8 @@ void SpectrogramScopeConfig::configureAxes(ScopeGadgetWidget *scopeGadgetWidget)
     scopeGadgetWidget->setAxisFont(QwtPlot::xBottom, fnt);	// x-axis
     scopeGadgetWidget->setAxisFont(QwtPlot::yLeft, fnt);	// y-axis
 }
+
+/**
+ * @}
+ * @}
+ */

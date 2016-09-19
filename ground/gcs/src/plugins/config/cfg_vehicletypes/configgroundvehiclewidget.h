@@ -71,3 +71,8 @@ protected:
 
 
 #endif // CONFIGGROUNDVEHICLEWIDGET_H
+
+/**
+ * @}
+ * @}
+ */

@@ -48,3 +48,8 @@ public:
 };
 
 #endif // PathPlannerGADGETFACTORY_H_
+
+/**
+ * @}
+ * @}
+ */

@@ -80,3 +80,8 @@ Noise HitlNoiseGeneration::generateNoise(){
 
     return noise;
 }
+
+/**
+ * @}
+ * @}
+ */

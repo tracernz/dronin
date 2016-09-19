@@ -365,3 +365,8 @@ void PIOS_Video_Set3DConfig(enum pios_video_3d_mode mode, uint8_t right_eye_x_sh
 	dev_cfg->set_3d_config(mode, right_eye_x_shift);
 }
 #endif /* PIOS_INCLUDE_VIDEO_SINGLESPI */
+
+/**
+ * @}
+ * @}
+ */

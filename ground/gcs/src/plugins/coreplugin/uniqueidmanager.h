@@ -56,3 +56,8 @@ private:
 } // namespace Core
 
 #endif // UNIQUEIDMANAGER_H
+
+/**
+ * @}
+ * @}
+ */

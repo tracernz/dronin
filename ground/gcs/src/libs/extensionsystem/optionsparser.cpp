@@ -107,3 +107,8 @@ void OptionsParser::checkForPluginOption(QStringList pluginOptions)
     }
     return;
 }
+
+/**
+ * @}
+ * @}
+ */

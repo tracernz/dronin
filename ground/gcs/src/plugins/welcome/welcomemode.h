@@ -81,3 +81,8 @@ private:
 } // namespace Welcome
 
 #endif // WELCOMEMODE_H
+
+/**
+ * @}
+ * @}
+ */

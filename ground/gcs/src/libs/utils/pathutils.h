@@ -58,3 +58,8 @@ private:
 }
 
 #endif /* PATHUTILS_H */
+
+/**
+ * @}
+ * @}
+ */

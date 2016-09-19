@@ -59,3 +59,8 @@ private slots:
 
 
 #endif // OPMAP_GADGET_H_
+
+/**
+ * @}
+ * @}
+ */

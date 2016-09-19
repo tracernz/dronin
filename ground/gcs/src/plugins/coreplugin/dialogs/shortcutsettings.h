@@ -109,3 +109,8 @@ private:
 } // namespace Core
 
 #endif // SHORTCUTSETTINGS_H
+
+/**
+ * @}
+ * @}
+ */

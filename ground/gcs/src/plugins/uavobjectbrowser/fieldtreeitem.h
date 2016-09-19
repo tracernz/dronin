@@ -326,3 +326,8 @@ private:
 };
 
 #endif // FIELDTREEITEM_H
+
+/**
+ * @}
+ * @}
+ */

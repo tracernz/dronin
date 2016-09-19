@@ -74,3 +74,8 @@ private slots:
 };
 
 #endif // ConfigStabilizationWidget_H
+
+/**
+ * @}
+ * @}
+ */

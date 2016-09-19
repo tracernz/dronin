@@ -105,3 +105,8 @@ namespace core {
     };
 }
 #endif // GEODECODERSTATUS_H
+
+/**
+ * @}
+ * @}
+ */

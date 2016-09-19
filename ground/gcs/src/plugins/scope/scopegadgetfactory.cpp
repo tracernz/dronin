@@ -59,3 +59,8 @@ IOptionsPage *ScopeGadgetFactory::createOptionsPage(IUAVGadgetConfiguration *con
 {
     return new ScopeGadgetOptionsPage(qobject_cast<ScopeGadgetConfiguration*>(config));
 }
+
+/**
+ * @}
+ * @}
+ */

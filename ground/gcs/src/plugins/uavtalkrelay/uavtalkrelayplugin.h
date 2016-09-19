@@ -64,3 +64,8 @@ private:
 };
 
 #endif // UAVTALKPRELAYLUGIN_H
+
+/**
+ * @}
+ * @}
+ */

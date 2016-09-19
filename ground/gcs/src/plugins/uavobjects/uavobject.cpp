@@ -504,3 +504,8 @@ UAVObject::UpdateMode UAVObject::GetGcsTelemetryUpdateMode(const UAVObject::Meta
 void UAVObject::SetGcsTelemetryUpdateMode(UAVObject::Metadata& metadata, UAVObject::UpdateMode val) {
 	SET_BITS(metadata.flags, UAVOBJ_GCS_TELEMETRY_UPDATE_MODE_SHIFT, val, UAVOBJ_UPDATE_MODE_MASK);
 }
+
+/**
+ * @}
+ * @}
+ */

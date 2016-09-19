@@ -53,3 +53,8 @@ signals:
 };
 
 #endif // MYTABWIDGET_H
+
+/**
+ * @}
+ * @}
+ */

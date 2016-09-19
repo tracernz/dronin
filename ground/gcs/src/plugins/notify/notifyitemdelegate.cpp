@@ -164,3 +164,8 @@ QSize  NotifyItemDelegate::sizeHint(const QStyleOptionViewItem& option, const QM
     s.setHeight(10);
     return s;
 }
+
+/**
+ * @}
+ * @}
+ */

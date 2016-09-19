@@ -112,3 +112,8 @@ private:
 } // namespace Core
 
 #endif // UAVGADGETINSTANCEMANAGER_H
+
+/**
+ * @}
+ * @}
+ */

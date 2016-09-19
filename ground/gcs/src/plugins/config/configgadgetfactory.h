@@ -59,3 +59,8 @@ private:
 };
 
 #endif // CONFIGGADGETFACTORY_H
+
+/**
+ * @}
+ * @}
+ */

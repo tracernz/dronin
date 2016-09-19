@@ -62,3 +62,8 @@ bool TreeWidgetColumnStretcher::eventFilter(QObject *obj, QEvent *ev)
     }
     return false;
 }
+
+/**
+ * @}
+ * @}
+ */

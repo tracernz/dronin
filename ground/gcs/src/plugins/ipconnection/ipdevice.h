@@ -42,3 +42,8 @@ public:
 };
 
 #endif // IPDEVICE_H
+
+/**
+ * @}
+ * @}
+ */

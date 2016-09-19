@@ -70,3 +70,8 @@ private:
 } // namespace Core
 
 #endif // IOPTIONSPAGE_H
+
+/**
+ * @}
+ * @}
+ */

@@ -118,3 +118,8 @@ Size MercatorProjection::GetTileMatrixMinXY(const int &zoom)
     return Size(0, 0);
 }
 }
+
+/**
+ * @}
+ * @}
+ */

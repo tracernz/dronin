@@ -122,3 +122,8 @@ private:
     UsageStatsPlugin *m_parent;
 };
 #endif /* USAGESTATSPLUGIN_H_ */
+
+/**
+ * @}
+ * @}
+ */

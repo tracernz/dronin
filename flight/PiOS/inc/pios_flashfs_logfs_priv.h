@@ -47,3 +47,8 @@ int32_t PIOS_FLASHFS_Logfs_Init(uintptr_t * fs_id, const struct flashfs_logfs_cf
 int32_t PIOS_FLASHFS_Logfs_Destroy(uintptr_t fs_id);
 
 #endif	/* PIOS_FLASHFS_LOGFS_PRIV_H_ */
+
+/**
+ * @}
+ * @}
+ */

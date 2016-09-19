@@ -63,3 +63,7 @@ void LineardialPlugin::shutdown()
    // Do nothing
 }
 
+/**
+ * @}
+ * @}
+ */

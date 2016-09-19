@@ -146,3 +146,8 @@ public slots:
 };
 
 #endif // PATHCOMPILER_H
+
+/**
+ * @}
+ * @}
+ */

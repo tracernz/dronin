@@ -164,3 +164,8 @@ private slots:
 };
 
 #endif // TELEMETRY_H
+
+/**
+ * @}
+ * @}
+ */

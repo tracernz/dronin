@@ -52,3 +52,8 @@ private:
 };
 
 #endif // MAPRIPFORM_H
+
+/**
+ * @}
+ * @}
+ */

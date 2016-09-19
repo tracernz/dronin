@@ -80,3 +80,7 @@ void IPconnectionOptionsPage::finish()
     delete m_page;
 }
 
+/**
+ * @}
+ * @}
+ */

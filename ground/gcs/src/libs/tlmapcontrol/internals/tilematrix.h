@@ -53,3 +53,8 @@ protected:
 
 }
 #endif // TILEMATRIX_H
+
+/**
+ * @}
+ * @}
+ */

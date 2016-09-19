@@ -155,3 +155,8 @@ void MyTabbedStackWidget::setHidden(int index, bool hide)
 
     i->setHidden(hide);
 }
+
+/**
+ * @}
+ * @}
+ */

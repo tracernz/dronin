@@ -349,3 +349,8 @@ UAVObjectManager* VehicleConfig::getUAVObjectManager() {
         i++;
     }
  }
+
+/**
+ * @}
+ * @}
+ */

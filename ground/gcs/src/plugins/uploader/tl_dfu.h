@@ -164,3 +164,8 @@ protected:
 Q_DECLARE_METATYPE(tl_dfu::Status)
 
 #endif // TL_DFU_H
+
+/**
+ * @}
+ * @}
+ */

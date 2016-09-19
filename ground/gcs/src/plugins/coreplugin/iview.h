@@ -51,3 +51,8 @@ public:
 } // namespace Core
 
 #endif // IVIEW_H
+
+/**
+ * @}
+ * @}
+ */

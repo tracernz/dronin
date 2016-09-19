@@ -156,3 +156,8 @@ void opmap_edit_waypoint_dialog::currentRowChanged(QModelIndex current, QModelIn
 
     mapper->setCurrentIndex(current.row());
 }
+
+/**
+ * @}
+ * @}
+ */

@@ -56,3 +56,8 @@ private:
 
 
 #endif // MODELVIEWGADGET_H_
+
+/**
+ * @}
+ * @}
+ */

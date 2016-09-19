@@ -66,3 +66,8 @@ void RebootPage::toggleLabel()
     ui->yellowLabel->setVisible(m_toggl);
     ui->redLabel->setVisible(!m_toggl);
 }
+
+/**
+ * @}
+ * @}
+ */

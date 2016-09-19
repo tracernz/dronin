@@ -216,3 +216,8 @@ bool IPconnectionPlugin::initialize(const QStringList &arguments, QString *error
 
     return true;
 }
+
+/**
+ * @}
+ * @}
+ */

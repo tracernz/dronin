@@ -206,3 +206,8 @@ void WaypointDialog::enableEditWidgets()
             w->setEnabled(!value);
     }
 }
+
+/**
+ * @}
+ * @}
+ */

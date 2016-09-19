@@ -377,3 +377,8 @@ void OutputChannelForm::updateMaxSpinboxValue(int maxPulseWidth)
     setChannelRange();
     alignFields();
 }
+
+/**
+ * @}
+ * @}
+ */

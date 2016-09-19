@@ -112,3 +112,8 @@ signals:
 } // namespace Core
 
 #endif // IOUTPUTPANE_H
+
+/**
+ * @}
+ * @}
+ */

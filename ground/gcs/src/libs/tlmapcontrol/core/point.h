@@ -73,3 +73,8 @@ namespace core {
     };
 }
 #endif // POINT_H
+
+/**
+ * @}
+ * @}
+ */

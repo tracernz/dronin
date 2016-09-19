@@ -47,3 +47,8 @@ private:
 };
 
 #endif // HELIPAGE_H
+
+/**
+ * @}
+ * @}
+ */

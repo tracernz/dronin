@@ -64,3 +64,8 @@ void ModelViewGadgetConfiguration::saveConfig(QSettings *qSettings) const
     qSettings->setValue("bgFilename", Utils::PathUtils().RemoveDataPath(m_bgFilename));
     qSettings->setValue("enableVbo", m_enableVbo);
 }
+
+/**
+ * @}
+ * @}
+ */

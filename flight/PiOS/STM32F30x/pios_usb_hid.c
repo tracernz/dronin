@@ -335,3 +335,8 @@ static void PIOS_USB_HID_EP_OUT_Callback(void)
 }
 
 #endif	/* PIOS_INCLUDE_USB_HID */
+
+/**
+ * @}
+ * @}
+ */

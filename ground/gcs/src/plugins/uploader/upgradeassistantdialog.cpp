@@ -175,3 +175,8 @@ void UpgradeAssistantDialog::closeEvent(QCloseEvent* event) {
 
     reject();
 }
+
+/**
+ * @}
+ * @}
+ */

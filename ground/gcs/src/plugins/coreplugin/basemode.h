@@ -74,3 +74,8 @@ private:
 } // namespace Core
 
 #endif // BASEMODE_H
+
+/**
+ * @}
+ * @}
+ */

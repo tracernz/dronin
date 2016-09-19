@@ -1371,3 +1371,8 @@ done:
 	return ret;
 #endif /* PIOS_INCLUDE_I2C */
 }
+
+/**
+ * @}
+ * @}
+ */

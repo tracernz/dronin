@@ -620,6 +620,7 @@ void PIOS_RE1FPGA_Set3DConfig(enum pios_video_3d_mode mode, uint8_t x_shift_righ
 
 #endif /* defined(PIOS_INCLUDE_RE1_FPGA) */
 
-
-
-
+/**
+ * @}
+ * @}
+ */

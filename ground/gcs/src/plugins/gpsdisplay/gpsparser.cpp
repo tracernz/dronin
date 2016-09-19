@@ -41,3 +41,8 @@ void GPSParser::processInputStream(char c) {
 {
     Q_UNUSED(c)}
 }
+
+/**
+ * @}
+ * @}
+ */

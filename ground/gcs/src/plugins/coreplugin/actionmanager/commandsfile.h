@@ -58,3 +58,8 @@ private:
 } // namespace Core
 
 #endif //COMMANDSFILE_H
+
+/**
+ * @}
+ * @}
+ */

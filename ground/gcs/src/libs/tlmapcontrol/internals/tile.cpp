@@ -55,3 +55,8 @@ Tile& Tile::operator =(const Tile &cSource)
 }
 
 }
+
+/**
+ * @}
+ * @}
+ */

@@ -68,3 +68,8 @@ namespace mapcontrol
     };
 }
 #endif // MAPRIPPER_H
+
+/**
+ * @}
+ * @}
+ */

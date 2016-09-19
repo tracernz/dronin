@@ -123,3 +123,8 @@ protected slots:
 
 
 #endif // GCSControlGADGET_H_
+
+/**
+ * @}
+ * @}
+ */

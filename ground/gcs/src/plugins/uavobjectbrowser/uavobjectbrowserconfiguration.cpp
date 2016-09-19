@@ -90,3 +90,8 @@ void UAVObjectBrowserConfiguration::saveConfig(QSettings* qSettings) const {
     qSettings->setValue("showMetaData", m_showMetaData);
     qSettings->setValue("hideNotPresentOnHw", m_hideNotPresentOnHw);
 }
+
+/**
+ * @}
+ * @}
+ */

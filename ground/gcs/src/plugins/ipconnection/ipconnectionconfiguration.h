@@ -72,3 +72,8 @@ private:
 };
 
 #endif // IPconnectionCONFIGURATION_H
+
+/**
+ * @}
+ * @}
+ */

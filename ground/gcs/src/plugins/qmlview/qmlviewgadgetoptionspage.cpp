@@ -79,3 +79,8 @@ void QmlViewGadgetOptionsPage::apply()
 void QmlViewGadgetOptionsPage::finish()
 {
 }
+
+/**
+ * @}
+ * @}
+ */

@@ -108,3 +108,8 @@ private:
 }
 }
 #endif // SPLITTERORVIEW_H
+
+/**
+ * @}
+ * @}
+ */

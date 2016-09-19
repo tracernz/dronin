@@ -75,3 +75,8 @@ bool operator==(RawTile const &lhs,RawTile const &rhs)
     return (lhs.pos==rhs.pos && lhs.zoom==rhs.zoom && lhs.type==rhs.type);
 }
 }
+
+/**
+ * @}
+ * @}
+ */

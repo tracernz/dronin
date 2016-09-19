@@ -155,3 +155,8 @@ void MapRipper::finish()
         cancel=true;
     }
 }
+
+/**
+ * @}
+ * @}
+ */

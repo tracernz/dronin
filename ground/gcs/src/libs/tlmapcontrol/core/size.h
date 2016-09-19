@@ -62,3 +62,8 @@ namespace core {
     };
 }
 #endif // SIZE_H
+
+/**
+ * @}
+ * @}
+ */

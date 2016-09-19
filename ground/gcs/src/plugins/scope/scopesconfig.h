@@ -106,3 +106,8 @@ protected:
 };
 
 #endif // SCOPESCONFIG_H
+
+/**
+ * @}
+ * @}
+ */

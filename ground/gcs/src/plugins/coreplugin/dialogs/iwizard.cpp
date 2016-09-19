@@ -162,3 +162,7 @@ QList<IWizard*> IWizard::wizardsOfKind(Kind kind)
     return findWizards(WizardKindPredicate(kind));
 }
 
+/**
+ * @}
+ * @}
+ */

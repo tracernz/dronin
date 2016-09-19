@@ -55,3 +55,8 @@ private:
 
 
 #endif // DIALGADGET_H_
+
+/**
+ * @}
+ * @}
+ */

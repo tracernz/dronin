@@ -69,3 +69,8 @@ void ModelViewGadgetOptionsPage::finish()
 {
     delete m_page;
 }
+
+/**
+ * @}
+ * @}
+ */

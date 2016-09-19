@@ -51,3 +51,8 @@ public:
 };
 
 #endif // DIALGADGETFACTORY_H_
+
+/**
+ * @}
+ * @}
+ */

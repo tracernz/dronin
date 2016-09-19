@@ -53,3 +53,8 @@ protected:
 } // namespace Core
 
 #endif // MINISPLITTER_H
+
+/**
+ * @}
+ * @}
+ */

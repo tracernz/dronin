@@ -104,3 +104,8 @@ private:
 };
 
 #endif // $(NAMEUC)_H
+
+/**
+ * @}
+ * @}
+ */

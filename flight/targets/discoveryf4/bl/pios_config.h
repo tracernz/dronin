@@ -44,3 +44,8 @@
 #define PIOS_INCLUDE_BL_HELPER
 
 #endif /* PIOS_CONFIG_H */
+
+/**
+ * @}
+ * @}
+ */

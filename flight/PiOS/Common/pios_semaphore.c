@@ -396,3 +396,8 @@ bool PIOS_Semaphore_Give_FromISR(struct pios_semaphore *sema, bool *woken)
 #endif /* !defined(SIM_POSIX) */
 
 #endif /* no-rtos */
+
+/**
+ * @}
+ * @}
+ */

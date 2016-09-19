@@ -111,3 +111,8 @@ private:
 };
 
 #endif // OPMAP_GADGETCONFIGURATION_H
+
+/**
+ * @}
+ * @}
+ */

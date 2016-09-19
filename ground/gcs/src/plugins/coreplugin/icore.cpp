@@ -306,3 +306,8 @@
     \brief Sent just after a new \a context became the current context
     (meaning that its widget got focus).
 */
+
+/**
+ * @}
+ * @}
+ */

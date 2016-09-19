@@ -628,3 +628,8 @@ void DialGadgetWidget::rotateNeedles()
     // just stop the timer since all needles have finished moving
     if (!dialRun) dialTimer.stop();
 }
+
+/**
+ * @}
+ * @}
+ */

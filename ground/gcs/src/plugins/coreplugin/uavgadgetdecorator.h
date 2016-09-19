@@ -66,3 +66,8 @@ private:
 } // namespace Core
 
 #endif // UAVGADGETDECORATOR_H
+
+/**
+ * @}
+ * @}
+ */

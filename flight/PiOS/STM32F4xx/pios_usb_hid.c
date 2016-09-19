@@ -513,3 +513,8 @@ static bool PIOS_USB_HID_EP_OUT_Callback(uintptr_t usb_hid_id, uint8_t epnum, ui
 }
 
 #endif	/* PIOS_INCLUDE_USB_HID */
+
+/**
+ * @}
+ * @}
+ */

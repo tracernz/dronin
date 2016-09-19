@@ -290,3 +290,7 @@ bool PIOS_Recursive_Mutex_Unlock(struct pios_recursive_mutex *mtx)
 
 #endif
 
+/**
+ * @}
+ * @}
+ */

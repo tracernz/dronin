@@ -51,3 +51,8 @@ public:
 };
 
 #endif // HITLFACTORY_H
+
+/**
+ * @}
+ * @}
+ */

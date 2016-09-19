@@ -48,3 +48,8 @@ private:
 };
 
 #endif // VEHICLEPAGE_H
+
+/**
+ * @}
+ * @}
+ */

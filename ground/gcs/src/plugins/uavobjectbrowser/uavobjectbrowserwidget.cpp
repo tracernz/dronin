@@ -805,3 +805,8 @@ bool TreeSortFilterProxyModel::hasAcceptedChildren(int source_row, const QModelI
 
     return false;
 }
+
+/**
+ * @}
+ * @}
+ */

@@ -110,3 +110,8 @@ private slots:
 };
 
 #endif // SCATTERPLOTDATA_H
+
+/**
+ * @}
+ * @}
+ */

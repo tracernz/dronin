@@ -53,3 +53,8 @@ int8_t PIOS_DMA_Install_Interrupt_handler(DMA_Channel_TypeDef *channel, void * f
 	}
 	return -2;
 }
+
+/**
+ * @}
+ * @}
+ */

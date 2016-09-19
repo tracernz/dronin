@@ -113,3 +113,8 @@ private:
 };
 
 #endif // FlightDataModel_H
+
+/**
+ * @}
+ * @}
+ */

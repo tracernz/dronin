@@ -78,3 +78,8 @@ namespace mapcontrol
     };
 }
 #endif // HOMEITEM_H
+
+/**
+ * @}
+ * @}
+ */

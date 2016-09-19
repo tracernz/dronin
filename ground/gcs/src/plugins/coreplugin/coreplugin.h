@@ -65,3 +65,8 @@ private:
 } // namespace Core
 
 #endif // COREPLUGIN_H
+
+/**
+ * @}
+ * @}
+ */

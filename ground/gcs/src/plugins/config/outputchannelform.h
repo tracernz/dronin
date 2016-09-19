@@ -97,3 +97,8 @@ inline int OutputChannelForm::neutral() const
     return ui.actuatorNeutral->value();
 }
 #endif // OUTPUTCHANNELFORM_H
+
+/**
+ * @}
+ * @}
+ */

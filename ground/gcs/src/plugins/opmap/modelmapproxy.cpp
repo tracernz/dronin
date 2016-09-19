@@ -356,3 +356,8 @@ void ModelMapProxy::deleteAll()
 {
     model->removeRows(0,model->rowCount(),QModelIndex());
 }
+
+/**
+ * @}
+ * @}
+ */

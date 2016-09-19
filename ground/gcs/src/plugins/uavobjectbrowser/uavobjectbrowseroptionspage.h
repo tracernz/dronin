@@ -66,3 +66,8 @@ private:
 };
 
 #endif // UAVOBJECTBROWSEROPTIONSPAGE_H
+
+/**
+ * @}
+ * @}
+ */

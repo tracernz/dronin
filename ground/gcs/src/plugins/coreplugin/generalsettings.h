@@ -127,3 +127,8 @@ private:
 } // namespace Core
 
 #endif // GENERALSETTINGS_H
+
+/**
+ * @}
+ * @}
+ */

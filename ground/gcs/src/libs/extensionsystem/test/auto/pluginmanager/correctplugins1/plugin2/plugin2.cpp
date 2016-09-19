@@ -62,3 +62,7 @@ void MyPlugin2::extensionsInitialized()
 
 Q_EXPORT_PLUGIN(MyPlugin2)
 
+/**
+ * @}
+ * @}
+ */

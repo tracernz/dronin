@@ -103,3 +103,8 @@ void SerialPluginOptionsPage::finish()
 {
     delete options_page;
 }
+
+/**
+ * @}
+ * @}
+ */

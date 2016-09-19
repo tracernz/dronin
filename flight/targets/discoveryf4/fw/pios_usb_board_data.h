@@ -44,3 +44,8 @@
 #define PIOS_USB_BOARD_SN_SUFFIX "+FW"
 
 #endif	/* PIOS_USB_BOARD_DATA_H */
+
+/**
+ * @}
+ * @}
+ */

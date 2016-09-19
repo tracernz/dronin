@@ -44,3 +44,8 @@ int32_t PIOS_STREAMFS_Init(uintptr_t *fs_id, const struct streamfs_cfg *cfg, enu
 extern const struct pios_com_driver pios_streamfs_com_driver;
 
 #endif	/* PIOS_FLASHFS_STREAMFS_PRIV_H_ */
+
+/**
+ * @}
+ * @}
+ */

@@ -56,3 +56,8 @@ private:
 };
 
 #endif // MAIN_H
+
+/**
+ * @}
+ * @}
+ */

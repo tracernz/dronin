@@ -46,3 +46,8 @@ private:
 };
 
 #endif // NOTYETIMPLEMENTEDPAGE_H
+
+/**
+ * @}
+ * @}
+ */

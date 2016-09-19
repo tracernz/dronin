@@ -48,3 +48,8 @@ private:
 };
 
 #endif // OPMAP_ZOOM_SLIDER_WIDGET_H
+
+/**
+ * @}
+ * @}
+ */

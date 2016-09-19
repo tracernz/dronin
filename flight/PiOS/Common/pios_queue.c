@@ -291,3 +291,8 @@ bool PIOS_Queue_Receive(struct pios_queue *queuep, void *itemp, uint32_t timeout
 }
 
 #endif /* defined(PIOS_INCLUDE_CHIBIOS) */
+
+/**
+ * @}
+ * @}
+ */

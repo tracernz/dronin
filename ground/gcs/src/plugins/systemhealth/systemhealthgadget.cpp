@@ -51,3 +51,8 @@ void SystemHealthGadget::loadConfiguration(IUAVGadgetConfiguration* config)
     SystemHealthGadgetConfiguration *m = qobject_cast<SystemHealthGadgetConfiguration*>(config);
     m_widget->setSystemFile(m->getSystemFile()); // Triggers widget repaint
 }
+
+/**
+ * @}
+ * @}
+ */

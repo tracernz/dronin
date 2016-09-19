@@ -83,3 +83,8 @@ BaseMode::~BaseMode()
 {
     delete m_widget;
 }
+
+/**
+ * @}
+ * @}
+ */

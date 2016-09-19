@@ -51,3 +51,8 @@ void PIOS_BL_HELPER_CRC_Ini()
 {
 }
 #endif
+
+/**
+ * @}
+ * @}
+ */

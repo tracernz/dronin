@@ -51,3 +51,8 @@ private:
 };
 
 #endif // TLENDPAGE_H
+
+/**
+ * @}
+ * @}
+ */

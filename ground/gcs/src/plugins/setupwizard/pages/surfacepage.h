@@ -47,3 +47,8 @@ private:
 };
 
 #endif // SURFACEPAGE_H
+
+/**
+ * @}
+ * @}
+ */

@@ -320,3 +320,7 @@ void IPlugin::removeObject(QObject *obj)
     PluginManager::instance()->removeObject(obj);
 }
 
+/**
+ * @}
+ * @}
+ */

@@ -65,3 +65,8 @@ private:
 
 
 #endif // CONFIGGADGET_H
+
+/**
+ * @}
+ * @}
+ */

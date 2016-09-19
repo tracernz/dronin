@@ -84,3 +84,8 @@ public:
 };
 
 #endif // NMEAPARSER_H
+
+/**
+ * @}
+ * @}
+ */

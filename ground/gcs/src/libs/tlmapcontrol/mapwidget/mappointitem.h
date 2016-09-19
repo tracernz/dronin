@@ -131,3 +131,8 @@ signals:
 };
 }
 #endif // MAPPOINTITEM_H
+
+/**
+ * @}
+ * @}
+ */

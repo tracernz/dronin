@@ -116,3 +116,8 @@ struct TLMAPWIDGET_EXPORT PointLatLng
 
 }
 #endif // POINTLATLNG_H
+
+/**
+ * @}
+ * @}
+ */

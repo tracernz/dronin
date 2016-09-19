@@ -350,3 +350,8 @@ void SpectrogramData::clearPlots()
 
     resetAxisRanges();
 }
+
+/**
+ * @}
+ * @}
+ */

@@ -55,3 +55,8 @@ namespace core {
     };
 }
 #endif // RAWTILE_H
+
+/**
+ * @}
+ * @}
+ */

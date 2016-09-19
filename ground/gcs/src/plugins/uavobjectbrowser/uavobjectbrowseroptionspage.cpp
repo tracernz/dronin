@@ -73,3 +73,8 @@ void UAVObjectBrowserOptionsPage::finish()
 {
     delete m_page;
 }
+
+/**
+ * @}
+ * @}
+ */

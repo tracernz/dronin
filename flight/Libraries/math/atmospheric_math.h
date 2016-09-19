@@ -47,3 +47,8 @@ float tas2cas(float TAS, float altitude, struct AirParameters *air);
 struct AirParameters initialize_air_structure();
 
 #endif /* ATMOSPHERIC_MATH_H */
+
+/**
+ * @}
+ * @}
+ */

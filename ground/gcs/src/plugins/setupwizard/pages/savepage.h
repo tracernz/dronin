@@ -55,3 +55,8 @@ private slots:
 };
 
 #endif // SAVEPAGE_H
+
+/**
+ * @}
+ * @}
+ */

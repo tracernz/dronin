@@ -147,3 +147,8 @@ void TileMatrix::SetTileAt(const Point &p, Tile* tile)
     mutex.unlock();
 }
 }
+
+/**
+ * @}
+ * @}
+ */

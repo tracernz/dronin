@@ -43,3 +43,8 @@ struct pios_frsky_rssi_cfg {
 int32_t PIOS_FrSkyRssi_Init(const struct pios_frsky_rssi_cfg * cfg_in);
 
 #endif /* PIOS_FRSKY_RSSI_PRIV_H */
+
+/**
+ * @}
+ * @}
+ */

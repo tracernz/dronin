@@ -47,3 +47,8 @@ void PIOS_RESET_Clear (void);
 int16_t PIOS_RESET_GetResetReason (void);
 
 #endif /* PIOS_RESET_PRIV_H */
+
+/**
+ * @}
+ * @}
+ */

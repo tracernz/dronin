@@ -186,3 +186,8 @@ GlobalMessaging::GlobalMessaging(QObject *parent):QObject(parent)
 }
 
 }
+
+/**
+ * @}
+ * @}
+ */

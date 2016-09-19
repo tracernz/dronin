@@ -107,3 +107,8 @@ void PIOS_FLASH_fixup_partitions_for_capacity(
 		uint32_t num_bytes);
 
 #endif	/* PIOS_FLASH_PRIV_H_ */
+
+/**
+ * @}
+ * @}
+ */

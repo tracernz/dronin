@@ -60,3 +60,8 @@ namespace mapcontrol
 }
 
 #endif // TAILLINEITEM_H
+
+/**
+ * @}
+ * @}
+ */

@@ -137,3 +137,8 @@ void UAVGadgetDecorator::restoreState(QSettings* qSetting)
         }
     }
 }
+
+/**
+ * @}
+ * @}
+ */

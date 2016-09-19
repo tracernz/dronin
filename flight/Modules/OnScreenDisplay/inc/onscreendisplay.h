@@ -39,3 +39,8 @@ int32_t OnScreenDisplayInitialize(void);
 int render_stats();
 
 #endif /* ONSCREENDISPLAY_H */
+
+/**
+ * @}
+ * @}
+ */

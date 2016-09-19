@@ -48,3 +48,8 @@ public:
 };
 
 #endif // PICOCGADGETFACTORY_H_
+
+/**
+ * @}
+ * @}
+ */

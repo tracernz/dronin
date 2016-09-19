@@ -50,3 +50,8 @@ public:
 };
 
 #endif // QmlViewGADGETFACTORY_H_
+
+/**
+ * @}
+ * @}
+ */

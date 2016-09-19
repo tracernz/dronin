@@ -196,3 +196,7 @@ void CoreImpl::deleteSettings()
     m_mainwindow->deleteSettings();
 }
 
+/**
+ * @}
+ * @}
+ */

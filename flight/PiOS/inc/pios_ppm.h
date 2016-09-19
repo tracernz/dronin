@@ -31,3 +31,8 @@
 #define PIOS_PPM_H
 
 #endif /* PIOS_PPM_H */
+
+/**
+ * @}
+ * @}
+ */

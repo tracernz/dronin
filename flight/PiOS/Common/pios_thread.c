@@ -461,3 +461,8 @@ void PIOS_Thread_Scheduler_Resume(void)
 }
 
 #endif /* defined(PIOS_INCLUDE_CHIBIOS) */
+
+/**
+ * @}
+ * @}
+ */

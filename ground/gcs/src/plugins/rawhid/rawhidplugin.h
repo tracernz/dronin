@@ -98,3 +98,8 @@ private:
 };
 
 #endif // RAWHIDPLUGIN_H
+
+/**
+ * @}
+ * @}
+ */

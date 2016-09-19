@@ -381,3 +381,7 @@ QString SystemHealthGadgetWidget::getAlarmDescriptionFileName(const QString item
     return alarmDescriptionFileName; 
 }
 
+/**
+ * @}
+ * @}
+ */

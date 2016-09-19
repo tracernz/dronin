@@ -69,3 +69,8 @@ private:
 
 
 #endif // SCOPEGADGET_H_
+
+/**
+ * @}
+ * @}
+ */

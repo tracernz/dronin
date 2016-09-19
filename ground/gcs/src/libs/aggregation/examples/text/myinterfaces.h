@@ -85,3 +85,8 @@ private:
 };
 
 #endif // MYINTERFACES_H
+
+/**
+ * @}
+ * @}
+ */

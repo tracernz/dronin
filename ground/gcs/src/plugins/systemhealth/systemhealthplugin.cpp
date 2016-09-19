@@ -62,3 +62,8 @@ void SystemHealthPlugin::shutdown()
 {
    // Do nothing
 }
+
+/**
+ * @}
+ * @}
+ */

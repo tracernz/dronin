@@ -67,6 +67,7 @@ private:
 }
 #endif // LKS94PROJECTION_H
 
-
-
-
+/**
+ * @}
+ * @}
+ */

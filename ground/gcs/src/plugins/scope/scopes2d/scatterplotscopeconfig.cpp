@@ -470,3 +470,8 @@ void Scatterplot2dScopeConfig::configureAxes(ScopeGadgetWidget *scopeGadgetWidge
     scaleWidget->setMinBorderDist(0, fmw);
     */
 }
+
+/**
+ * @}
+ * @}
+ */

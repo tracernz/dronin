@@ -53,3 +53,8 @@
 #define PIOS_INCLUDE_RE1_FPGA
 
 #endif /* PIOS_CONFIG_H */
+
+/**
+ * @}
+ * @}
+ */

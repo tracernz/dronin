@@ -56,4 +56,7 @@ IOptionsPage *GCSControlGadgetFactory::createOptionsPage(IUAVGadgetConfiguration
     return new GCSControlGadgetOptionsPage(qobject_cast<GCSControlGadgetConfiguration*>(config), this->parent());
 }
 
-
+/**
+ * @}
+ * @}
+ */

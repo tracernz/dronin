@@ -46,3 +46,8 @@ Core::IUAVGadget* PicoCGadgetFactory::createGadget(QWidget *parent)
     PicoCGadgetWidget* gadgetWidget = new PicoCGadgetWidget(parent);
     return new PicoCGadget(QString("PicoCGadget"), gadgetWidget, parent);
 }
+
+/**
+ * @}
+ * @}
+ */

@@ -48,3 +48,8 @@ private:
    EmptyGadgetFactory *mf;
 };
 #endif /* EMPTYPLUGIN_H_ */
+
+/**
+ * @}
+ * @}
+ */

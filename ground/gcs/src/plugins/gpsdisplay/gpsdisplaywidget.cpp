@@ -164,3 +164,8 @@ void GpsDisplayWidget::setPosition(double lat, double lon, double alt)
                             (90 - lat) * hscale - marker->boundingRect().height() * marker->scale() / 2);
     marker->setTransform(QTransform::fromTranslate(opd.x(), opd.y()), false);
 }
+
+/**
+ * @}
+ * @}
+ */

@@ -49,3 +49,8 @@ ConsoleGadget::~ConsoleGadget()
 {
     qxtLog->removeLoggerEngine(m_logger);
 }
+
+/**
+ * @}
+ * @}
+ */

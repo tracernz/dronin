@@ -63,3 +63,8 @@ private slots:
 };
 
 #endif // QmlViewGADGETOPTIONSPAGE_H
+
+/**
+ * @}
+ * @}
+ */

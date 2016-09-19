@@ -194,3 +194,8 @@ namespace mapcontrol
         pic.load(":/uavs/images/"+UAVPic);
     }
 }
+
+/**
+ * @}
+ * @}
+ */

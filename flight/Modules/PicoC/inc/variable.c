@@ -471,4 +471,3 @@ void *VariableDereferencePointer(struct ParseState *Parser, struct Value *Pointe
 
     return PointerValue->Val->Pointer;
 }
-

@@ -85,3 +85,8 @@ void CorePlugin::shutdown()
 {
     m_mainWindow->shutdown();
 }
+
+/**
+ * @}
+ * @}
+ */

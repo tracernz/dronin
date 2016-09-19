@@ -83,3 +83,8 @@ private:
 };
 
 #endif // MODELVIEWGADGETOPTIONSPAGE_H
+
+/**
+ * @}
+ * @}
+ */

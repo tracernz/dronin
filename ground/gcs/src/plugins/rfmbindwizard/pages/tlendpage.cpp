@@ -45,3 +45,7 @@ TLEndPage::~TLEndPage()
     delete ui;
 }
 
+/**
+ * @}
+ * @}
+ */

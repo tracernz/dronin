@@ -63,3 +63,8 @@ int16_t PIOS_ETASV3_ReadAirspeed (void)
 }
 
 #endif /* PIOS_INCLUDE_ETASV3 */
+
+/**
+ * @}
+ * @}
+ */

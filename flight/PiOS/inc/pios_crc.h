@@ -39,3 +39,8 @@ uint16_t PIOS_CRC16_CCITT_updateCRC(uint16_t crc, const uint8_t *data, uint32_t 
 
 uint32_t PIOS_CRC32_updateByte(uint32_t crc, const uint8_t data);
 uint32_t PIOS_CRC32_updateCRC(uint32_t crc, const uint8_t* data, int32_t length);
+
+/**
+ * @}
+ * @}
+ */

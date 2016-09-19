@@ -38,3 +38,8 @@
 #endif
 
 #endif // UAVSETTINGSIMPORTEXPORT_GLOBAL_H
+
+/**
+ * @}
+ * @}
+ */

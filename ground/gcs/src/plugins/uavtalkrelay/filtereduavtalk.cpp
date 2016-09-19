@@ -191,3 +191,8 @@ bool FilteredUavTalk::receiveObject(quint8 type, quint32 objId, quint16 instId, 
     // Done (exit value is "success", hence the "!" below)
     return !error;
 }
+
+/**
+ * @}
+ * @}
+ */

@@ -61,4 +61,7 @@ IOptionsPage *NotifyPluginFactory::createOptionsPage(IUAVGadgetConfiguration *co
     return new NotifyPluginOptionsPage(qobject_cast<NotifyPluginConfiguration*>(config));
 }
 
-
+/**
+ * @}
+ * @}
+ */

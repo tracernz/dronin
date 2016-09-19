@@ -111,3 +111,8 @@ protected:
 
 };
 #endif /* MIXERCURVEWIDGET_H_ */
+
+/**
+ * @}
+ * @}
+ */

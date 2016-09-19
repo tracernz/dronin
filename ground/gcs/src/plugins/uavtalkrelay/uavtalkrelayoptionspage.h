@@ -69,3 +69,8 @@ private:
 };
 
 #endif // UAVTALKRELAYOPTIONSPAGE_H
+
+/**
+ * @}
+ * @}
+ */

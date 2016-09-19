@@ -85,3 +85,8 @@ TEST_F(RneFromLLATest, Equator) {
   ASSERT_NEAR(0, Rne[2][1], eps);
   ASSERT_NEAR(0, Rne[2][2], eps);
 };
+
+/**
+ * @}
+ * @}
+ */

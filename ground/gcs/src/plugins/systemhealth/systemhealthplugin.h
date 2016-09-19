@@ -47,3 +47,8 @@ private:
    SystemHealthGadgetFactory *mf;
 };
 #endif /* SYSTEMHEALTHPLUGIN_H_ */
+
+/**
+ * @}
+ * @}
+ */

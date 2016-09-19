@@ -58,3 +58,8 @@ private:
 };
 
 #endif // TEMPCOMPCURVE_H
+
+/**
+ * @}
+ * @}
+ */

@@ -121,3 +121,8 @@ private:
 
 };
 #endif /* LINEARDIALGADGETWIDGET_H_ */
+
+/**
+ * @}
+ * @}
+ */

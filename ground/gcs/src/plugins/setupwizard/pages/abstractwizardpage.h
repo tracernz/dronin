@@ -52,3 +52,8 @@ public:
 };
 
 #endif // ABSTRACTWIZARDPAGE_H
+
+/**
+ * @}
+ * @}
+ */

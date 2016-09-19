@@ -46,3 +46,8 @@ IUAVGadget* MagicWaypointGadgetFactory::createGadget(QWidget *parent) {
     MagicWaypointGadgetWidget* gadgetWidget = new MagicWaypointGadgetWidget(parent);
     return new MagicWaypointGadget(QString("MagicWaypointGadget"), gadgetWidget, parent);
 }
+
+/**
+ * @}
+ * @}
+ */

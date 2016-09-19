@@ -57,3 +57,8 @@ private:
 
 
 #endif // EMPTYGADGET_H_
+
+/**
+ * @}
+ * @}
+ */

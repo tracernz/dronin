@@ -61,3 +61,8 @@ private:
 };
 
 #endif // TEXTBUBBLESLIDER_H
+
+/**
+ * @}
+ * @}
+ */

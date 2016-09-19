@@ -41,3 +41,8 @@ NotYetImplementedPage::~NotYetImplementedPage()
 {
     delete ui;
 }
+
+/**
+ * @}
+ * @}
+ */

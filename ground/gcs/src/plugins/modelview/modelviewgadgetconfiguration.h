@@ -74,3 +74,8 @@ private:
 };
 
 #endif // MODELVIEWGADGETCONFIGURATION_H
+
+/**
+ * @}
+ * @}
+ */

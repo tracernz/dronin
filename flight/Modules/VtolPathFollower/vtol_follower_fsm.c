@@ -743,4 +743,7 @@ int32_t vtol_follower_fsm_update()
 	return 0;
 }
 
-//! @}
+/**
+ * @}
+ * @}
+ */

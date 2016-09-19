@@ -114,3 +114,8 @@ private:
 };
 
 #endif // RFMBINDWIZARD_H
+
+/**
+ * @}
+ * @}
+ */

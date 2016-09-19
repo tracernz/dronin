@@ -387,3 +387,8 @@ bool AppCloseHook::coreAboutToClose()
 {
     return m_parent->coreAboutToClose();
 }
+
+/**
+ * @}
+ * @}
+ */

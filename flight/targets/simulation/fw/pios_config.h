@@ -100,3 +100,8 @@
 #endif
 
 #endif /* PIOS_CONFIG_POSIX_H */
+
+/**
+ * @}
+ * @}
+ */

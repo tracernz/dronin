@@ -62,3 +62,8 @@ void SystemHealthGadgetConfiguration::saveConfig(QSettings* qSettings) const {
     QString diagram = Utils::PathUtils().RemoveDataPath(systemFile);
     qSettings->setValue("diagram", diagram);
 }
+
+/**
+ * @}
+ * @}
+ */

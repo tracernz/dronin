@@ -186,3 +186,8 @@ private:
 };
 
 #endif // NOTIFYPLUGINOPTIONSPAGE_H
+
+/**
+ * @}
+ * @}
+ */

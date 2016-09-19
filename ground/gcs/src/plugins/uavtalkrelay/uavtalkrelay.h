@@ -61,3 +61,8 @@ private:
 };
 
 #endif // UAVTALKRELAY_H
+
+/**
+ * @}
+ * @}
+ */

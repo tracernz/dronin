@@ -39,3 +39,7 @@
 
 #endif // TELEMETRY_SCHEDULER_H
 
+/**
+ * @}
+ * @}
+ */

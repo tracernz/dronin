@@ -101,3 +101,8 @@ bool InputPage::restartNeeded(Core::IBoardType::InputType selectedType)
     Core::IBoardType::InputType boardInputType = board->getInputType();
     return (selectedType != boardInputType);
 }
+
+/**
+ * @}
+ * @}
+ */

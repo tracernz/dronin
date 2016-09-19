@@ -38,3 +38,8 @@
 #endif
 
 #endif // EXTENSIONSYSTEM_GLOBAL_H
+
+/**
+ * @}
+ * @}
+ */

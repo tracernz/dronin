@@ -29,3 +29,8 @@
 IPDevice::IPDevice()
 {
 }
+
+/**
+ * @}
+ * @}
+ */

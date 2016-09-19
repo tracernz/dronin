@@ -55,6 +55,6 @@ bool PIOS_Modules_IsEnabled(enum pios_modules module);
 #endif // PIOS_MODULES_H_
 
 /**
- * @ }
- * @ }
+ * @}
+ * @}
  */

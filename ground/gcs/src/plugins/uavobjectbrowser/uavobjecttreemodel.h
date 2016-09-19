@@ -138,3 +138,8 @@ private:
 };
 
 #endif // UAVOBJECTTREEMODEL_H
+
+/**
+ * @}
+ * @}
+ */

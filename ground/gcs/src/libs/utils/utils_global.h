@@ -40,3 +40,8 @@
 #endif
 
 #endif // UTILS_GLOBAL_H
+
+/**
+ * @}
+ * @}
+ */

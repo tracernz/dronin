@@ -1589,3 +1589,8 @@ bool ConfigCcpmWidget::throwConfigError(SystemSettings::AirframeTypeOptions airf
 
     return error;
 }
+
+/**
+ * @}
+ * @}
+ */

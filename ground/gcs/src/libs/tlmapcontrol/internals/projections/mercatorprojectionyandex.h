@@ -57,3 +57,8 @@ private:
 
 }
 #endif // MERCATORPROJECTIONYANDEX_H
+
+/**
+ * @}
+ * @}
+ */

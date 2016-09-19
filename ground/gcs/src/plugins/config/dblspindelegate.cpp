@@ -84,3 +84,7 @@ void DoubleSpinDelegate::valueChanged()
     emit ValueChanged();
 }
 
+/**
+ * @}
+ * @}
+ */

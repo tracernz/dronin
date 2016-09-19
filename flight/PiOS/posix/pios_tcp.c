@@ -326,3 +326,8 @@ static void PIOS_TCP_RegisterTxCallback(uintptr_t tcp_id, pios_com_callback tx_o
 }
 
 #endif
+
+/**
+ * @}
+ * @}
+ */

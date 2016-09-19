@@ -262,3 +262,7 @@ QTEST_MAIN(tst_PluginManager)
 
 #include "tst_pluginmanager.moc"
 
+/**
+ * @}
+ * @}
+ */

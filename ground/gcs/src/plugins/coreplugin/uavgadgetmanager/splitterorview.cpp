@@ -382,3 +382,8 @@ void SplitterOrView::restoreState(QSettings* qSettings)
         }
     }
 }
+
+/**
+ * @}
+ * @}
+ */

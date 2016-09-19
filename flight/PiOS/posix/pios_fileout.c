@@ -126,3 +126,8 @@ static void PIOS_FILEOUT_RegisterTxCallback(uintptr_t file_id, pios_com_callback
 	file_dev->tx_out_context = context;
 	file_dev->tx_out_cb = tx_out_cb;
 }
+
+/**
+ * @}
+ * @}
+ */

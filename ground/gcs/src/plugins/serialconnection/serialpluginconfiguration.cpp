@@ -89,3 +89,8 @@ void SerialPluginConfiguration::savesettings() const
 SerialPluginConfiguration::~SerialPluginConfiguration()
 {
 }
+
+/**
+ * @}
+ * @}
+ */

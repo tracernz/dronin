@@ -355,3 +355,8 @@ void ModelViewGadgetWidget::updateAttitude()
     rootObject->updateChildrenAbsoluteMatrix();
     updateGL();
 }
+
+/**
+ * @}
+ * @}
+ */

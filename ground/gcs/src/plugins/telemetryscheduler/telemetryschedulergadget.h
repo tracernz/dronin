@@ -54,3 +54,8 @@ private:
 
 
 #endif // TELEMETRYSCHEDULERGADGET_H_
+
+/**
+ * @}
+ * @}
+ */

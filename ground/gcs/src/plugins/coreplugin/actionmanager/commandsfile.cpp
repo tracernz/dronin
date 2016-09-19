@@ -117,3 +117,8 @@ bool CommandsFile::exportCommands(const QList<ShortcutItem *> &items)
     file.close();
     return true;
 }
+
+/**
+ * @}
+ * @}
+ */

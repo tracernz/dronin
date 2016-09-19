@@ -49,3 +49,8 @@ public:
 } // Plugin2
 
 #endif // PLUGIN2_H
+
+/**
+ * @}
+ * @}
+ */

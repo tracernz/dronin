@@ -70,3 +70,8 @@ private slots:
 };
 
 #endif // OPMAP_EDIT_WAYPOINT_DIALOG_H
+
+/**
+ * @}
+ * @}
+ */

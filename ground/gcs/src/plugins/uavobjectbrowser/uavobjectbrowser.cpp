@@ -65,3 +65,7 @@ void UAVObjectBrowser::viewOptionsChangedSlot(bool categorized, bool scientific,
     }
 }
 
+/**
+ * @}
+ * @}
+ */

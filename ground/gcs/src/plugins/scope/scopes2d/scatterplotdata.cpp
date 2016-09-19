@@ -265,3 +265,8 @@ void ScatterplotData::clearPlots()
     yData->clear();
     xData->clear();
 }
+
+/**
+ * @}
+ * @}
+ */

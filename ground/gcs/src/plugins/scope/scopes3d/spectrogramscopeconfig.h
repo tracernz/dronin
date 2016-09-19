@@ -99,3 +99,8 @@ private:
 };
 
 #endif // SPECTROGRAMSCOPECONFIG_H
+
+/**
+ * @}
+ * @}
+ */

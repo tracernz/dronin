@@ -184,3 +184,8 @@ public:
 };
 
 #endif /* TELEMETRYSCHEDULERGADGETWIDGET_H_ */
+
+/**
+ * @}
+ * @}
+ */

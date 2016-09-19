@@ -52,3 +52,8 @@ private:
 };
 
 #endif // UAVMETAOBJECT_H
+
+/**
+ * @}
+ * @}
+ */

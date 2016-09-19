@@ -56,3 +56,8 @@ signals:
 };
 
 #endif // GPSPARSER_H
+
+/**
+ * @}
+ * @}
+ */

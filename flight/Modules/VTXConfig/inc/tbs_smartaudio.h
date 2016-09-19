@@ -44,4 +44,7 @@ int32_t tbsvtx_set_power(uintptr_t usart_id, uint16_t power);
 
 #endif /* defined(TBS_SMARTAUDIO_H) */
 
-
+/**
+ * @}
+ * @}
+ */

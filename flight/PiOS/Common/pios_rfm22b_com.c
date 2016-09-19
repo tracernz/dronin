@@ -162,3 +162,8 @@ static bool PIOS_RFM22B_COM_Available(uintptr_t rfm22b_id)
 }
 
 #endif /* PIOS_INCLUDE_RFM22B_COM */
+
+/**
+ * @}
+ * @}
+ */

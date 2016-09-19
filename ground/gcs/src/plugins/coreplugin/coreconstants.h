@@ -236,3 +236,8 @@ const char * const WIZARD_TYPE_CLASS     = "GCS::WizardType::Class";
 } // namespace Core
 
 #endif // CORECONSTANTS_H
+
+/**
+ * @}
+ * @}
+ */

@@ -38,4 +38,3 @@ extern LIB3DSAPI Lib3dsFloat lib3ds_ease(Lib3dsFloat fp, Lib3dsFloat fc,
 }
 #endif
 #endif
-

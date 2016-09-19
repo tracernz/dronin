@@ -75,4 +75,3 @@ bool glc::loadPointSpriteExtension()
 #endif
     return result;
 }
-

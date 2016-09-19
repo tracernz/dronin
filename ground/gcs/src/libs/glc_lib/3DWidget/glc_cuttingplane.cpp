@@ -400,4 +400,3 @@ GLC_AbstractManipulator* GLC_CuttingPlane::rotationNavigator(int index)
 
 	return pManipulator;
 }
-

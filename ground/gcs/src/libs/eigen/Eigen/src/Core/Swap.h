@@ -137,9 +137,3 @@ void MatrixBase<Derived>::swap(const MatrixBase<OtherDerived>& other)
 }
 
 #endif // EIGEN_SWAP_H
-
-
-
-
-
-

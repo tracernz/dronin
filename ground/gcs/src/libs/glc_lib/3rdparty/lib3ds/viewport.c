@@ -410,4 +410,3 @@ lib3ds_viewport_dump(Lib3dsViewport *vp)
   printf("	roll_angle:   %g\n", vp->default_view.roll_angle);
   printf("	camera:       %s\n", vp->default_view.camera);
 }
-

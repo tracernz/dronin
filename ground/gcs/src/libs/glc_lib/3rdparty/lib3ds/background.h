@@ -78,8 +78,3 @@ extern LIB3DSAPI Lib3dsBool lib3ds_background_write(Lib3dsBackground *background
 }
 #endif
 #endif
-
-
-
-
-

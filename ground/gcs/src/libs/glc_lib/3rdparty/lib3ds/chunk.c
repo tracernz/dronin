@@ -308,10 +308,3 @@ lib3ds_chunk_dump_info(const char *format, ...)
     printf("%s%s\n", lib3ds_chunk_level, s);
   }
 }
-
-
-
-
-
-
-

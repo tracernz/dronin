@@ -147,4 +147,3 @@ inline void ei_palign(PacketType& first, const PacketType& second)
 }
 
 #endif // EIGEN_GENERIC_PACKET_MATH_H
-

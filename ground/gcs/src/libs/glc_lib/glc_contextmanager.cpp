@@ -84,5 +84,3 @@ void GLC_ContextManager::setCurrent(GLC_Context* pContext)
 	Q_ASSERT((NULL == pContext) || m_SetOfContext.contains(pContext));
 	m_pCurrentContext= pContext;
 }
-
-

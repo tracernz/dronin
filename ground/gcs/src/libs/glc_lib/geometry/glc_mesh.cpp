@@ -1694,4 +1694,3 @@ IndexList GLC_Mesh::equivalentTrianglesIndexOfFansIndex(int lodIndex, GLC_uint m
 	}
 	return trianglesIndex;
 }
-

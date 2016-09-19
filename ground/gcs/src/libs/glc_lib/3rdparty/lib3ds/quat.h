@@ -58,4 +58,3 @@ extern LIB3DSAPI void lib3ds_quat_dump(Lib3dsQuat q);
 }
 #endif
 #endif
-

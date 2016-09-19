@@ -326,4 +326,3 @@ void GLC_Box::createWire()
 	GLC_Geometry::addVerticeGroup(floatVector);
 	floatVector.clear();
 }
-

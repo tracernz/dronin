@@ -58,4 +58,3 @@ extern LIB3DSAPI Lib3dsBool lib3ds_camera_write(Lib3dsCamera *camera, Lib3dsIo *
 }
 #endif
 #endif
-

@@ -105,5 +105,3 @@ void  GLC_Line::createWire()
 	points.append(m_Point2);
 	GLC_Polylines::addPolyline(points);
 }
-
-

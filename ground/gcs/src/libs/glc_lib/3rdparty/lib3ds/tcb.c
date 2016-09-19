@@ -130,7 +130,3 @@ lib3ds_tcb_write(Lib3dsTcb *tcb, Lib3dsIo *io)
   }
   return(LIB3DS_TRUE);
 }
-
-
-
-

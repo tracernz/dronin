@@ -52,8 +52,3 @@ extern LIB3DSAPI Lib3dsBool lib3ds_shadow_write(Lib3dsShadow *shadow, Lib3dsIo *
 }
 #endif
 #endif
-
-
-
-
-

@@ -79,4 +79,3 @@ extern LIB3DSAPI Lib3dsBool lib3ds_io_write_string(Lib3dsIo *io, const char *s);
 }
 #endif
 #endif
-

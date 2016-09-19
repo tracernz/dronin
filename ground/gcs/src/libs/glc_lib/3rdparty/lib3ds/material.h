@@ -165,6 +165,3 @@ extern LIB3DSAPI Lib3dsBool lib3ds_material_write(Lib3dsMaterial *material, Lib3
 }
 #endif
 #endif
-
-
-

@@ -154,4 +154,3 @@ extern LIB3DSAPI Lib3dsBool lib3ds_mesh_write(Lib3dsMesh *mesh, Lib3dsIo *io);
 }
 #endif
 #endif
-

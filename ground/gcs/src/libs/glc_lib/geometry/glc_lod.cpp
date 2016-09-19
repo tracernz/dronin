@@ -201,4 +201,3 @@ QDataStream &operator>>(QDataStream &stream, GLC_Lod &lod)
 
 	return stream;
 }
-

@@ -174,5 +174,3 @@ void GLC_Rectangle::createMeshAndWire()
 
 	GLC_Mesh::finish();
 }
-
-

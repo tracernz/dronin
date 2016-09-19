@@ -266,4 +266,3 @@ void GLC_Cone::createMeshAndWire()
 
 	finish();
 }
-

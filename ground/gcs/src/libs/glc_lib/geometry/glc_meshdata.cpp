@@ -547,4 +547,3 @@ QDataStream &operator>>(QDataStream &stream, GLC_MeshData &meshData)
 
 	return stream;
 }
-

@@ -711,8 +711,3 @@ lib3ds_matrix_dump(Lib3dsMatrix matrix)
     printf("\n");
   }
 }
-
-
-
-
-

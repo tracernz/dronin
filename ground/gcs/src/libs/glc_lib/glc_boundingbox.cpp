@@ -231,4 +231,3 @@ QDataStream &operator>>(QDataStream &stream, GLC_BoundingBox &bBox)
 
 	return stream;
 }
-

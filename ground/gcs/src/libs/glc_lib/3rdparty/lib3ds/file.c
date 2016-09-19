@@ -2025,4 +2025,3 @@ lib3ds_file_dump_nodes(Lib3dsFile *file)
     lib3ds_node_dump(p,1);
   }
 }
-

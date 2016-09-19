@@ -252,4 +252,3 @@ lib3ds_background_write(Lib3dsBackground *background, Lib3dsIo *io)
   
   return(LIB3DS_TRUE);
 }
-

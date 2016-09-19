@@ -180,4 +180,3 @@ bool GLC_CacheManager::setCachePath(const QString& path)
 	}
 	return result;
 }
-

@@ -76,4 +76,3 @@ extern LIB3DSAPI Lib3dsBool lib3ds_light_write(Lib3dsLight *light, Lib3dsIo *io)
 }
 #endif
 #endif
-

@@ -261,4 +261,3 @@ static Lib3dsChunkTable lib3ds_chunk_table[]={
 }
 #endif
 #endif
-

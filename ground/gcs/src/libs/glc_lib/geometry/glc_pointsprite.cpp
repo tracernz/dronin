@@ -182,4 +182,3 @@ void GLC_PointSprite::glDraw(const GLC_RenderProperties& renderProperties)
 {
 	GLC_PointCloud::glDraw(renderProperties);
 }
-

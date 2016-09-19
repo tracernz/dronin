@@ -392,4 +392,3 @@ QDataStream &operator>>(QDataStream &stream, GLC_PrimitiveGroup &primitiveGroup)
 
 	return stream;
 }
-

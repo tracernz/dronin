@@ -1085,5 +1085,3 @@ lib3ds_material_write(Lib3dsMaterial *material, Lib3dsIo *io)
   }
   return(LIB3DS_TRUE);
 }
-
-

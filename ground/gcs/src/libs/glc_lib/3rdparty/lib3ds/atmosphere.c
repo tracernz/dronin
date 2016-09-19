@@ -292,5 +292,3 @@ lib3ds_atmosphere_write(Lib3dsAtmosphere *atmosphere, Lib3dsIo *io)
   
   return(LIB3DS_TRUE);
 }
-
-

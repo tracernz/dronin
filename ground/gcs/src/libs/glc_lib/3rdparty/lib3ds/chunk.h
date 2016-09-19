@@ -286,5 +286,3 @@ extern LIB3DSAPI void lib3ds_chunk_dump_info(const char *format, ...);
 }
 #endif
 #endif
-
-

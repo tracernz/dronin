@@ -103,4 +103,3 @@ extern LIB3DSAPI void lib3ds_file_dump_nodes(Lib3dsFile *file);
 }
 #endif
 #endif
-

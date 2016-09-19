@@ -101,4 +101,3 @@ void GLC_Point::glDraw(const GLC_RenderProperties& renderProperties)
 	// Point Display
 	GLC_PointCloud::glDraw(renderProperties);
 }
-

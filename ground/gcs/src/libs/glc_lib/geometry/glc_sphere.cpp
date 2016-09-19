@@ -216,5 +216,3 @@ void GLC_Sphere::createMesh()
 
 	finish();
 }
-
-

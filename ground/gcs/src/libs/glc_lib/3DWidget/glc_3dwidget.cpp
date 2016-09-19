@@ -167,5 +167,3 @@ void GLC_3DWidget::set3DViewInstanceVisibility(int index, bool visibility)
 {
 	m_pWidgetManagerHandle->instanceHandle(m_InstanceIdList[index])->setVisibility(visibility);
 }
-
-

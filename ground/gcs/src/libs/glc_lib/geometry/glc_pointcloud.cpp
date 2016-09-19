@@ -132,4 +132,3 @@ void GLC_PointCloud::glDraw(const GLC_RenderProperties& renderProperties)
 		GLC_Geometry::m_WireData.glDraw(renderProperties, GL_POINTS);
 	}
 }
-

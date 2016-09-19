@@ -415,4 +415,3 @@ lib3ds_quat_dump(Lib3dsQuat q)
 {
   printf("%f %f %f %f\n", q[0], q[1], q[2], q[3]);
 }
-

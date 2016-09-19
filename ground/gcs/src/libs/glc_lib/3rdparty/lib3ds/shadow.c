@@ -146,4 +146,3 @@ lib3ds_shadow_write(Lib3dsShadow *shadow, Lib3dsIo *io)
   }
   return(LIB3DS_TRUE);
 }
-

@@ -131,7 +131,3 @@ extern LIB3DSAPI void lib3ds_viewport_dump(Lib3dsViewport *viewport);
 }
 #endif
 #endif
-
-
-
-

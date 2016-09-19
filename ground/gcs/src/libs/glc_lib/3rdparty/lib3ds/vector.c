@@ -373,4 +373,3 @@ lib3ds_vector_dump(Lib3dsVector c)
 {
   fprintf(stderr, "%f %f %f\n", c[0], c[1], c[2]);
 }
-

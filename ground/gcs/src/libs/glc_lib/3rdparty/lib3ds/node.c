@@ -1085,4 +1085,3 @@ lib3ds_node_write(Lib3dsNode *node, Lib3dsFile *file, Lib3dsIo *io)
   }
   return(LIB3DS_TRUE);
 }
-

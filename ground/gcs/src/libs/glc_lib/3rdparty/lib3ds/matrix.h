@@ -60,4 +60,3 @@ extern LIB3DSAPI void lib3ds_matrix_dump(Lib3dsMatrix matrix);
 }
 #endif
 #endif
-

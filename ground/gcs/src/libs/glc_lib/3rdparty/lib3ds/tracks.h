@@ -206,4 +206,3 @@ extern LIB3DSAPI Lib3dsBool lib3ds_morph_track_write(Lib3dsMorphTrack *track, Li
 }
 #endif
 #endif
-

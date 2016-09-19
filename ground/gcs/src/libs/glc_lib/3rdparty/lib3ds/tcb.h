@@ -59,4 +59,3 @@ extern LIB3DSAPI Lib3dsBool lib3ds_tcb_write(Lib3dsTcb *tcb, Lib3dsIo *io);
 }
 #endif
 #endif
-

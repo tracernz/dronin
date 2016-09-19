@@ -55,4 +55,3 @@ extern LIB3DSAPI void lib3ds_vector_dump(Lib3dsVector c);
 }
 #endif
 #endif
-

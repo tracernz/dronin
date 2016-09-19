@@ -345,4 +345,3 @@ bool GLC_BSRep::timeStampOk(const QDateTime& timeStamp)
 	bool timeStampOk= !timeStamp.isValid() || (dateTime == timeStamp);
 	return timeStampOk;
 }
-

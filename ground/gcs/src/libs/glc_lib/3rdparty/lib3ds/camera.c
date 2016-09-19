@@ -228,4 +228,3 @@ lib3ds_camera_write(Lib3dsCamera *camera, Lib3dsIo *io)
   }
   return(LIB3DS_TRUE);
 }
-

@@ -286,4 +286,3 @@ void GLC_Context::init()
 
 	m_LightingIsEnable.push(false);
 }
-

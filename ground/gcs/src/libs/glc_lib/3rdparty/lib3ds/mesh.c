@@ -1053,4 +1053,3 @@ lib3ds_mesh_write(Lib3dsMesh *mesh, Lib3dsIo *io)
   }
   return(LIB3DS_TRUE);
 }
-

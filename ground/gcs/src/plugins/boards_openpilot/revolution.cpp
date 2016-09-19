@@ -376,3 +376,8 @@ QStringList Revolution::getAdcNames()
 {
     return QStringList() << "Pwr Sen Pin 3" << "Pwr Sen Pin 4";
 }
+
+/**
+ * @}
+ * @}
+ */

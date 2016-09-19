@@ -68,3 +68,8 @@ void TauLabsPlugin::extensionsInitialized()
 void TauLabsPlugin::shutdown()
 {
 }
+
+/**
+ * @}
+ * @}
+ */

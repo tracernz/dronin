@@ -47,3 +47,8 @@ public:
 };
 
 #endif // BROTRONICSPLUGIN_H
+
+/**
+ * @}
+ * @}
+ */

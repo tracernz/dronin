@@ -50,3 +50,8 @@ LuxConfiguration::~LuxConfiguration()
 {
     delete ui;
 }
+
+/**
+ * @}
+ * @}
+ */

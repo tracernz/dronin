@@ -1,7 +1,7 @@
 /**
  ******************************************************************************
  *
- * @file       BrainRE1Configuration.cpp
+ * @file       brainre1configuration.cpp
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2014
  * @author     dRonin, http://dronin.org Copyright (C) 2015
  *
@@ -189,3 +189,8 @@ void BrainRE1Configuration::extMagChanged(int idx)
         ui->labelExtMagOrientation->setHidden(false);
     }
 }
+
+/**
+ * @}
+ * @}
+ */

@@ -243,3 +243,8 @@ QStringList Sparky::getAdcNames()
 
     return names;
 }
+
+/**
+ * @}
+ * @}
+ */

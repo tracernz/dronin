@@ -1,7 +1,7 @@
 /**
  ******************************************************************************
  *
- * @file       coptercontrol.h
+ * @file       cc3d.h
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2013-2014
  *
  * @addtogroup GCSPlugins GCS Plugins
@@ -73,3 +73,8 @@ public:
 
 
 #endif // COPTERCONTROL_H
+
+/**
+ * @}
+ * @}
+ */

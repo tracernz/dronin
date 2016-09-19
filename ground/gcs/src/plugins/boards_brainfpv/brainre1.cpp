@@ -227,3 +227,8 @@ QVector< QVector<int> > BrainRE1::getChannelBanks() {
 
     return banks;
 }
+
+/**
+ * @}
+ * @}
+ */

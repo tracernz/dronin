@@ -51,3 +51,8 @@ public:
 
 
 #endif // QUANTON_H
+
+/**
+ * @}
+ * @}
+ */

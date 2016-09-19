@@ -46,3 +46,8 @@ public:
 };
 
 #endif // STMPLUGIN_H
+
+/**
+ * @}
+ * @}
+ */

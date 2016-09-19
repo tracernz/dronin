@@ -58,3 +58,8 @@ void AeroQuadPlugin::extensionsInitialized()
 void AeroQuadPlugin::shutdown()
 {
 }
+
+/**
+ * @}
+ * @}
+ */

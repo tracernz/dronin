@@ -92,3 +92,8 @@ private:
 
 
 #endif // SPARKY2_H
+
+/**
+ * @}
+ * @}
+ */

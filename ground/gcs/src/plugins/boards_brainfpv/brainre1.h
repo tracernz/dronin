@@ -50,13 +50,11 @@ public:
     /**
      * Configure the board to use an receiver input type on a port number
      * @param type the type of receiver to use
-     * @param port_num which input port to configure (board specific numbering)
      */
     virtual bool setInputType(enum InputType type);
 
     /**
      * @brief getInputOnPort get the current input type
-     * @param port_num which input port to query (board specific numbering)
      * @return the currently selected input type
      */
     virtual enum InputType getInputType();
@@ -81,3 +79,8 @@ public:
 
 
 #endif // BRAINRE1_H
+
+/**
+ * @}
+ * @}
+ */

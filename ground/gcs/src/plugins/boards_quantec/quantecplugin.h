@@ -46,3 +46,8 @@ public:
 };
 
 #endif // QUANTECPLUGIN_H
+
+/**
+ * @}
+ * @}
+ */

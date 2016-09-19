@@ -244,3 +244,8 @@ QWidget * CC3D::getBoardConfiguration(QWidget *parent, bool connected)
     Q_UNUSED(connected);
     return new ConfigCCHWWidget(parent);
 }
+
+/**
+ * @}
+ * @}
+ */

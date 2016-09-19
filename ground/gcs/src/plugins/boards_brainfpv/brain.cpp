@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file       Brain.cpp
+ * @file       brain.cpp
  * @author     Tau Labs, http://taulabs.org, Copyright (C) 2013
  * @author     dRonin, http://dronin.org Copyright (C) 2015
  *
@@ -252,3 +252,8 @@ QStringList Brain::getAdcNames()
 {
     return QStringList() << "Sen ADC0" << "Sen ADC1" << "Sen ADC2";
 }
+
+/**
+ * @}
+ * @}
+ */

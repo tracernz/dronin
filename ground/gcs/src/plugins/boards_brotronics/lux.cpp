@@ -224,3 +224,8 @@ QWidget *Lux::getBoardConfiguration(QWidget *parent, bool connected)
     Q_UNUSED(connected);
     return new LuxConfiguration(parent);
 }
+
+/**
+ * @}
+ * @}
+ */

@@ -52,3 +52,8 @@ public:
 };
 
 #endif // DTFPLUGIN_H
+
+/**
+ * @}
+ * @}
+ */

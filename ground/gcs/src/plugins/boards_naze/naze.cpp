@@ -230,3 +230,8 @@ QStringList Naze::getAdcNames()
 
     return names;
 }
+
+/**
+ * @}
+ * @}
+ */

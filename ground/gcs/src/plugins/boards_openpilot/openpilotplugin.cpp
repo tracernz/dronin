@@ -67,3 +67,8 @@ void OpenPilotPlugin::extensionsInitialized()
 void OpenPilotPlugin::shutdown()
 {
 }
+
+/**
+ * @}
+ * @}
+ */

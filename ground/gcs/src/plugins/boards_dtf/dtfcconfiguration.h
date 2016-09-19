@@ -54,3 +54,8 @@ private:
 };
 
 #endif // DTFCCONFIGURATION_H
+
+/**
+ * @}
+ * @}
+ */

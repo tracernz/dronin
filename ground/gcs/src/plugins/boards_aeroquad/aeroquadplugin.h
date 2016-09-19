@@ -46,3 +46,8 @@ public:
 };
 
 #endif // AEROQUADPLUGIN_H
+
+/**
+ * @}
+ * @}
+ */

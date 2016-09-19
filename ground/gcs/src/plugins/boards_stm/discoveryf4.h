@@ -6,7 +6,7 @@
  *
  * @addtogroup GCSPlugins GCS Plugins
  * @{
- * @addtogroup Boards_Stm Stm boards support Plugin
+ * @addtogroup Boards_Stm STM boards support Plugin
  * @{
  * @brief Plugin to support boards from STM
  *****************************************************************************/
@@ -48,3 +48,8 @@ public:
 
 
 #endif // DISCOVERYF4_H
+
+/**
+ * @}
+ * @}
+ */

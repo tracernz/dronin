@@ -80,3 +80,8 @@ void BrainConfiguration::openHelp()
 {
     QDesktopServices::openUrl( QUrl("http://wwww.brainfpv.com/support", QUrl::StrictMode) );
 }
+
+/**
+ * @}
+ * @}
+ */

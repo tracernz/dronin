@@ -54,3 +54,8 @@ public:
 
 
 #endif // NAZE_H
+
+/**
+ * @}
+ * @}
+ */

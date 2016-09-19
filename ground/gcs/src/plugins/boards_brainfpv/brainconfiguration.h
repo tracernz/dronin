@@ -54,3 +54,8 @@ private:
 };
 
 #endif // BRAINCONFIGURATION_H
+
+/**
+ * @}
+ * @}
+ */

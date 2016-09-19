@@ -253,3 +253,8 @@ QWidget *Dtfc::getBoardConfiguration(QWidget *parent, bool connected)
     Q_UNUSED(connected);
     return new DtfcConfiguration(parent);
 }
+
+/**
+ * @}
+ * @}
+ */

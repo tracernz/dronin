@@ -54,3 +54,8 @@ DtfcConfiguration::~DtfcConfiguration()
 {
     delete ui;
 }
+
+/**
+ * @}
+ * @}
+ */

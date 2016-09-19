@@ -68,3 +68,8 @@ public:
 
 
 #endif // BRAIN_H
+
+/**
+ * @}
+ * @}
+ */

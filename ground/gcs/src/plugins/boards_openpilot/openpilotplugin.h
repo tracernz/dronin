@@ -46,3 +46,8 @@ public:
 };
 
 #endif // OPENPILOTPLUGIN_H
+
+/**
+ * @}
+ * @}
+ */

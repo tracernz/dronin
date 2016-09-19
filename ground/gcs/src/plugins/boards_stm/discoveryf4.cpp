@@ -87,3 +87,8 @@ QString DiscoveryF4::getHwUAVO()
 {
     return "HwDiscoveryF4";
 }
+
+/**
+ * @}
+ * @}
+ */

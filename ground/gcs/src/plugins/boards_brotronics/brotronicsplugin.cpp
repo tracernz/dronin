@@ -64,3 +64,7 @@ void BrotronicsPlugin::shutdown()
 {
 }
 
+/**
+ * @}
+ * @}
+ */

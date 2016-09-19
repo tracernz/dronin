@@ -348,3 +348,8 @@ QStringList Sparky2::getAdcNames()
 {
     return QStringList() << "Analog CUR" << "Analog VOLT" << "DAC";
 }
+
+/**
+ * @}
+ * @}
+ */

@@ -214,3 +214,8 @@ bool TauLink::bindRadio(quint32 id, quint32 baud_rate, float rf_power, Core::IBo
 
     return true;
 }
+
+/**
+ * @}
+ * @}
+ */

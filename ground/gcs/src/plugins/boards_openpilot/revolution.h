@@ -94,3 +94,8 @@ private:
 
 
 #endif // REVOLUTION_H
+
+/**
+ * @}
+ * @}
+ */

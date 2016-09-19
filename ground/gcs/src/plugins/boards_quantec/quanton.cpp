@@ -162,3 +162,8 @@ QStringList Quanton::getAdcNames()
 
     return QStringList() << "Disabled" << "Disabled";
 }
+
+/**
+ * @}
+ * @}
+ */

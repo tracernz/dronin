@@ -45,3 +45,8 @@ public:
 };
 
 #endif // TAULABSPLUGIN_H
+
+/**
+ * @}
+ * @}
+ */

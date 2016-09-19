@@ -46,3 +46,8 @@ public:
 };
 
 #endif // BRAINFPVPLUGIN_H
+
+/**
+ * @}
+ * @}
+ */

@@ -62,3 +62,8 @@ private:
 };
 
 #endif // BRAINRE1CONFIGURATION_H
+
+/**
+ * @}
+ * @}
+ */

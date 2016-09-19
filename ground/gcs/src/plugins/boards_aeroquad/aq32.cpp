@@ -277,3 +277,8 @@ QStringList AQ32::getAdcNames()
 
     return QStringList() << "Disabled" << "Disabled" << "Disabled" << "Disabled" << "Disabled";
 }
+
+/**
+ * @}
+ * @}
+ */

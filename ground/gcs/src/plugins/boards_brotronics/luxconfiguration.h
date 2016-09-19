@@ -50,3 +50,8 @@ private:
 };
 
 #endif // LUXCONFIGURATION_H
+
+/**
+ * @}
+ * @}
+ */

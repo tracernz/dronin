@@ -205,6 +205,10 @@
 #include <pios_ibus.h>
 #endif
 
+#if defined(PIOS_INCLUDE_EXBUS)
+#include <pios_exbus.h>
+#endif
+
 #if defined(PIOS_INCLUDE_MAX7456)
 #include <pios_max7456.h>
 #endif

@@ -533,7 +533,7 @@ static void updateSettings()
 		uint8_t speed;
 		ModuleSettingsTelemetrySpeedGet(&speed);
 
-		PIOS_HAL_ConfigureSerialSpeed(PIOS_COM_TELEM_RF, speed);
+		PIOS_HAL_ConfigureSerialSpeed((void *)PIOS_COM_TELEM_RF, speed);
 	}
 #endif
 }

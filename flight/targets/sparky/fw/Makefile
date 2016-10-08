@@ -158,6 +158,7 @@ SRC += pios_servo.c
 SRC += pios_modules.c
 SRC += pios_srxl.c
 SRC += pios_ibus.c
+SRC += pios_exbus.c
 SRC += pios_spi.c
 SRC += pios_irq.c
 SRC += pios_pwm.c

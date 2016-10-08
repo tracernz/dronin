@@ -164,6 +164,7 @@ SRC += pios_ir_transponder.c
 SRC += pios_crc.c
 SRC += pios_com.c
 SRC += pios_dsm.c
+SRC += pios_exbus.c
 SRC += pios_openlrs.c
 SRC += pios_openlrs_rcvr.c
 SRC += pios_rfm22b.c

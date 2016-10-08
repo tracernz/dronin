@@ -45,6 +45,7 @@
 		<options>
 			<option>Disabled</option>
 			<option>PWM</option>
+			<option>EX Bus</option>
 			<option>Telemetry</option>
 			<option>GPS</option>
 			<option>DebugConsole</option>

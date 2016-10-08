@@ -737,7 +737,7 @@ static const struct pios_usart_cfg pios_usart6_cfg = {
 			.GPIO_Pin   = GPIO_Pin_7,
 			.GPIO_Speed = GPIO_Speed_25MHz,
 			.GPIO_Mode  = GPIO_Mode_AF,
-			.GPIO_OType = GPIO_OType_PP,
+			.GPIO_OType = GPIO_OType_OD,
 			.GPIO_PuPd  = GPIO_PuPd_UP
 		},
 		.pin_source = GPIO_PinSource7,
@@ -748,7 +748,7 @@ static const struct pios_usart_cfg pios_usart6_cfg = {
 			.GPIO_Pin   = GPIO_Pin_6,
 			.GPIO_Speed = GPIO_Speed_25MHz,
 			.GPIO_Mode  = GPIO_Mode_AF,
-			.GPIO_OType = GPIO_OType_PP,
+			.GPIO_OType = GPIO_OType_OD,
 			.GPIO_PuPd  = GPIO_PuPd_UP
 		},
 		.pin_source = GPIO_PinSource6,

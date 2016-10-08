@@ -6,13 +6,14 @@
 			<options>
 				<option>Disabled</option>
 				<option>DSM</option>
-				<option>SRXL</option>
+				<option>EX Bus</option>
 				<option>HoTT SUMD</option>
 				<option>HoTT SUMH</option>
+				<option>IBus</option>
 				<option>PPM</option>
 				<option>S.Bus</option>
 				<option>S.Bus Non Inverted</option>
-				<option>IBus</option>
+				<option>SRXL</option>
 			</options>
 		</field>
 
@@ -22,6 +23,7 @@
 				<option>ComBridge</option>
 				<option>DebugConsole</option>
 				<option>DSM</option>
+				<option>EX Bus</option>
 				<option>FrSKY Sensor Hub</option>
 				<option>FrSKY SPort Telemetry</option>
 				<option>GPS</option>
@@ -47,6 +49,7 @@
 				<option>ComBridge</option>
 				<option>DebugConsole</option>
 				<option>DSM</option>
+				<option>EX Bus</option>
 				<option>FrSKY Sensor Hub</option>
 				<option>FrSKY SPort Telemetry</option>
 				<option>GPS</option>

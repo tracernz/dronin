@@ -27,6 +27,7 @@
 				<option>ComBridge</option>
 				<option>DebugConsole</option>
 				<option>DSM</option>
+				<option>EX Bus</option>
 				<option>FrSKY Sensor Hub</option>
 				<option>FrSKY SPort Telemetry</option>
 				<option>GPS</option>
@@ -53,6 +54,7 @@
 				<option>ComBridge</option>
 				<option>DebugConsole</option>
 				<option>DSM</option>
+				<option>EX Bus</option>
 				<option>FrSKY Sensor Hub</option>
 				<option>FrSKY SPort Telemetry</option>
 				<option>GPS</option>
@@ -80,6 +82,7 @@
 				<option>ComBridge</option>
 				<option>DebugConsole</option>
 				<option>DSM</option>
+				<option>EX Bus</option>
 				<option>FrSKY Sensor Hub</option>
 				<option>FrSKY SPort Telemetry</option>
 				<option>GPS</option>
@@ -107,6 +110,7 @@
 				<option>ComBridge</option>
 				<option>DebugConsole</option>
 				<option>DSM</option>
+				<option>EX Bus</option>
 				<option>FrSKY Sensor Hub</option>
 				<option>FrSKY SPort Telemetry</option>
 				<option>GPS</option>
@@ -134,6 +138,7 @@
 				<option>ComBridge</option>
 				<option>DebugConsole</option>
 				<option>DSM</option>
+				<option>EX Bus</option>
 				<option>FrSKY Sensor Hub</option>
 				<option>FrSKY SPort Telemetry</option>
 				<option>GPS</option>
@@ -160,6 +165,7 @@
 				<option>ComBridge</option>
 				<option>DebugConsole</option>
 				<option>DSM</option>
+				<option>EX Bus</option>
 				<option>FrSKY Sensor Hub</option>
 				<option>FrSKY SPort Telemetry</option>
 				<option>GPS</option>

@@ -375,7 +375,7 @@ static void updateSettings()
 		uint8_t speed;
 		ModuleSettingsLightTelemetrySpeedGet(&speed);
 
-		PIOS_HAL_ConfigureSerialSpeed(lighttelemetryPort, speed);
+		PIOS_HAL_ConfigureSerialSpeed((void *)lighttelemetryPort, speed);
 
 		if (speed == MODULESETTINGS_LIGHTTELEMETRYSPEED_1200)
 			ltm_slowrate = 1;

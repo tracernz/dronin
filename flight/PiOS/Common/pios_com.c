@@ -55,8 +55,8 @@ enum pios_com_dev_magic {
 
 struct pios_com_dev {
 	enum pios_com_dev_magic magic;
-	uintptr_t lower_id;
-	const struct pios_com_driver * driver;
+	void *lower_id;
+	const struct pios_com_driver *driver;
 
 	struct pios_semaphore *tx_sem;
 	struct pios_semaphore *rx_sem;
@@ -97,7 +97,7 @@ static void PIOS_COM_UnblockTx(struct pios_com_dev *com_dev, bool * need_yield);
   * \param[in] id
   * \return < 0 if initialisation failed
   */
-int32_t PIOS_COM_Init(uintptr_t * com_id, const struct pios_com_driver * driver, uintptr_t lower_id, uint16_t rx_buffer_len, uint16_t tx_buffer_len)
+int32_t PIOS_COM_Init(struct pios_com_dev **com_id, const struct pios_com_driver *driver, void *lower_id, uint16_t rx_buffer_len, uint16_t tx_buffer_len)
 {
 	PIOS_Assert(com_id);
 	PIOS_Assert(driver);
@@ -123,10 +123,10 @@ int32_t PIOS_COM_Init(uintptr_t * com_id, const struct pios_com_driver * driver,
 #if defined(PIOS_INCLUDE_FREERTOS) || defined(PIOS_INCLUDE_CHIBIOS)
 		com_dev->rx_sem = PIOS_Semaphore_Create();
 #endif	/* PIOS_INCLUDE_FREERTOS */
-		(com_dev->driver->bind_rx_cb)(lower_id, PIOS_COM_RxInCallback, (uintptr_t)com_dev);
+		(com_dev->driver->bind_rx_cb)((uintptr_t)lower_id, PIOS_COM_RxInCallback, (uintptr_t)com_dev);
 		if (com_dev->driver->rx_start) {
 			/* Start the receiver */
-			(com_dev->driver->rx_start)(com_dev->lower_id,
+			(com_dev->driver->rx_start)((uintptr_t)com_dev->lower_id,
 						    rx_buffer_len - 1);
 		}
 	}
@@ -137,17 +137,17 @@ int32_t PIOS_COM_Init(uintptr_t * com_id, const struct pios_com_driver * driver,
 #if defined(PIOS_INCLUDE_FREERTOS) || defined(PIOS_INCLUDE_CHIBIOS)
 		com_dev->tx_sem = PIOS_Semaphore_Create();
 #endif	/* PIOS_INCLUDE_FREERTOS */
-		(com_dev->driver->bind_tx_cb)(lower_id, PIOS_COM_TxOutCallback, (uintptr_t)com_dev);
+		(com_dev->driver->bind_tx_cb)((uintptr_t)lower_id, PIOS_COM_TxOutCallback, (uintptr_t)com_dev);
 	}
 #if defined(PIOS_INCLUDE_FREERTOS) || defined(PIOS_INCLUDE_CHIBIOS)
 	com_dev->sendbuffer_mtx = PIOS_Mutex_Create();
 #endif /* PIOS_INCLUDE_FREERTOS */
 
-	*com_id = (uintptr_t)com_dev;
-	return(0);
+	*com_id = com_dev;
+	return 0;
 
 out_fail:
-	return(-1);
+	return -1;
 }
 
 static void PIOS_COM_UnblockRx(struct pios_com_dev *com_dev, bool * need_yield)
@@ -236,7 +236,7 @@ int32_t PIOS_COM_ChangeBaud(uintptr_t com_id, uint32_t baud)
 
 	/* Invoke the driver function if it exists */
 	if (com_dev->driver->set_baud) {
-		com_dev->driver->set_baud(com_dev->lower_id, baud);
+		com_dev->driver->set_baud((uintptr_t)com_dev->lower_id, baud);
 	}
 
 	return 0;
@@ -258,7 +258,7 @@ static int32_t SendBufferNonBlockingImpl(uintptr_t com_id, const uint8_t *buffer
 		return -3;
 	}
 #endif /* defined(PIOS_INCLUDE_FREERTOS) || defined(PIOS_INCLUDE_CHIBIOS) */
-	if (com_dev->driver->available && !com_dev->driver->available(com_dev->lower_id)) {
+	if (com_dev->driver->available && !com_dev->driver->available((uintptr_t)com_dev->lower_id)) {
 		/*
 		 * Underlying device is down/unconnected.
 		 * Dump our fifo contents and act like an infinite data sink.
@@ -301,7 +301,7 @@ static int32_t SendBufferNonBlockingImpl(uintptr_t com_id, const uint8_t *buffer
 			uint16_t tx_avail;
 
 			circ_queue_read_pos(com_dev->tx, NULL, &tx_avail);
-			com_dev->driver->tx_start(com_dev->lower_id,
+			com_dev->driver->tx_start((uintptr_t)com_dev->lower_id,
 						  tx_avail);
 		}
 	}
@@ -505,7 +505,7 @@ uint16_t PIOS_COM_GetNumReceiveBytesPending(uintptr_t com_id) {
 			circ_queue_write_pos(com_dev->rx, NULL,
 					&bytes_available);
 			/* Notify the lower layer that there is now room in the rx buffer */
-			(com_dev->driver->rx_start)(com_dev->lower_id,
+			(com_dev->driver->rx_start)((uintptr_t)com_dev->lower_id,
 					bytes_available);
 		}
 
@@ -550,7 +550,7 @@ check_again:
 
 			circ_queue_write_pos(com_dev->rx, NULL,
 					&rx_space_avail);
-			(com_dev->driver->rx_start)(com_dev->lower_id,
+			(com_dev->driver->rx_start)((uintptr_t)com_dev->lower_id,
 						    rx_space_avail);
 		}
 		if (timeout_ms > 0) {
@@ -590,7 +590,7 @@ bool PIOS_COM_Available(uintptr_t com_id)
 	if (com_dev->driver->available == NULL)
 		return true;
 
-	return (com_dev->driver->available)(com_dev->lower_id);
+	return (com_dev->driver->available)((uintptr_t)com_dev->lower_id);
 }
 
 uintptr_t PIOS_COM_GetDriverCtx(uintptr_t com_id) {
@@ -600,7 +600,7 @@ uintptr_t PIOS_COM_GetDriverCtx(uintptr_t com_id) {
 		return false;
 	}
 
-	return com_dev->lower_id;
+	return (uintptr_t)com_dev->lower_id;
 }
 
 #endif

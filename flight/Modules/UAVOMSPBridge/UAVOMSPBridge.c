@@ -145,7 +145,7 @@ typedef enum {
 } msp_state;
 
 struct msp_bridge {
-	uintptr_t com;
+	void *com;
 
 	msp_state state;
 	uint8_t cmd_size;
@@ -186,8 +186,8 @@ static void msp_send(struct msp_bridge *m, uint8_t cmd, const uint8_t *data, siz
 	buf[3] = (uint8_t)(len);
 	buf[4] = cmd;
 
-	PIOS_COM_SendBuffer(m->com, buf, sizeof(buf));
-	PIOS_COM_SendBuffer(m->com, data, len);
+	PIOS_COM_SendBuffer((uintptr_t)m->com, buf, sizeof(buf));
+	PIOS_COM_SendBuffer((uintptr_t)m->com, data, len);
 
 	for (int i = 0; i < len; i++) {
 		cs ^= data[i];
@@ -195,7 +195,7 @@ static void msp_send(struct msp_bridge *m, uint8_t cmd, const uint8_t *data, siz
 	cs ^= 0;
 
 	buf[0] = cs;
-	PIOS_COM_SendBuffer(m->com, buf, 1);
+	PIOS_COM_SendBuffer((uintptr_t)m->com, buf, 1);
 }
 
 static msp_state msp_state_size(struct msp_bridge *m, uint8_t b)
@@ -675,7 +675,7 @@ static bool msp_receive_byte(struct msp_bridge *m, uint8_t b)
 		m->state = MSP_IDLE;
 		// If this looks like the fourth possible uavtalk byte, we're done
 		if ((b & 0xf0) == 0) {
-			PIOS_COM_TELEM_RF = m->com;
+			PIOS_COM_TELEM_RF = (uintptr_t)m->com;
 			return false;
 		}
 		break;
@@ -695,8 +695,8 @@ static bool msp_receive_byte(struct msp_bridge *m, uint8_t b)
 		m->state = MSP_IDLE;
 		// If this looks like the sixth possible 57600 baud uavtalk byte, we're done
 		if(b == 0x60) {
-			PIOS_COM_ChangeBaud(m->com, 57600);
-			PIOS_COM_TELEM_RF = m->com;
+			PIOS_COM_ChangeBaud((uintptr_t)m->com, 57600);
+			PIOS_COM_TELEM_RF = (uintptr_t)m->com;
 			return false;
 		}
 		break;
@@ -715,7 +715,7 @@ static int32_t uavoMSPBridgeStart(void)
 		// give port to telemetry if it doesn't have one
 		// stops board getting stuck in condition where it can't be connected to gcs
 		if(!PIOS_COM_TELEM_RF)
-			PIOS_COM_TELEM_RF = pios_com_msp_id;
+			PIOS_COM_TELEM_RF = (uintptr_t)pios_com_msp_id;
 
 		return -1;
 	}
@@ -750,7 +750,7 @@ static int32_t uavoMSPBridgeInitialize(void)
 		if (msp != NULL) {
 			memset(msp, 0x00, sizeof(*msp));
 
-			msp->com = pios_com_msp_id;
+			msp->com = (void *)pios_com_msp_id;
 
 			module_enabled = true;
 			return 0;
@@ -771,7 +771,7 @@ static void uavoMSPBridgeTask(void *parameters)
 
 	while (1) {
 		uint8_t b = 0;
-		uint16_t count = PIOS_COM_ReceiveBuffer(msp->com, &b, 1, PIOS_QUEUE_TIMEOUT_MAX);
+		uint16_t count = PIOS_COM_ReceiveBuffer((uintptr_t)msp->com, &b, 1, PIOS_QUEUE_TIMEOUT_MAX);
 		if (count) {
 			if (!msp_receive_byte(msp, b)) {
 				// Returning is considered risky here as

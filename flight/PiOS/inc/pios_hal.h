@@ -79,9 +79,12 @@ void PIOS_HAL_CriticalError(uint32_t led_id, enum pios_hal_panic code);
 #ifdef PIOS_INCLUDE_USART
 /* USART here is used as a proxy for hardware-ish capabilities... Hacky */
 
-void PIOS_HAL_ConfigureCom(const struct pios_usart_cfg *usart_port_cfg, struct pios_usart_params *usart_port_params,
-		size_t rx_buf_len, size_t tx_buf_len,
-		const struct pios_com_driver *com_driver, uintptr_t *com_id);
+void PIOS_HAL_ConfigureCom(const struct pios_usart_cfg *usart_port_cfg,
+                           struct pios_usart_params *usart_port_params,
+                           size_t rx_buf_len,
+                           size_t tx_buf_len,
+                           const struct pios_com_driver *com_driver,
+                           struct pios_com_dev **com_id);
 
 void PIOS_HAL_ConfigurePort(HwSharedPortTypesOptions port_type,
 		const struct pios_usart_cfg *usart_port_cfg,
@@ -126,8 +129,8 @@ void PIOS_HAL_ConfigureRFM22B(HwSharedRadioPortOptions radio_type,
 		int status_inst);
 #endif /* PIOS_INCLUDE_RFM22B */
 
-void PIOS_HAL_ConfigureSerialSpeed(uintptr_t com_id,
-		                HwSharedSpeedBpsOptions speed);
+void PIOS_HAL_ConfigureSerialSpeed(struct pios_com_dev *com_dev,
+		HwSharedSpeedBpsOptions speed);
 
 void PIOS_HAL_SetReceiver(int receiver_type, uintptr_t value);
 

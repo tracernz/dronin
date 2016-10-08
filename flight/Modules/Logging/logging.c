@@ -144,8 +144,8 @@ int32_t LoggingInitialize(void)
 		}
 
 		const uint32_t LOG_BUF_LEN = 768;
-		if (PIOS_COM_Init(&logging_com_id, &pios_streamfs_com_driver,
-				streamfs_id, 0, LOG_BUF_LEN) != 0) {
+		if (PIOS_COM_Init((void *)&logging_com_id, &pios_streamfs_com_driver,
+				(void *)streamfs_id, 0, LOG_BUF_LEN) != 0) {
 			module_enabled = false;
 			return -1;
 		}

@@ -354,7 +354,7 @@ void PIOS_HAL_ConfigureCom(const struct pios_usart_cfg *usart_port_cfg,
                            size_t rx_buf_len,
                            size_t tx_buf_len,
                            const struct pios_com_driver *com_driver,
-                           uintptr_t *com_id)
+                           struct pios_com_dev **com_id)
 {
 	uintptr_t usart_id;
 	if (PIOS_USART_Init(&usart_id, usart_port_cfg, usart_port_params)) {
@@ -362,7 +362,7 @@ void PIOS_HAL_ConfigureCom(const struct pios_usart_cfg *usart_port_cfg,
 	}
 
 
-	if (PIOS_COM_Init(com_id, com_driver, usart_id,
+	if (PIOS_COM_Init(com_id, com_driver, (void *)usart_id,
 			rx_buf_len, tx_buf_len)) {
 		PIOS_Assert(0);
 	}
@@ -497,6 +497,41 @@ static void PIOS_HAL_ConfigureIBus(const struct pios_usart_cfg *usart_ibus_cfg,
 }
 #endif
 
+#ifdef PIOS_INCLUDE_EXBUS
+/**
+ * @brief Configures a Jeti EX Bus receiver
+ *
+ * @param[in] usart_exbus_cfg Configuration for the USART for EX Bus mode.
+ * @param[in] usart_com_driver The COM driver for this USART
+ */
+static void PIOS_HAL_ConfigureExBus(const struct pios_usart_cfg *usart_exbus_cfg,
+		struct pios_usart_params *usart_port_params,
+		const struct pios_com_driver *usart_com_driver)
+{
+	uintptr_t usart_exbus_id;
+	if (PIOS_USART_Init(&usart_exbus_id, usart_exbus_cfg, usart_port_params)) {
+		PIOS_Assert(0);
+	}
+
+	struct pios_com_dev *com_id;
+	if (PIOS_COM_Init(&com_id, usart_com_driver, (void *)usart_exbus_id,
+			0, 128)) {
+		PIOS_Assert(0);
+	}
+
+	uintptr_t exbus_id;
+	if (PIOS_EXBUS_Init(&exbus_id, usart_com_driver, usart_exbus_id, com_id)) {
+		PIOS_Assert(0);
+	}
+
+	uintptr_t exbus_rcvr_id;
+	if (PIOS_RCVR_Init(&exbus_rcvr_id, &pios_exbus_rcvr_driver, exbus_id)) {
+		PIOS_Assert(0);
+	}
+	PIOS_HAL_SetReceiver(MANUALCONTROLSETTINGS_CHANNELGROUPS_EXBUS, exbus_rcvr_id);
+}
+#endif // PIOS_INCLUDE_EXBUS
+
 /** @brief Configure a [flexi/main/rcvr/etc] port.
  *
  * Not all of these parameters will be defined for each port.  Caller may pass
@@ -533,7 +568,7 @@ void PIOS_HAL_ConfigurePort(HwSharedPortTypesOptions port_type,
 		HwSharedDSMxModeOptions dsm_mode,
 		const struct pios_sbus_cfg *sbus_cfg)
 {
-	uintptr_t port_driver_id;
+	struct pios_com_dev *port_driver_id;
 	uintptr_t *target = NULL, *target2 = NULL;
 
 	struct pios_usart_params usart_port_params;
@@ -865,10 +900,31 @@ void PIOS_HAL_ConfigurePort(HwSharedPortTypesOptions port_type,
 #endif  /* PIOS_INCLUDE_IBUS */
 		break;
 
+	case HWSHARED_PORTTYPES_EXBUS:
+#if defined(PIOS_INCLUDE_EXBUS)
+		if (usart_port_cfg) {
+			usart_port_params.single_wire = true;
+#if defined(STM32F30X) || defined(STM32F0XX)
+			// F3 can switch rx/tx pins
+			usart_port_params.rxtx_swap = true;
+#endif // STM32F30X || STM32F0XX || USE_STM32F4xx_BRAINFPVRE1
+			
+			usart_port_params.init.USART_BaudRate            = 125000; /* TODO: high speed = 250k */
+			usart_port_params.init.USART_WordLength          = USART_WordLength_8b;
+			usart_port_params.init.USART_Parity              = USART_Parity_No;
+			usart_port_params.init.USART_StopBits            = USART_StopBits_1;
+			usart_port_params.init.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+			usart_port_params.init.USART_Mode                = USART_Mode_Tx | USART_Mode_Rx;
+
+			PIOS_HAL_ConfigureExBus(usart_port_cfg, &usart_port_params, com_driver);
+		}
+#endif  /* PIOS_INCLUDE_EXBUS */
+		break;
+
 	} /* port_type */
 
-	PIOS_HAL_SetTarget(target, port_driver_id);
-	PIOS_HAL_SetTarget(target2, port_driver_id);
+	PIOS_HAL_SetTarget(target, (uintptr_t)port_driver_id);
+	PIOS_HAL_SetTarget(target2, (uintptr_t)port_driver_id);
 }
 #endif /* PIOS_INCLUDE_USART */
 
@@ -883,10 +939,10 @@ void PIOS_HAL_ConfigureCDC(HwSharedUSB_VCPPortOptions port_type,
 		uintptr_t usb_id,
 		const struct pios_usb_cdc_cfg *cdc_cfg)
 {
-	uintptr_t pios_usb_cdc_id;
+	void *pios_usb_cdc_id;
 
 	if (port_type != HWSHARED_USB_VCPPORT_DISABLED) {
-		if (PIOS_USB_CDC_Init(&pios_usb_cdc_id, cdc_cfg, usb_id)) {
+		if (PIOS_USB_CDC_Init((uintptr_t *)&pios_usb_cdc_id, cdc_cfg, usb_id)) {
 			PIOS_Assert(0);
 		}
 	}
@@ -896,7 +952,7 @@ void PIOS_HAL_ConfigureCDC(HwSharedUSB_VCPPortOptions port_type,
 		break;
 	case HWSHARED_USB_VCPPORT_USBTELEMETRY:
 	{
-		if (PIOS_COM_Init(&pios_com_telem_usb_id, &pios_usb_cdc_com_driver, pios_usb_cdc_id,
+		if (PIOS_COM_Init((struct pios_com_dev **)&pios_com_telem_usb_id, &pios_usb_cdc_com_driver, pios_usb_cdc_id,
 						PIOS_COM_TELEM_USB_RX_BUF_LEN,
 						PIOS_COM_TELEM_USB_TX_BUF_LEN)) {
 			PIOS_Assert(0);
@@ -905,7 +961,7 @@ void PIOS_HAL_ConfigureCDC(HwSharedUSB_VCPPortOptions port_type,
 	break;
 	case HWSHARED_USB_VCPPORT_COMBRIDGE:
 	{
-		if (PIOS_COM_Init(&pios_com_vcp_id, &pios_usb_cdc_com_driver, pios_usb_cdc_id,
+		if (PIOS_COM_Init((struct pios_com_dev **)&pios_com_vcp_id, &pios_usb_cdc_com_driver, pios_usb_cdc_id,
 						PIOS_COM_BRIDGE_RX_BUF_LEN,
 						PIOS_COM_BRIDGE_TX_BUF_LEN)) {
 			PIOS_Assert(0);
@@ -916,7 +972,7 @@ void PIOS_HAL_ConfigureCDC(HwSharedUSB_VCPPortOptions port_type,
 	case HWSHARED_USB_VCPPORT_DEBUGCONSOLE:
 #if defined(PIOS_INCLUDE_DEBUG_CONSOLE)
 		{
-			if (PIOS_COM_Init(&pios_com_debug_id,
+			if (PIOS_COM_Init((struct pios_com_dev **)&pios_com_debug_id,
 					&pios_usb_cdc_com_driver,
 					pios_usb_cdc_id, 0,
 					PIOS_COM_DEBUGCONSOLE_TX_BUF_LEN)) {
@@ -928,7 +984,7 @@ void PIOS_HAL_ConfigureCDC(HwSharedUSB_VCPPortOptions port_type,
 	case HWSHARED_USB_VCPPORT_PICOC:
 #if defined(PIOS_INCLUDE_PICOC)
 		{
-			if (PIOS_COM_Init(&pios_com_picoc_id,
+			if (PIOS_COM_Init((struct pios_com_dev **)&pios_com_picoc_id,
 					&pios_usb_cdc_com_driver,
 					pios_usb_cdc_id,
 					PIOS_COM_PICOC_RX_BUF_LEN,
@@ -962,8 +1018,8 @@ void PIOS_HAL_ConfigureHID(HwSharedUSB_HIDPortOptions port_type,
 		break;
 	case HWSHARED_USB_HIDPORT_USBTELEMETRY:
 	{
-		if (PIOS_COM_Init(&pios_com_telem_usb_id,
-				&pios_usb_hid_com_driver, pios_usb_hid_id,
+		if (PIOS_COM_Init((struct pios_com_dev **)&pios_com_telem_usb_id,
+				&pios_usb_hid_com_driver, (void *)pios_usb_hid_id,
 				PIOS_COM_TELEM_USB_RX_BUF_LEN,
 				PIOS_COM_TELEM_USB_TX_BUF_LEN)) {
 			PIOS_Assert(0);
@@ -1137,8 +1193,10 @@ void PIOS_HAL_ConfigureRFM22B(HwSharedRadioPortOptions radio_type,
 
 #define BT_COMMAND_QDELAY 350
 
-void PIOS_HAL_ConfigureSerialSpeed(uintptr_t com_id,
+void PIOS_HAL_ConfigureSerialSpeed(struct pios_com_dev *com_dev,
 		HwSharedSpeedBpsOptions speed) {
+	// TODO: fix this uintptr_t crap
+	uintptr_t com_id = (uintptr_t)com_dev;
 	switch (speed) {
 		case HWSHARED_SPEEDBPS_1200:
 			PIOS_COM_ChangeBaud(com_id, 2400);

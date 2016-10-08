@@ -176,7 +176,7 @@ static void updateSettings()
 		uint8_t speed;
 		ModuleSettingsComUsbBridgeSpeedGet(&speed);
 
-		PIOS_HAL_ConfigureSerialSpeed(usart_port, speed);
+		PIOS_HAL_ConfigureSerialSpeed((void *)usart_port, speed);
 	}
 }
 

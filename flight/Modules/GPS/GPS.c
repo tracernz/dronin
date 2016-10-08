@@ -346,7 +346,7 @@ static void updateSettings()
 		ModuleSettingsGPSSpeedGet(&speed);
 
 		// Set port speed
-		PIOS_HAL_ConfigureSerialSpeed(gpsPort, speed);
+		PIOS_HAL_ConfigureSerialSpeed((void *)gpsPort, speed);
 	}
 }
 

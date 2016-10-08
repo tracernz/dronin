@@ -172,7 +172,7 @@ static const struct pios_hmc5883_cfg pios_hmc5883_external_cfg = {
 #define PIOS_COM_CAN_TX_BUF_LEN 256
 
 uintptr_t pios_com_aux_id;
-uintptr_t pios_com_can_id;
+struct pios_com_dev *pios_com_can_id;
 uintptr_t pios_uavo_settings_fs_id;
 uintptr_t pios_waypoints_settings_fs_id;
 uintptr_t pios_internal_adc_id;
@@ -205,12 +205,12 @@ void PIOS_Board_Init(void)
 	if (PIOS_CAN_Init(&pios_can_id, &pios_can_cfg) != 0)
 		PIOS_HAL_CriticalError(PIOS_LED_ALARM, PIOS_HAL_PANIC_CAN);
 
-	if (PIOS_COM_Init(&pios_com_can_id, &pios_can_com_driver, pios_can_id,
+	if (PIOS_COM_Init(&pios_com_can_id, &pios_can_com_driver, (void *)pios_can_id,
 	                  PIOS_COM_CAN_RX_BUF_LEN,
 	                  PIOS_COM_CAN_TX_BUF_LEN))
 		PIOS_HAL_CriticalError(PIOS_LED_ALARM, PIOS_HAL_PANIC_CAN);
 
-	pios_com_bridge_id = pios_com_can_id;
+	pios_com_bridge_id = (uintptr_t)pios_com_can_id;
 #endif
 
 #if defined(PIOS_INCLUDE_FLASH)

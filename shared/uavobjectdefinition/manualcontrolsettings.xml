@@ -24,6 +24,7 @@
 				<option>PWM</option>
 				<option>PPM</option>
 				<option>DSM</option>
+				<option>Ex Bus</option>
 				<option>S.Bus</option>
 				<option>RFM22B</option>
 				<option>OpenLRS</option>

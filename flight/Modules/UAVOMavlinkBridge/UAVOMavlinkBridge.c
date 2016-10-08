@@ -89,7 +89,7 @@ static const uint8_t mav_rates[] =
 
 static struct pios_thread *uavoMavlinkBridgeTaskHandle;
 
-static uint32_t mavlink_port;
+static void *mavlink_port;
 
 static bool module_enabled = false;
 
@@ -121,7 +121,7 @@ static int32_t uavoMavlinkBridgeStart(void) {
  * \return 0 on success
  */
 static int32_t uavoMavlinkBridgeInitialize(void) {
-	mavlink_port = PIOS_COM_MAVLINK;
+	mavlink_port = (void *)PIOS_COM_MAVLINK;
 
 	if (mavlink_port && PIOS_Modules_IsEnabled(PIOS_MODULE_UAVOMAVLINKBRIDGE)) {
 		updateSettings();
@@ -149,7 +149,7 @@ static void send_message() {
 	uint16_t msg_length = MAVLINK_NUM_NON_PAYLOAD_BYTES +
 		mav_msg->len;
 
-	PIOS_COM_SendBuffer(mavlink_port, &mav_msg->magic, msg_length);
+	PIOS_COM_SendBuffer((uintptr_t)mavlink_port, &mav_msg->magic, msg_length);
 }
 
 /**

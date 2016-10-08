@@ -156,11 +156,15 @@ void inputChannelForm::groupUpdated()
                 break;
             case ManualControlSettings::CHANNELGROUPS_SRXL:
                 count = 16;
+                break;
             case ManualControlSettings::CHANNELGROUPS_IBUS:
                 count = 10;
                 break;
             case ManualControlSettings::CHANNELGROUPS_NONE:
                 count = 0;
+                break;
+            case ManualControlSettings::CHANNELGROUPS_EXBUS:
+                count = 24;
                 break;
             default:
                 Q_ASSERT(0);

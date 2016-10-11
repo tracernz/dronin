@@ -3,6 +3,7 @@ TARGET = QMLView
 QT += svg
 QT += qml
 QT += quick
+QT += 3dcore 3drender 3dinput 3dquick
 
 include(../../gcsplugin.pri)
 include(../../plugins/coreplugin/coreplugin.pri)

@@ -68,7 +68,7 @@ bool UAVObjectGeneratorGCS::generate(UAVObjectParser* parser,QString templatepat
         process_object(info);
 
         gcsObjInit.append("    objMngr->registerObject( new " + info->name + "() );\n");
-        gcsObjInit.append("    qmlRegisterType<" + info->name + ">(\"com.dronin.uavo\", 1, 0, \"" + info->name + "Class\");\n");
+        gcsObjInit.append("    qmlRegisterType<" + info->name + ">(\"com.dronin.uavo\", 1, 0, \"" + info->name + "\");\n");
         objInc.append("#include \"" + info->namelc + ".h\"\n");
     }
 
@@ -386,7 +386,7 @@ bool UAVObjectGeneratorGCS::process_object(ObjectInfo* info)
         if (info->fields[n]->type == FIELDTYPE_ENUM)
         {
             enums.append(QString("    /* Enumeration options for field %1 */\n").arg(info->fields[n]->name));
-            enums.append("    typedef enum { ");
+            enums.append(QString("    enum %1Options { ").arg(info->fields[n]->name));
             // Go through each option
             QStringList options = info->fields[n]->options;
             for (int m = 0; m < options.length(); ++m) {
@@ -404,8 +404,7 @@ bool UAVObjectGeneratorGCS::process_object(ObjectInfo* info)
                                .arg(value));
 
             }
-            enums.append( QString(" } %1Options;\n")
-                          .arg( info->fields[n]->name ) );
+            enums.append(" };\n");
             q_enums.append(QString("    Q_ENUMS(%1Options)\n").arg(info->fields[n]->name));
         }
         // Generate element names (only if field has more than one element)

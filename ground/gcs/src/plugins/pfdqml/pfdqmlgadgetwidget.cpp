@@ -76,10 +76,13 @@ PfdQmlGadgetWidget::~PfdQmlGadgetWidget()
 void PfdQmlGadgetWidget::exportUAVOInstance(const QString &objectName, int instId)
 {
     UAVObject* object = m_objManager->getObject(objectName, instId);
-    if (object)
-        engine()->rootContext()->setContextProperty(objectName, object);
-    else
+    if (object) {
+        QString name = objectName;
+        name[0] = name[0].toLower();
+        engine()->rootContext()->setContextProperty(name, object);
+    } else {
         qWarning() << "[PFDQML] Failed to load object" << objectName;
+      }
 }
 
 

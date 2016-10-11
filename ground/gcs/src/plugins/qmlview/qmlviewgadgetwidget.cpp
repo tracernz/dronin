@@ -50,8 +50,11 @@ QmlViewGadgetWidget::QmlViewGadgetWidget(QWindow *parent) :
 
     QVector<QVector<UAVObject*>> objects = objManager->getObjectsVector();
 
-    foreach (const QVector<UAVObject*> &objInst, objects)
-        engine()->rootContext()->setContextProperty(objInst.at(0)->getName(), objInst.at(0));
+    for (const QVector<UAVObject*> &objInst : objects) {
+        QString name = objInst.at(0)->getName();
+        name[0] = name[0].toLower();
+        engine()->rootContext()->setContextProperty(name, objInst.at(0));
+    }
 
     engine()->rootContext()->setContextProperty("qmlWidget", this);
 }

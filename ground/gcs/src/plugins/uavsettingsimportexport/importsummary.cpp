@@ -74,7 +74,6 @@ ImportSummaryDialog::ImportSummaryDialog( QWidget *parent, bool quiet) :
 
    // Connect the help button
    connect(ui->helpButton, SIGNAL(clicked()), this, SLOT(openHelp()));
-
 }
 
 ImportSummaryDialog::~ImportSummaryDialog()

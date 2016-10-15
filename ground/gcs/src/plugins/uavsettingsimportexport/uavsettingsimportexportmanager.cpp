@@ -168,27 +168,30 @@ bool UAVSettingsImportExportManager::importUAVSettings(const QByteArray &setting
                     if (f.tagName() == "field") {
                         UAVObjectField *uavfield = newObj->getField(f.attribute("name"));
                         if (uavfield) {
-                            QStringList list = f.attribute("values").split(",");
-                            if (list.length() == 1) {
-                                if (false == uavfield->checkValue(f.attribute("values"))) {
-                                    qDebug() << "checkValue returned false on: " << uavObjectName << f.attribute("values");
+                            QStringList list;
+
+                            // try new way first, child element for each value
+                            QDomElement v = f.firstChildElement("value");
+                            while (!v.isNull()) {
+                                list.append(v.text());
+                                v = v.nextSiblingElement("value");
+                            }
+
+                            // try the old way (comma sepearated list in attribute)
+                            if (!list.length())
+                                list = f.attribute("values").split(",");
+                            if (!list.length())
+                                setError = true;
+
+                            quint32 i = 0;
+                            for (const QString &element : list) {
+                                if (!uavfield->checkValue(element, i)) {
+                                    qDebug() << "checkValue(list) returned false on: " << uavObjectName << list;
                                     setError = true;
                                 } else {
-                                    uavfield->setValue(f.attribute("values"));
+                                    uavfield->setValue(element, i);
                                 }
-                            } else {
-                                // This is an enum:
-                                int i = 0;
-                                QStringList list = f.attribute("values").split(",");
-                                foreach (QString element, list) {
-                                    if (false == uavfield->checkValue(element, i)) {
-                                        qDebug() << "checkValue(list) returned false on: " << uavObjectName << list;
-                                        setError = true;
-                                    } else {
-                                        uavfield->setValue(element,i);
-                                    }
-                                    i++;
-                                }
+                                i++;
                             }
                         } else {
                             error = true;
@@ -340,19 +343,18 @@ QString UAVSettingsImportExportManager::createXMLDocument(const enum storedData 
                     QDomElement f = doc.createElement("field");
 
                     // iterate over values
-                    QString vals;
-                    quint32 nelem = field->getNumElements();
-                    for (unsigned int n = 0; n < nelem; ++n) {
-                        vals.append(QString("%1,").arg(field->getValue(n).toString()));
+                    for (quint32 i = 0; i < field->getNumElements(); i++) {
+                        QDomElement v = doc.createElement("value");
+                        v.appendChild(doc.createTextNode(field->getValue(i).toString()));
+                        v.setAttribute("default", QVariant(field->isDefaultValue(i)).toString());
+                        f.appendChild(v);
                     }
-                    vals.chop(1);
 
                     f.setAttribute("name", field->getName());
-                    f.setAttribute("values", vals);
                     if (fullExport) {
                         f.setAttribute("type", field->getTypeAsString());
                         f.setAttribute("units", field->getUnits());
-                        f.setAttribute("elements", nelem);
+                        f.setAttribute("elements", field->getNumElements());
                         if (field->getType() == UAVObjectField::ENUM) {
                             f.setAttribute("options", field->getOptions().join(","));
                         }

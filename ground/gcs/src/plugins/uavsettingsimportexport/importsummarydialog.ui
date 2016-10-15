@@ -47,6 +47,38 @@
     </widget>
    </item>
    <item>
+    <widget class="QTreeWidget" name="treeWidget">
+     <property name="headerHidden">
+      <bool>false</bool>
+     </property>
+     <column>
+      <property name="text">
+       <string>Field</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Value</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Default</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Was Default?</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Import?</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item>
     <widget class="QLabel" name="label_2">
      <property name="text">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; color:#ff0000;&quot;&gt;Note&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;: Warnings are normal when the format of the configuration changes between versions. Please review any areas with warnings after saving.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>

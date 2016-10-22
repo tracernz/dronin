@@ -30,7 +30,7 @@ Item {
             property int topNumber: Math.floor(altitude/5)*5 + 15
             property int bottomNumber: Math.floor(altitude/5)*5 - 15
             property real unitHeight: altitude_scale.height / 30
-            property real altitude: -PositionActual.Down
+            property real altitude: -positionActual.Down
 
             SvgElementImage {
                 id: altitude_desired
@@ -38,7 +38,7 @@ Item {
                 elementName: "altitude-desired"
                 sceneSize: sceneItem.sceneSize
 
-                property real desiredAltitude : -PathDesired.End_Down
+                property real desiredAltitude : -pathDesired.End_Down
 
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.top

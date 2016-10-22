@@ -40,8 +40,8 @@ bool UAVObjectGeneratorGCS::generate(UAVObjectParser* parser,QString templatepat
         "quint8" << "quint16" << "quint32" << "float" << "quint8";
 
     // work around Qt bug 37241 by not exporting 8-bit ints to QML
-    fieldTypeStrQML << "qint16" << "qint16" << "qint32" <<
-        "quint16" << "quint16" << "quint32" << "float" << "quint16";
+    fieldTypeStrQML << "QVariant" << "QVariant" << "QVariant" <<
+        "QVariant" << "QVariant" << "QVariant" << "QVariant" << "QVariant";
 
     fieldTypeStrCPPClass << "INT8" << "INT16" << "INT32"
         << "UINT8" << "UINT16" << "UINT32" << "FLOAT32" << "ENUM";
@@ -207,11 +207,14 @@ bool UAVObjectGeneratorGCS::process_object(ObjectInfo* info)
 
             for (int elementIndex = 0; elementIndex < field->numElements; elementIndex++) {
                 QString elementName = field->elementNames[elementIndex];
-                properties += QString("    Q_PROPERTY(%1 %2 READ get%2 WRITE set%2 NOTIFY %2Changed);\n")
+                properties += QString("    Q_PROPERTY(%1 %2 READ get%2Variant WRITE set%2Variant NOTIFY %2Changed);\n")
                         .arg(qmlType).arg(field->name+"_"+elementName);
                 propertyGetters +=
                         QString("    Q_INVOKABLE %1 get%2_%3() const;\n")
                         .arg(type).arg(field->name).arg(elementName);
+                propertyGetters +=
+                        QString("    Q_INVOKABLE QVariant get%1_%2Variant() const { return QVariant::fromValue(data.%1[%3]); }\n")
+                        .arg(field->name).arg(elementName).arg(elementIndex);
                 propertiesImpl +=
                         QString("%1 %2::get%3_%4() const\n"
                                 "{\n"
@@ -221,6 +224,14 @@ bool UAVObjectGeneratorGCS::process_object(ObjectInfo* info)
                 propertySetters +=
                         QString("    void set%1_%2(%3 value);\n")
                         .arg(field->name).arg(elementName).arg(type);
+                propertySetters +=
+                        QString("    void set%1_%2Variant(QVariant value)\n"
+                                "{\n"
+                                "   bool changed = data.%1[%3] != value.toInt();\n"
+                                "   data.%1[%3] = value.toInt();\n"
+                                "   if (changed) emit %1_%2Changed(value.toInt());\n"
+                                "}\n\n")
+                        .arg(field->name).arg(elementName).arg(elementIndex);
                 propertiesImpl +=
                         QString("void %1::set%2_%3(%4 value)\n"
                                 "{\n"
@@ -238,11 +249,20 @@ bool UAVObjectGeneratorGCS::process_object(ObjectInfo* info)
                         .arg(field->name).arg(elementIndex).arg(elementName);
             }
         } else {
-            properties += QString("    Q_PROPERTY(%1 %2 READ get%2 WRITE set%2 NOTIFY %2Changed);\n")
+            properties += QString("    Q_PROPERTY(%1 %2 READ get%2Variant WRITE set%2Variant NOTIFY %2Changed);\n")
                     .arg(qmlType).arg(field->name);
             propertyGetters +=
                     QString("    Q_INVOKABLE %1 get%2() const;\n")
                     .arg(type).arg(field->name);
+            if (field->type == FIELDTYPE_ENUM) {
+                propertyGetters +=
+                        QString("    Q_INVOKABLE QVariant get%1Variant() const { return QVariant::fromValue(static_cast<%1Options>(data.%1)); }\n")
+                .arg(field->name);
+            } else {
+                propertyGetters +=
+                        QString("    Q_INVOKABLE QVariant get%1Variant() const { return QVariant::fromValue(data.%1); }\n")
+                .arg(field->name);
+            }
             propertiesImpl +=
                     QString("%1 %2::get%3() const\n"
                             "{\n"
@@ -252,6 +272,14 @@ bool UAVObjectGeneratorGCS::process_object(ObjectInfo* info)
             propertySetters +=
                     QString("    void set%1(%2 value);\n")
                     .arg(field->name).arg(type);
+            propertySetters +=
+                        QString("    void set%1Variant(QVariant value)\n"
+                                "{\n"
+                                "   bool changed = data.%1 != value.toInt();\n"
+                                "   data.%1 = value.toInt();\n"
+                                "   if (changed) emit %1Changed(value.toInt());\n"
+                                "}\n\n")
+                        .arg(field->name);
             propertiesImpl +=
                     QString("void %1::set%2(%3 value)\n"
                             "{\n"

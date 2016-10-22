@@ -63,7 +63,7 @@ Rectangle {
                 anchors.centerIn: parent
                 //rotate it around the center of scene
                 transform: Rotation {
-                    angle: -AttitudeActual.Roll
+                    angle: -attitudeActual.Roll
                     origin.x : sceneItem.width/2 - x
                     origin.y : sceneItem.height/2 - y
                 }
@@ -84,10 +84,10 @@ Rectangle {
                     Translate {
                         id: pitchScaleTranslate
                         x: 0
-                        y: -pitch_scale.parent.height/2*Math.sin((-AttitudeActual.Pitch)*Math.PI/180)*(Math.sin(Math.PI/2)/Math.sin(pitch_scale.parent.fovY_D*Math.PI/180/2))
+                        y: -pitch_scale.parent.height/2*Math.sin((-attitudeActual.Pitch)*Math.PI/180)*(Math.sin(Math.PI/2)/Math.sin(pitch_scale.parent.fovY_D*Math.PI/180/2))
                     },
                     Rotation {
-                        angle: -AttitudeActual.Roll
+                        angle: -attitudeActual.Roll
                         origin.x : pitch_scale.width/2
                         origin.y : pitch_scale.height/2
                     }

@@ -3,7 +3,7 @@ import QtQuick 2.0
 Item {
     id: sceneItem
     property variant sceneSize
-    property real calibratedAirspeed : 3.6 * AirspeedActual.CalibratedAirspeed
+    property real calibratedAirspeed : 3.6 * airspeedActual.CalibratedAirspeed
 
 
     // Create speed ticker
@@ -40,7 +40,7 @@ Item {
                 sceneSize: sceneItem.sceneSize
 
                 // TODO: Update this to show desired calibrated airspeed
-                property real desiredSpeed : 3.6 * PathDesired.EndingVelocity
+                property real desiredSpeed : 3.6 * pathDesired.EndingVelocity
 
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.top

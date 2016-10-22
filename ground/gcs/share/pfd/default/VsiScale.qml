@@ -20,9 +20,9 @@ Item {
             sceneSize: sceneItem.sceneSize
 
             //the scale in 1000 ft/min with height == 5200 ft/min
-            height: (Math.abs(VelocityActual.Down)*3.28*60/1000)*vsi_scale.unitHeight
+            height: (Math.abs(velocityActual.Down)*3.28*60/1000)*vsi_scale.unitHeight
 
-            anchors.verticalCenterOffset: (VelocityActual.Down*3.28*60/1000)*vsi_scale.unitHeight / 2.0
+            anchors.verticalCenterOffset: (velocityActual.Down*3.28*60/1000)*vsi_scale.unitHeight / 2.0
 
             anchors.verticalCenter: parent.verticalCenter
 
@@ -73,10 +73,10 @@ Item {
 
             anchors.verticalCenter: parent.verticalCenter
             //the scale in 1000 ft/min with height == 5200 ft/min
-            anchors.verticalCenterOffset: (VelocityDesired.Down*3.28*60/1000)*vsi_scale.unitHeight
+            anchors.verticalCenterOffset: (velocityDesired.Down*3.28*60/1000)*vsi_scale.unitHeight
             anchors.left: parent.left
 
-            visible: VelocityDesired.Down != 0
+            visible: velocityDesired.Down != 0
         }
     }
 

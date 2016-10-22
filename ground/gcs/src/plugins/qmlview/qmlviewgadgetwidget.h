@@ -43,13 +43,25 @@ class UAVObject;
 class QmlViewGadgetWidget : public QQuickView
 {
     Q_OBJECT
+    Q_PROPERTY(QVariant motorBlow READ getMotorBlow)
 
 public:
+    enum MotorBlow {
+        False = 0,
+        True = 1,
+    };
+    Q_ENUM(MotorBlow)
+
     QmlViewGadgetWidget(QWindow *parent = 0);
    ~QmlViewGadgetWidget();
    void setQmlFile(QString fn);
 
    void enableSmoothUpdates(bool flag) { beSmooth = flag; }
+
+public slots:
+   QVariant getMotorBlow() {
+       return QVariant::fromValue(motorBlow);
+   }
 
 protected:
     void mouseReleaseEvent(QMouseEvent *event);
@@ -57,5 +69,7 @@ protected:
 private:
    bool beSmooth;
    QString m_fn;
+   MotorBlow motorBlow = True;
+
 };
 #endif /* QmlViewGADGETWIDGET_H_ */

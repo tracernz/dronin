@@ -78,8 +78,14 @@ void PfdQmlGadgetWidget::exportUAVOInstance(const QString &objectName, int instI
     UAVObject* object = m_objManager->getObject(objectName, instId);
     if (object) {
         QString name = objectName;
-        name[0] = name[0].toLower();
+        int i = 0;
+        do {
+            name[i] = name[i].toLower();
+            i++;
+        } while (name.length() > i + 1 && name[i + 1].isUpper());
         engine()->rootContext()->setContextProperty(name, object);
+        if (m_objManager->getNumInstances(objectName) > 1)
+            qWarning() << objectName << m_objManager->getNumInstances(objectName);
     } else {
         qWarning() << "[PFDQML] Failed to load object" << objectName;
       }

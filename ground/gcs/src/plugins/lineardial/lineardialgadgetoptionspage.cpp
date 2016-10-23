@@ -91,11 +91,11 @@ QWidget *LineardialGadgetOptionsPage::createPage(QWidget *parent)
     if(options_page->objectName->findText(m_config->getSourceDataObject())!=-1){
         options_page->objectName->setCurrentIndex(options_page->objectName->findText(m_config->getSourceDataObject()));
         // Now load the object field values:
-        UAVDataObject* obj = dynamic_cast<UAVDataObject*>( objManager->getObject(m_config->getSourceDataObject()) );
-        if (obj != NULL ) {
-                on_objectName_currentIndexChanged(m_config->getSourceDataObject());
-                // And set the highlighed value from the settings:
-                options_page->objectField->setCurrentIndex(options_page->objectField->findText(m_config->getSourceObjectField()));
+        UAVDataObject* obj = objManager->getObject<UAVDataObject>(m_config->getSourceDataObject());
+        if (obj) {
+            on_objectName_currentIndexChanged(m_config->getSourceDataObject());
+            // And set the highlighed value from the settings:
+            options_page->objectField->setCurrentIndex(options_page->objectField->findText(m_config->getSourceObjectField()));
         }
     }
 
@@ -185,7 +185,9 @@ void LineardialGadgetOptionsPage::on_objectName_currentIndexChanged(QString val)
     options_page->objectField->clear();
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    UAVDataObject* obj = dynamic_cast<UAVDataObject*>( objManager->getObject(val) );
+    UAVDataObject* obj = objManager->getRequiredObject<UAVDataObject>(val);
+    if (!obj)
+        return;
     QList<UAVObjectField*> fieldList = obj->getFields();
     foreach (UAVObjectField* field, fieldList) {
         if(field->getElementNames().count() > 1)

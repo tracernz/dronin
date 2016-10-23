@@ -103,7 +103,7 @@ UploaderGadgetWidget::UploaderGadgetWidget(QWidget *parent):QWidget(parent),
      */
     connect(telMngr, SIGNAL(connected()), this, SLOT(onAutopilotConnect()), Qt::QueuedConnection);
     connect(telMngr, SIGNAL(disconnected()), this, SLOT(onAutopilotDisconnect()), Qt::QueuedConnection);
-    firmwareIap = FirmwareIAPObj::GetInstance(obm);
+    firmwareIap = FirmwareIAPObj::getInstance(obm);
 
     connect(firmwareIap, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(onIAPUpdated()), Qt::QueuedConnection);
 
@@ -517,7 +517,7 @@ void UploaderGadgetWidget::onFlashButtonClick()
 
 void UploaderGadgetWidget::haltOrReset(bool halting)
 {
-    if(!firmwareIap->getIsPresentOnHardware())
+    if(!firmwareIap || !firmwareIap->getIsPresentOnHardware())
         return;
 
     if (halting) {

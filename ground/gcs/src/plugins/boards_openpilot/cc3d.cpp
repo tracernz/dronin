@@ -126,8 +126,7 @@ bool CC3D::setInputType(enum InputType type)
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwCopterControl *hwCopterControl = HwCopterControl::GetInstance(uavoManager);
-    Q_ASSERT(hwCopterControl);
+    HwCopterControl *hwCopterControl = uavoManager->getRequiredObject<HwCopterControl>(HwCopterControl::OBJID);
     if (!hwCopterControl)
         return false;
 
@@ -170,8 +169,7 @@ enum Core::IBoardType::InputType CC3D::getInputType()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwCopterControl *hwCopterControl = HwCopterControl::GetInstance(uavoManager);
-    Q_ASSERT(hwCopterControl);
+    HwCopterControl *hwCopterControl = uavoManager->getRequiredObject<HwCopterControl>(HwCopterControl::OBJID);
     if (!hwCopterControl)
         return INPUT_TYPE_UNKNOWN;
 
@@ -210,12 +208,10 @@ int CC3D::queryMaxGyroRate()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwCopterControl *hwCopterControl = HwCopterControl::GetInstance(uavoManager);
-    UAVObjectUtilManager* utilMngr = pm->getObject<UAVObjectUtilManager>();
-    Q_ASSERT(hwCopterControl);
-    Q_ASSERT(utilMngr);
+    HwCopterControl *hwCopterControl = uavoManager->getRequiredObject<HwCopterControl>(HwCopterControl::OBJID);
     if (!hwCopterControl)
         return 0;
+
     HwCopterControl::DataFields settings = hwCopterControl->getData();
 
     switch(settings.GyroRange) {

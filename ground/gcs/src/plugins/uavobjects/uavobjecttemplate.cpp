@@ -149,9 +149,9 @@ UAVDataObject* $(NAME)::dirtyClone()
 /**
  * Static function to retrieve an instance of the object.
  */
-$(NAME)* $(NAME)::GetInstance(UAVObjectManager* objMngr, quint32 instID)
+$(NAME)* $(NAME)::getInstance(UAVObjectManager* objMngr, quint32 instID)
 {
-    return dynamic_cast<$(NAME)*>(objMngr->getObject($(NAME)::OBJID, instID));
+    return objMngr->getRequiredObject<$(NAME)>($(NAME)::OBJID, instID);
 }
 
 $(PROPERTIES_IMPL)

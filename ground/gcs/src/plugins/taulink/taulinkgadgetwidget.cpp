@@ -33,11 +33,9 @@ TauLinkGadgetWidget::TauLinkGadgetWidget(QWidget *parent) : ConfigTaskWidget(par
     ui->setupUi(this);
 
     // Connect to the LinkStatus object updates
-    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    rfm22bStatusObj = dynamic_cast<UAVDataObject*>(objManager->getObject("RFM22BStatus"));
+    rfm22bStatusObj = getObject("RFM22BStatus");
 
-    if (rfm22bStatusObj != NULL ) {
+    if (rfm22bStatusObj) {
         connect(rfm22bStatusObj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(updateStatus(UAVObject*)));
         rfm22bStatusObj->requestUpdate();
 

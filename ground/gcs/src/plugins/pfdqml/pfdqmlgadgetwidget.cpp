@@ -55,7 +55,7 @@ PfdQmlGadgetWidget::PfdQmlGadgetWidget(QWindow *parent) :
     m_objManager = pm->getObject<UAVObjectManager>();
 
     foreach (const QString &objectName, objectsToExport) {
-        exportUAVOInstance(objectName, 0);
+        exportUAVOInstance(objectName);
     }
 
     //to expose settings values
@@ -73,13 +73,11 @@ PfdQmlGadgetWidget::~PfdQmlGadgetWidget()
  * @param objectName UAVObject name
  * @param instId Instance ID
  */
-void PfdQmlGadgetWidget::exportUAVOInstance(const QString &objectName, int instId)
+void PfdQmlGadgetWidget::exportUAVOInstance(const QString &objectName)
 {
-    UAVObject* object = m_objManager->getObject(objectName, instId);
+    UAVObject* object = m_objManager->getRequiredObject(objectName);
     if (object)
         engine()->rootContext()->setContextProperty(objectName, object);
-    else
-        qWarning() << "[PFDQML] Failed to load object" << objectName;
 }
 
 
@@ -88,13 +86,11 @@ void PfdQmlGadgetWidget::exportUAVOInstance(const QString &objectName, int instI
  * @param objectName UAVObject name
  * @param instId Instance ID
  */
-void PfdQmlGadgetWidget::resetUAVOExport(const QString &objectName, int instId)
+void PfdQmlGadgetWidget::resetUAVOExport(const QString &objectName)
 {
-    UAVObject* object = m_objManager->getObject(objectName, instId);
+    UAVObject* object = m_objManager->getRequiredObject(objectName);
     if (object)
-        engine()->rootContext()->setContextProperty(objectName, (QObject*)NULL);
-    else
-        qWarning() << "Failed to load object" << objectName;
+        engine()->rootContext()->setContextProperty(objectName, Q_NULLPTR);
 }
 
 void PfdQmlGadgetWidget::setQmlFile(QString fn)

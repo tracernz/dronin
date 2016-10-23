@@ -56,13 +56,13 @@ VehicleTrim::~VehicleTrim()
  */
 VehicleTrim::autopilotLevelBiasMessages VehicleTrim::setAutopilotBias()
 {
-    SystemAlarms *systemAlarms = SystemAlarms::GetInstance(getObjectManager());
-    FlightStatus *flightStatus = FlightStatus::GetInstance(getObjectManager());
-    StabilizationDesired *stabilizationDesired = StabilizationDesired::GetInstance(getObjectManager());
+    SystemAlarms *systemAlarms = SystemAlarms::getInstance(getObjectManager());
+    FlightStatus *flightStatus = FlightStatus::getInstance(getObjectManager());
+    StabilizationDesired *stabilizationDesired = StabilizationDesired::getInstance(getObjectManager());
+    SubTrimSettings *subTrimSettings = SubTrimSettings::getInstance(getObjectManager());
 
-    // Get SubTrimSettings UAVO
-    SubTrimSettings *subTrimSettings = SubTrimSettings::GetInstance(getObjectManager());
-    SubTrimSettings::DataFields subTrimSettingsData = subTrimSettings->getData();
+    if (!systemAlarms || !flightStatus || !stabilizationDesired || !subTrimSettings)
+        return AUTOPILOT_LEVEL_FAILED_DUE_TO_INTERNAL_ERROR;
 
     // Check that the receiver is present
     if (systemAlarms->getAlarm_ManualControl()  != SystemAlarms::ALARM_OK){
@@ -90,6 +90,7 @@ VehicleTrim::autopilotLevelBiasMessages VehicleTrim::setAutopilotBias()
     }
 
     // Increment the current pitch and roll settings by what the pilot is requesting
+    SubTrimSettings::DataFields subTrimSettingsData = subTrimSettings->getData();
     subTrimSettingsData.Roll += stabilizationDesired->getRoll();
     subTrimSettingsData.Pitch += stabilizationDesired->getPitch();
     subTrimSettings->setData(subTrimSettingsData);
@@ -109,17 +110,14 @@ VehicleTrim::autopilotLevelBiasMessages VehicleTrim::setAutopilotBias()
  */
 VehicleTrim::actuatorTrimMessages VehicleTrim::setTrimActuators()
 {
-    SystemAlarms *systemAlarms = SystemAlarms::GetInstance(getObjectManager());
-    FlightStatus *flightStatus = FlightStatus::GetInstance(getObjectManager());
-    StabilizationDesired *stabilizationDesired = StabilizationDesired::GetInstance(getObjectManager());
+    SystemAlarms *systemAlarms = SystemAlarms::getInstance(getObjectManager());
+    FlightStatus *flightStatus = FlightStatus::getInstance(getObjectManager());
+    StabilizationDesired *stabilizationDesired = StabilizationDesired::getInstance(getObjectManager());
+    ActuatorCommand *actuatorCommand = ActuatorCommand::getInstance(getObjectManager());
+    ActuatorSettings *actuatorSettings = ActuatorSettings::getInstance(getObjectManager());
 
-    // Get ActuatorCommand UAVO
-    ActuatorCommand *actuatorCommand = ActuatorCommand::GetInstance(getObjectManager());
-    ActuatorCommand::DataFields actuatorCommandData = actuatorCommand->getData();
-
-    // Get ActuatorSettings UAVO
-    ActuatorSettings *actuatorSettings = ActuatorSettings::GetInstance(getObjectManager());
-    ActuatorSettings::DataFields actuatorSettingsData = actuatorSettings->getData();
+    if (!systemAlarms || !flightStatus || !stabilizationDesired || !actuatorCommand || !actuatorSettings)
+        return ACTUATOR_TRIM_FAILED_DUE_TO_INTERNAL_ERROR;
 
     // Check that the receiver is present
     if (systemAlarms->getAlarm_ManualControl()  != SystemAlarms::ALARM_OK){
@@ -134,6 +132,9 @@ VehicleTrim::actuatorTrimMessages VehicleTrim::setTrimActuators()
     {
         return ACTUATOR_TRIM_FAILED_DUE_TO_FLIGHTMODE;
     }
+
+    ActuatorCommand::DataFields actuatorCommandData = actuatorCommand->getData();
+    ActuatorSettings::DataFields actuatorSettingsData = actuatorSettings->getData();
 
     // Iterate over output channel descriptions
     QStringList channelDescriptions = ConfigVehicleTypeWidget::getChannelDescriptions();

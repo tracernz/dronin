@@ -134,8 +134,7 @@ bool Sparky::setInputType(enum InputType type)
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwSparky *hwSparky = HwSparky::GetInstance(uavoManager);
-    Q_ASSERT(hwSparky);
+    HwSparky *hwSparky = uavoManager->getRequiredObject<HwSparky>(HwSparky::OBJID);
     if (!hwSparky)
         return false;
 
@@ -175,8 +174,7 @@ enum Core::IBoardType::InputType Sparky::getInputType()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwSparky *hwSparky = HwSparky::GetInstance(uavoManager);
-    Q_ASSERT(hwSparky);
+    HwSparky *hwSparky = uavoManager->getRequiredObject<HwSparky>(HwSparky::OBJID);
     if (!hwSparky)
         return INPUT_TYPE_UNKNOWN;
 
@@ -202,8 +200,7 @@ int Sparky::queryMaxGyroRate()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwSparky *hwSparky = HwSparky::GetInstance(uavoManager);
-    Q_ASSERT(hwSparky);
+    HwSparky *hwSparky = uavoManager->getRequiredObject<HwSparky>(HwSparky::OBJID);
     if (!hwSparky)
         return 0;
 
@@ -227,8 +224,7 @@ QStringList Sparky::getAdcNames()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwSparky *hwSparky = HwSparky::GetInstance(uavoManager);
-    Q_ASSERT(hwSparky);
+    HwSparky *hwSparky = uavoManager->getRequiredObject<HwSparky>(HwSparky::OBJID);
     if (!hwSparky)
         return QStringList();
 

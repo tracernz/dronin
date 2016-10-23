@@ -358,11 +358,13 @@ void ConfigMultiRotorWidget::setYawMixLevel(int value)
  */
 SystemSettings::AirframeTypeOptions ConfigMultiRotorWidget::updateConfigObjectsFromWidgets()
 {
-    SystemSettings::AirframeTypeOptions airframeType = SystemSettings::AIRFRAMETYPE_FIXEDWING;
+    SystemSettings::AirframeTypeOptions airframeType = SystemSettings::AIRFRAMETYPE_QUADX;
     QList<QString> motorList;
 
-    MixerSettings *mixerSettings = MixerSettings::GetInstance(getObjectManager());
-    Q_ASSERT(mixerSettings);
+    MixerSettings *mixerSettings = getObject<MixerSettings>(MixerSettings::NAME);
+    if (!mixerSettings)
+        return airframeType;
+
 
     // Curve is also common to all quads:
     setThrottleCurve(mixerSettings, MixerSettings::MIXER1VECTOR_THROTTLECURVE1, m_aircraft->multiThrottleCurve->getCurve() );
@@ -569,8 +571,10 @@ void ConfigMultiRotorWidget::refreshAirframeWidgetsValues(SystemSettings::Airfra
     GUIConfigDataUnion config = GetConfigData();
     multiGUISettingsStruct multi = config.multi;
 
-    MixerSettings *mixerSettings = MixerSettings::GetInstance(getObjectManager());
-    Q_ASSERT(mixerSettings);
+    MixerSettings *mixerSettings = getObject<MixerSettings>(MixerSettings::NAME);
+    if (!mixerSettings)
+        return;
+
 
 
     if (frameType == SystemSettings::AIRFRAMETYPE_QUADP)
@@ -837,8 +841,9 @@ void ConfigMultiRotorWidget::refreshAirframeWidgetsValues(SystemSettings::Airfra
  */
 void ConfigMultiRotorWidget::setupQuadMotor(int channel, double pitch, double roll, double yaw)
 {
-    MixerSettings *mixerSettings = MixerSettings::GetInstance(getObjectManager());
-    Q_ASSERT(mixerSettings);
+    MixerSettings *mixerSettings = getObject<MixerSettings>(MixerSettings::NAME);
+    if (!mixerSettings)
+        return;
 
     setMixerType(mixerSettings, channel, MixerSettings::MIXER1TYPE_MOTOR);
 
@@ -1042,8 +1047,10 @@ bool ConfigMultiRotorWidget::setupMultiRotorMixer(double mixerFactors[8][3])
            << m_aircraft->multiMotorChannelBox4 << m_aircraft->multiMotorChannelBox5 << m_aircraft->multiMotorChannelBox6
            << m_aircraft->multiMotorChannelBox7 << m_aircraft->multiMotorChannelBox8;
 
-    MixerSettings *mixerSettings = MixerSettings::GetInstance(getObjectManager());
-    Q_ASSERT(mixerSettings);
+    MixerSettings *mixerSettings = getObject<MixerSettings>(MixerSettings::NAME);
+    if (!mixerSettings)
+        return false;
+
     resetMixers(mixerSettings);
 
     // and enable only the relevant channels:

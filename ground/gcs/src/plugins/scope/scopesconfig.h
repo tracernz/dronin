@@ -85,11 +85,10 @@ protected:
         //Get the uav object
         ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
         UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-        UAVDataObject* obj = dynamic_cast<UAVDataObject*>(objManager->getObject(uavObjectName));
-        if(!obj) {
-            qDebug() << "In scope gadget, UAVObject " << uavObjectName << " is missing";
+        UAVDataObject* obj = objManager->getRequiredObject<UAVDataObject>(uavObjectName);
+        if(!obj)
             return "";
-        }
+
         UAVObjectField* field = obj->getField(uavObjectFieldName);
         if(!field) {
             qDebug() << "In scope gadget, in fields loaded from GCS config file, field" << uavObjectFieldName << " of UAVObject " << uavObjectName << " is missing";

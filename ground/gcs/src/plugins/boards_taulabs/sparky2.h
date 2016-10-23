@@ -45,7 +45,6 @@ public:
     virtual QStringList getSupportedProtocols();
     virtual QPixmap getBoardPicture();
     virtual QString getHwUAVO();
-    HwSparky2 * getSettings();
 
     //! Determine if this board supports configuring the receiver
     virtual bool isInputConfigurationSupported(InputType type);

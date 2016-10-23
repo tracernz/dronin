@@ -194,9 +194,9 @@ SystemSettings::AirframeTypeOptions ConfigGroundVehicleWidget::updateConfigObjec
 {
     SystemSettings::AirframeTypeOptions airframeType = SystemSettings::AIRFRAMETYPE_GROUNDVEHICLECAR;
 	
-	// Save the curve (common to all ground vehicle frames)
-    MixerSettings *mixerSettings = MixerSettings::GetInstance(getObjectManager());
-    Q_ASSERT(mixerSettings);
+    MixerSettings *mixerSettings = getObject<MixerSettings>(MixerSettings::NAME);
+    if (!mixerSettings)
+        return airframeType;
 
 	// Remove Feed Forward, it is pointless on a ground vehicle:
     setMixerValue(mixerSettings, "FeedForward", 0.0);
@@ -227,8 +227,9 @@ SystemSettings::AirframeTypeOptions ConfigGroundVehicleWidget::updateConfigObjec
  */
 void ConfigGroundVehicleWidget::refreshAirframeWidgetsValues(SystemSettings::AirframeTypeOptions frameType)
 {
-    MixerSettings *mixerSettings = MixerSettings::GetInstance(getObjectManager());
-    Q_ASSERT(mixerSettings);
+    MixerSettings *mixerSettings = getObject<MixerSettings>(MixerSettings::NAME);
+    if (!mixerSettings)
+        return;
 
     GUIConfigDataUnion config = GetConfigData();
 
@@ -289,8 +290,10 @@ bool ConfigGroundVehicleWidget::setupGroundVehicleMotorcycle(SystemSettings::Air
 
     SetConfigData(config);
 	
-    MixerSettings *mixerSettings = MixerSettings::GetInstance(getObjectManager());
-    Q_ASSERT(mixerSettings);
+    MixerSettings *mixerSettings = getObject<MixerSettings>(MixerSettings::NAME);
+    if (!mixerSettings)
+        return false;
+
     resetMixers(mixerSettings);
 
     //motor
@@ -340,8 +343,10 @@ bool ConfigGroundVehicleWidget::setupGroundVehicleDifferential(SystemSettings::A
 
     SetConfigData((config));
 	
-    MixerSettings *mixerSettings = MixerSettings::GetInstance(getObjectManager());
-    Q_ASSERT(mixerSettings);
+    MixerSettings *mixerSettings = getObject<MixerSettings>(MixerSettings::NAME);
+    if (!mixerSettings)
+        return false;
+
     resetMixers(mixerSettings);
 
     //left motor
@@ -389,8 +394,10 @@ bool ConfigGroundVehicleWidget::setupGroundVehicleCar(SystemSettings::AirframeTy
 
     SetConfigData(config);
 
-    MixerSettings *mixerSettings = MixerSettings::GetInstance(getObjectManager());
-    Q_ASSERT(mixerSettings);
+    MixerSettings *mixerSettings = getObject<MixerSettings>(MixerSettings::NAME);
+    if (!mixerSettings)
+        return false;
+
     resetMixers(mixerSettings);
 
     int channel = m_aircraft->gvSteering1ChannelBox->currentIndex()-1;

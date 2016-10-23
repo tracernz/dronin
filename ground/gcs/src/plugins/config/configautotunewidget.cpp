@@ -99,7 +99,9 @@ void ConfigAutotuneWidget::atDisconnected() {
 
 void ConfigAutotuneWidget::checkNewAutotune()
 {
-    SystemIdent *systemIdent = SystemIdent::GetInstance(getObjectManager());
+    SystemIdent *systemIdent = getObject<SystemIdent>(SystemIdent::NAME);
+    if (!systemIdent)
+        return;
 
     SystemIdent::DataFields systemIdentData = systemIdent->getData();
 
@@ -230,39 +232,11 @@ QJsonDocument ConfigAutotuneWidget::getResultsJson(
     fw["date"] = fwDate.toString(Qt::ISODate);
     vehicle["firmware"] = fw;
 
-    SystemSettings *sysSettings = SystemSettings::GetInstance(getObjectManager());
-
-    rawSettings[sysSettings->getName()] = sysSettings->getJsonRepresentation();
-
-    ActuatorSettings *actSettings = ActuatorSettings::GetInstance(getObjectManager());
-    rawSettings[actSettings->getName()] = actSettings->getJsonRepresentation();
-
-    StabilizationSettings *stabSettings = StabilizationSettings::GetInstance(getObjectManager());
-    rawSettings[stabSettings->getName()] = stabSettings->getJsonRepresentation();
-
-    SystemIdent *systemIdent = SystemIdent::GetInstance(getObjectManager());
-    rawSettings[systemIdent->getName()] = systemIdent->getJsonRepresentation();
-
-    SensorSettings *senSettings = SensorSettings::GetInstance(getObjectManager());
-    rawSettings[senSettings->getName()] = senSettings->getJsonRepresentation();
-
-    ManualControlSettings *manSettings = ManualControlSettings::GetInstance(getObjectManager());
-    rawSettings[manSettings->getName()] = manSettings->getJsonRepresentation();
-
-    MixerSettings *mixSettings = MixerSettings::GetInstance(getObjectManager());
-    rawSettings[mixSettings->getName()] = mixSettings->getJsonRepresentation();
-
-    // Query the board plugin for the connected board to get the specific
-    // hw settings object
-    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    if (pm != NULL) {
-        UAVObjectUtilManager* uavoUtilManager = pm->getObject<UAVObjectUtilManager>();
-        Core::IBoardType* board = uavoUtilManager->getBoardType();
-        if (board != NULL) {
-            QString hwSettingsName = board->getHwUAVO();
-
-            UAVObject *hwSettings = getObjectManager()->getObject(hwSettingsName);
-            rawSettings[hwSettings->getName()] = hwSettings->getJsonRepresentation();
+    // get all settings objects on the board
+    for (const QVector<UAVDataObject *> vec : getObjectManager()->getDataObjectsVector()) {
+        for (UAVDataObject *obj : vec) {
+            if (obj->isSettings() && obj->getIsPresentOnHardware())
+                rawSettings[obj->getName()] = obj->getJsonRepresentation();
         }
     }
 
@@ -277,6 +251,9 @@ QJsonDocument ConfigAutotuneWidget::getResultsJson(
 
     json["userObservations"] = autotuneShareForm->teObservations->toPlainText();
 
+    SystemIdent *systemIdent = getObject<SystemIdent>(SystemIdent::NAME);
+    if (!systemIdent)
+        return QJsonDocument(json);
     SystemIdent::DataFields data = systemIdent->getData();
 
     QJsonObject identification;
@@ -367,7 +344,7 @@ void ConfigAutotuneWidget::stuffShareForm(AutotuneFinalPage *autotuneShareForm)
     autotuneShareForm->acType->setCurrentText(settings->getVehicleType());
     autotuneShareForm->acBatteryCells->setCurrentText(QString::number(settings->getBatteryCells()));
 
-    SystemSettings *sysSettings = SystemSettings::GetInstance(getObjectManager());
+    SystemSettings *sysSettings = getObject<SystemSettings>(SystemSettings::NAME);
     if(sysSettings) {
         UAVObjectField *frameType = sysSettings->getField("AirframeType");
         if (frameType) {
@@ -399,7 +376,9 @@ void ConfigAutotuneWidget::openAutotuneDialog(bool autoOpened)
 
     wizard.setPixmap(QWizard::BackgroundPixmap, QPixmap(":/configgadget/images/autotunebg.png"));
 
-    SystemIdent *systemIdent = SystemIdent::GetInstance(getObjectManager());
+    SystemIdent *systemIdent = getObject<SystemIdent>(SystemIdent::NAME);
+    if (!systemIdent)
+        return;
     SystemIdent::DataFields systemIdentData = systemIdent->getData();
 
     bool dataValid;
@@ -450,8 +429,7 @@ void ConfigAutotuneWidget::openAutotuneDialog(bool autoOpened)
 
     if (dataValid && (wizard.result() == QDialog::Accepted) && av.converged) {
         // Apply and save data to board.
-        StabilizationSettings *stabilizationSettings = StabilizationSettings::GetInstance(getObjectManager());
-        Q_ASSERT(stabilizationSettings);
+        StabilizationSettings *stabilizationSettings = getObject<StabilizationSettings>(StabilizationSettings::NAME);
         if(!stabilizationSettings)
             return;
 

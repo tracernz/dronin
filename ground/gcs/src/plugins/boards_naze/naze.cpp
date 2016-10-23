@@ -105,8 +105,7 @@ int Naze::queryMaxGyroRate()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwNaze *hwNaze = HwNaze::GetInstance(uavoManager);
-    Q_ASSERT(hwNaze);
+    HwNaze *hwNaze = uavoManager->getRequiredObject<HwNaze>(HwNaze::OBJID);
     if (!hwNaze)
         return 0;
 
@@ -143,8 +142,7 @@ bool Naze::setInputType(enum InputType type)
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwNaze *hwNaze = HwNaze::GetInstance(uavoManager);
-    Q_ASSERT(hwNaze);
+    HwNaze *hwNaze = uavoManager->getRequiredObject<HwNaze>(HwNaze::OBJID);
     if (!hwNaze)
         return false;
 
@@ -185,8 +183,7 @@ enum Core::IBoardType::InputType Naze::getInputType()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwNaze *hwNaze = HwNaze::GetInstance(uavoManager);
-    Q_ASSERT(hwNaze);
+    HwNaze *hwNaze = uavoManager->getRequiredObject<HwNaze>(HwNaze::OBJID);
     if (!hwNaze)
         return INPUT_TYPE_UNKNOWN;
 
@@ -216,8 +213,7 @@ QStringList Naze::getAdcNames()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwNaze *hwNaze = HwNaze::GetInstance(uavoManager);
-    Q_ASSERT(hwNaze);
+    HwNaze *hwNaze = uavoManager->getRequiredObject<HwNaze>(HwNaze::OBJID);
     if (!hwNaze)
         return QStringList();
 

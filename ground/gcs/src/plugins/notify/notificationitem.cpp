@@ -434,5 +434,9 @@ UAVObjectField* NotificationItem::getUAVObjectField() {
 }
 
 UAVDataObject* NotificationItem::getUAVObject() {
-    return dynamic_cast<UAVDataObject*>((ExtensionSystem::PluginManager::instance()->getObject<UAVObjectManager>())->getObject(getDataObject()));
+    UAVObjectManager *uavo = ExtensionSystem::PluginManager::instance()->getObject<UAVObjectManager>();
+    Q_ASSERT(uavo);
+    if (!uavo)
+        return Q_NULLPTR;
+    return uavo->getRequiredObject<UAVDataObject>(getDataObject());
 }

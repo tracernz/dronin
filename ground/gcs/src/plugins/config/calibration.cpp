@@ -63,7 +63,8 @@
 enum calibrationSuccessMessages{
     CALIBRATION_SUCCESS,
     ACCELEROMETER_FAILED,
-    MAGNETOMETER_FAILED
+    MAGNETOMETER_FAILED,
+    CALIBRATION_FAILED,
 };
 
 #define sign(x) ((x < 0) ? -1 : 1)
@@ -98,9 +99,9 @@ void Calibration::connectSensor(sensor_type sensor, bool con)
         switch (sensor) {
         case ACCEL:
         {
-            Accels * accels = Accels::GetInstance(getObjectManager());
-            Q_ASSERT(accels);
-
+            Accels *accels = Accels::getInstance(getObjectManager());
+            if (!accels)
+                return;
             assignUpdateRate(accels, SENSOR_UPDATE_PERIOD);
             connect(accels, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(dataUpdated(UAVObject *)));
         }
@@ -108,9 +109,9 @@ void Calibration::connectSensor(sensor_type sensor, bool con)
 
         case MAG:
         {
-            Magnetometer * mag = Magnetometer::GetInstance(getObjectManager());
-            Q_ASSERT(mag);
-
+            Magnetometer *mag = Magnetometer::getInstance(getObjectManager());
+            if (!mag)
+                return;
             assignUpdateRate(mag, SENSOR_UPDATE_PERIOD);
             connect(mag, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(dataUpdated(UAVObject *)));
         }
@@ -118,9 +119,9 @@ void Calibration::connectSensor(sensor_type sensor, bool con)
 
         case GYRO:
         {
-            Gyros * gyros = Gyros::GetInstance(getObjectManager());
-            Q_ASSERT(gyros);
-
+            Gyros *gyros = Gyros::getInstance(getObjectManager());
+            if (!gyros)
+                return;
             assignUpdateRate(gyros, SENSOR_UPDATE_PERIOD);
             connect(gyros, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(dataUpdated(UAVObject *)));
         }
@@ -131,27 +132,27 @@ void Calibration::connectSensor(sensor_type sensor, bool con)
         switch (sensor) {
         case ACCEL:
         {
-            Accels * accels = Accels::GetInstance(getObjectManager());
-            Q_ASSERT(accels);
-
+            Accels *accels = Accels::getInstance(getObjectManager());
+            if (!accels)
+                return;
             disconnect(accels, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(dataUpdated(UAVObject *)));
         }
             break;
 
         case MAG:
         {
-            Magnetometer * mag = Magnetometer::GetInstance(getObjectManager());
-            Q_ASSERT(mag);
-
+            Magnetometer *mag = Magnetometer::getInstance(getObjectManager());
+            if (!mag)
+                return;
             disconnect(mag, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(dataUpdated(UAVObject *)));
         }
             break;
 
         case GYRO:
         {
-            Gyros * gyros = Gyros::GetInstance(getObjectManager());
-            Q_ASSERT(gyros);
-
+            Gyros *gyros = Gyros::getInstance(getObjectManager());
+            if (!gyros)
+                return;
             disconnect(gyros, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(dataUpdated(UAVObject *)));
         }
             break;
@@ -320,7 +321,9 @@ void Calibration::dataUpdated(UAVObject * obj) {
             int ret=computeScaleBias();
             if (ret==CALIBRATION_SUCCESS) {
                 // Load calibration results
-                SensorSettings * sensorSettings = SensorSettings::GetInstance(getObjectManager());
+                SensorSettings *sensorSettings = SensorSettings::getInstance(getObjectManager());
+                if (!sensorSettings)
+                    return;
                 SensorSettings::DataFields sensorSettingsData = sensorSettings->getData();
 
 
@@ -367,7 +370,7 @@ void Calibration::dataUpdated(UAVObject * obj) {
             if (ret == CALIBRATION_SUCCESS) {
                 emit showTempCalMessage(tr("Temperature compensation calibration succeeded"));
             } else {
-                emit showTempCalMessage(tr("Temperature compensation calibration succeeded"));
+                emit showTempCalMessage(tr("Temperature compensation calibration failed!"));
             }
         }
     }
@@ -497,8 +500,9 @@ void Calibration::doStartLeveling() {
     gyro_accum_temp.clear();
 
     // Disable gyro bias correction to see raw data
-    AttitudeSettings *attitudeSettings = AttitudeSettings::GetInstance(getObjectManager());
-    Q_ASSERT(attitudeSettings);
+    AttitudeSettings *attitudeSettings = AttitudeSettings::getInstance(getObjectManager());
+    if (!attitudeSettings)
+        return;
     AttitudeSettings::DataFields attitudeSettingsData = attitudeSettings->getData();
     attitudeSettingsData.BiasCorrectGyro = AttitudeSettings::BIASCORRECTGYRO_FALSE;
     attitudeSettings->setData(attitudeSettingsData);
@@ -530,13 +534,15 @@ void Calibration::doStartLeveling() {
 void Calibration::doStartSixPoint()
 {
     // Save initial sensor settings
-    SensorSettings * sensorSettings = SensorSettings::GetInstance(getObjectManager());
-    Q_ASSERT(sensorSettings);
+    SensorSettings *sensorSettings = SensorSettings::getInstance(getObjectManager());
+    if (!sensorSettings)
+        return;
     SensorSettings::DataFields sensorSettingsData = sensorSettings->getData();
 
     // Compute the board rotation matrix, so we can undo the rotation
-    AttitudeSettings * attitudeSettings = AttitudeSettings::GetInstance(getObjectManager());
-    Q_ASSERT(attitudeSettings);
+    AttitudeSettings * attitudeSettings = AttitudeSettings::getInstance(getObjectManager());
+    if (!attitudeSettings)
+        return;
     AttitudeSettings::DataFields attitudeSettingsData = attitudeSettings->getData();
     double rpy[3] = { attitudeSettingsData.BoardRotation[AttitudeSettings::BOARDROTATION_ROLL] * DEG2RAD / 100.0,
                       attitudeSettingsData.BoardRotation[AttitudeSettings::BOARDROTATION_PITCH] * DEG2RAD / 100.0,
@@ -701,8 +707,9 @@ void Calibration::doStartTempCal()
     gyro_accum_temp.clear();
 
     // Disable gyro sensor bias correction to see raw data
-    AttitudeSettings *attitudeSettings = AttitudeSettings::GetInstance(getObjectManager());
-    Q_ASSERT(attitudeSettings);
+    AttitudeSettings *attitudeSettings = AttitudeSettings::getInstance(getObjectManager());
+    if (!attitudeSettings)
+        return;
     AttitudeSettings::DataFields attitudeSettingsData = attitudeSettings->getData();
     attitudeSettingsData.BiasCorrectGyro = AttitudeSettings::BIASCORRECTGYRO_FALSE;
 
@@ -766,8 +773,9 @@ void Calibration::doCancelTempCalPoint()
         setMetadata(originalMetaData);
 
         // Reenable gyro bias correction
-        AttitudeSettings *attitudeSettings = AttitudeSettings::GetInstance(getObjectManager());
-        Q_ASSERT(attitudeSettings);
+        AttitudeSettings *attitudeSettings = AttitudeSettings::getInstance(getObjectManager());
+        if (!attitudeSettings)
+            return;
         AttitudeSettings::DataFields attitudeSettingsData = attitudeSettings->getData();
         attitudeSettings->setData(attitudeSettingsData);
         attitudeSettings->updated();
@@ -803,7 +811,9 @@ void Calibration::setTempCalRange(int r)
  */
 bool Calibration::storeYawOrientationMeasurement(UAVObject *obj)
 {
-    Accels * accels = Accels::GetInstance(getObjectManager());
+    Accels *accels = Accels::getInstance(getObjectManager());
+    if (!accels)
+        return false;
 
     // Accumulate samples until we have _at least_ NUM_SENSOR_UPDATES_YAW_ORIENTATION samples
     if(obj->getObjID() == Accels::OBJID) {
@@ -822,7 +832,9 @@ bool Calibration::storeYawOrientationMeasurement(UAVObject *obj)
         disconnect(&timer,SIGNAL(timeout()),this,SLOT(timeout()));
 
         // Get the existing attitude settings
-        AttitudeSettings *attitudeSettings = AttitudeSettings::GetInstance(getObjectManager());
+        AttitudeSettings *attitudeSettings = AttitudeSettings::getInstance(getObjectManager());
+        if (!attitudeSettings)
+            return false;
         AttitudeSettings::DataFields attitudeSettingsData = attitudeSettings->getData();
 
         // Use sensor data without rotation, as it has already been rotated on-board.
@@ -861,8 +873,10 @@ bool Calibration::storeYawOrientationMeasurement(UAVObject *obj)
  * @return true if enough data is collected
  */
 bool Calibration::storeLevelingMeasurement(UAVObject *obj) {
-    Accels * accels = Accels::GetInstance(getObjectManager());
-    Gyros * gyros = Gyros::GetInstance(getObjectManager());
+    Accels *accels = Accels::getInstance(getObjectManager());
+    Gyros *gyros = Gyros::getInstance(getObjectManager());
+    if (!accels || !gyros)
+        return false;
 
     // Accumulate samples until we have _at least_ NUM_SENSOR_UPDATES_LEVELING samples
     if(obj->getObjID() == Accels::OBJID) {
@@ -892,8 +906,12 @@ bool Calibration::storeLevelingMeasurement(UAVObject *obj) {
         float temp = listMean(gyro_accum_temp);
 
         // Get the existing attitude settings
-        AttitudeSettings::DataFields attitudeSettingsData = AttitudeSettings::GetInstance(getObjectManager())->getData();
-        SensorSettings::DataFields sensorSettingsData = SensorSettings::GetInstance(getObjectManager())->getData();
+        AttitudeSettings *attitudeSettings = AttitudeSettings::getInstance(getObjectManager());
+        SensorSettings *sensorSettings = SensorSettings::getInstance(getObjectManager());
+        if (!attitudeSettings || !sensorSettings)
+            return false;
+        AttitudeSettings::DataFields attitudeSettingsData = attitudeSettings->getData();
+        SensorSettings::DataFields sensorSettingsData = sensorSettings->getData();
 
         // Inverse rotation of sensor data, from body frame into sensor frame
         double a_body[3] = { listMean(accel_accum_x), listMean(accel_accum_y), listMean(accel_accum_z) };
@@ -953,19 +971,18 @@ bool Calibration::storeLevelingMeasurement(UAVObject *obj) {
                 temp * sensorSettingsData.ZGyroTempCoeff[1] -
                 pow(temp,2) * sensorSettingsData.ZGyroTempCoeff[2] -
                 pow(temp,3) * sensorSettingsData.ZGyroTempCoeff[3];
-        SensorSettings::GetInstance(getObjectManager())->setData(sensorSettingsData);
+        sensorSettings->setData(sensorSettingsData);
 
         // We offset the gyro bias by current bias to help precision
         // Disable gyro bias correction to see raw data
-        AttitudeSettings *attitudeSettings = AttitudeSettings::GetInstance(getObjectManager());
-        Q_ASSERT(attitudeSettings);
         attitudeSettingsData.BiasCorrectGyro = AttitudeSettings::BIASCORRECTGYRO_TRUE;
         attitudeSettings->setData(attitudeSettingsData);
         attitudeSettings->updated();
 
         // After recomputing the level for a frame, zero the trim settings
-        SubTrimSettings *trimSettings = SubTrimSettings::GetInstance(getObjectManager());
-        Q_ASSERT(trimSettings);
+        SubTrimSettings *trimSettings = SubTrimSettings::getInstance(getObjectManager());
+        if (!trimSettings)
+            return false;
         SubTrimSettings::DataFields trim = trimSettings->getData();
         trim.Pitch = 0;
         trim.Roll = 0;
@@ -990,9 +1007,10 @@ bool Calibration::storeSixPointMeasurement(UAVObject * obj, int position)
     Q_ASSERT(position >= 1 && position <= 6);
     position --;
 
-    if( calibrateAccels && obj->getObjID() == Accels::OBJID ) {
-        Accels * accels = Accels::GetInstance(getObjectManager());
-        Q_ASSERT(accels);
+    if (calibrateAccels && obj->getObjID() == Accels::OBJID) {
+        Accels *accels = Accels::getInstance(getObjectManager());
+        if (!accels)
+            return false;
         Accels::DataFields accelsData = accels->getData();
 
         accel_accum_x.append(accelsData.x);
@@ -1001,8 +1019,9 @@ bool Calibration::storeSixPointMeasurement(UAVObject * obj, int position)
     }
 
     if( calibrateMags && obj->getObjID() == Magnetometer::OBJID) {
-        Magnetometer * mag = Magnetometer::GetInstance(getObjectManager());
-        Q_ASSERT(mag);
+        Magnetometer * mag = Magnetometer::getInstance(getObjectManager());
+        if (!mag)
+            return false;
         Magnetometer::DataFields magData = mag->getData();
 
         mag_accum_x.append(magData.x);
@@ -1082,8 +1101,9 @@ void Calibration::configureTempCurves(TempCompCurve *x,
 bool Calibration::storeTempCalMeasurement(UAVObject * obj)
 {
     if (obj->getObjID() == Gyros::OBJID) {
-        Gyros *gyros = Gyros::GetInstance(getObjectManager());
-        Q_ASSERT(gyros);
+        Gyros *gyros = Gyros::getInstance(getObjectManager());
+        if (!gyros)
+            return false;
         Gyros::DataFields gyrosData = gyros->getData();
         double gyros_body[3] = {gyrosData.x, gyrosData.y, gyrosData.z};
         double gyros_sensor[3];
@@ -1175,8 +1195,9 @@ int Calibration::computeTempCal()
     disconnect(&timer,SIGNAL(timeout()),this,SLOT(timeout()));
 
     // Reenable gyro bias correction
-    AttitudeSettings *attitudeSettings = AttitudeSettings::GetInstance(getObjectManager());
-    Q_ASSERT(attitudeSettings);
+    AttitudeSettings *attitudeSettings = AttitudeSettings::getInstance(getObjectManager());
+    if (!attitudeSettings)
+        return CALIBRATION_FAILED;
     AttitudeSettings::DataFields attitudeSettingsData = attitudeSettings->getData();
     attitudeSettingsData.BiasCorrectGyro = AttitudeSettings::BIASCORRECTGYRO_TRUE;
     attitudeSettings->setData(attitudeSettingsData);
@@ -1214,8 +1235,9 @@ int Calibration::computeTempCal()
     qDebug() << "[" << result(3,0) << " " << result(3,1) << " " << result(3,2) << "]";
 
     // Store the results
-    SensorSettings * sensorSettings = SensorSettings::GetInstance(getObjectManager());
-    Q_ASSERT(sensorSettings);
+    SensorSettings * sensorSettings = SensorSettings::getInstance(getObjectManager());
+    if (!sensorSettings)
+        return CALIBRATION_FAILED;
     SensorSettings::DataFields sensorSettingsData = sensorSettings->getData();
     sensorSettingsData.XGyroTempCoeff[0] = result(0,0);
     sensorSettingsData.XGyroTempCoeff[1] = result(1,0);
@@ -1330,8 +1352,9 @@ double Calibration::listMax(QList<double> list)
   */
 int Calibration::computeScaleBias()
 {
-    SensorSettings * sensorSettings = SensorSettings::GetInstance(getObjectManager());
-    Q_ASSERT(sensorSettings);
+    SensorSettings * sensorSettings = SensorSettings::getInstance(getObjectManager());
+    if (!sensorSettings)
+        return CALIBRATION_FAILED;
     SensorSettings::DataFields sensorSettingsData = sensorSettings->getData();
 
     bool good_calibration = true;
@@ -1458,8 +1481,9 @@ int Calibration::computeScaleBias()
 void Calibration::resetSensorCalibrationToOriginalValues()
 {
     //Write the original accelerometer values back to the device
-    SensorSettings * sensorSettings = SensorSettings::GetInstance(getObjectManager());
-    Q_ASSERT(sensorSettings);
+    SensorSettings * sensorSettings = SensorSettings::getInstance(getObjectManager());
+    if (!sensorSettings)
+        return;
     SensorSettings::DataFields sensorSettingsData = sensorSettings->getData();
 
     if (calibrateAccels) {

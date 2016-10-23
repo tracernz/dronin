@@ -147,8 +147,11 @@ void ConfigPlugin::eraseAllSettings()
     msgBox.exec();
 
 
-    ObjectPersistence* objper = ObjectPersistence::GetInstance(getObjectManager());
-    Q_ASSERT(objper);
+    ObjectPersistence *objper = ObjectPersistence::getInstance(getObjectManager());
+    if (!objper) {
+        eraseFailed();
+        return;
+    }
 
     connect(objper, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(eraseDone(UAVObject *)));
 
@@ -168,9 +171,10 @@ void ConfigPlugin::eraseFailed()
     if (settingsErased)
         return;
 
-    ObjectPersistence* objper = ObjectPersistence::GetInstance(getObjectManager());
+    ObjectPersistence *objper = ObjectPersistence::getInstance(getObjectManager());
+    if (objper)
+        disconnect(objper, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(eraseDone(UAVObject *)));
 
-    disconnect(objper, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(eraseDone(UAVObject *)));
     QMessageBox msgBox;
     msgBox.setText(tr("Error trying to erase settings."));
     msgBox.setInformativeText(tr("Power-cycle your board after removing all blades. Settings might be inconsistent."));
@@ -183,7 +187,9 @@ void ConfigPlugin::eraseDone(UAVObject * obj)
 {
     Q_UNUSED(obj)
     QMessageBox msgBox;
-    ObjectPersistence* objper = ObjectPersistence::GetInstance(getObjectManager());
+    ObjectPersistence *objper = ObjectPersistence::getInstance(getObjectManager());
+    if (!objper)
+        return;
     ObjectPersistence::DataFields data = objper->getData();
     Q_ASSERT(obj->getInstID() == objper->getInstID());
 

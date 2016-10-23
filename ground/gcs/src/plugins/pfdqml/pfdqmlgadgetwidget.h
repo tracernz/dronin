@@ -42,8 +42,8 @@ private:
     QString m_qmlFileName;
 
     UAVObjectManager *m_objManager;
-    void exportUAVOInstance(const QString &objectName, int instId);
-    void resetUAVOExport(const QString &objectName, int instId);
+    void exportUAVOInstance(const QString &objectName);
+    void resetUAVOExport(const QString &objectName);
 };
 
 #endif /* PFDQMLGADGETWIDGET_H_ */

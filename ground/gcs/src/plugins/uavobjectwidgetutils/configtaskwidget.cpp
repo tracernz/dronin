@@ -91,8 +91,9 @@ void ConfigTaskWidget::addUAVObjectToWidgetRelation(QString object, QString fiel
 {
     UAVObject *obj=NULL;
     UAVObjectField *_field=NULL;
-    obj = objManager->getObject(QString(object));
-    Q_ASSERT(obj);
+    obj = getObject(QString(object));
+    if (!obj)
+        return;
     _field = obj->getField(QString(field));
     Q_ASSERT(_field);
     addUAVObjectToWidgetRelation(object,field,widget,_field->getElementNames().indexOf(index));
@@ -121,12 +122,12 @@ void ConfigTaskWidget::addUAVObjectToWidgetRelation(UAVObject *obj, UAVObjectFie
  */
 void ConfigTaskWidget::addUAVObjectToWidgetRelation(QString object, QString field, QWidget *widget, QString element, double scale, bool isLimited, bool useUnits, QList<int> *defaultReloadGroups, quint32 instID)
 {
-    UAVObject *obj=objManager->getObject(QString(object),instID);
-    Q_ASSERT(obj);
+    UAVObject *obj = getObject(QString(object), instID);
+    if (!obj)
+        return;
     UAVObjectField *_field;
-    int index=0;
-    if(!field.isEmpty() && obj)
-    {
+    int index = 0;
+    if(!field.isEmpty() && obj) {
         _field = obj->getField(QString(field));
         if(!element.isEmpty())
             index=_field->getElementNames().indexOf(QString(element));
@@ -164,14 +165,14 @@ void ConfigTaskWidget::addUAVObjectToWidgetRelation(QString object, QString fiel
     UAVObjectField *_field=NULL;
     if(!object.isEmpty())
     {
-        obj = objManager->getObject(QString(object),instID);
-        Q_ASSERT(obj);
-        objectUpdates.insert(obj,true);
+        obj = getObject(QString(object), instID);
+        if (!obj)
+            return;
+        objectUpdates.insert(obj, true);
         connect(obj, SIGNAL(objectUpdated(UAVObject*)),this, SLOT(objectUpdated(UAVObject*)));
         connect(obj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(refreshWidgetsValues(UAVObject*)), Qt::UniqueConnection);
-        UAVDataObject *dobj = dynamic_cast<UAVDataObject *>(obj);
-        if(dobj)
-        {
+        UAVDataObject *dobj = qobject_cast<UAVDataObject *>(obj);
+        if (dobj) {
             connect(dobj, SIGNAL(presentOnHardwareChanged(UAVDataObject*)),this, SLOT(doRefreshHiddenObjects(UAVDataObject*)), Qt::UniqueConnection);
             if(widget)
                 widget->setEnabled(dobj->getIsPresentOnHardware());
@@ -229,11 +230,9 @@ void ConfigTaskWidget::addUAVObjectToWidgetRelation(QString object, QString fiel
  */
 void ConfigTaskWidget::setNotMandatory(QString object)
 {
-    UAVObject *obj = objManager->getObject(object);
-    Q_ASSERT(obj);
-    if(smartsave) {
-        smartsave->setNotMandatory((UAVDataObject*)obj);
-    }
+    UAVDataObject *obj = getObject<UAVDataObject>(object);
+    if(obj && smartsave)
+        smartsave->setNotMandatory(obj);
 }
 
 
@@ -941,7 +940,9 @@ void ConfigTaskWidget::rebootButtonClicked()
     button->setEnabled(false);
     button->setIcon(QIcon(":/uploader/images/system-run.svg"));
 
-    FirmwareIAPObj *iapObj = dynamic_cast<FirmwareIAPObj *>(getObjectManager()->getObject(FirmwareIAPObj::NAME));
+    FirmwareIAPObj *iapObj = getObject<FirmwareIAPObj>(FirmwareIAPObj::NAME);
+    if (!iapObj)
+        return;
     Core::ConnectionManager *conMngr = Core::ICore::instance()->connectionManager();
 
     if(!conMngr->isConnected() || !iapObj->getIsPresentOnHardware()) {
@@ -995,7 +996,10 @@ void ConfigTaskWidget::reloadButtonClicked()
     QList<objectToWidget*> * list=defaultReloadGroups.value(group,NULL);
     if(!list)
         return;
-    ObjectPersistence* objper = dynamic_cast<ObjectPersistence*>( getObjectManager()->getObject(ObjectPersistence::NAME) );
+    ObjectPersistence* objper = getObject<ObjectPersistence>(ObjectPersistence::NAME);
+    if (!objper)
+        return;
+
     timeOut=new QTimer(this);
     QEventLoop * eventLoop=new QEventLoop(this);
     connect(timeOut, SIGNAL(timeout()),eventLoop,SLOT(quit()));

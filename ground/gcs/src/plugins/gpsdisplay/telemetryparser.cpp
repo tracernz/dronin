@@ -39,24 +39,15 @@ TelemetryParser::TelemetryParser(QObject *parent) : GPSParser(parent)
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    UAVDataObject *gpsObj = dynamic_cast<UAVDataObject*>(objManager->getObject("GPSPosition"));
-    if (gpsObj != NULL) {
-        connect(gpsObj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(updateGPS(UAVObject*)));
-    } else {
-        qDebug() << "Error: Object is unknown (GPSPosition).";
-    }
+    UAVDataObject *gpsObj = objManager->getRequiredObject<UAVDataObject>("GPSPosition");
+    connect(gpsObj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(updateGPS(UAVObject*)));
 
-    gpsObj = dynamic_cast<UAVDataObject*>(objManager->getObject("GPSTime"));
-    if (gpsObj != NULL) {
-        connect(gpsObj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(updateTime(UAVObject*)));
-    } else {
-        qDebug() << "Error: Object is unknown (GPSTime).";
-    }
+    gpsObj = objManager->getRequiredObject<UAVDataObject>("GPSTime");
+    connect(gpsObj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(updateTime(UAVObject*)));
 
-    gpsObj = dynamic_cast<UAVDataObject*>(objManager->getObject("GPSSatellites"));
-    if (gpsObj != NULL) {
+    gpsObj = objManager->getObject<UAVDataObject>("GPSSatellites");
+    if (gpsObj)
         connect(gpsObj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(updateSats(UAVObject*)));
-    }
 
 }
 

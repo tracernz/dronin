@@ -77,8 +77,8 @@ void LineardialGadgetWidget::connectInput(QString object1, QString nfield1) {
 
     // Check validity of arguments first, reject empty args and unknown fields.
     if (!(object1.isEmpty() || nfield1.isEmpty())) {
-        obj1 = dynamic_cast<UAVDataObject*>( objManager->getObject(object1) );
-        if (obj1 != NULL ) {
+        obj1 = objManager->getRequiredObject<UAVDataObject>(object1);
+        if (obj1) {
             connect(obj1, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(updateIndex(UAVObject*)));
             if(nfield1.contains("-"))
             {
@@ -95,9 +95,6 @@ void LineardialGadgetWidget::connectInput(QString object1, QString nfield1) {
             if (fieldName)
                 fieldName->setPlainText(nfield1);
             updateIndex(obj1);
-
-        } else {
-            qDebug() << "Error: Object is unknown (" << object1 << ") this should not happen.";
         }
     }
 }

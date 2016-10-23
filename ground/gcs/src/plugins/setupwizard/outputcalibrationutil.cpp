@@ -55,9 +55,10 @@ void OutputCalibrationUtil::startChannelOutput(quint16 channel, quint16 safeValu
 
         qDebug() << "Starting output for channel " << m_outputChannel << "...";
 
-        ActuatorCommand *actuatorCommand = ActuatorCommand::GetInstance(m_uavObjectManager);
-        Q_ASSERT(actuatorCommand);
-        UAVObject::Metadata metaData     = actuatorCommand->getMetadata();
+        ActuatorCommand *actuatorCommand = ActuatorCommand::getInstance(m_uavObjectManager);
+        if (!actuatorCommand)
+            return;
+        UAVObject::Metadata metaData = actuatorCommand->getMetadata();
         m_savedActuatorCommandMetadata = metaData;
 
         // Store current data for later restore
@@ -88,8 +89,9 @@ void OutputCalibrationUtil::stopChannelOutput()
         qDebug() << "Settings output for channel " << m_outputChannel << " to " << m_safeValue;
 
         // Restore metadata to what it was before
-        ActuatorCommand *actuatorCommand = ActuatorCommand::GetInstance(m_uavObjectManager);
-        Q_ASSERT(actuatorCommand);
+        ActuatorCommand *actuatorCommand = ActuatorCommand::getInstance(m_uavObjectManager);
+        if (!actuatorCommand)
+            return;
         // actuatorCommand->setData(m_savedActuatorCommandData);
         actuatorCommand->setMetadata(m_savedActuatorCommandMetadata);
         actuatorCommand->updated();
@@ -105,8 +107,9 @@ void OutputCalibrationUtil::setChannelOutputValue(quint16 value)
     if (m_outputChannel >= 0) {
         // Set output value
         qDebug() << "Setting output value for channel " << m_outputChannel << " to " << value << ".";
-        ActuatorCommand *actuatorCommand = ActuatorCommand::GetInstance(m_uavObjectManager);
-        Q_ASSERT(actuatorCommand);
+        ActuatorCommand *actuatorCommand = ActuatorCommand::getInstance(m_uavObjectManager);
+        if (!actuatorCommand)
+            return;
         ActuatorCommand::DataFields data = actuatorCommand->getData();
         data.Channel[m_outputChannel] = value;
         actuatorCommand->setData(data);

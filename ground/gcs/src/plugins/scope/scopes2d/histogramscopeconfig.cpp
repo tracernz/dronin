@@ -256,11 +256,9 @@ void HistogramScopeConfig::loadConfiguration(ScopeGadgetWidget *scopeGadgetWidge
         //Get the uav object
         ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
         UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-        UAVDataObject* obj = dynamic_cast<UAVDataObject*>(objManager->getObject((histogramData->getUavoName())));
-        if(!obj) {
-            qDebug() << "Object " << histogramData->getUavoName() << " is missing";
+        UAVDataObject *obj = objManager->getRequiredObject<UAVDataObject>(histogramData->getUavoName());
+        if(!obj)
             return;
-        }
 
         //Get the units
         QString units = getUavObjectFieldUnits(histogramData->getUavoName(), histogramData->getUavoFieldName());

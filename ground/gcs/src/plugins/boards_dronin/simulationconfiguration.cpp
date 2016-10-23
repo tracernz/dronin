@@ -40,8 +40,7 @@ SimulationConfiguration::SimulationConfiguration(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    UAVObject *hwSim = getObjectManager()->getObject(HwSimulation::NAME);
-    Q_ASSERT(hwSim);
+    UAVObject *hwSim = getObject<UAVObject>(HwSimulation::NAME);
     connect(hwSim, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(onLedStateUpdated(UAVObject*)));
 }
 

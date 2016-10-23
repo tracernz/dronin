@@ -81,7 +81,7 @@ public:
 protected:
     FirmwareIAPObj::DataFields getFirmwareIap();
 signals:
-    void saveCompleted(int objectID, bool status);
+    void saveCompleted(quint32 objectID, bool status);
     void completedMetadataWrite(bool);
 
 private:

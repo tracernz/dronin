@@ -50,10 +50,6 @@ ConfigModuleWidget::ConfigModuleWidget(QWidget *parent) : ConfigTaskWidget(paren
 
     connect(this, SIGNAL(telemetryConnected()), this, SLOT(recheckTabs()));
 
-    // Populate UAVO strings
-    AirspeedSettings *airspeedSettings;
-    airspeedSettings = AirspeedSettings::GetInstance(getObjectManager());
-
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     Core::Internal::GeneralSettings *settings = pm->getObject<Core::Internal::GeneralSettings>();
     ui->saveRAM->setVisible(settings->useExpertMode());
@@ -76,10 +72,10 @@ ConfigModuleWidget::ConfigModuleWidget(QWidget *parent) : ConfigTaskWidget(paren
     // connect the voltage ratio and factor boxes so they update each other when edited
     connect(ui->sb_voltageRatio, SIGNAL(editingFinished()), this, SLOT(updateVoltageRatio()));
     connect(ui->sb_voltageFactor, SIGNAL(editingFinished()), this, SLOT(updateVoltageFactor()));
-    connect(FlightBatterySettings::GetInstance(getObjectManager()), SIGNAL(SensorCalibrationFactor_VoltageChanged(float)), this, SLOT(updateVoltageFactorFromUavo(float)));
+    connect(getObject(FlightBatterySettings::NAME), SIGNAL(SensorCalibrationFactor_VoltageChanged(float)), this, SLOT(updateVoltageFactorFromUavo(float)));
 
     // Connect Airspeed Settings
-    connect(airspeedSettings, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(updateAirspeedGroupbox(UAVObject *)));
+    connect(getObject(AirspeedSettings::NAME), SIGNAL(objectUpdated(UAVObject*)), this, SLOT(updateAirspeedGroupbox(UAVObject *)));
     connect(ui->gb_airspeedGPS, SIGNAL(clicked(bool)), this, SLOT(enableAirspeedTypeGPS(bool)));
     connect(ui->gb_airspeedPitot, SIGNAL(clicked(bool)), this, SLOT(enableAirspeedTypePitot(bool)));
 
@@ -137,33 +133,41 @@ void ConfigModuleWidget::recheckTabs()
     ui->cbUAVOFrSkySPortBridge->setChecked(false);
     setDirty(dirty);
 
-    UAVObject * obj;
+    UAVObject *obj;
 
-    obj = getObjectManager()->getObject(AirspeedSettings::NAME);
-    connect(obj, SIGNAL(transactionCompleted(UAVObject*,bool)), this, SLOT(objectUpdated(UAVObject*,bool)), Qt::UniqueConnection);
-    obj->requestUpdate();
-
-    obj = getObjectManager()->getObject(FlightBatterySettings::NAME);
-    connect(obj, SIGNAL(transactionCompleted(UAVObject*,bool)), this, SLOT(objectUpdated(UAVObject*,bool)), Qt::UniqueConnection);
-    obj->requestUpdate();
-
-    obj = getObjectManager()->getObject(HoTTSettings::NAME);
-    connect(obj, SIGNAL(transactionCompleted(UAVObject*,bool)), this, SLOT(objectUpdated(UAVObject*,bool)), Qt::UniqueConnection);
-    TaskInfo *taskInfo = qobject_cast<TaskInfo *>(getObjectManager()->getObject(TaskInfo::NAME));
-    if (taskInfo && taskInfo->getIsPresentOnHardware()) {
-        connect(taskInfo, SIGNAL(transactionCompleted(UAVObject *, bool)), obj, SLOT(requestUpdate()), Qt::UniqueConnection);
-        taskInfo->requestUpdate();
-    } else {
+    obj = getObject(AirspeedSettings::NAME);
+    if (obj) {
+        connect(getObject(AirspeedSettings::NAME), SIGNAL(transactionCompleted(UAVObject*,bool)), this, SLOT(objectUpdated(UAVObject*,bool)), Qt::UniqueConnection);
         obj->requestUpdate();
     }
 
-    obj = getObjectManager()->getObject(PicoCSettings::NAME);
-    connect(obj, SIGNAL(transactionCompleted(UAVObject*,bool)), this, SLOT(objectUpdated(UAVObject*,bool)), Qt::UniqueConnection);
-    obj->requestUpdate();
+    obj = getObject(FlightBatterySettings::NAME);
+    if (obj) {
+        connect(obj, SIGNAL(transactionCompleted(UAVObject*,bool)), this, SLOT(objectUpdated(UAVObject*,bool)), Qt::UniqueConnection);
+        obj->requestUpdate();
+    }
 
-    obj = getObjectManager()->getObject(LoggingSettings::NAME);
+    obj = getObject(HoTTSettings::NAME);
     connect(obj, SIGNAL(transactionCompleted(UAVObject*,bool)), this, SLOT(objectUpdated(UAVObject*,bool)), Qt::UniqueConnection);
-    obj->requestUpdate();
+    TaskInfo *taskInfo = getObject<TaskInfo>(TaskInfo::NAME);
+    if (taskInfo && taskInfo->getIsPresentOnHardware()) {
+        connect(taskInfo, SIGNAL(transactionCompleted(UAVObject *, bool)), obj, SLOT(requestUpdate()), Qt::UniqueConnection);
+        taskInfo->requestUpdate();
+    } else if(obj) {
+        obj->requestUpdate();
+    }
+
+    obj = getObject(PicoCSettings::NAME);
+    if (obj) {
+        connect(obj, SIGNAL(transactionCompleted(UAVObject*,bool)), this, SLOT(objectUpdated(UAVObject*,bool)), Qt::UniqueConnection);
+        obj->requestUpdate();
+    }
+
+    obj = getObject(LoggingSettings::NAME);
+    if (obj) {
+        connect(obj, SIGNAL(transactionCompleted(UAVObject*,bool)), this, SLOT(objectUpdated(UAVObject*,bool)), Qt::UniqueConnection);
+        obj->requestUpdate();
+    }
 
     // This requires re-evaluation so that board connection doesn't re-enable
     // the fields.
@@ -178,9 +182,12 @@ void ConfigModuleWidget::objectUpdated(UAVObject * obj, bool success)
     if (!obj)
         return;
 
-    ModuleSettings *moduleSettings = qobject_cast<ModuleSettings *>(getObjectManager()->getObject(ModuleSettings::NAME));
-    Q_ASSERT(moduleSettings);
-    TaskInfo *taskInfo = qobject_cast<TaskInfo *>(getObjectManager()->getObject(TaskInfo::NAME));
+    ModuleSettings *moduleSettings = getObject<ModuleSettings>(ModuleSettings::NAME);
+    if (!moduleSettings)
+        return;
+    TaskInfo *taskInfo = getObject<TaskInfo>(TaskInfo::NAME);
+    if (!taskInfo)
+        return;
     bool enableHott = (taskInfo && taskInfo->getIsPresentOnHardware()) ? (taskInfo->getRunning_UAVOHoTTBridge() == TaskInfo::RUNNING_TRUE) : true;
     bool enableGps = (taskInfo && taskInfo->getIsPresentOnHardware()) ? (taskInfo->getRunning_GPS() == TaskInfo::RUNNING_TRUE) : true;
     enableGps &= moduleSettings->getIsPresentOnHardware();
@@ -244,10 +251,10 @@ void ConfigModuleWidget::updateAirspeedGroupbox(UAVObject *obj)
 {
     Q_UNUSED(obj);
 
-    AirspeedSettings *airspeedSettings;
-    airspeedSettings = AirspeedSettings::GetInstance(getObjectManager());
-    AirspeedSettings::DataFields airspeedSettingsData;
-    airspeedSettingsData = airspeedSettings->getData();
+    AirspeedSettings *airspeedSettings = getObject<AirspeedSettings>(AirspeedSettings::NAME);
+    if (!airspeedSettings)
+        return;
+    AirspeedSettings::DataFields airspeedSettingsData = airspeedSettings->getData();
 
     ui->gb_airspeedGPS->setChecked(false);
     ui->gb_airspeedPitot->setChecked(false);
@@ -267,10 +274,10 @@ void ConfigModuleWidget::updateAirspeedGroupbox(UAVObject *obj)
 void ConfigModuleWidget::enableAirspeedTypeGPS(bool checked)
 {
     if (checked){
-        AirspeedSettings *airspeedSettings;
-        airspeedSettings = AirspeedSettings::GetInstance(getObjectManager());
-        AirspeedSettings::DataFields airspeedSettingsData;
-        airspeedSettingsData = airspeedSettings->getData();
+        AirspeedSettings *airspeedSettings = getObject<AirspeedSettings>(AirspeedSettings::NAME);
+        if (!airspeedSettings)
+            return;
+        AirspeedSettings::DataFields airspeedSettingsData = airspeedSettings->getData();
         airspeedSettingsData.AirspeedSensorType = AirspeedSettings::AIRSPEEDSENSORTYPE_GPSONLY;
         airspeedSettings->setData(airspeedSettingsData);
     }
@@ -284,10 +291,10 @@ void ConfigModuleWidget::enableAirspeedTypeGPS(bool checked)
 void ConfigModuleWidget::enableAirspeedTypePitot(bool checked)
 {
     if (checked){
-        AirspeedSettings *airspeedSettings;
-        airspeedSettings = AirspeedSettings::GetInstance(getObjectManager());
-        AirspeedSettings::DataFields airspeedSettingsData;
-        airspeedSettingsData = airspeedSettings->getData();
+        AirspeedSettings *airspeedSettings = getObject<AirspeedSettings>(AirspeedSettings::NAME);
+        if (!airspeedSettings)
+            return;
+        AirspeedSettings::DataFields airspeedSettingsData = airspeedSettings->getData();
         airspeedSettingsData.AirspeedSensorType = AirspeedSettings::AIRSPEEDSENSORTYPE_EAGLETREEAIRSPEEDV3;
         airspeedSettings->setData(airspeedSettingsData);
     }

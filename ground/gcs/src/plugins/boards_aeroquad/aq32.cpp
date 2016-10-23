@@ -127,8 +127,7 @@ bool AQ32::setInputType(enum InputType type)
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwAQ32 *hwAQ32 = HwAQ32::GetInstance(uavoManager);
-    Q_ASSERT(hwAQ32);
+    HwAQ32 *hwAQ32 = uavoManager->getRequiredObject<HwAQ32>(HwAQ32::OBJID);
     if (!hwAQ32)
         return false;
 
@@ -178,8 +177,7 @@ enum Core::IBoardType::InputType AQ32::getInputType()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwAQ32 *hwAQ32 = HwAQ32::GetInstance(uavoManager);
-    Q_ASSERT(hwAQ32);
+    HwAQ32 *hwAQ32 = uavoManager->getRequiredObject<HwAQ32>(HwAQ32::OBJID);
     if (!hwAQ32)
         return INPUT_TYPE_UNKNOWN;
 
@@ -240,8 +238,7 @@ int AQ32::queryMaxGyroRate()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwAQ32 *hwAQ32 = HwAQ32::GetInstance(uavoManager);
-    Q_ASSERT(hwAQ32);
+    HwAQ32 *hwAQ32 = uavoManager->getRequiredObject<HwAQ32>(HwAQ32::OBJID);
     if (!hwAQ32)
         return 0;
 
@@ -265,8 +262,7 @@ QStringList AQ32::getAdcNames()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwAQ32 *hwAQ32 = HwAQ32::GetInstance(uavoManager);
-    Q_ASSERT(hwAQ32);
+    HwAQ32 *hwAQ32 = uavoManager->getRequiredObject<HwAQ32>(HwAQ32::OBJID);
     if (!hwAQ32)
         return QStringList();
 

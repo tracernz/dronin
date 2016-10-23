@@ -127,8 +127,7 @@ bool Lux::setInputType(enum InputType type)
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwLux *hwLux = HwLux::GetInstance(uavoManager);
-    Q_ASSERT(hwLux);
+    HwLux *hwLux = uavoManager->getRequiredObject<HwLux>(HwLux::OBJID);
     if (!hwLux)
         return false;
 
@@ -141,6 +140,9 @@ bool Lux::setInputType(enum InputType type)
     case INPUT_TYPE_SBUS:
         settings.RxPort = HwLux::RXPORT_SBUS;
         break;
+    case INPUT_TYPE_SBUSNONINVERTED:
+        settings.RxPort = HwLux::RXPORT_SBUSNONINVERTED;
+        break;
     case INPUT_TYPE_DSM:
         settings.RxPort = HwLux::RXPORT_DSM;
         break;
@@ -149,6 +151,9 @@ bool Lux::setInputType(enum InputType type)
         break;
     case INPUT_TYPE_HOTTSUMH:
         settings.RxPort = HwLux::RXPORT_HOTTSUMH;
+        break;
+    case INPUT_TYPE_IBUS:
+        settings.RxPort = HwLux::RXPORT_IBUS;
         break;
     default:
         return false;
@@ -168,8 +173,7 @@ enum Core::IBoardType::InputType Lux::getInputType()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwLux *hwLux = HwLux::GetInstance(uavoManager);
-    Q_ASSERT(hwLux);
+    HwLux *hwLux = uavoManager->getRequiredObject<HwLux>(HwLux::OBJID);
     if (!hwLux)
         return INPUT_TYPE_UNKNOWN;
 
@@ -193,8 +197,7 @@ int Lux::queryMaxGyroRate()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwLux *hwLux = HwLux::GetInstance(uavoManager);
-    Q_ASSERT(hwLux);
+    HwLux *hwLux = uavoManager->getRequiredObject<HwLux>(HwLux::OBJID);
     if (!hwLux)
         return 0;
 

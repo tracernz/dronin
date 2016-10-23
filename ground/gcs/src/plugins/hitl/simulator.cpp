@@ -146,24 +146,32 @@ void Simulator::onStart()
     // Get required UAVObjects
     ExtensionSystem::PluginManager* pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager* objManager = pm->getObject<UAVObjectManager>();
-    actDesired = ActuatorDesired::GetInstance(objManager);
-    actCommand = ActuatorCommand::GetInstance(objManager);
-    manCtrlCommand = ManualControlCommand::GetInstance(objManager);
-    gcsReceiver = GCSReceiver::GetInstance(objManager);
-    flightStatus = FlightStatus::GetInstance(objManager);
-    posHome = HomeLocation::GetInstance(objManager);
-    velActual = VelocityActual::GetInstance(objManager);
-    posActual = PositionActual::GetInstance(objManager);
-    baroAlt = BaroAltitude::GetInstance(objManager);
-    airspeedActual = AirspeedActual::GetInstance(objManager);
-    attActual = AttitudeActual::GetInstance(objManager);
-    attitudeSettings = AttitudeSettings::GetInstance(objManager);
-    accels = Accels::GetInstance(objManager);
-    gyros = Gyros::GetInstance(objManager);
-    gpsPos = GPSPosition::GetInstance(objManager);
-    gpsVel = GPSVelocity::GetInstance(objManager);
-    telStats = GCSTelemetryStats::GetInstance(objManager);
-    groundTruth = GroundTruth::GetInstance(objManager);
+    actDesired = ActuatorDesired::getInstance(objManager);
+    actCommand = ActuatorCommand::getInstance(objManager);
+    manCtrlCommand = ManualControlCommand::getInstance(objManager);
+    gcsReceiver = GCSReceiver::getInstance(objManager);
+    flightStatus = FlightStatus::getInstance(objManager);
+    posHome = HomeLocation::getInstance(objManager);
+    velActual = VelocityActual::getInstance(objManager);
+    posActual = PositionActual::getInstance(objManager);
+    baroAlt = BaroAltitude::getInstance(objManager);
+    airspeedActual = AirspeedActual::getInstance(objManager);
+    attActual = AttitudeActual::getInstance(objManager);
+    attitudeSettings = AttitudeSettings::getInstance(objManager);
+    accels = Accels::getInstance(objManager);
+    gyros = Gyros::getInstance(objManager);
+    gpsPos = GPSPosition::getInstance(objManager);
+    gpsVel = GPSVelocity::getInstance(objManager);
+    telStats = GCSTelemetryStats::getInstance(objManager);
+    groundTruth = GroundTruth::getInstance(objManager);
+
+    if (!actDesired || !actCommand || !manCtrlCommand || !gcsReceiver ||
+            !flightStatus || !posHome || !velActual || !posActual || !baroAlt ||
+            !airspeedActual || !attActual || !attitudeSettings || !accels ||
+            !gyros || !gpsPos || !gpsVel || !telStats || !groundTruth) {
+        qWarning() << "Simulator FAILED to get all UAVOs!";
+        return;
+    }
 
     // Listen to autopilot connection events
     TelemetryManager* telMngr = pm->getObject<TelemetryManager>();

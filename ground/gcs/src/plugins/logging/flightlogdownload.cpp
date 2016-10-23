@@ -51,8 +51,7 @@ FlightLogDownload::FlightLogDownload(QWidget *parent) :
 
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    loggingStats = LoggingStats::GetInstance(uavoManager);
-    Q_ASSERT(loggingStats);
+    loggingStats = LoggingStats::getInstance(uavoManager);
 
     connect(ui->fileNameButton, SIGNAL(clicked()), this, SLOT(getFilename()));
     connect(ui->saveButton, SIGNAL(clicked()), this, SLOT(startDownload()));
@@ -62,8 +61,10 @@ FlightLogDownload::FlightLogDownload(QWidget *parent) :
     ui->fileName->setText(QDir::current().relativeFilePath(fileName));
 
     // Get the current status
-    connect(loggingStats, SIGNAL(objectUnpacked(UAVObject*)), this, SLOT(updateReceived()));
-    loggingStats->requestUpdate();
+    if (loggingStats) {
+        connect(loggingStats, SIGNAL(objectUnpacked(UAVObject*)), this, SLOT(updateReceived()));
+        loggingStats->requestUpdate();
+    }
 }
 
 FlightLogDownload::~FlightLogDownload()
@@ -88,6 +89,8 @@ void FlightLogDownload::getFilename()
  */
 void FlightLogDownload::updateReceived()
 {
+    if (!loggingStats)
+        return;
     LoggingStats::DataFields logging = loggingStats->getData();
 
     switch(dl_state) {
@@ -154,6 +157,9 @@ void FlightLogDownload::updateReceived()
  */
 void FlightLogDownload::startDownload()
 {
+    if (!loggingStats)
+        return;
+
     bool ok;
     qint32 file_id = ui->cbFileId->currentData().toInt(&ok);
     if (!ok)

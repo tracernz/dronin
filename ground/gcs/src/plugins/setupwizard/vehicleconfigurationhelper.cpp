@@ -128,9 +128,7 @@ void VehicleConfigurationHelper::applyHardwareConfiguration()
     bool success = boardPlugin->setInputType(newType);
 
     if (success) {
-        UAVDataObject* hwSettings = dynamic_cast<UAVDataObject*>(
-                    m_uavoManager->getObject(boardPlugin->getHwUAVO()));
-        Q_ASSERT(hwSettings);
+        UAVDataObject* hwSettings = m_uavoManager->getRequiredObject<UAVDataObject>(boardPlugin->getHwUAVO());
         if (hwSettings)
             addModifiedObject(hwSettings, tr("Writing hardware settings"));
     }
@@ -177,7 +175,9 @@ void VehicleConfigurationHelper::applyVehicleConfiguration()
 
 void VehicleConfigurationHelper::applyActuatorConfiguration()
 {
-    ActuatorSettings *actSettings = ActuatorSettings::GetInstance(m_uavoManager);
+    ActuatorSettings *actSettings = ActuatorSettings::getInstance(m_uavoManager);
+    if (!actSettings)
+        return;
 
     Core::IBoardType* boardPlugin = m_configSource->getControllerType();
     Q_ASSERT(boardPlugin);
@@ -285,9 +285,9 @@ void VehicleConfigurationHelper::applyActuatorConfiguration()
 
 void VehicleConfigurationHelper::applyFlighModeConfiguration()
 {
-    ManualControlSettings *controlSettings = ManualControlSettings::GetInstance(m_uavoManager);
-
-    Q_ASSERT(controlSettings);
+    ManualControlSettings *controlSettings = ManualControlSettings::getInstance(m_uavoManager);
+    if (!controlSettings)
+        return;
 
     ManualControlSettings::DataFields data = controlSettings->getData();
     data.Stabilization1Settings[0] = ManualControlSettings::STABILIZATION1SETTINGS_ATTITUDE;
@@ -320,21 +320,20 @@ void VehicleConfigurationHelper::applySensorBiasConfiguration()
     // object. for consistency with the other methods later calibration should store
     // the relevant parameters and apply them here.
 
-    AttitudeSettings *attitudeSettings = AttitudeSettings::GetInstance(m_uavoManager);
-    Q_ASSERT(attitudeSettings);
+    AttitudeSettings *attitudeSettings = AttitudeSettings::getInstance(m_uavoManager);
     if (attitudeSettings)
         addModifiedObject(attitudeSettings, tr("Writing board rotation settings"));
 
-    SensorSettings *sensorSettings = SensorSettings::GetInstance(m_uavoManager);
-    Q_ASSERT(sensorSettings);
+    SensorSettings *sensorSettings = SensorSettings::getInstance(m_uavoManager);
     if (sensorSettings)
         addModifiedObject(sensorSettings, tr("Writing gyro bias"));
 }
 
 void VehicleConfigurationHelper::applyStabilizationConfiguration()
 {
-    StabilizationSettings *stabSettings    = StabilizationSettings::GetInstance(m_uavoManager);
-    Q_ASSERT(stabSettings);
+    StabilizationSettings *stabSettings = StabilizationSettings::getInstance(m_uavoManager);
+    if (!stabSettings)
+        return;
 
     StabilizationSettings defaultSettings;
     stabSettings->setData(defaultSettings.getData());
@@ -344,9 +343,9 @@ void VehicleConfigurationHelper::applyStabilizationConfiguration()
 void VehicleConfigurationHelper::applyMixerConfiguration(mixerChannelSettings channels[])
 {
     // Set all mixer data
-    MixerSettings *mSettings = MixerSettings::GetInstance(m_uavoManager);
-
-    Q_ASSERT(mSettings);
+    MixerSettings *mSettings = MixerSettings::getInstance(m_uavoManager);
+    if (!mSettings)
+        return;
 
     // Set Mixer types and values
     QString mixerTypePattern   = "Mixer%1Type";
@@ -372,9 +371,10 @@ void VehicleConfigurationHelper::applyMixerConfiguration(mixerChannelSettings ch
 
 void VehicleConfigurationHelper::applyMultiGUISettings(SystemSettings::AirframeTypeOptions airframe, GUIConfigDataUnion guiConfig)
 {
-    SystemSettings *sSettings = SystemSettings::GetInstance(m_uavoManager);
+    SystemSettings *sSettings = SystemSettings::getInstance(m_uavoManager);
+    if (!sSettings)
+        return;
 
-    Q_ASSERT(sSettings);
     SystemSettings::DataFields data = sSettings->getData();
     data.AirframeType = airframe;
 
@@ -388,9 +388,10 @@ void VehicleConfigurationHelper::applyMultiGUISettings(SystemSettings::AirframeT
 
 void VehicleConfigurationHelper::applyManualControlDefaults()
 {
-    ManualControlSettings *mcSettings = ManualControlSettings::GetInstance(m_uavoManager);
+    ManualControlSettings *mcSettings = ManualControlSettings::getInstance(m_uavoManager);
+    if (!mcSettings)
+        return;
 
-    Q_ASSERT(mcSettings);
     ManualControlSettings::DataFields cData = mcSettings->getData();
 
     ManualControlSettings::ChannelGroupsOptions channelType = ManualControlSettings::CHANNELGROUPS_PWM;
@@ -589,12 +590,14 @@ void VehicleConfigurationHelper::saveChangesTimeout()
 void VehicleConfigurationHelper::resetVehicleConfig()
 {
     // Reset all vehicle data
-    MixerSettings *mSettings = MixerSettings::GetInstance(m_uavoManager);
+    ManualControlSettings *mcSettings = ManualControlSettings::getInstance(m_uavoManager);
+    if (!mcSettings)
+        return;
 
     // Reset throttle curves
     QString throttlePattern = "ThrottleCurve%1";
     for (int i = 1; i <= 2; i++) {
-        UAVObjectField *field = mSettings->getField(throttlePattern.arg(i));
+        UAVObjectField *field = mcSettings->getField(throttlePattern.arg(i));
         Q_ASSERT(field);
         for (quint32 i = 0; i < field->getNumElements(); i++) {
             field->setValue(i * (0.9f / (field->getNumElements() - 1)), i);
@@ -605,11 +608,11 @@ void VehicleConfigurationHelper::resetVehicleConfig()
     QString mixerTypePattern   = "Mixer%1Type";
     QString mixerVectorPattern = "Mixer%1Vector";
     for (int i = 1; i <= 10; i++) {
-        UAVObjectField *field = mSettings->getField(mixerTypePattern.arg(i));
+        UAVObjectField *field = mcSettings->getField(mixerTypePattern.arg(i));
         Q_ASSERT(field);
         field->setValue(field->getOptions().at(0));
 
-        field = mSettings->getField(mixerVectorPattern.arg(i));
+        field = mcSettings->getField(mixerVectorPattern.arg(i));
         Q_ASSERT(field);
         for (quint32 i = 0; i < field->getNumElements(); i++) {
             field->setValue(0, i);
@@ -617,15 +620,15 @@ void VehicleConfigurationHelper::resetVehicleConfig()
     }
 
     // Apply updates
-    // mSettings->setData(mSettings->getData());
-    addModifiedObject(mSettings, tr("Preparing mixer settings"));
+    addModifiedObject(mcSettings, tr("Preparing mixer settings"));
 }
 
 void VehicleConfigurationHelper::resetGUIData()
 {
-    SystemSettings *sSettings = SystemSettings::GetInstance(m_uavoManager);
+    SystemSettings *sSettings = SystemSettings::getInstance(m_uavoManager);
+    if (!sSettings)
+        return;
 
-    Q_ASSERT(sSettings);
     SystemSettings::DataFields data = sSettings->getData();
     data.AirframeType = SystemSettings::AIRFRAMETYPE_CUSTOM;
     for (quint32 i = 0; i < SystemSettings::AIRFRAMECATEGORYSPECIFICCONFIGURATION_NUMELEM; i++) {

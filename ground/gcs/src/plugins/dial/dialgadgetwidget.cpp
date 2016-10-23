@@ -89,8 +89,8 @@ void DialGadgetWidget::connectNeedles(QString object1, QString nfield1,
 
     // Check validity of arguments first, reject empty args and unknown fields.
     if (!(object1.isEmpty() || nfield1.isEmpty())) {
-        obj1 = dynamic_cast<UAVDataObject*>( objManager->getObject(object1) );
-        if (obj1 != NULL ) {
+        obj1 = objManager->getRequiredObject<UAVDataObject>(object1);
+        if (obj1) {
             // qDebug() << "Connected Object 1 (" << object1 << ").";
             connect(obj1, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(updateNeedle1(UAVObject*)));
             if(nfield1.contains("-"))
@@ -105,15 +105,13 @@ void DialGadgetWidget::connectNeedles(QString object1, QString nfield1,
                 field1=  nfield1;
                 haveSubField1 = false;
             }
-        } else {
-            qDebug() << "Error: Object is unknown (" << object1 << ").";
         }
     }
 
     // And do the same for the second needle.
     if (!(object2.isEmpty() || nfield2.isEmpty())) {
-        obj2 = dynamic_cast<UAVDataObject*>( objManager->getObject(object2) );
-        if (obj2 != NULL ) {
+        obj2 = objManager->getRequiredObject<UAVDataObject>(object2);
+        if (obj2) {
             // qDebug() << "Connected Object 2 (" << object2 << ").";
             connect(obj2, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(updateNeedle2(UAVObject*)));
             if(nfield2.contains("-"))
@@ -128,15 +126,13 @@ void DialGadgetWidget::connectNeedles(QString object1, QString nfield1,
                 field2=  nfield2;
                 haveSubField2 = false;
             }
-        } else {
-            qDebug() << "Error: Object is unknown (" << object2 << ").";
         }
     }
 
     // And do the same for the third needle.
     if (!(object3.isEmpty() || nfield3.isEmpty())) {
-        obj3 = dynamic_cast<UAVDataObject*>( objManager->getObject(object3) );
-        if (obj3 != NULL ) {
+        obj3 = objManager->getRequiredObject<UAVDataObject>(object3);
+        if (obj3) {
             // qDebug() << "Connected Object 3 (" << object3 << ").";
             connect(obj3, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(updateNeedle3(UAVObject*)));
             if(nfield3.contains("-"))
@@ -151,8 +147,6 @@ void DialGadgetWidget::connectNeedles(QString object1, QString nfield1,
                 field3=  nfield3;
                 haveSubField3 = false;
             }
-        } else {
-            qDebug() << "Error: Object is unknown (" << object3 << ").";
         }
     }
 }

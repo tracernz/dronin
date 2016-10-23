@@ -47,10 +47,8 @@ PicoCGadgetWidget::PicoCGadgetWidget(QWidget *parent) : QLabel(parent)
     Q_ASSERT(pm != NULL);
     objManager = pm->getObject<UAVObjectManager>();
     Q_ASSERT(objManager != NULL);
-    pcStatus = PicoCStatus::GetInstance(objManager);
-    Q_ASSERT(pcStatus != NULL);
-    pcSettings = PicoCSettings::GetInstance(objManager);
-    Q_ASSERT(pcSettings != NULL);
+    pcStatus = PicoCStatus::getInstance(objManager);
+    pcSettings = PicoCSettings::getInstance(objManager);
 
     // Connect PicoCStatus
     connect(pcStatus, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(updatePicoCStatus(UAVObject *)));

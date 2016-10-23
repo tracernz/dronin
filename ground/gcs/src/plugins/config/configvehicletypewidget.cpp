@@ -183,13 +183,15 @@ ConfigVehicleTypeWidget::ConfigVehicleTypeWidget(QWidget *parent) : ConfigTaskWi
     m_aircraft->quadShape->setScene(scene);
 
     // Put combo boxes in line one of the custom mixer table:
-    UAVDataObject* obj = dynamic_cast<UAVDataObject*>(getObjectManager()->getObject(QString("MixerSettings")));
-    UAVObjectField* field = obj->getField(QString("Mixer1Type"));
-    QStringList list = field->getOptions();
-    for (int i=0; i<(int)(ActuatorCommand::CHANNEL_NUMELEM); i++) {
-        QComboBox* qb = new QComboBox(m_aircraft->customMixerTable);
-        qb->addItems(list);
-        m_aircraft->customMixerTable->setCellWidget(0,i,qb);
+    UAVDataObject* obj = getObject<UAVDataObject>(QString("MixerSettings"));
+    if (obj) {
+        UAVObjectField* field = obj->getField(QString("Mixer1Type"));
+        QStringList list = field->getOptions();
+        for (int i=0; i<(int)(ActuatorCommand::CHANNEL_NUMELEM); i++) {
+            QComboBox* qb = new QComboBox(m_aircraft->customMixerTable);
+            qb->addItems(list);
+            m_aircraft->customMixerTable->setCellWidget(0,i,qb);
+        }
     }
 
     SpinBoxDelegate *sbd = new SpinBoxDelegate();
@@ -265,8 +267,9 @@ QStringList ConfigVehicleTypeWidget::getChannelDescriptions()
     Q_ASSERT(objMngr);
 
     // get an instance of systemsettings
-    SystemSettings * systemSettings = SystemSettings::GetInstance(objMngr);
-    Q_ASSERT(systemSettings);
+    SystemSettings * systemSettings = SystemSettings::getInstance(objMngr);
+    if (!systemSettings)
+        return channelDesc;
     SystemSettings::DataFields systemSettingsData = systemSettings->getData();
 
     switch (systemSettingsData.AirframeType)
@@ -435,13 +438,15 @@ void ConfigVehicleTypeWidget::refreshWidgetsValues(UAVObject * obj)
     if(!allObjectsUpdated())
         return;
 	
-    bool dirty=isDirty();
+    bool dirty = isDirty();
 	
-    MixerSettings *mixerSettings = MixerSettings::GetInstance(getObjectManager());
-    Q_ASSERT(mixerSettings);
+    MixerSettings *mixerSettings = MixerSettings::getInstance(getObjectManager());
+    if (!mixerSettings)
+        return;
 
-    SystemSettings *systemSettings = SystemSettings::GetInstance(getObjectManager());
-    Q_ASSERT(systemSettings);
+    SystemSettings *systemSettings = SystemSettings::getInstance(getObjectManager());
+    if (!systemSettings)
+        return;
     SystemSettings::DataFields systemSettingsData = systemSettings->getData();
 
     // Get the Airframe type from the system settings:
@@ -618,8 +623,9 @@ void ConfigVehicleTypeWidget::resetField(UAVObjectField * field)
   */
 void ConfigVehicleTypeWidget::updateCustomAirframeUI()
 {    
-    MixerSettings *mixerSettings = MixerSettings::GetInstance(getObjectManager());
-    Q_ASSERT(mixerSettings);
+    MixerSettings *mixerSettings = MixerSettings::getInstance(getObjectManager());
+    if (!mixerSettings)
+        return;
 
     QPointer<VehicleConfig> vconfig = new VehicleConfig();
 
@@ -690,8 +696,9 @@ void ConfigVehicleTypeWidget::updateObjectsFromWidgets()
 {
     ConfigTaskWidget::updateObjectsFromWidgets();
 
-    MixerSettings *mixerSettings = MixerSettings::GetInstance(getObjectManager());
-    Q_ASSERT(mixerSettings);
+    MixerSettings *mixerSettings = MixerSettings::getInstance(getObjectManager());
+    if (!mixerSettings)
+        return;
 
     QPointer<VehicleConfig> vconfig = new VehicleConfig();
 
@@ -755,8 +762,9 @@ void ConfigVehicleTypeWidget::updateObjectsFromWidgets()
     }
 
     // set the airframe type
-    SystemSettings *systemSettings = SystemSettings::GetInstance(getObjectManager());
-    Q_ASSERT(systemSettings);
+    SystemSettings *systemSettings = SystemSettings::getInstance(getObjectManager());
+    if (!systemSettings)
+        return;
     SystemSettings::DataFields systemSettingsData = systemSettings->getData();
 
     systemSettingsData.AirframeType = frameType;
@@ -841,6 +849,13 @@ void ConfigVehicleTypeWidget::bnLevelTrim_clicked()
         msgBox.exec();
         break;
     }
+    case VehicleTrim::AUTOPILOT_LEVEL_FAILED_DUE_TO_INTERNAL_ERROR:
+    {
+        QMessageBox msgBox(QMessageBox::Critical, tr("Interal Error"),
+                           tr("An internal error occured, the level trim failed."), QMessageBox::Ok, this);
+        msgBox.exec();
+        break;
+    }
     case VehicleTrim::AUTOPILOT_LEVEL_SUCCESS:
         QMessageBox msgBox(QMessageBox::Information, tr("Trim updated"),
                            tr("Trim successfully updated, please reset the transmitter's trim to zero and be sure to configure stabilization settings to use Attitude mode."), QMessageBox::Ok, this);
@@ -887,6 +902,13 @@ void ConfigVehicleTypeWidget::bnServoTrim_clicked()
     {
         QMessageBox msgBox(QMessageBox::Critical, tr("Vehicle not in manual mode"),
                            "The autopilot must be in manual flight mode.", QMessageBox::Ok, this);
+        msgBox.exec();
+        break;
+    }
+    case VehicleTrim::ACTUATOR_TRIM_FAILED_DUE_TO_INTERNAL_ERROR:
+    {
+        QMessageBox msgBox(QMessageBox::Critical, tr("Interal Error"),
+                           "An internal error occured, the actuator trim failed.", QMessageBox::Ok, this);
         msgBox.exec();
         break;
     }

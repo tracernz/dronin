@@ -213,23 +213,6 @@ QVector <QVector<UAVMetaObject*> > UAVObjectManager::getMetaObjectsVector()
     return vector;
 }
 
-/**
- * Get a specific object given its name and instance ID
- * @returns The object is found or NULL if not
- */
-UAVObject* UAVObjectManager::getObject(const QString& name, quint32 instId)
-{
-    return getObject(name, 0, instId);
-}
-
-/**
- * Get a specific object given its object and instance ID
- * @returns The object is found or NULL if not
- */
-UAVObject* UAVObjectManager::getObject(quint32 objId, quint32 instId)
-{
-    return getObject(NULL, objId, instId);
-}
 
 /**
  * Helper function for the public getObject() functions.

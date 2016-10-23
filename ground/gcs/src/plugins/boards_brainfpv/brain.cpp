@@ -131,8 +131,7 @@ bool Brain::setInputType(enum InputType type)
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwBrain *hwBrain = HwBrain::GetInstance(uavoManager);
-    Q_ASSERT(hwBrain);
+    HwBrain *hwBrain = uavoManager->getRequiredObject<HwBrain>(HwBrain::OBJID);
     if (!hwBrain)
         return false;
 
@@ -175,8 +174,7 @@ enum Core::IBoardType::InputType Brain::getInputType()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwBrain *hwBrain = HwBrain::GetInstance(uavoManager);
-    Q_ASSERT(hwBrain);
+    HwBrain *hwBrain = uavoManager->getRequiredObject<HwBrain>(HwBrain::OBJID);
     if (!hwBrain)
         return INPUT_TYPE_UNKNOWN;
 
@@ -221,8 +219,7 @@ int Brain::queryMaxGyroRate()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwBrain *hwBrain = HwBrain::GetInstance(uavoManager);
-    Q_ASSERT(hwBrain);
+    HwBrain *hwBrain = uavoManager->getRequiredObject<HwBrain>(HwBrain::OBJID);
     if (!hwBrain)
         return 0;
 

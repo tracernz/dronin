@@ -197,10 +197,7 @@ UAVObjectField* NotifyPluginOptionsPage::getObjectFieldFromSelected()
 void NotifyPluginOptionsPage::setSelectedNotification(NotificationItem* ntf)
 {
     _selectedNotification = ntf;
-    _currUAVObject = dynamic_cast<UAVDataObject*>(_objManager.getObject(_selectedNotification->getDataObject()));
-    if(!_currUAVObject) {
-        qNotifyDebug() << "no such UAVObject: " << _selectedNotification->getDataObject();
-    }
+    _currUAVObject = _objManager.getRequiredObject<UAVDataObject>(_selectedNotification->getDataObject());
 }
 
 void NotifyPluginOptionsPage::addDynamicFieldLayout()
@@ -473,11 +470,9 @@ void NotifyPluginOptionsPage::on_changedIndex_UAVField(QString field)
 void NotifyPluginOptionsPage::on_changedIndex_UAVObject(QString val)
 {
     resetFieldType();
-    _currUAVObject = dynamic_cast<UAVDataObject*>( _objManager.getObject(val) );
-    if(!_currUAVObject) {
-        qNotifyDebug() << "on_UAVObject_indexChanged | no such UAVOBject";
+    _currUAVObject = _objManager.getRequiredObject<UAVDataObject>(val);
+    if(!_currUAVObject)
         return;
-    }
     QList<UAVObjectField*> fieldList = _currUAVObject->getFields();
     disconnect(_optionsPage->UAVObjectField, SIGNAL(currentIndexChanged(QString)), this, SLOT(on_changedIndex_UAVField(QString)));
     _optionsPage->UAVObjectField->clear();

@@ -48,9 +48,9 @@ ConfigOsdWidget::ConfigOsdWidget(QWidget *parent) : ConfigTaskWidget(parent)
     ui = new Ui::Osd();
     ui->setupUi(this);
 
-    osdSettingsObj = OnScreenDisplaySettings::GetInstance(getObjectManager());
-    manualCommandObj = ManualControlCommand::GetInstance(getObjectManager());
-    manualSettingsObj = ManualControlSettings::GetInstance(getObjectManager());
+    osdSettingsObj = getObject<OnScreenDisplaySettings>(OnScreenDisplaySettings::NAME);
+    manualCommandObj = getObject<ManualControlCommand>(ManualControlCommand::NAME);
+    manualSettingsObj = getObject<ManualControlSettings>(ManualControlSettings::NAME);
 
     // connect signals to set/get custom OSD text
     connect(ui->applyButton, SIGNAL(clicked()), this, SLOT(setCustomText()));
@@ -59,44 +59,43 @@ ConfigOsdWidget::ConfigOsdWidget(QWidget *parent) : ConfigTaskWidget(parent)
     connect(osdSettingsObj, SIGNAL(CustomText_0Changed(quint8)), this, SLOT(getCustomText()));
 
     // setup the OSD widgets
-    QString osdSettingsName = osdSettingsObj->getName();
-    addUAVObjectToWidgetRelation(osdSettingsName, "OSDEnabled", ui->cb_osd_enabled);
+    addUAVObjectToWidgetRelation(OnScreenDisplaySettings::NAME, "OSDEnabled", ui->cb_osd_enabled);
     ui->cb_osd_enabled->setProperty(trueString.toLatin1(), "Enabled");
     ui->cb_osd_enabled->setProperty(falseString.toLatin1(), "Disabled");
 
-    addUAVObjectToWidgetRelation(osdSettingsName, "PALWhite", ui->sb_white_pal);
-    addUAVObjectToWidgetRelation(osdSettingsName, "PALBlack", ui->sb_black_pal);
-    addUAVObjectToWidgetRelation(osdSettingsName, "NTSCWhite", ui->sb_white_ntsc);
-    addUAVObjectToWidgetRelation(osdSettingsName, "NTSCBlack", ui->sb_black_ntsc);
-    addUAVObjectToWidgetRelation(osdSettingsName, "XOffset", ui->sb_x_offset);
-    addUAVObjectToWidgetRelation(osdSettingsName, "YOffset", ui->sb_y_offset);
+    addUAVObjectToWidgetRelation(OnScreenDisplaySettings::NAME, "PALWhite", ui->sb_white_pal);
+    addUAVObjectToWidgetRelation(OnScreenDisplaySettings::NAME, "PALBlack", ui->sb_black_pal);
+    addUAVObjectToWidgetRelation(OnScreenDisplaySettings::NAME, "NTSCWhite", ui->sb_white_ntsc);
+    addUAVObjectToWidgetRelation(OnScreenDisplaySettings::NAME, "NTSCBlack", ui->sb_black_ntsc);
+    addUAVObjectToWidgetRelation(OnScreenDisplaySettings::NAME, "XOffset", ui->sb_x_offset);
+    addUAVObjectToWidgetRelation(OnScreenDisplaySettings::NAME, "YOffset", ui->sb_y_offset);
 
-    addUAVObjectToWidgetRelation(osdSettingsName, "PALXScale", ui->sb_pal_xscale);
-    addUAVObjectToWidgetRelation(osdSettingsName, "NTSCXScale", ui->sb_ntsc_xscale);
-    addUAVObjectToWidgetRelation(osdSettingsName, "ThreeDMode", ui->cb_3d_osd_mode);
-    addUAVObjectToWidgetRelation(osdSettingsName, "ThreeDRightEyeXShift", ui->sb_3d_right_eye_xshift);
+    addUAVObjectToWidgetRelation(OnScreenDisplaySettings::NAME, "PALXScale", ui->sb_pal_xscale);
+    addUAVObjectToWidgetRelation(OnScreenDisplaySettings::NAME, "NTSCXScale", ui->sb_ntsc_xscale);
+    addUAVObjectToWidgetRelation(OnScreenDisplaySettings::NAME, "ThreeDMode", ui->cb_3d_osd_mode);
+    addUAVObjectToWidgetRelation(OnScreenDisplaySettings::NAME, "ThreeDRightEyeXShift", ui->sb_3d_right_eye_xshift);
 
-    addUAVObjectToWidgetRelation(osdSettingsName, "Units", ui->cb_units);
+    addUAVObjectToWidgetRelation(OnScreenDisplaySettings::NAME, "Units", ui->cb_units);
 
-    addUAVObjectToWidgetRelation(osdSettingsName, "NumPages", ui->sb_num_pages);
-    addUAVObjectToWidgetRelation(osdSettingsName, "PageSwitch", ui->cb_page_switch);
+    addUAVObjectToWidgetRelation(OnScreenDisplaySettings::NAME, "NumPages", ui->sb_num_pages);
+    addUAVObjectToWidgetRelation(OnScreenDisplaySettings::NAME, "PageSwitch", ui->cb_page_switch);
 
-    addUAVObjectToWidgetRelation(osdSettingsName, "PageConfig", ui->osdPagePos1, 0);
-    addUAVObjectToWidgetRelation(osdSettingsName, "PageConfig", ui->osdPagePos2, 1);
-    addUAVObjectToWidgetRelation(osdSettingsName, "PageConfig", ui->osdPagePos3, 2);
-    addUAVObjectToWidgetRelation(osdSettingsName, "PageConfig", ui->osdPagePos4, 3);
-    addUAVObjectToWidgetRelation(osdSettingsName, "PageConfig", ui->osdPagePos5, 4);
-    addUAVObjectToWidgetRelation(osdSettingsName, "PageConfig", ui->osdPagePos6, 5);
+    addUAVObjectToWidgetRelation(OnScreenDisplaySettings::NAME, "PageConfig", ui->osdPagePos1, 0);
+    addUAVObjectToWidgetRelation(OnScreenDisplaySettings::NAME, "PageConfig", ui->osdPagePos2, 1);
+    addUAVObjectToWidgetRelation(OnScreenDisplaySettings::NAME, "PageConfig", ui->osdPagePos3, 2);
+    addUAVObjectToWidgetRelation(OnScreenDisplaySettings::NAME, "PageConfig", ui->osdPagePos4, 3);
+    addUAVObjectToWidgetRelation(OnScreenDisplaySettings::NAME, "PageConfig", ui->osdPagePos5, 4);
+    addUAVObjectToWidgetRelation(OnScreenDisplaySettings::NAME, "PageConfig", ui->osdPagePos6, 5);
 
-    addUAVObjectToWidgetRelation(osdSettingsName, "DisableMenuWhenArmed", ui->cb_menu_disabled);
+    addUAVObjectToWidgetRelation(OnScreenDisplaySettings::NAME, "DisableMenuWhenArmed", ui->cb_menu_disabled);
     ui->cb_menu_disabled->setProperty(trueString.toLatin1(), "Enabled");
     ui->cb_menu_disabled->setProperty(falseString.toLatin1(), "Disabled");
 
-    addUAVObjectToWidgetRelation(osdSettingsName, "RssiWarnThreshold", ui->RssiWarnThreshold);
-    addUAVObjectToWidgetRelation(osdSettingsName, "StatsDisplayDuration", ui->cb_stats_duration);
+    addUAVObjectToWidgetRelation(OnScreenDisplaySettings::NAME, "RssiWarnThreshold", ui->RssiWarnThreshold);
+    addUAVObjectToWidgetRelation(OnScreenDisplaySettings::NAME, "StatsDisplayDuration", ui->cb_stats_duration);
 
-    connect(ManualControlCommand::GetInstance(getObjectManager()),SIGNAL(objectUpdated(UAVObject*)),this,SLOT(movePageSlider()));
-    connect(OnScreenDisplaySettings::GetInstance(getObjectManager()),SIGNAL(objectUpdated(UAVObject*)),this,SLOT(updatePositionSlider()));
+    connect(manualCommandObj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(movePageSlider()));
+    connect(osdSettingsObj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(updatePositionSlider()));
 
     // Load UAVObjects to widget relations from UI file
     // using objrelation dynamic property
@@ -115,8 +114,9 @@ ConfigOsdWidget::ConfigOsdWidget(QWidget *parent) : ConfigTaskWidget(parent)
     pages[3] = ui->osdPage4;
 
     ui_pages[0] = new Ui::OsdPage();
-    osdPageSettingsObj = OnScreenDisplayPageSettings::GetInstance(getObjectManager());
-    setupOsdPage(ui_pages[0], ui->osdPage1, osdPageSettingsObj);
+    osdPageSettingsObj = getObject<OnScreenDisplayPageSettings>(OnScreenDisplayPageSettings::NAME);
+    if (osdPageSettingsObj)
+        setupOsdPage(ui_pages[0], ui->osdPage1, osdPageSettingsObj);
 
     ui_pages[0]->copyButton1->setText("Copy Page 2");
     ui_pages[0]->copyButton2->setText("Copy Page 3");
@@ -127,8 +127,9 @@ ConfigOsdWidget::ConfigOsdWidget(QWidget *parent) : ConfigTaskWidget(parent)
     connect(ui_pages[0]->copyButton3, SIGNAL(released()), this, SLOT(handle_button_0_3()));
 
     ui_pages[1] = new Ui::OsdPage();
-    osdPageSettings2Obj = OnScreenDisplayPageSettings2::GetInstance(getObjectManager());
-    setupOsdPage(ui_pages[1], ui->osdPage2, osdPageSettings2Obj);
+    osdPageSettings2Obj = getObject<OnScreenDisplayPageSettings2>(OnScreenDisplayPageSettings2::NAME);
+    if (osdPageSettings2Obj)
+        setupOsdPage(ui_pages[1], ui->osdPage2, osdPageSettings2Obj);
 
     ui_pages[1]->copyButton1->setText("Copy Page 1");
     ui_pages[1]->copyButton2->setText("Copy Page 3");
@@ -139,7 +140,8 @@ ConfigOsdWidget::ConfigOsdWidget(QWidget *parent) : ConfigTaskWidget(parent)
     connect(ui_pages[1]->copyButton3, SIGNAL(released()), this, SLOT(handle_button_1_3()));
 
     ui_pages[2] = new Ui::OsdPage();
-    osdPageSettings3Obj = OnScreenDisplayPageSettings3::GetInstance(getObjectManager());
+    osdPageSettings3Obj = getObject<OnScreenDisplayPageSettings3>(OnScreenDisplayPageSettings3::NAME);
+    if (osdPageSettings3Obj)
     setupOsdPage(ui_pages[2], ui->osdPage3, osdPageSettings3Obj);
 
     ui_pages[2]->copyButton1->setText("Copy Page 1");
@@ -151,7 +153,8 @@ ConfigOsdWidget::ConfigOsdWidget(QWidget *parent) : ConfigTaskWidget(parent)
     connect(ui_pages[2]->copyButton3, SIGNAL(released()), this, SLOT(handle_button_2_3()));
 
     ui_pages[3] = new Ui::OsdPage();
-    osdPageSettings4Obj = OnScreenDisplayPageSettings4::GetInstance(getObjectManager());
+    osdPageSettings4Obj = getObject<OnScreenDisplayPageSettings4>(OnScreenDisplayPageSettings4::NAME);
+    if (osdPageSettings4Obj)
     setupOsdPage(ui_pages[3], ui->osdPage4, osdPageSettings4Obj);
 
     ui_pages[3]->copyButton1->setText("Copy Page 1");
@@ -177,8 +180,10 @@ ConfigOsdWidget::~ConfigOsdWidget()
  */
 quint8 ConfigOsdWidget::scaleSwitchChannel(quint8 channelNumber, quint8 switchPositions)
 {
+    if (!manualSettingsObj || !manualCommandObj)
+        return 0;
     if(channelNumber > (ManualControlSettings::CHANNELMIN_NUMELEM - 1))
-            return 0;
+        return 0;
     ManualControlSettings::DataFields manualSettingsDataPriv = manualSettingsObj->getData();
     ManualControlCommand::DataFields manualCommandDataPriv = manualCommandObj->getData();
 
@@ -220,6 +225,9 @@ quint8 ConfigOsdWidget::scaleSwitchChannel(quint8 channelNumber, quint8 switchPo
 
 void ConfigOsdWidget::movePageSlider()
 {
+    if (!osdSettingsObj)
+        return;
+
     OnScreenDisplaySettings::DataFields onScreenDisplaySettingsDataPriv = osdSettingsObj->getData();
 
     switch(onScreenDisplaySettingsDataPriv.PageSwitch) {
@@ -237,6 +245,8 @@ void ConfigOsdWidget::movePageSlider()
 
 void ConfigOsdWidget::updatePositionSlider()
 {
+    if (!osdSettingsObj)
+        return;
     OnScreenDisplaySettings::DataFields onScreenDisplaySettingsDataPriv = osdSettingsObj->getData();
 
     switch(onScreenDisplaySettingsDataPriv.NumPages) {
@@ -350,6 +360,9 @@ void ConfigOsdWidget::handle_button_3_2()
 
 void ConfigOsdWidget::setCustomText()
 {
+    if (!osdSettingsObj)
+        return;
+
     const QString text = ui->le_custom_text->displayText();
     unsigned int n_string = text.size();
 
@@ -364,6 +377,9 @@ void ConfigOsdWidget::setCustomText()
 
 void ConfigOsdWidget::getCustomText()
 {
+    if (!osdSettingsObj)
+        return;
+
     char text[OnScreenDisplaySettings::CUSTOMTEXT_NUMELEM];
 
     for (unsigned int i = 0; i < OnScreenDisplaySettings::CUSTOMTEXT_NUMELEM; ++i) {

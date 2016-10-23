@@ -188,16 +188,16 @@ void LoggingThread::run()
         }
     }
 
-    GCSTelemetryStats* gcsStatsObj = GCSTelemetryStats::GetInstance(objManager);
-    GCSTelemetryStats::DataFields gcsStats = gcsStatsObj->getData();
-    if ( gcsStats.Status == GCSTelemetryStats::STATUS_CONNECTED )
-    {
-        qDebug() << "Logging: connected already, ask for all settings";
-        retrieveSettings();
-    } else {
-        qDebug() << "Logging: not connected, do no ask for settings";
+    GCSTelemetryStats* gcsStatsObj = GCSTelemetryStats::getInstance(objManager);
+    if (gcsStatsObj) {
+        GCSTelemetryStats::DataFields gcsStats = gcsStatsObj->getData();
+        if (gcsStats.Status == GCSTelemetryStats::STATUS_CONNECTED) {
+            qDebug() << "Logging: connected already, ask for all settings";
+            retrieveSettings();
+        } else {
+            qDebug() << "Logging: not connected, do no ask for settings";
+        }
     }
-
 
     exec();
 }
@@ -286,22 +286,23 @@ void LoggingThread::transactionCompleted(UAVObject* obj, bool success)
 {
     Q_UNUSED(success);
     // Disconnect from sending object
-    obj->disconnect(this);
+    if (obj)
+        obj->disconnect(this);
     // Process next object if telemetry is still available
     // Get stats objects
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    GCSTelemetryStats* gcsStatsObj = GCSTelemetryStats::GetInstance(objManager);
-    GCSTelemetryStats::DataFields gcsStats = gcsStatsObj->getData();
-    if ( gcsStats.Status == GCSTelemetryStats::STATUS_CONNECTED )
-    {
-        retrieveNextObject();
+    GCSTelemetryStats* gcsStatsObj = GCSTelemetryStats::getInstance(objManager);
+    if (gcsStatsObj) {
+        GCSTelemetryStats::DataFields gcsStats = gcsStatsObj->getData();
+        if (gcsStats.Status == GCSTelemetryStats::STATUS_CONNECTED) {
+            retrieveNextObject();
+            return;
+        }
     }
-    else
-    {
-        qDebug() << "Logging: Object retrieval has been cancelled";
-        queue.clear();
-    }
+
+    qDebug() << "Logging: Object retrieval has been cancelled";
+    queue.clear();
 }
 
 

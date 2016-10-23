@@ -82,7 +82,7 @@ $(DATAFIELDINFO)
     UAVDataObject* clone(quint32 instID);
     UAVDataObject* dirtyClone();
 	
-    static $(NAME)* GetInstance(UAVObjectManager* objMngr, quint32 instID = 0);
+    static $(NAME)* getInstance(UAVObjectManager* objMngr, quint32 instID = 0);
     static qint32 getNumInstances(UAVObjectManager* objMngr) {return objMngr->getNumInstances(OBJID);}
 
 $(PROPERTY_GETTERS)

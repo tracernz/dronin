@@ -300,11 +300,12 @@ bool OutputCalibrationPage::checkAlarms()
     UAVObjectManager *uavObjectManager = pm->getObject<UAVObjectManager>();
 
     Q_ASSERT(uavObjectManager);
-    SystemAlarms *systemAlarms    = SystemAlarms::GetInstance(uavObjectManager);
-    Q_ASSERT(systemAlarms);
-    SystemAlarms::DataFields data = systemAlarms->getData();
+    SystemAlarms *systemAlarms = SystemAlarms::getInstance(uavObjectManager);
+    SystemAlarms::DataFields data;
+    if (systemAlarms)
+        data = systemAlarms->getData();
 
-    if (data.Alarm[SystemAlarms::ALARM_ACTUATOR] != SystemAlarms::ALARM_OK) {
+    if (!systemAlarms || data.Alarm[SystemAlarms::ALARM_ACTUATOR] != SystemAlarms::ALARM_OK) {
         QMessageBox mbox(this);
         mbox.setText(QString(tr("The actuator module is in an error state.\n\n"
                                 "Please make sure the correct firmware version is used then "

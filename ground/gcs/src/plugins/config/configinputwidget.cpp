@@ -86,10 +86,11 @@ ConfigInputWidget::ConfigInputWidget(QWidget *parent) : ConfigTaskWidget(parent)
     wizardStep(wizardNone), transmitterType(heli), loop(NULL), skipflag(false),
     cbArmingOption(Q_NULLPTR), lastArmingMethod(ARM_INVALID), armingConfigUpdating(false)
 {
-    manualCommandObj = ManualControlCommand::GetInstance(getObjectManager());
-    manualSettingsObj = ManualControlSettings::GetInstance(getObjectManager());
-    flightStatusObj = FlightStatus::GetInstance(getObjectManager());
-    receiverActivityObj=ReceiverActivity::GetInstance(getObjectManager());
+    manualCommandObj = ManualControlCommand::getInstance(getObjectManager());
+    manualSettingsObj = ManualControlSettings::getInstance(getObjectManager());
+    flightStatusObj = FlightStatus::getInstance(getObjectManager());
+    receiverActivityObj = ReceiverActivity::getInstance(getObjectManager());
+
     m_config = new Ui_InputWidget();
     m_config->setupUi(this);
     
@@ -107,23 +108,24 @@ ConfigInputWidget::ConfigInputWidget(QWidget *parent) : ConfigTaskWidget(parent)
 
     //Generate the rows of buttons in the input channel form GUI
     int index = 0;
-    foreach (QString name, manualSettingsObj->getField("ChannelNumber")->getElementNames())
-    {
-        Q_ASSERT(index < static_cast<int>(ManualControlSettings::CHANNELGROUPS_NUMELEM));
-        inputChannelForm * inpForm=new inputChannelForm(this,index==0,true);
-        m_config->channelSettings->layout()->addWidget(inpForm); //Add the row to the UI
-        inpForm->setName(name);
-        addUAVObjectToWidgetRelation("ManualControlSettings","ChannelGroups",inpForm->ui->channelGroup,index);
-        addUAVObjectToWidgetRelation("ManualControlSettings","ChannelNumber",inpForm->ui->channelNumber,index);
-        addUAVObjectToWidgetRelation("ManualControlSettings","ChannelMin",inpForm->ui->channelMin,index);
-        addUAVObjectToWidgetRelation("ManualControlSettings","ChannelMax",inpForm->ui->channelMax,index);
-        addUAVObjectToWidgetRelation("ManualControlSettings","ChannelNeutral",inpForm->ui->channelNeutral,index);
+    if (manualSettingsObj) {
+        for (QString &name : manualSettingsObj->getField("ChannelNumber")->getElementNames()) {
+            Q_ASSERT(index < static_cast<int>(ManualControlSettings::CHANNELGROUPS_NUMELEM));
+            inputChannelForm * inpForm=new inputChannelForm(this,index==0,true);
+            m_config->channelSettings->layout()->addWidget(inpForm); //Add the row to the UI
+            inpForm->setName(name);
+            addUAVObjectToWidgetRelation("ManualControlSettings","ChannelGroups",inpForm->ui->channelGroup,index);
+            addUAVObjectToWidgetRelation("ManualControlSettings","ChannelNumber",inpForm->ui->channelNumber,index);
+            addUAVObjectToWidgetRelation("ManualControlSettings","ChannelMin",inpForm->ui->channelMin,index);
+            addUAVObjectToWidgetRelation("ManualControlSettings","ChannelMax",inpForm->ui->channelMax,index);
+            addUAVObjectToWidgetRelation("ManualControlSettings","ChannelNeutral",inpForm->ui->channelNeutral,index);
 
-        int index2 = manualCommandObj->getField("Channel")->getElementNames().indexOf(name);
-        if (index2 >= 0) {
-            addUAVObjectToWidgetRelation("ManualControlCommand", "Channel", inpForm->ui->channelCurrent, index2);
+            int index2 = manualCommandObj->getField("Channel")->getElementNames().indexOf(name);
+            if (index2 >= 0) {
+                addUAVObjectToWidgetRelation("ManualControlCommand", "Channel", inpForm->ui->channelCurrent, index2);
+            }
+            ++index;
         }
-        ++index;
     }
 
     // RSSI
@@ -169,8 +171,8 @@ ConfigInputWidget::ConfigInputWidget(QWidget *parent) : ConfigTaskWidget(parent)
     addUAVObjectToWidgetRelation("ManualControlSettings","Stabilization3Reprojection",m_config->fmsSsPos3Rep);
 
     // connect this before the widgets are populated to ensure it always fires
-    connect( ManualControlCommand::GetInstance(getObjectManager()),SIGNAL(objectUpdated(UAVObject*)),this,SLOT(moveFMSlider()));
-    connect( ManualControlSettings::GetInstance(getObjectManager()),SIGNAL(objectUpdated(UAVObject*)),this,SLOT(updatePositionSlider()));
+    connect(ManualControlCommand::getInstance(getObjectManager()), SIGNAL(objectUpdated(UAVObject*)), this, SLOT(moveFMSlider()));
+    connect(ManualControlSettings::getInstance(getObjectManager()), SIGNAL(objectUpdated(UAVObject*)), this, SLOT(updatePositionSlider()));
 
     // check reprojection settings
     const QStringList axes({"Roll", "Pitch", "Yaw", "Rep"});
@@ -184,9 +186,7 @@ ConfigInputWidget::ConfigInputWidget(QWidget *parent) : ConfigTaskWidget(parent)
 
     // check things that affect arming config
     fillArmingComboBox();
-    ActuatorSettings *actuatorSettings = qobject_cast<ActuatorSettings *>(getObjectManager()->getObject(ActuatorSettings::NAME));
-    if (actuatorSettings)
-        connect(actuatorSettings, SIGNAL(objectUpdated(UAVObject *)), this, SLOT(checkArmingConfig()));
+    connect(getObject(ActuatorSettings::NAME), SIGNAL(objectUpdated(UAVObject *)), this, SLOT(checkArmingConfig()));
     connect(m_config->cbArmMethod, SIGNAL(currentIndexChanged(int)), this, SLOT(checkArmingConfig()));
     connect(m_config->cbThrottleCheck, SIGNAL(stateChanged(int)), this, SLOT(checkArmingConfig()));
     connect(m_config->cbCalibrateGyros, SIGNAL(stateChanged(int)), this, SLOT(checkArmingConfig()));
@@ -194,7 +194,7 @@ ConfigInputWidget::ConfigInputWidget(QWidget *parent) : ConfigTaskWidget(parent)
     connect(m_config->sbFailsafeTimeout, SIGNAL(valueChanged(int)), this, SLOT(checkArmingConfig()));
     connect(m_config->cbFailsafeTimeout, SIGNAL(stateChanged(int)), this, SLOT(timeoutCheckboxChanged()));
     connect(m_config->cbThrottleTimeout, SIGNAL(stateChanged(int)), this, SLOT(timeoutCheckboxChanged()));
-    connect(ManualControlSettings::GetInstance(getObjectManager()), SIGNAL(objectUpdated(UAVObject *)), this, SLOT(updateArmingConfig(UAVObject *)));
+    connect(getObject(ManualControlSettings::NAME), SIGNAL(objectUpdated(UAVObject *)), this, SLOT(updateArmingConfig(UAVObject *)));
     // create a hidden widget so uavo->widget relation can take care of some of the work
     cbArmingOption = new QComboBox(this);
     cbArmingOption->setVisible(false);
@@ -434,7 +434,8 @@ void ConfigInputWidget::wzCancel()
     disconnect(telMngr, SIGNAL(disconnected()), this, SLOT(wzCancel()));
 
     dimOtherControls(false);
-    manualCommandObj->setMetadata(manualCommandObj->getDefaultMetadata());
+    if (manualCommandObj)
+        manualCommandObj->setMetadata(manualCommandObj->getDefaultMetadata());
     m_config->stackedWidget->setCurrentIndex(0);
 
     if(wizardStep != wizardNone)
@@ -443,7 +444,8 @@ void ConfigInputWidget::wzCancel()
     m_config->stackedWidget->setCurrentIndex(0);
 
     // Load manual settings back from beginning of wizard
-    manualSettingsObj->setData(previousManualSettingsData);
+    if (manualSettingsObj)
+        manualSettingsObj->setData(previousManualSettingsData);
 
     // Load original metadata
     restoreMdata();
@@ -542,6 +544,8 @@ void ConfigInputWidget::wzBack()
 
 void ConfigInputWidget::wizardSetUpStep(enum wizardSteps step)
 {
+    if (!manualSettingsObj)
+        return;
     switch(step) {
     case wizardWelcome:
         foreach(QPointer<QWidget> wd,extraWidgets)
@@ -631,9 +635,9 @@ void ConfigInputWidget::wizardSetUpStep(enum wizardSteps step)
         break;
     case wizardIdentifyLimits:
     {
-        accessoryDesiredObj0 = AccessoryDesired::GetInstance(getObjectManager(),0);
-        accessoryDesiredObj1 = AccessoryDesired::GetInstance(getObjectManager(),1);
-        accessoryDesiredObj2 = AccessoryDesired::GetInstance(getObjectManager(),2);
+        accessoryDesiredObj0 = AccessoryDesired::getInstance(getObjectManager(), 0);
+        accessoryDesiredObj1 = AccessoryDesired::getInstance(getObjectManager(), 1);
+        accessoryDesiredObj2 = AccessoryDesired::getInstance(getObjectManager(), 2);
         setTxMovement(nothing);
         m_config->wzText->setText(QString(tr("Please move all controls <b>(including switches)</b> to their maximum extents in all directions.  (You may continue when all controls have moved)")));
         fastMdata();
@@ -725,6 +729,8 @@ void ConfigInputWidget::wizardSetUpStep(enum wizardSteps step)
 
 void ConfigInputWidget::wizardTearDownStep(enum wizardSteps step)
 {
+    if (!manualSettingsObj || !manualCommandObj)
+        return;
     QRadioButton * mode, * type;
     Q_ASSERT(step == wizardStep);
     switch(step) {
@@ -880,6 +886,8 @@ void ConfigInputWidget::restoreMdata()
   */
 void ConfigInputWidget::setChannel(int newChan)
 {
+    if (!manualSettingsObj)
+        return;
     if(newChan == ManualControlSettings::CHANNELGROUPS_COLLECTIVE)
         m_config->wzText->setText(QString(tr("Please enable the throttle hold mode and move the collective pitch stick.")));
     else if (newChan == ManualControlSettings::CHANNELGROUPS_FLIGHTMODE)
@@ -959,14 +967,16 @@ void ConfigInputWidget::identifyControls()
 {
     static int debounce=0;
 
+    if (!receiverActivityObj)
+        return;
+
     receiverActivityData=receiverActivityObj->getData();
     if(receiverActivityData.ActiveChannel==255)
         return;
 
-    if(channelDetected)
+    if (channelDetected) {
         return;
-    else
-    {
+    } else {
         receiverActivityData=receiverActivityObj->getData();
         currentChannel.group=receiverActivityData.ActiveGroup;
         currentChannel.number=receiverActivityData.ActiveChannel;
@@ -977,8 +987,7 @@ void ConfigInputWidget::identifyControls()
 
         // If this channel isn't already allocated, and the debounce passes the threshold, set
         // the input channel as detected.
-        if(!usedChannels.contains(lastChannel) && debounce>DEBOUNCE_THRESHOLD_COUNT)
-        {
+        if (manualSettingsObj && !usedChannels.contains(lastChannel) && debounce>DEBOUNCE_THRESHOLD_COUNT) {
             channelDetected = true;
             debounce=0;
             usedChannels.append(lastChannel);
@@ -986,9 +995,9 @@ void ConfigInputWidget::identifyControls()
             manualSettingsData.ChannelGroups[currentChannelNum]=currentChannel.group;
             manualSettingsData.ChannelNumber[currentChannelNum]=currentChannel.number;
             manualSettingsObj->setData(manualSettingsData);
-        }
-        else
+        } else {
             return;
+        }
     }
 
     // At this point in the code, the channel has been successfully identified
@@ -1002,6 +1011,8 @@ void ConfigInputWidget::identifyControls()
 
 void ConfigInputWidget::identifyLimits()
 {
+    if (!manualCommandObj || !manualSettingsObj)
+        return;
     bool allSane=true;
 
     manualCommandData=manualCommandObj->getData();
@@ -1473,6 +1484,9 @@ void ConfigInputWidget::detectFailsafe()
 
 void ConfigInputWidget::moveSticks()
 {
+    if (!manualCommandObj || !manualSettingsObj ||
+            !accessoryDesiredObj0 || !accessoryDesiredObj1 || !accessoryDesiredObj2)
+        return;
     QTransform trans;
     manualCommandData = manualCommandObj->getData();
     accessoryDesiredData0=accessoryDesiredObj0->getData();
@@ -1558,6 +1572,8 @@ void ConfigInputWidget::enableControls(bool enable)
 
 void ConfigInputWidget::invertControls()
 {
+    if (!manualSettingsObj)
+        return;
     manualSettingsData=manualSettingsObj->getData();
     foreach(QWidget * wd,extraWidgets)
     {
@@ -1592,6 +1608,9 @@ void ConfigInputWidget::invertControls()
  */
 quint8 ConfigInputWidget::scaleSwitchChannel(quint8 channelNumber, quint8 switchPositions)
 {
+    if (!manualSettingsObj || !manualCommandObj)
+        return 0;
+
     if(channelNumber > (ManualControlSettings::CHANNELMIN_NUMELEM - 1))
             return 0;
     ManualControlSettings::DataFields manualSettingsDataPriv = manualSettingsObj->getData();
@@ -1634,11 +1653,14 @@ quint8 ConfigInputWidget::scaleSwitchChannel(quint8 channelNumber, quint8 switch
 
 void ConfigInputWidget::moveFMSlider()
 {
-    m_config->fmsSlider->setValue(scaleSwitchChannel(ManualControlSettings::CHANNELMIN_FLIGHTMODE, manualSettingsObj->getData().FlightModeNumber));
+    if (manualSettingsObj)
+        m_config->fmsSlider->setValue(scaleSwitchChannel(ManualControlSettings::CHANNELMIN_FLIGHTMODE, manualSettingsObj->getData().FlightModeNumber));
 }
 
 void ConfigInputWidget::updatePositionSlider()
 {
+    if (!manualSettingsObj)
+        return;
     ManualControlSettings::DataFields manualSettingsDataPriv = manualSettingsObj->getData();
 
     switch(manualSettingsDataPriv.FlightModeNumber) {
@@ -1692,6 +1714,8 @@ void ConfigInputWidget::updatePositionSlider()
 
 void ConfigInputWidget::updateCalibration()
 {
+    if (!manualCommandObj || !manualSettingsObj)
+        return;
     manualCommandData=manualCommandObj->getData();
     for(quint8 i=0;i<ManualControlSettings::CHANNELMAX_NUMELEM;++i)
     {
@@ -1710,6 +1734,8 @@ void ConfigInputWidget::updateCalibration()
 
 void ConfigInputWidget::simpleCalibration(bool enable)
 {
+    if (!manualCommandObj || !manualSettingsObj)
+        return;
     if (enable) {
         m_config->configurationWizard->setEnabled(false);
 
@@ -1874,8 +1900,9 @@ void ConfigInputWidget::checkArmingConfig()
     // clear existing warnings
     clearWarnings(m_config->gbWarnings, m_config->saArmingSettings);
 
-    SystemSettings *sys = qobject_cast<SystemSettings *>(getObjectManager()->getObject(SystemSettings::NAME));
-    Q_ASSERT(sys);
+    SystemSettings *sys = getObject<SystemSettings>(SystemSettings::NAME);
+    if (!sys)
+        return;
     const quint8 vehicle = sys->getAirframeType();
 
     const ArmingMethod arming = armingMethodFromArmName(m_config->cbArmMethod->currentText());
@@ -1903,8 +1930,7 @@ void ConfigInputWidget::checkArmingConfig()
 
     // check hangtime, recommend switch arming if enabled
     bool hangtime = false;
-    ActuatorSettings *actuatorSettings = qobject_cast<ActuatorSettings *>(getObjectManager()->getObject(ActuatorSettings::NAME));
-    Q_ASSERT(actuatorSettings);
+    ActuatorSettings *actuatorSettings = getObject<ActuatorSettings>(ActuatorSettings::NAME);
     if (actuatorSettings)
         hangtime = actuatorSettings->getLowPowerStabilizationMaxTime() > 0;
 

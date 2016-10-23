@@ -124,8 +124,7 @@ bool BrainRE1::setInputType(enum InputType type)
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwBrainRE1 *hwBrainRE1 = HwBrainRE1::GetInstance(uavoManager);
-    Q_ASSERT(hwBrainRE1);
+    HwBrainRE1 *hwBrainRE1 = uavoManager->getRequiredObject<HwBrainRE1>(HwBrainRE1::OBJID);
     if (!hwBrainRE1)
         return false;
 
@@ -166,8 +165,7 @@ enum Core::IBoardType::InputType BrainRE1::getInputType()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwBrainRE1 *hwBrainRE1 = HwBrainRE1::GetInstance(uavoManager);
-    Q_ASSERT(hwBrainRE1);
+    HwBrainRE1 *hwBrainRE1 = uavoManager->getRequiredObject<HwBrainRE1>(HwBrainRE1::OBJID);
     if (!hwBrainRE1)
         return INPUT_TYPE_UNKNOWN;
 
@@ -210,7 +208,7 @@ QVector< QVector<int> > BrainRE1::getChannelBanks() {
 
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwBrainRE1 *hwBrainRE1 = HwBrainRE1::GetInstance(uavoManager);
+    HwBrainRE1 *hwBrainRE1 = uavoManager->getRequiredObject<HwBrainRE1>(HwBrainRE1::OBJID);
     if (!hwBrainRE1 || (hwBrainRE1->getMultiPortMode() == 0)) {
         banks.resize(4);
         banks[0] = QVector<int> () << 1 << 2 << 3 << 4; // TIM5

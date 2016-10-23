@@ -177,11 +177,12 @@ QStringList ConfigFixedWingWidget::getChannelDescriptions()
  */
 SystemSettings::AirframeTypeOptions ConfigFixedWingWidget::updateConfigObjectsFromWidgets()
 {
-    MixerSettings *mixerSettings = MixerSettings::GetInstance(getObjectManager());
-    Q_ASSERT(mixerSettings);
-
     // Default fixed-wing type is classic airplane
     SystemSettings::AirframeTypeOptions airframeType = SystemSettings::AIRFRAMETYPE_FIXEDWING;
+
+    MixerSettings *mixerSettings = getObject<MixerSettings>(MixerSettings::NAME);
+    if (!mixerSettings)
+        return airframeType;
 
 	// Remove Feed Forward, it is pointless on a plane:
     setMixerValue(mixerSettings, "FeedForward", 0.0);
@@ -224,8 +225,9 @@ void ConfigFixedWingWidget::refreshAirframeWidgetsValues(SystemSettings::Airfram
     setComboCurrentIndex(m_aircraft->fwRudder1ChannelBox, fixed.FixedWingYaw1);
     setComboCurrentIndex(m_aircraft->fwRudder2ChannelBox, fixed.FixedWingYaw2);
 
-    MixerSettings *mixerSettings = MixerSettings::GetInstance(getObjectManager());
-    Q_ASSERT(mixerSettings);
+    MixerSettings *mixerSettings = getObject<MixerSettings>(MixerSettings::NAME);
+    if (!mixerSettings)
+        return;
 
     int channel;
     if (frameType == SystemSettings::AIRFRAMETYPE_FIXEDWINGELEVON) {
@@ -277,8 +279,10 @@ bool ConfigFixedWingWidget::setupFrameFixedWing(SystemSettings::AirframeTypeOpti
 
     SetConfigData(config);
 	
-    MixerSettings *mixerSettings = MixerSettings::GetInstance(getObjectManager());
-    Q_ASSERT(mixerSettings);
+    MixerSettings *mixerSettings = getObject<MixerSettings>(MixerSettings::NAME);
+    if (!mixerSettings)
+        return false;
+
     resetMixers(mixerSettings);
 
     // ... and compute the matrix:
@@ -354,8 +358,10 @@ bool ConfigFixedWingWidget::setupFrameElevon(SystemSettings::AirframeTypeOptions
 
     SetConfigData(config);
 	    
-    MixerSettings *mixerSettings = MixerSettings::GetInstance(getObjectManager());
-    Q_ASSERT(mixerSettings);
+    MixerSettings *mixerSettings = getObject<MixerSettings>(MixerSettings::NAME);
+    if (!mixerSettings)
+        return false;
+
     resetMixers(mixerSettings);
 
     // Save the curve:
@@ -426,8 +432,10 @@ bool ConfigFixedWingWidget::setupFrameVtail(SystemSettings::AirframeTypeOptions 
 
     SetConfigData(config);
 	    
-    MixerSettings *mixerSettings = MixerSettings::GetInstance(getObjectManager());
-    Q_ASSERT(mixerSettings);
+    MixerSettings *mixerSettings = getObject<MixerSettings>(MixerSettings::NAME);
+    if (!mixerSettings)
+        return false;
+
     resetMixers(mixerSettings);
 
     // Save the curve:

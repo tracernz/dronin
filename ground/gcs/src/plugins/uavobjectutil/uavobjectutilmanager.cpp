@@ -140,8 +140,9 @@ void UAVObjectUtilManager::saveNextObject()
     Q_ASSERT(obj);
     UAVOBJECTUTIL_QXTLOG_DEBUG(QString("Send save object request to board %0").arg(obj->getName()));
 
-    ObjectPersistence * objectPersistence = ObjectPersistence::GetInstance(getObjectManager());
-    Q_ASSERT(objectPersistence);
+    ObjectPersistence *objectPersistence = ObjectPersistence::getInstance(getObjectManager());
+    if (!objectPersistence)
+        return;
 
     // "transactionCompleted" is emitted once the objectPersistence object is sent over the telemetry link.
     // Since its metadata state that it should be ACK'ed on flight telemetry, the transactionCompleted signal
@@ -199,12 +200,13 @@ void UAVObjectUtilManager::objectPersistenceTransactionCompleted(UAVObject* obj,
     } else {
         // Can be caused by timeout errors on sending.  Forget it and send next.
         UAVOBJECTUTIL_QXTLOG_DEBUG(QString("objectPersistenceTranscationCompleted (error))"));
-        ObjectPersistence * objectPersistence = ObjectPersistence::GetInstance(getObjectManager());
-        Q_ASSERT(objectPersistence);
-
-        objectPersistence->disconnect(this);
         queue.dequeue(); // We can now remove the object, it failed anyway.
         saveState = IDLE;
+
+        ObjectPersistence *objectPersistence = ObjectPersistence::getInstance(getObjectManager());
+        if (!objectPersistence)
+            return;
+        objectPersistence->disconnect(this);
         // Careful below: objectPersistence contains a field 'ObjectID' that corresponds to
         // the objectID we wanted to save. Don't confuse with the OBJID of the Objectpersistence
         // UAVO itself!
@@ -221,12 +223,12 @@ void UAVObjectUtilManager::objectPersistenceTransactionCompleted(UAVObject* obj,
 void UAVObjectUtilManager::objectPersistenceOperationFailed()
 {
     if (saveState == AWAITING_COMPLETED) {
-
-        ObjectPersistence * objectPersistence = ObjectPersistence::GetInstance(getObjectManager());
-        Q_ASSERT(objectPersistence);
-
         UAVObject* obj = queue.dequeue(); // We can now remove the object, it failed anyway.
         Q_ASSERT(obj);
+
+        ObjectPersistence *objectPersistence = ObjectPersistence::getInstance(getObjectManager());
+        if (!objectPersistence)
+            return;
 
         objectPersistence->disconnect(this);
 
@@ -357,8 +359,10 @@ bool UAVObjectUtilManager::setMetadata(QMap<QString, UAVObject::Metadata> metaDa
         return false;
     // Load all metadata objects.
     UAVObjectManager *objManager = getObjectManager();
-    foreach (QString str, metaDataSetList.keys()){
-        UAVDataObject *obj = dynamic_cast<UAVDataObject*>(objManager->getObject(str));
+    foreach (QString str, metaDataSetList.keys()) {
+        UAVDataObject *obj = objManager->getRequiredObject<UAVDataObject>(str);
+        if (!obj)
+            continue;
         bool updateMetadataFlag = false;
         switch (metadataSetType){
         case ALL_METADATA:
@@ -467,8 +471,7 @@ FirmwareIAPObj::DataFields UAVObjectUtilManager::getFirmwareIap()
 {
     FirmwareIAPObj::DataFields dummy;
 
-    FirmwareIAPObj *firmwareIap = FirmwareIAPObj::GetInstance(obm);
-    Q_ASSERT(firmwareIap);
+    FirmwareIAPObj *firmwareIap = FirmwareIAPObj::getInstance(obm);
     if (!firmwareIap)
         return dummy;
 
@@ -562,8 +565,9 @@ int UAVObjectUtilManager::setHomeLocation(double LLA[3], bool save_to_sdcard)
     // ******************
     // save the new settings
 
-    HomeLocation *homeLocation = HomeLocation::GetInstance(obm);
-    Q_ASSERT(homeLocation != NULL);
+    HomeLocation *homeLocation = HomeLocation::getInstance(obm);
+    if (!homeLocation)
+        return -2;
 
     HomeLocation::DataFields homeLocationData = homeLocation->getData();
     homeLocationData.Latitude = LLA[0] * 1e7;
@@ -586,8 +590,9 @@ int UAVObjectUtilManager::setHomeLocation(double LLA[3], bool save_to_sdcard)
 
 int UAVObjectUtilManager::getHomeLocation(bool &set, double LLA[3])
 {
-    HomeLocation *homeLocation = HomeLocation::GetInstance(obm);
-    Q_ASSERT(homeLocation != NULL);
+    HomeLocation *homeLocation = HomeLocation::getInstance(obm);
+    if (!homeLocation)
+        return -1;
 
     HomeLocation::DataFields homeLocationData = homeLocation->getData();
 
@@ -620,8 +625,9 @@ int UAVObjectUtilManager::getHomeLocation(bool &set, double LLA[3])
 
 int UAVObjectUtilManager::getGPSPosition(double LLA[3])
 {
-    GPSPosition *gpsPosition = GPSPosition::GetInstance(obm);
-    Q_ASSERT(gpsPosition != NULL);
+    GPSPosition *gpsPosition = GPSPosition::getInstance(obm);
+    if (!gpsPosition)
+        return -1;
 
     GPSPosition::DataFields gpsPositionData = gpsPosition->getData();
 

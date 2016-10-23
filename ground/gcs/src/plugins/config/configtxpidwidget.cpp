@@ -46,7 +46,7 @@ ConfigTxPIDWidget::ConfigTxPIDWidget(QWidget *parent) : ConfigTaskWidget(parent)
     // Cannot use addUAVObjectToWidgetRelation() for OptionaModules enum because
     // QCheckBox returns bool (0 or -1) and this value is then set to enum instead
     // or enum options
-    connect(ModuleSettings::GetInstance(getObjectManager()), SIGNAL(objectUpdated(UAVObject *)), this, SLOT(refreshValues()));
+    connect(getObject(ModuleSettings::NAME), SIGNAL(objectUpdated(UAVObject *)), this, SLOT(refreshValues()));
     connect(m_txpid->Apply, SIGNAL(clicked()), this, SLOT(applySettings()));
     connect(m_txpid->Save, SIGNAL(clicked()), this, SLOT(saveSettings()));
 
@@ -89,7 +89,9 @@ ConfigTxPIDWidget::~ConfigTxPIDWidget()
 
 void ConfigTxPIDWidget::refreshValues()
 {
-    ModuleSettings *moduleSettings = ModuleSettings::GetInstance(getObjectManager());
+    ModuleSettings *moduleSettings = getObject<ModuleSettings>(ModuleSettings::NAME);
+    if (!moduleSettings)
+        return;
     ModuleSettings::DataFields moduleSettingsData = moduleSettings->getData();
     m_txpid->TxPIDEnable->setChecked(
         moduleSettingsData.AdminState[ModuleSettings::ADMINSTATE_TXPID] == ModuleSettings::ADMINSTATE_ENABLED);
@@ -97,7 +99,9 @@ void ConfigTxPIDWidget::refreshValues()
 
 void ConfigTxPIDWidget::applySettings()
 {
-    ModuleSettings *moduleSettings = ModuleSettings::GetInstance(getObjectManager());
+    ModuleSettings *moduleSettings = getObject<ModuleSettings>(ModuleSettings::NAME);
+    if (!moduleSettings)
+        return;
     ModuleSettings::DataFields moduleSettingsData = moduleSettings->getData();
     moduleSettingsData.AdminState[ModuleSettings::ADMINSTATE_TXPID] =
         m_txpid->TxPIDEnable->isChecked() ? ModuleSettings::ADMINSTATE_ENABLED : ModuleSettings::ADMINSTATE_DISABLED;
@@ -107,8 +111,10 @@ void ConfigTxPIDWidget::applySettings()
 void ConfigTxPIDWidget::saveSettings()
 {
     applySettings();
-    UAVObject *obj = ModuleSettings::GetInstance(getObjectManager());
-    saveObjectToSD(obj);
+    ModuleSettings *moduleSettings = getObject<ModuleSettings>(ModuleSettings::NAME);
+    if (!moduleSettings)
+        return;
+    saveObjectToSD(moduleSettings);
 }
 
 

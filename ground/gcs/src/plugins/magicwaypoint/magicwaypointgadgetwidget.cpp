@@ -76,8 +76,7 @@ PathDesired* MagicWaypointGadgetWidget::getPathDesired()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    PathDesired* obj = PathDesired::GetInstance(objManager);
-    Q_ASSERT(obj != NULL); // Save crashes later
+    PathDesired *obj = PathDesired::getInstance(objManager);
     return obj;
 }
 
@@ -88,8 +87,7 @@ PositionActual* MagicWaypointGadgetWidget::getPositionActual()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    PositionActual *obj = PositionActual::GetInstance(objManager);
-    Q_ASSERT(obj != NULL);
+    PositionActual *obj = PositionActual::getInstance(objManager);
     return obj;
 }
 

@@ -117,14 +117,18 @@ void ConfigCameraStabilizationWidget::refreshWidgetsValues(UAVObject *obj)
     // Set module enable checkbox from OptionalModules UAVObject item.
     // It needs special processing because ConfigTaskWidget uses TRUE/FALSE
     // for QCheckBox, but OptionalModules uses Enabled/Disabled enum values.
-    ModuleSettings *moduleSettings = ModuleSettings::GetInstance(getObjectManager());
+    ModuleSettings *moduleSettings = ModuleSettings::getInstance(getObjectManager());
+    if (!moduleSettings)
+        return;
     ModuleSettings::DataFields moduleSettingsData = moduleSettings->getData();
 
     m_camerastabilization->enableCameraStabilization->setChecked(
         moduleSettingsData.AdminState[ModuleSettings::ADMINSTATE_CAMERASTAB] == ModuleSettings::ADMINSTATE_ENABLED);
 
     // Load mixer outputs which are mapped to camera controls
-    MixerSettings *mixerSettings = MixerSettings::GetInstance(getObjectManager());
+    MixerSettings *mixerSettings = MixerSettings::getInstance(getObjectManager());
+    if (!mixerSettings)
+        return;
     MixerSettings::DataFields mixerSettingsData = mixerSettings->getData();
 
     // TODO: Need to reformat object so types are an
@@ -177,12 +181,16 @@ void ConfigCameraStabilizationWidget::updateObjectsFromWidgets()
     // unnessesary UAVObect update.
     quint8 enableModule = m_camerastabilization->enableCameraStabilization->isChecked() ?
             (ModuleSettings::ADMINSTATE_ENABLED) : (ModuleSettings::ADMINSTATE_DISABLED);
-    ModuleSettings *moduleSettings = ModuleSettings::GetInstance(getObjectManager());
+    ModuleSettings *moduleSettings = ModuleSettings::getInstance(getObjectManager());
+    if (!moduleSettings)
+        return;
     moduleSettings->setAdminState(ModuleSettings::ADMINSTATE_CAMERASTAB, enableModule);
 
     // Update mixer channels which were mapped to camera outputs in case they are
     // not used for other function yet
-    MixerSettings *mixerSettings = MixerSettings::GetInstance(getObjectManager());
+    MixerSettings *mixerSettings = MixerSettings::getInstance(getObjectManager());
+    if (!mixerSettings)
+        return;
     MixerSettings::DataFields mixerSettingsData = mixerSettings->getData();
 
     // TODO: Need to reformat object so types are an
@@ -262,7 +270,9 @@ void ConfigCameraStabilizationWidget::defaultRequestedSlot(int group)
     // But if you want, you could use the dirtyClone() function to get default
     // values of an object and then use them to set a widget state.
     //
-    //HwSettings *hwSettings = HwSettings::GetInstance(getObjectManager());
+    //HwSettings *hwSettings = HwSettings::getInstance(getObjectManager());
+    //if (!hwSettings)
+    //    return;
     //HwSettings *hwSettingsDefault=(HwSettings*)hwSettings->dirtyClone();
     //HwSettings::DataFields hwSettingsData = hwSettingsDefault->getData();
     //m_camerastabilization->enableCameraStabilization->setChecked(

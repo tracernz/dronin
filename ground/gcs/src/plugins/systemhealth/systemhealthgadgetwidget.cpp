@@ -56,7 +56,7 @@ SystemHealthGadgetWidget::SystemHealthGadgetWidget(QWidget *parent) : QGraphicsV
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
 
-    SystemAlarms* obj = SystemAlarms::GetInstance(objManager);
+    SystemAlarms* obj = SystemAlarms::getInstance(objManager);
     connect(obj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(updateAlarms(UAVObject*)));
 
     // Listen to autopilot connection events
@@ -169,8 +169,9 @@ void SystemHealthGadgetWidget::setSystemFile(QString dfn)
          TelemetryManager* telMngr = pm->getObject<TelemetryManager>();
          if (telMngr->isConnected()) {
              onAutopilotConnect();
-             SystemAlarms* obj = SystemAlarms::GetInstance(objManager);
-             updateAlarms(obj);
+             SystemAlarms* obj = SystemAlarms::getInstance(objManager);
+             if (obj)
+                updateAlarms(obj);
          }
        }
    }
@@ -279,9 +280,14 @@ void SystemHealthGadgetWidget::showAllAlarmDescriptions(const QPoint& location){
 
 QString SystemHealthGadgetWidget::getAlarmDescriptionFileName(const QString itemId) {
     QString alarmDescriptionFileName;
+
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager* objManager = pm->getObject<UAVObjectManager>();
-    SystemAlarms::DataFields systemAlarmsData = SystemAlarms::GetInstance(objManager)->getData();
+    SystemAlarms *sysAlarms = SystemAlarms::getInstance(objManager);
+    if (!sysAlarms)
+        return QString();
+
+    SystemAlarms::DataFields systemAlarmsData = sysAlarms->getData();
     if (itemId.contains("SystemConfiguration-")) {
         switch(systemAlarmsData.ConfigError) {
         case SystemAlarms::CONFIGERROR_STABILIZATION:

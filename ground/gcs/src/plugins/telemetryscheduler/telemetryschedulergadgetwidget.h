@@ -65,7 +65,7 @@ private slots:
     void saveSchedule();
     void onSavedSchedule(bool);
     void onCompletedMetadataWrite(bool);
-    void onCompletedMetadataSave(int, bool);
+    void onCompletedMetadataSave(quint32, bool);
     void updateCurrentColumn(UAVObject *);
     void dataModel_itemChanged(int col);
     void dataModel_itemChanged(QStandardItem *item);

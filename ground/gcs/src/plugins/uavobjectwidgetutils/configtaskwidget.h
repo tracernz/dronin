@@ -115,15 +115,10 @@ public:
      * @param name name of object to fetch
      * @return object pointer on success, null pointer on failure
      */
-    template<typename T>
-    T *getObject(const QString &name, quint32 instId = 0) {
-        T *obj = qobject_cast<T *>(getObjectManager()->getObject(name, instId));
-        Q_ASSERT(obj);
-        if (!obj) {
-            qWarning() << "Could not get UAVO " << name;
-            return Q_NULLPTR;
-        }
-        return obj;
+    template<typename T = UAVObject>
+    T *getObject(const QString &name, quint32 instId = 0)
+    {
+        return objManager->getRequiredObject<T>(name, instId);
     }
 
     static double listMean(QList<double> list);

@@ -42,7 +42,7 @@ BrainRE1Configuration::BrainRE1Configuration(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    re1_settings_obj = HwBrainRE1::GetInstance(getObjectManager());
+    re1_settings_obj = HwBrainRE1::getInstance(getObjectManager());
 
     addApplySaveButtons(ui->applySettings,ui->saveSettings);
     addUAVObjectToWidgetRelation("HwBrainRE1", "RxPort",ui->cmbRxPort);
@@ -98,8 +98,10 @@ BrainRE1Configuration::BrainRE1Configuration(QWidget *parent) :
     connect(ui->cmbMultiPortMode, SIGNAL(currentIndexChanged(int)), this, SLOT(mpChanged(int)));
     connect(ui->cmbI2CExtMag, SIGNAL(currentIndexChanged(int)), this, SLOT(extMagChanged(int)));
 
-    mpChanged(re1_settings_obj->getMultiPortMode());
-    extMagChanged(re1_settings_obj->getI2CExtMag());
+    if (re1_settings_obj) {
+        mpChanged(re1_settings_obj->getMultiPortMode());
+        extMagChanged(re1_settings_obj->getI2CExtMag());
+    }
 }
 
 BrainRE1Configuration::~BrainRE1Configuration()
@@ -170,6 +172,8 @@ int BrainRE1Configuration::generateRandomNumber(int max)
 
 void BrainRE1Configuration::getCustomLedColor()
 {
+    if (!re1_settings_obj)
+        return;
     QColor color = QColor::fromRgb(re1_settings_obj->getCustomLEDColor(0),
                                    re1_settings_obj->getCustomLEDColor(1),
                                    re1_settings_obj->getCustomLEDColor(2));
@@ -178,6 +182,8 @@ void BrainRE1Configuration::getCustomLedColor()
 
 void BrainRE1Configuration::setCustomLedColor(const QColor color)
 {
+    if (!re1_settings_obj)
+        return;
     re1_settings_obj->setCustomLEDColor(0, color.red());
     re1_settings_obj->setCustomLEDColor(1, color.green());
     re1_settings_obj->setCustomLEDColor(2, color.blue());

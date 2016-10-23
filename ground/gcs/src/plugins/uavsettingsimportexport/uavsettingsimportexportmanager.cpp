@@ -148,14 +148,14 @@ bool UAVSettingsImportExportManager::importUAVSettings(const QByteArray &setting
 
             // Sanity Check:
             UAVObject *obj = boardObjManager->getObject(uavObjectName);
-            UAVDataObject *dobj = dynamic_cast<UAVDataObject*>(obj);
-            if (obj == NULL) {
+            UAVDataObject *dobj = qobject_cast<UAVDataObject*>(obj);
+            if (!obj) {
                 // This object is unknown!
                 qDebug() << "Object unknown:" << uavObjectName << uavObjectID;
                 swui.addLine(uavObjectName, "Error (Object unknown)", false);
             } else if(dobj && !dobj->getIsPresentOnHardware()) {
                 swui.addLine(uavObjectName, "Error (Object not present on hw)", false);
-            } else {
+            } else if(dobj) {
                 //  - Update each field
                 //  - Issue and "updated" command
                 UAVDataObject *newObj = dobj->clone();
@@ -209,6 +209,9 @@ bool UAVSettingsImportExportManager::importUAVSettings(const QByteArray &setting
                     swui.addLine(uavObjectName, "OK", true);
                 }
                 importedObjectManager->registerObject(newObj);
+            } else {
+                qWarning() << "Failed to get data object " << uavObjectName;
+                swui.addLine(uavObjectName, "Error (Internal)", false);
             }
         }
         node = node.nextSibling();

@@ -248,8 +248,10 @@ void ScopeGadgetOptionsPage::on_cmbSpectrogramSource_currentIndexChanged(QString
         // Load UAVO
         ExtensionSystem::PluginManager* pm = ExtensionSystem::PluginManager::instance();
         UAVObjectManager* objManager = pm->getObject<UAVObjectManager>();
-        VibrationAnalysisOutput* vibrationAnalysisOutput = VibrationAnalysisOutput::GetInstance(objManager);
-        VibrationAnalysisSettings* vibrationAnalysisSettings = VibrationAnalysisSettings::GetInstance(objManager);
+        VibrationAnalysisOutput* vibrationAnalysisOutput = VibrationAnalysisOutput::getInstance(objManager);
+        VibrationAnalysisSettings* vibrationAnalysisSettings = VibrationAnalysisSettings::getInstance(objManager);
+        if (!vibrationAnalysisOutput || !vibrationAnalysisSettings)
+            return;
         VibrationAnalysisSettings::DataFields vibrationAnalysisSettingsData = vibrationAnalysisSettings->getData();
 
         // Set combobox field to UAVO name
@@ -285,7 +287,9 @@ void ScopeGadgetOptionsPage::on_cmbSpectrogramSource_currentIndexChanged(QString
 
         options_page->cmbUavoFieldSpectrogram->clear();
 
-        UAVObject* inst = objManager->getObject(vibrationAnalysisOutput->getObjID());
+        UAVObject *inst = objManager->getRequiredObject(vibrationAnalysisOutput->getObjID());
+        if (!inst)
+            return;
 
         QList<UAVObjectField*> fieldList = inst->getFields();
 
@@ -389,9 +393,8 @@ void ScopeGadgetOptionsPage::on_cmbUAVObjects_currentIndexChanged(QString val)
 
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    UAVDataObject* objData = dynamic_cast<UAVDataObject*>( objManager->getObject(val) );
-
-    if (objData == NULL)
+    UAVDataObject* objData = objManager->getObject<UAVDataObject>(val);
+    if (!objData)
         return;
 
     QList<UAVObjectField*> fieldList = objData->getFields();
@@ -424,9 +427,8 @@ void ScopeGadgetOptionsPage::on_cmbUAVObjectsSpectrogram_currentIndexChanged(QSt
 
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    UAVDataObject* objData = dynamic_cast<UAVDataObject*>( objManager->getObject(val) );
-
-    if (objData == NULL)
+    UAVDataObject* objData = objManager->getObject<UAVDataObject>(val);
+    if (!objData)
         return;
 
     QList<UAVObjectField*> fieldList = objData->getFields();

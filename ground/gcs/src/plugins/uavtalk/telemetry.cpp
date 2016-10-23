@@ -101,7 +101,7 @@ Telemetry::Telemetry(UAVTalk* utalk, UAVObjectManager* objMngr)
     connect(utalk, SIGNAL(ackReceived(UAVObject*)), this, SLOT(transactionSuccess(UAVObject*)));
     connect(utalk, SIGNAL(nackReceived(UAVObject*)), this, SLOT(transactionFailure(UAVObject*)));
     // Get GCS stats object
-    gcsStatsObj = GCSTelemetryStats::GetInstance(objMngr);
+    gcsStatsObj = GCSTelemetryStats::getInstance(objMngr);
     // Setup and start the periodic timer
     timeToNextUpdateMs = 0;
     updateTimer = new QTimer(this);
@@ -461,35 +461,30 @@ void Telemetry::processObjectUpdates(UAVObject* obj, EventMask event, bool allIn
  */
 void Telemetry::processObjectQueue()
 {
-    if (objQueue.length() > 1)
-    {
+    if (objQueue.length() > 1) {
         TELEMETRY_QXTLOG_DEBUG("[telemetry.cpp] **************** Object Queue above 1 in backlog ****************");
     }
+
     // Get object information from queue (first the priority and then the regular queue)
     ObjectQueueInfo objInfo;
-    if ( !objPriorityQueue.isEmpty() )
-    {
+    if (!objPriorityQueue.isEmpty())
         objInfo = objPriorityQueue.dequeue();
-    }
-    else if ( !objQueue.isEmpty() )
-    {
+    else if (!objQueue.isEmpty())
         objInfo = objQueue.dequeue();
-    }
     else
-    {
         return;
-    }
+
+    if (!gcsStatsObj)
+        return;
 
     // Check if a connection has been established, only process GCSTelemetryStats updates
     // (used to establish the connection)
     GCSTelemetryStats::DataFields gcsStats = gcsStatsObj->getData();
-    if ( gcsStats.Status != GCSTelemetryStats::STATUS_CONNECTED )
-    {
+    if (gcsStats.Status != GCSTelemetryStats::STATUS_CONNECTED) {
         objQueue.clear();
         if ( objInfo.obj->getObjID() != GCSTelemetryStats::OBJID &&
-             objInfo.obj->getObjID() != HwTauLink::OBJID &&
-             objInfo.obj->getObjID() != ObjectPersistence::OBJID )
-        {
+                objInfo.obj->getObjID() != HwTauLink::OBJID &&
+                objInfo.obj->getObjID() != ObjectPersistence::OBJID ) {
             // If Telemetry is not connected, then all transactions fail except
             // - GCSTelemetryStats (to establish connection)
             // - HwTauLink (to configure the modem)

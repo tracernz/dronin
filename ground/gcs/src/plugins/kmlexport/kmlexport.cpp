@@ -57,15 +57,17 @@ KmlExport::KmlExport(QString inputLogFileName, QString outputKmlFileName) :
     kmlTalk = new UAVTalk(&logFile, kmlUAVObjectManager);
 
     // Get the UAVObjects
-    airspeedActual = AirspeedActual::GetInstance(kmlUAVObjectManager);
-    attitudeActual = AttitudeActual::GetInstance(kmlUAVObjectManager);
-    gpsPosition = GPSPosition::GetInstance(kmlUAVObjectManager);
-    homeLocation = HomeLocation::GetInstance(kmlUAVObjectManager);
-    positionActual = PositionActual::GetInstance(kmlUAVObjectManager);
-    velocityActual = VelocityActual::GetInstance(kmlUAVObjectManager);
+    airspeedActual = AirspeedActual::getInstance(kmlUAVObjectManager);
+    attitudeActual = AttitudeActual::getInstance(kmlUAVObjectManager);
+    gpsPosition = GPSPosition::getInstance(kmlUAVObjectManager);
+    homeLocation = HomeLocation::getInstance(kmlUAVObjectManager);
+    positionActual = PositionActual::getInstance(kmlUAVObjectManager);
+    velocityActual = VelocityActual::getInstance(kmlUAVObjectManager);
 
-    homeLocationData = homeLocation->getData();
-    gpsPositionData = gpsPosition->getData();
+    if (homeLocation)
+        homeLocationData = homeLocation->getData();
+    if (gpsPosition)
+        gpsPositionData = gpsPosition->getData();
 
     // Connect position actual. This is the trigger event for plotting a new
     // KML placemark.
@@ -698,6 +700,8 @@ PlacemarkPtr KmlExport::CreateLineStringPlacemark(const LLAVCoordinates &startPo
  */
 PlacemarkPtr KmlExport::createTimespanPlacemark(const LLAVCoordinates &timestampPoint, quint32 lastPlacemarkTime, quint32 newPlacemarkTime)
 {
+    if (!attitudeActual || !airspeedActual)
+        return Q_NULLPTR;
     // Create coordinates
     CoordinatesPtr coordinates = factory->CreateCoordinates();
     coordinates->add_latlngalt(timestampPoint.latitude, timestampPoint.longitude, timestampPoint.altitude);
@@ -776,6 +780,9 @@ void KmlExport::positionActualUpdated(UAVObject *obj)
 {
     Q_UNUSED(obj);
 
+    if (!airspeedActual || !positionActual || !velocityActual)
+        return;
+
     // Only export positional data if the home location has been set.
     if (homeLocationData.Set == HomeLocation::SET_FALSE)
         return;
@@ -849,13 +856,15 @@ void KmlExport::positionActualUpdated(UAVObject *obj)
 void KmlExport::homeLocationUpdated(UAVObject *obj)
 {
     Q_UNUSED(obj);
-    homeLocationData = homeLocation->getData();
+    if (homeLocation)
+        homeLocationData = homeLocation->getData();
 }
 
 void KmlExport::gpsPositionUpdated(UAVObject *obj)
 {
     Q_UNUSED(obj);
-    gpsPositionData = gpsPosition->getData();
+    if (gpsPosition)
+        gpsPositionData = gpsPosition->getData();
 }
 
 /**

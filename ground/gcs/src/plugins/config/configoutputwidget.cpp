@@ -152,7 +152,9 @@ ConfigOutputWidget::~ConfigOutputWidget()
   */
 void ConfigOutputWidget::runChannelTests(bool state)
 {
-    SystemAlarms * systemAlarmsObj = SystemAlarms::GetInstance(getObjectManager());
+    SystemAlarms * systemAlarmsObj = SystemAlarms::getInstance(getObjectManager());
+    if (!systemAlarmsObj)
+        return;
     SystemAlarms::DataFields systemAlarms = systemAlarmsObj->getData();
 
     if(state && ((systemAlarms.Alarm[SystemAlarms::ALARM_ACTUATOR] == SystemAlarms::ALARM_ERROR) || (systemAlarms.Alarm[SystemAlarms::ALARM_ACTUATOR] == SystemAlarms::ALARM_CRITICAL))) {
@@ -162,7 +164,9 @@ void ConfigOutputWidget::runChannelTests(bool state)
         mbox.exec();
 
         // Unfortunately must cache this since callback will reoccur
-        accInitialData = ActuatorCommand::GetInstance(getObjectManager())->getMetadata();
+        ActuatorCommand *actCommand = ActuatorCommand::getInstance(getObjectManager());
+        if (actCommand)
+            accInitialData = actCommand->getMetadata();
 
         m_config->channelOutTest->setChecked(false);
         return;
@@ -181,24 +185,22 @@ void ConfigOutputWidget::runChannelTests(bool state)
         }
     }
 
-    ActuatorCommand * obj = ActuatorCommand::GetInstance(getObjectManager());
+    ActuatorCommand *obj = ActuatorCommand::getInstance(getObjectManager());
+    if (!obj)
+        return;
     UAVObject::Metadata mdata = obj->getMetadata();
-    if (state)
-    {
+    if (state) {
         accInitialData = mdata;
         UAVObject::SetFlightAccess(mdata, UAVObject::ACCESS_READONLY);
         UAVObject::SetFlightTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_ONCHANGE);
         UAVObject::SetGcsTelemetryAcked(mdata, false);
         UAVObject::SetGcsTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_ONCHANGE);
         mdata.gcsTelemetryUpdatePeriod = 100;
-    }
-    else
-    {
+    } else {
         mdata = accInitialData; // Restore metadata
     }
     obj->setMetadata(mdata);
     obj->updated();
-
 }
 
 /**
@@ -229,8 +231,9 @@ void ConfigOutputWidget::sendChannelTest(int index, int value)
     if (index < 0 || static_cast<unsigned>(index) >= ActuatorCommand::CHANNEL_NUMELEM)
         return;
 
-    ActuatorCommand *actuatorCommand = ActuatorCommand::GetInstance(getObjectManager());
-    Q_ASSERT(actuatorCommand);
+    ActuatorCommand *actuatorCommand = ActuatorCommand::getInstance(getObjectManager());
+    if (!actuatorCommand)
+        return;
     ActuatorCommand::DataFields actuatorCommandFields = actuatorCommand->getData();
     actuatorCommandFields.Channel[index] = value;
     actuatorCommand->setData(actuatorCommandFields);
@@ -294,21 +297,15 @@ void ConfigOutputWidget::startESCCalibration()
         return;
 
     // Get access to actuator command (for setting actual value)
-    ActuatorCommand *actuatorCommand = ActuatorCommand::GetInstance(getObjectManager());
-    Q_ASSERT(actuatorCommand);
-    if (!actuatorCommand) {
-        qWarning() << "Failed to get ActuatorCommand";
+    ActuatorCommand *actuatorCommand = ActuatorCommand::getInstance(getObjectManager());
+    if (!actuatorCommand)
         return;
-    }
     ActuatorCommand::DataFields actuatorCommandFields = actuatorCommand->getData();
     UAVObject::Metadata mdata = actuatorCommand->getMetadata();
     // Get access to actuator settings (for min / max values)
-    ActuatorSettings *actuatorSettings = ActuatorSettings::GetInstance(getObjectManager());
-    Q_ASSERT(actuatorSettings);
-    if (!actuatorSettings) {
-        qWarning() << "Failed to get ActuatorSettings";
+    ActuatorSettings *actuatorSettings = ActuatorSettings::getInstance(getObjectManager());
+    if (!actuatorSettings)
         return;
-    }
     ActuatorSettings::DataFields actuatorSettingsData = actuatorSettings->getData();
 
     // Save previous metadata

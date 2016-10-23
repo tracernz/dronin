@@ -101,10 +101,10 @@ ScopeGadgetWidget::~ScopeGadgetWidget()
     // Get the object to de-monitor
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    foreach (QString uavObjName, m_connectedUAVObjects)
-    {
-        UAVDataObject *obj = dynamic_cast<UAVDataObject*>(objManager->getObject(uavObjName));
-        disconnect(obj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(uavObjectReceived(UAVObject*)));
+    for (const QString &uavObjName : m_connectedUAVObjects) {
+        UAVDataObject *obj = objManager->getObject<UAVDataObject>(uavObjName);
+        if (obj)
+            disconnect(obj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(uavObjectReceived(UAVObject*)));
     }
 
     // Clear the plot
@@ -421,11 +421,10 @@ QString ScopeGadgetWidget::getUavObjectFieldUnits(QString uavObjectName, QString
     //Get the uav object
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    UAVDataObject* obj = dynamic_cast<UAVDataObject*>(objManager->getObject(uavObjectName));
-    if(!obj) {
-        qDebug() << "In scope gadget, UAVObject " << uavObjectName << " is missing";
+    UAVDataObject* obj = objManager->getRequiredObject<UAVDataObject>(uavObjectName);
+    if(!obj)
         return "";
-    }
+
     UAVObjectField* field = obj->getField(uavObjectFieldName);
     if(!field) {
         qDebug() << "In scope gadget, in fields loaded from GCS config file, field" << uavObjectFieldName << " of UAVObject " << uavObjectName << " is missing";

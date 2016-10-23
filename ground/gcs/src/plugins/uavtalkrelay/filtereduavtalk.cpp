@@ -42,12 +42,12 @@ FilteredUavTalk::FilteredUavTalk(QIODevice *iodev, UAVObjectManager *objMngr,
  */
 void FilteredUavTalk::sendObjectSlot(UAVObject *obj)
 {
-    UavTalkRelayComon::accessType access=m_rules.value(obj->getObjID(),m_defaultRule);
-    if(access==UavTalkRelayComon::WriteOnly || access==UavTalkRelayComon::None)
+    UavTalkRelayComon::accessType access = m_rules.value(obj->getObjID(), m_defaultRule);
+    if (access == UavTalkRelayComon::WriteOnly || access == UavTalkRelayComon::None)
         return;
-    if(obj==GCSTelemetryStats::GetInstance(objMngr))
+    if (obj == GCSTelemetryStats::getInstance(objMngr))
         return;
-    sendObject(obj,false,false);
+    sendObject(obj, false, false);
 }
 
 /**
@@ -77,72 +77,55 @@ bool FilteredUavTalk::receiveObject(quint8 type, quint32 objId, quint16 instId, 
     switch (type) {
     case TYPE_OBJ: // We have received an object.
         // All instances, not allowed for OBJ messages
-        if (!allInstances)
-        {
+        if (!allInstances) {
             // Get object and update its data
-            UAVObject* tobj = objMngr->getObject(objId);
-            bool wasCon=disconnect(tobj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(sendObjectSlot(UAVObject*)));
-            obj = updateObject(objId, instId, data);
-            if(wasCon)
-                connect(tobj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(sendObjectSlot(UAVObject*)));
-            UAVMetaObject * mobj=dynamic_cast<UAVMetaObject*>(tobj);
-            if(mobj)
-                tobj->updated();
-            if (obj == NULL)
+            UAVObject *tobj = objMngr->getObject(objId);
+            bool wasCon = disconnect(tobj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(sendObjectSlot(UAVObject*)));
+            if (!updateObject(objId, instId, data))
                 error = true;
-        }
-        else
-        {
+            if (wasCon)
+                connect(tobj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(sendObjectSlot(UAVObject*)));
+            UAVMetaObject * mobj = qobject_cast<UAVMetaObject*>(tobj);
+            if (mobj)
+                tobj->updated();
+        } else {
             error = true;
         }
         break;
     case TYPE_OBJ_ACK: // We have received an object and are asked for an ACK
         // All instances, not allowed for OBJ_ACK messages
-        if (!allInstances)
-        {
+        if (!allInstances) {
             // Get object and update its data
-            UAVObject* tobj = objMngr->getObject(objId);
-            bool wasCon=disconnect(tobj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(sendObjectSlot(UAVObject*)));
+            UAVObject *tobj = objMngr->getObject(objId);
+            bool wasCon = disconnect(tobj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(sendObjectSlot(UAVObject*)));
             obj = updateObject(objId, instId, data);
-            if(wasCon)
+            if (wasCon)
                 connect(tobj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(sendObjectSlot(UAVObject*)));
-            UAVMetaObject * mobj=dynamic_cast<UAVMetaObject*>(tobj);
-            if(mobj)
+            UAVMetaObject *mobj = qobject_cast<UAVMetaObject*>(tobj);
+            if (mobj)
                 tobj->updated();
             // Transmit ACK
-            if ( obj != NULL )
-            {
+            if (obj)
                 transmitObject(obj, TYPE_ACK, false);
-            }
             else
-            {
                 error = true;
-            }
-        }
-        else
-        {
+        } else {
             error = true;
         }
         break;
     case TYPE_OBJ_REQ:  // We are being asked for an object
         // Get object, if all instances are requested get instance 0 of the object
-        if(access==UavTalkRelayComon::WriteOnly || access==UavTalkRelayComon::None)
+        if (access == UavTalkRelayComon::WriteOnly || access == UavTalkRelayComon::None)
             break;
         if (allInstances)
-        {
             obj = objMngr->getObject(objId);
-        }
         else
-        {
             obj = objMngr->getObject(objId, instId);
-        }
+
         // If object was found transmit it
-        if (obj != NULL)
-        {
+        if (obj) {
             transmitObject(obj, TYPE_OBJ, allInstances);
-        }
-        else
-        {
+        } else {
             // Object was not found, transmit a NACK with the
             // objId which was not found.
             transmitNack(objId);
@@ -152,37 +135,27 @@ bool FilteredUavTalk::receiveObject(quint8 type, quint32 objId, quint16 instId, 
     case TYPE_NACK: // We have received a NACK for an object that does not exist on the far end.
                     // (but should exist on our end)
         // All instances, not allowed for NACK messages
-        if (!allInstances)
-        {
+        if (!allInstances) {
             // Get object
             obj = objMngr->getObject(objId, instId);
             // Check if object exists:
-            if (obj != NULL)
-            {
+            if (obj)
                 emit nackReceived(obj);
-            }
             else
-            {
-             error = true;
-            }
+                error = true;
         }
         break;
     case TYPE_ACK: // We have received a ACK, supposedly after sending an object with OBJ_ACK
         // All instances, not allowed for ACK messages
-        if (!allInstances)
-        {
+        if (!allInstances) {
             // Get object
             obj = objMngr->getObject(objId, instId);
             // Check if we actually know this object (tiny chance the ObjID
             // could be unknown and got through CRC check...)
-            if (obj != NULL)
-            {
+            if (obj)
                 emit ackReceived(obj);
-            }
             else
-            {
                 error = true;
-            }
         }
         break;
     default:

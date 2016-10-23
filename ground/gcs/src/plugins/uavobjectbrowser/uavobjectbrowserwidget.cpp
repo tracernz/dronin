@@ -507,9 +507,8 @@ void UAVObjectBrowserWidget::updateObjectPersistance(ObjectPersistence::Operatio
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    ObjectPersistence* objper = dynamic_cast<ObjectPersistence*>( objManager->getObject(ObjectPersistence::NAME) );
-    if (obj != NULL)
-    {
+    ObjectPersistence *objper = objManager->getObject<ObjectPersistence>(ObjectPersistence::NAME);
+    if (obj) {
         ObjectPersistence::DataFields data;
         data.Operation = op;
         data.ObjectID = obj->getObjID();

@@ -202,8 +202,8 @@ void SoundNotifyPlugin::connectNotifications()
         // if not - we must not subscribe to it at all
         if(notify->toSoundList().isEmpty()) continue;
 
-        UAVDataObject* obj = dynamic_cast<UAVDataObject*>( objManager->getObject(notify->getDataObject()) );
-        if (obj != NULL ) {
+        UAVDataObject* obj = objManager->getRequiredObject<UAVDataObject>(notify->getDataObject());
+        if (obj) {
             if (!lstNotifiedUAVObjects.contains(obj)) {
                 lstNotifiedUAVObjects.append(obj);
 
@@ -211,8 +211,6 @@ void SoundNotifyPlugin::connectNotifications()
                         this, SLOT(on_arrived_Notification(UAVObject*)),
                         Qt::QueuedConnection);
             }
-        } else {
-            qNotifyDebug() << "Error: Object is unknown (" << notify->getDataObject() << ").";
         }
     }
 

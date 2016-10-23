@@ -43,6 +43,7 @@
 #include "uavmetaobject.h"
 #include <QVector>
 #include <QHash>
+#include <QDebug>
 
 class UAVOBJECTS_EXPORT UAVObjectManager: public QObject
 {
@@ -57,8 +58,58 @@ public:
     QHash<quint32, QMap<quint32,UAVObject*> > getObjects();
     QVector< QVector<UAVDataObject*> > getDataObjectsVector();
     QVector< QVector<UAVMetaObject*> > getMetaObjectsVector();
-    UAVObject* getObject(const QString& name, quint32 instId = 0);
-    UAVObject* getObject(quint32 objId, quint32 instId = 0);
+
+    /**
+     * Get a specific object given its name and instance ID and check it is valid
+     * @returns The object is found or null pointer if not
+     */
+    template<typename T = UAVObject>
+    T *getRequiredObject(const QString &name, quint32 instId = 0) {
+        T *obj = qobject_cast<T *>(getObject(name, 0, instId));
+        if (!obj) {
+            qWarning() << "Could not get UAVO " << name;
+            Q_ASSERT(false);
+            return Q_NULLPTR;
+        }
+        return obj;
+    }
+    /**
+     * Get a specific object given its name and instance ID
+     * @returns The object is found or null pointer if not
+     */
+    template<typename T = UAVObject>
+    T *getObject(const QString &name, quint32 instId = 0) {
+        T *obj = qobject_cast<T *>(getObject(name, 0, instId));
+        if (!obj)
+            return Q_NULLPTR;
+        return obj;
+    }
+    /**
+     * Get a specific object given its object and instance ID
+     * @returns The object is found or null pointer if not
+     */
+    template<typename T = UAVObject>
+    T *getRequiredObject(quint32 objId, quint32 instId = 0) {
+        T *obj = qobject_cast<T *>(getObject("", objId, instId));
+        if (!obj) {
+            qWarning() << "Could not get UAVO " << objId;
+            Q_ASSERT(false);
+            return Q_NULLPTR;
+        }
+        return obj;
+    }
+    /**
+     * Get a specific object given its object and instance ID
+     * @returns The object is found or null pointer if not
+     */
+    template<typename T = UAVObject>
+    T *getObject(quint32 objId, quint32 instId = 0) {
+        T *obj = qobject_cast<T *>(getObject("", objId, instId));
+        if (!obj)
+            return Q_NULLPTR;
+        return obj;
+    }
+
     QVector<UAVObject*> getObjectInstancesVector(const QString& name);
     QVector<UAVObject*> getObjectInstancesVector(quint32 objId);
     qint32 getNumInstances(const QString& name);

@@ -127,18 +127,6 @@ QString Sparky2::getHwUAVO()
     return "HwSparky2";
 }
 
-//! Get the settings object
-HwSparky2 * Sparky2::getSettings()
-{
-    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-
-    HwSparky2 *hwSparky2 = HwSparky2::GetInstance(uavoManager);
-    Q_ASSERT(hwSparky2);
-
-    return hwSparky2;
-}
-
 //! Determine if this board supports configuring the receiver
 bool Sparky2::isInputConfigurationSupported(enum InputType type = INPUT_TYPE_ANY)
 {
@@ -161,8 +149,7 @@ bool Sparky2::setInputType(enum InputType type)
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwSparky2 *hwSparky2 = HwSparky2::GetInstance(uavoManager);
-    Q_ASSERT(hwSparky2);
+    HwSparky2 *hwSparky2 = uavoManager->getRequiredObject<HwSparky2>(HwSparky2::OBJID);
     if (!hwSparky2)
         return false;
 
@@ -196,8 +183,7 @@ enum Core::IBoardType::InputType Sparky2::getInputType()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwSparky2 *hwSparky2 = HwSparky2::GetInstance(uavoManager);
-    Q_ASSERT(hwSparky2);
+    HwSparky2 *hwSparky2 = uavoManager->getRequiredObject<HwSparky2>(HwSparky2::OBJID);
     if (!hwSparky2)
         return INPUT_TYPE_UNKNOWN;
 
@@ -219,8 +205,7 @@ int Sparky2::queryMaxGyroRate()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwSparky2 *hwSparky2 = HwSparky2::GetInstance(uavoManager);
-    Q_ASSERT(hwSparky2);
+    HwSparky2 *hwSparky2 = uavoManager->getRequiredObject<HwSparky2>(HwSparky2::OBJID);
     if (!hwSparky2)
         return 0;
 
@@ -251,10 +236,11 @@ quint32 Sparky2::getRfmID()
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
 
     // Flight controllers are instance 1
-    RFM22BStatus *rfm22bStatus = RFM22BStatus::GetInstance(uavoManager,1);
-    Q_ASSERT(rfm22bStatus);
-    RFM22BStatus::DataFields rfm22b = rfm22bStatus->getData();
+    RFM22BStatus *rfm22bStatus = uavoManager->getRequiredObject<RFM22BStatus>(RFM22BStatus::OBJID, 1);
+    if (!rfm22bStatus)
+        return 0;
 
+    RFM22BStatus::DataFields rfm22b = rfm22bStatus->getData();
     return rfm22b.DeviceID;
 }
 
@@ -266,7 +252,13 @@ quint32 Sparky2::getRfmID()
 bool Sparky2::bindRadio(quint32 id, quint32 baud_rate, float rf_power,
                         Core::IBoardType::LinkMode linkMode, quint8 min, quint8 max)
 {
-    HwSparky2::DataFields settings = getSettings()->getData();
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
+
+    HwSparky2 *hwSparky2 = uavoManager->getRequiredObject<HwSparky2>(HwSparky2::OBJID);
+    if (!hwSparky2)
+        return false;
+    HwSparky2::DataFields settings = hwSparky2->getData();
 
     settings.CoordID = id;
 
@@ -338,8 +330,8 @@ bool Sparky2::bindRadio(quint32 id, quint32 baud_rate, float rf_power,
     settings.MinChannel = min;
     settings.MaxChannel = max;
 
-    getSettings()->setData(settings);
-    uavoUtilManager->saveObjectToFlash(getSettings());
+    hwSparky2->setData(settings);
+    uavoUtilManager->saveObjectToFlash(hwSparky2);
 
     return true;
 }

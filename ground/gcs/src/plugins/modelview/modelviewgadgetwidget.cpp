@@ -72,7 +72,7 @@ ModelViewGadgetWidget::ModelViewGadgetWidget(QWidget *parent)
     // Get required UAVObjects
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    attState = AttitudeActual::GetInstance(objManager);
+    attState = AttitudeActual::getInstance(objManager);
 
     connect(&m_MotionTimer, SIGNAL(timeout()), this, SLOT(updateAttitude()));
 }
@@ -327,6 +327,9 @@ void ModelViewGadgetWidget::keyPressEvent(QKeyEvent *e) // switch between camera
 //////////////////////////////////////////////////////////////////////
 void ModelViewGadgetWidget::updateAttitude()
 {
+    if (!attState)
+        return;
+
     AttitudeActual::DataFields data  = attState->getData(); // get attitude data
     GLC_StructOccurence *rootObject = m_World.rootOccurence(); // get the full 3D model
     double x = data.q3;

@@ -102,17 +102,6 @@ QString TauLink::getHwUAVO()
     return "HwTauLink";
 }
 
-//! Get the settings object
-HwTauLink * TauLink::getSettings()
-{
-    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-
-    HwTauLink *wwTauLink = HwTauLink::GetInstance(uavoManager);
-    Q_ASSERT(wwTauLink);
-
-    return wwTauLink;
-}
 /**
  * Get the RFM22b device ID this modem
  * @return RFM22B device ID or 0 if not supported
@@ -123,8 +112,10 @@ quint32 TauLink::getRfmID()
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
 
     // Modem has instance 0
-    RFM22BStatus *rfm22bStatus = RFM22BStatus::GetInstance(uavoManager,0);
-    Q_ASSERT(rfm22bStatus);
+    RFM22BStatus *rfm22bStatus = uavoManager->getRequiredObject<RFM22BStatus>(RFM22BStatus::OBJID, 0);
+    if (!rfm22bStatus)
+        return 0;
+
     RFM22BStatus::DataFields rfm22b = rfm22bStatus->getData();
 
     return rfm22b.DeviceID;
@@ -137,7 +128,12 @@ quint32 TauLink::getRfmID()
  */
 bool TauLink::bindRadio(quint32 id, quint32 baud_rate, float rf_power, Core::IBoardType::LinkMode linkMode, quint8 min, quint8 max)
 {
-    HwTauLink::DataFields settings = getSettings()->getData();
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
+    HwTauLink *hwTauLink = uavoManager->getRequiredObject<HwTauLink>(HwTauLink::OBJID);
+    if (!hwTauLink)
+        return false;
+    HwTauLink::DataFields settings = hwTauLink->getData();
 
     settings.CoordID = id;
 
@@ -209,8 +205,8 @@ bool TauLink::bindRadio(quint32 id, quint32 baud_rate, float rf_power, Core::IBo
     settings.MinChannel = min;
     settings.MaxChannel = max;
 
-    getSettings()->setData(settings);
-    uavoUtilManager->saveObjectToFlash( getSettings());
+    hwTauLink->setData(settings);
+    uavoUtilManager->saveObjectToFlash(hwTauLink);
 
     return true;
 }

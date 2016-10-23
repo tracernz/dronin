@@ -52,11 +52,8 @@ void GCSControl::extensionsInitialized()
     UAVObjectManager * objMngr = pm->getObject<UAVObjectManager>();
     Q_ASSERT(objMngr);
 
-    manControlSettingsUAVO = ManualControlSettings::GetInstance(objMngr);
-    Q_ASSERT(manControlSettingsUAVO);
-
-    m_gcsReceiver = GCSReceiver::GetInstance(objMngr);
-    Q_ASSERT(m_gcsReceiver);
+    manControlSettingsUAVO = ManualControlSettings::getInstance(objMngr);
+    m_gcsReceiver = GCSReceiver::getInstance(objMngr);
 }
 
 GCSControl::~GCSControl()
@@ -99,7 +96,7 @@ void GCSControl::shutdown()
  */
 bool GCSControl::beginGCSControl()
 {
-    if(hasControl)
+    if(hasControl || !manControlSettingsUAVO)
         return false;
     dataBackup = manControlSettingsUAVO->getData();
     metaBackup = manControlSettingsUAVO->getMetadata();
@@ -158,7 +155,7 @@ bool GCSControl::beginGCSControl()
  */
 bool GCSControl::endGCSControl()
 {
-    if(!hasControl)
+    if(!hasControl || !manControlSettingsUAVO)
         return false;
     disconnect(manControlSettingsUAVO,SIGNAL(objectUpdated(UAVObject*)),this,SLOT(objectsUpdated(UAVObject*)));
     manControlSettingsUAVO->setData(dataBackup);
@@ -171,7 +168,7 @@ bool GCSControl::endGCSControl()
 
 bool GCSControl::setFlightMode(ManualControlSettings::FlightModePositionOptions flightMode)
 {
-    if(!hasControl)
+    if(!hasControl || !manControlSettingsUAVO || !m_gcsReceiver)
         return false;
     manControlSettingsUAVO->setFlightModePosition(0,flightMode);
     manControlSettingsUAVO->updated();
@@ -202,7 +199,7 @@ bool GCSControl::setYaw(float value)
 
 bool GCSControl::setChannel(quint8 channel, float value)
 {
-    if(value > 1 || value < -1 || channel > GCSReceiver::CHANNEL_NUMELEM || !hasControl)
+    if(value > 1 || value < -1 || channel > GCSReceiver::CHANNEL_NUMELEM || !hasControl || !m_gcsReceiver)
         return false;
     quint16 pwmValue;
     if(value >= 0)

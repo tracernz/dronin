@@ -51,8 +51,9 @@ GCSControlGadgetWidget::GCSControlGadgetWidget(QWidget *parent) : QLabel(parent)
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
 
     // Set up the drop down box for the flightmode
-    FlightStatus* flightStatus = FlightStatus::GetInstance(objManager);;
-    m_gcscontrol->comboBoxFlightMode->addItems(flightStatus->getField("FlightMode")->getOptions());
+    FlightStatus* flightStatus = FlightStatus::getInstance(objManager);
+    if (flightStatus)
+        m_gcscontrol->comboBoxFlightMode->addItems(flightStatus->getField("FlightMode")->getOptions());
 
     // Set up slots and signals for joysticks
     connect(m_gcscontrol->widgetLeftStick,SIGNAL(positionClicked(double,double)),this,SLOT(leftStickClicked(double,double)));

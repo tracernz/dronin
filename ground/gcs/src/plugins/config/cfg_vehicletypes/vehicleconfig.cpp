@@ -46,7 +46,9 @@ VehicleConfig::VehicleConfig(QWidget *parent) : ConfigTaskWidget(parent)
         channelNames << QString("Channel%1").arg(i+1);
     }
 
-    mixerTypeDescriptions = MixerSettings::GetInstance(getUAVObjectManager())->getField("Mixer1Type")->getOptions();
+    UAVObject *mixerSettings = getObject(MixerSettings::NAME);
+    if (mixerSettings)
+        mixerTypeDescriptions = mixerSettings->getField("Mixer1Type")->getOptions();
 
     // This is needed because new style tries to compact things as much as possible in grid
     // and on OSX the widget sizes of PushButtons is reported incorrectly:
@@ -67,8 +69,9 @@ GUIConfigDataUnion VehicleConfig::GetConfigData() {
     GUIConfigDataUnion configData;
 
     // get an instance of systemsettings
-    SystemSettings * systemSettings = SystemSettings::GetInstance(getUAVObjectManager());
-    Q_ASSERT(systemSettings);
+    SystemSettings *systemSettings = getUAVObjectManager()->getRequiredObject<SystemSettings>(SystemSettings::NAME);
+    if (!systemSettings)
+        return configData;
     SystemSettings::DataFields systemSettingsData = systemSettings->getData();
 
     // copy systemsettings -> local configData
@@ -91,8 +94,9 @@ void VehicleConfig::SetConfigData(GUIConfigDataUnion configData) {
              (sizeof(configData.UAVObject) / sizeof(configData.UAVObject[0])));
 
     // get an instance of systemsettings
-    SystemSettings * systemSettings = SystemSettings::GetInstance(getUAVObjectManager());
-    Q_ASSERT(systemSettings);
+    SystemSettings *systemSettings = getUAVObjectManager()->getRequiredObject<SystemSettings>(SystemSettings::NAME);
+    if (!systemSettings)
+        return;
 	SystemSettings::DataFields systemSettingsData = systemSettings->getData();
 
     // copy parameter configData -> systemsettings

@@ -61,7 +61,6 @@ signals:
     void sendPathPlanToUavProgress(int percent);
 private:
     UAVObjectManager *objManager;
-    Waypoint         *waypointObj;
     FlightDataModel  *myModel;
 
     //! Track if each waypoint was updated

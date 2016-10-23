@@ -875,8 +875,9 @@ void ConfigCcpmWidget::getMixer()
 
     updatingFromHardware=true;
 
-    MixerSettings *mixerSettings = MixerSettings::GetInstance(getObjectManager());
-    Q_ASSERT(mixerSettings);
+    MixerSettings *mixerSettings = getObject<MixerSettings>(MixerSettings::NAME);
+    if (!mixerSettings)
+        return;
 
     // set the airframe type
     QPointer<VehicleConfig> vconfig = new VehicleConfig();
@@ -919,8 +920,9 @@ void ConfigCcpmWidget::setMixer()
 
     updatingToHardware=true;
 
-    MixerSettings * mixerSettings = MixerSettings::GetInstance(getObjectManager());
-    Q_ASSERT(mixerSettings);
+    MixerSettings *mixerSettings = getObject<MixerSettings>(MixerSettings::NAME);
+    if (!mixerSettings)
+        return;
     MixerSettings::DataFields mixerSettingsData = mixerSettings->getData();
 
     UpdateMixer();
@@ -1012,8 +1014,9 @@ void ConfigCcpmWidget::saveccpmUpdate()
     //sendccpmUpdate();
     setMixer();
 
-    MixerSettings *mixerSettings = MixerSettings::GetInstance(getObjectManager());
-    Q_ASSERT(mixerSettings);
+    MixerSettings *mixerSettings = getObject<MixerSettings>(MixerSettings::NAME);
+    if (!mixerSettings)
+        return;
 
     saveObjectToSD(mixerSettings);
 }
@@ -1057,8 +1060,6 @@ void ConfigCcpmWidget::SwashLvlStartButtonPressed()
      UAVObjectField* NeutralField;
      UAVObjectField* MaxField;
      UAVDataObject* obj;
-     ExtensionSystem::PluginManager *pm;
-     UAVObjectManager *objManager;
 
      switch (ret) {
         case QMessageBox::Yes:
@@ -1085,16 +1086,10 @@ void ConfigCcpmWidget::SwashLvlStartButtonPressed()
             //change control mode to gcs control / disarmed
             //set throttle to 0
 
-
-            //save off the old ActuatorSettings for the swashplate servos
-            pm = ExtensionSystem::PluginManager::instance();
-            objManager = pm->getObject<UAVObjectManager>();
-
-
             // Get the channel assignements:
-            obj = dynamic_cast<UAVDataObject*>(objManager->getObject(QString("ActuatorSettings")));
-            Q_ASSERT(obj);
-            // obj->requestUpdate();
+            obj = getObject<UAVDataObject>(QString("ActuatorSettings"));
+            if (!obj)
+                return;
             MinField = obj->getField(QString("ChannelMin"));
             NeutralField = obj->getField(QString("ChannelNeutral"));
             MaxField = obj->getField(QString("ChannelMax"));
@@ -1272,11 +1267,9 @@ void ConfigCcpmWidget::SwashLvlCancelButtonPressed()
     m_ccpm->SwashLvlStepList->item(2)->setCheckState(Qt::Unchecked);
     m_ccpm->SwashLvlStepList->item(3)->setCheckState(Qt::Unchecked);
 
-    //restore old Actuator Settings
-    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    UAVDataObject* obj = dynamic_cast<UAVDataObject*>(objManager->getObject(QString("ActuatorSettings")));
-    Q_ASSERT(obj);
+    UAVDataObject* obj = getObject<UAVDataObject>(QString("ActuatorSettings"));
+    if (!obj)
+        return;
     //update settings to match our changes.
     MinField = obj->getField(QString("ChannelMin"));
     NeutralField = obj->getField(QString("ChannelNeutral"));
@@ -1315,10 +1308,9 @@ void ConfigCcpmWidget::SwashLvlFinishButtonPressed()
     m_ccpm->SwashLvlFinishButton->setEnabled(false);
 
     //save new Actuator Settings to memory and SD card
-    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    UAVDataObject* obj = dynamic_cast<UAVDataObject*>(objManager->getObject(QString("ActuatorSettings")));
-    Q_ASSERT(obj);
+    UAVDataObject* obj = getObject<UAVDataObject>(QString("ActuatorSettings"));
+    if (!obj)
+        return;
     //update settings to match our changes.
     MinField = obj->getField(QString("ChannelMin"));
     NeutralField = obj->getField(QString("ChannelNeutral"));
@@ -1396,10 +1388,9 @@ int ConfigCcpmWidget::ShowDisclaimer(int messageID)
   */
 void ConfigCcpmWidget::enableSwashplateLevellingControl(bool state)
 {
-    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-
-    UAVDataObject* obj = dynamic_cast<UAVDataObject*>(objManager->getObject(QString("ActuatorCommand")));
+    UAVDataObject* obj = getObject<UAVDataObject>(QString("ActuatorCommand"));
+    if (!obj)
+        return;
     UAVObject::Metadata mdata = obj->getMetadata();
     if (state)
     {
@@ -1445,7 +1436,9 @@ void ConfigCcpmWidget::setSwashplateLevel(int percent)
 
     SwashLvlServoInterlock=1;
 
-    ActuatorCommand * actuatorCommand = ActuatorCommand::GetInstance(getObjectManager());
+    ActuatorCommand *actuatorCommand = getObject<ActuatorCommand>(ActuatorCommand::NAME);
+    if (!actuatorCommand)
+        return;
     ActuatorCommand::DataFields actuatorCommandData = actuatorCommand->getData();
 
     for (i=0;i<CCPM_MAX_SWASH_SERVOS;i++) {
@@ -1479,7 +1472,9 @@ void ConfigCcpmWidget::SwashLvlSpinBoxChanged(int value)
     int i;
     if (SwashLvlServoInterlock==1)return;
 
-    ActuatorCommand * actuatorCommand = ActuatorCommand::GetInstance(getObjectManager());
+    ActuatorCommand *actuatorCommand = getObject<ActuatorCommand>(ActuatorCommand::NAME);
+    if (!actuatorCommand)
+        return;
     ActuatorCommand::DataFields actuatorCommandData = actuatorCommand->getData();
 
     for (i = 0; i < CCPM_MAX_SWASH_SERVOS; i++) {

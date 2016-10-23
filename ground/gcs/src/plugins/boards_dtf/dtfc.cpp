@@ -141,8 +141,7 @@ bool Dtfc::setInputType(enum InputType type)
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwDtfc *hwDtfc = HwDtfc::GetInstance(uavoManager);
-    Q_ASSERT(hwDtfc);
+    HwDtfc *hwDtfc = uavoManager->getRequiredObject<HwDtfc>(HwDtfc::OBJID);
     if (!hwDtfc)
         return false;
 
@@ -178,8 +177,7 @@ enum Core::IBoardType::InputType Dtfc::getInputType()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwDtfc *hwDtfc = HwDtfc::GetInstance(uavoManager);
-    Q_ASSERT(hwDtfc);
+    HwDtfc *hwDtfc = uavoManager->getRequiredObject<HwDtfc>(HwDtfc::OBJID);
     if (!hwDtfc)
         return INPUT_TYPE_UNKNOWN;
 
@@ -222,8 +220,7 @@ int Dtfc::queryMaxGyroRate()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwDtfc *hwDtfc = HwDtfc::GetInstance(uavoManager);
-    Q_ASSERT(hwDtfc);
+    HwDtfc *hwDtfc = uavoManager->getRequiredObject<HwDtfc>(HwDtfc::OBJID);
     if (!hwDtfc)
         return 0;
 

@@ -49,9 +49,8 @@ void SysAlarmsMessagingPlugin::extensionsInitialized()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    SystemAlarms* obj = dynamic_cast<SystemAlarms*>(objManager->getObject(QString("SystemAlarms")));
+    UAVObject *obj = objManager->getRequiredObject(QString("SystemAlarms"));
     connect(obj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(updateAlarms(UAVObject*)));
-
 }
 
 /**
@@ -65,9 +64,11 @@ bool SysAlarmsMessagingPlugin::initialize(const QStringList &arguments, QString 
     Q_UNUSED(errorString);
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    SystemAlarms* obj = SystemAlarms::GetInstance(objManager);
+    SystemAlarms* obj = SystemAlarms::getInstance(objManager);
+    if (!obj)
+        return false;
 
-    foreach (UAVObjectField *field, obj->getFields()) {
+    for (UAVObjectField *field : obj->getFields()) {
         for (uint i = 0; i < field->getNumElements(); ++i) {
             QString element = field->getElementNames()[i];
             GlobalMessage * msg=Core::ICore::instance()->globalMessaging()->addErrorMessage(element,"");

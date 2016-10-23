@@ -45,7 +45,6 @@ public:
     virtual QStringList getSupportedProtocols();
     virtual QPixmap getBoardPicture();
     virtual QString getHwUAVO();
-    HwTauLink * getSettings();
 
     /**
      * Get the RFM22b device ID this modem

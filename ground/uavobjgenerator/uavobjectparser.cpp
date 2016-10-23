@@ -850,10 +850,7 @@ QString UAVObjectParser::processObjectAttributes(QDomNode& node, ObjectInfo* inf
 
     // Get category attribute if present
     attr = attributes.namedItem("category");
-    if ( !attr.isNull() )
-    {
-        info->category = attr.nodeValue();
-    }
+    info->category = attr.isNull() ? "Other" : attr.nodeValue();
 
     // Get singleinstance attribute
     attr = attributes.namedItem("singleinstance");

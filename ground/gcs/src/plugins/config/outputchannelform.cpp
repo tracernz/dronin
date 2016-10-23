@@ -30,63 +30,35 @@
 
 #include "outputchannelform.h"
 #include "configoutputwidget.h"
-#include "actuatorsettings.h"
 
-OutputChannelForm::OutputChannelForm(const int index, QWidget *parent, const bool showLegend) :
-        ConfigTaskWidget(parent),
+OutputChannelForm::OutputChannelForm(const int index, ConfigTaskWidget *parent) :
+        QWidget(parent),
         ui(),
         m_index(index),
         m_inChannelTest(false)
 {
     ui.setupUi(this);
 
+    parent->addUAVObjectToWidgetRelation("ActuatorSettings", "ChannelMin", ui.actuatorMin, m_index);
+    parent->addUAVObjectToWidgetRelation("ActuatorSettings", "ChannelNeutral", ui.actuatorNeutral, m_index);
+    parent->addUAVObjectToWidgetRelation("ActuatorSettings", "ChannelMax", ui.actuatorMax, m_index);
+    parent->addUAVObjectToWidgetRelation("ActuatorSettings", "ChannelType", ui.actuatorType, m_index);
 
-    ActuatorSettings *actuatorSettings = ActuatorSettings::GetInstance(getObjectManager());
-    Q_ASSERT(actuatorSettings);
-    UAVObjectField *types = actuatorSettings->getField("ChannelType");
-    Q_ASSERT(types);
-    ui.actuatorType->clear();
-    ui.actuatorType->addItems(types->getOptions());
-
-    if(!showLegend)
-    {
-        // Remove legend
-        QGridLayout *grid_layout = dynamic_cast<QGridLayout*>(layout());
-        Q_ASSERT(grid_layout);
-        for (int col = 0; col < grid_layout->columnCount(); col++)
-        { // remove every item in first row
-            QLayoutItem *item = grid_layout->itemAtPosition(0, col);
-            if (!item) continue;
-            // get widget from layout item
-            QWidget *legend_widget = item->widget();
-            if (!legend_widget) continue;
-            // delete widget
-            grid_layout->removeWidget(legend_widget);
-            delete legend_widget;
-        }
-    }
-
-    // The convention is Channel 1 to Channel 10.
+    // The UI convention is Channel 1 to Channel 10.
     ui.actuatorNumber->setText(QString("%1:").arg(m_index+1));
 
-    // Register for ActuatorSettings changes:
-    connect(ui.actuatorMin, SIGNAL(editingFinished()), this, SLOT(setChannelRange()));
-    connect(ui.actuatorMax, SIGNAL(editingFinished()), this, SLOT(setChannelRange()));
+    // Reverse buttons switches min/max
     connect(ui.pb_reverseActuator, SIGNAL(clicked()), this, SLOT(reverseChannel()));
 
     // Connect the channel out sliders to our signal in order to send updates in test mode
     connect(ui.actuatorNeutral, SIGNAL(valueChanged(int)), this, SLOT(sendChannelTest(int)));
 
-    // Connect UI elements to dirty/clean (i.e. changed/unchanged) signal/slot
-    connect(ui.actuatorMin, SIGNAL(valueChanged(int)), this, SLOT(notifyFormChanged()));
-    connect(ui.actuatorMax, SIGNAL(valueChanged(int)), this, SLOT(notifyFormChanged()));
-    connect(ui.actuatorNeutral, SIGNAL(sliderReleased()), this, SLOT(notifyFormChanged()));
-    connect(ui.actuatorType, SIGNAL(currentIndexChanged(int)), this, SLOT(notifyFormChanged()));
+    // Improve behaviour when channel range changes
+    connect(ui.actuatorMin, SIGNAL(valueChanged(int)), this, SLOT(setChannelRange()));
+    connect(ui.actuatorMax, SIGNAL(valueChanged(int)), this, SLOT(setChannelRange()));
 
     ui.actuatorLink->setChecked(false);
     connect(ui.actuatorLink, SIGNAL(toggled(bool)), this, SLOT(linkToggled(bool)));
-
-    disableMouseWheelEvents();
 }
 
 OutputChannelForm::~OutputChannelForm()
@@ -134,18 +106,18 @@ void OutputChannelForm::linkToggled(bool state)
 
     // find the minimum slider value for the linked ones
     if (!parent()) return;
-    int min = 10000;
+    int min = INT_MAX;
     int linked_count = 0;
     QList<OutputChannelForm*> outputChannelForms = parent()->findChildren<OutputChannelForm*>();
     // set the linked channels of the parent widget to the same value
-    foreach(OutputChannelForm *outputChannelForm, outputChannelForms)
-    {
+    for (OutputChannelForm *outputChannelForm : outputChannelForms) {
         if (!outputChannelForm->ui.actuatorLink->checkState())
             continue;
         if (this == outputChannelForm)
             continue;
         int value = outputChannelForm->ui.actuatorNeutral->value();
-        if(min > value) min = value;
+        if(min > value)
+            min = value;
         linked_count++;
     }
 
@@ -153,8 +125,7 @@ void OutputChannelForm::linkToggled(bool state)
         return;		// no linked channels
 
     // set the linked channels to the same value
-    foreach(OutputChannelForm *outputChannelForm, outputChannelForms)
-    {
+    for (OutputChannelForm *outputChannelForm : outputChannelForms) {
         if (!outputChannelForm->ui.actuatorLink->checkState())
             continue;
         outputChannelForm->ui.actuatorNeutral->setValue(min);
@@ -166,7 +137,7 @@ void OutputChannelForm::linkToggled(bool state)
  */
 void OutputChannelForm::setMax(int maximum)
 {
-    setMinmax(ui.actuatorMin->value(), maximum);
+    ui.actuatorMax->setValue(maximum);
 }
 
 /**
@@ -174,17 +145,7 @@ void OutputChannelForm::setMax(int maximum)
  */
 void OutputChannelForm::setMin(int minimum)
 {
-    setMinmax(minimum, ui.actuatorMax->value());
-}
-
-/**
- * Set minimal and maximal channel value.
- */
-void OutputChannelForm::setMinmax(int minimum, int maximum)
-{
     ui.actuatorMin->setValue(minimum);
-    ui.actuatorMax->setValue(maximum);
-    setChannelRange();
 }
 
 /**
@@ -208,25 +169,6 @@ int OutputChannelForm::type() const
     return ui.actuatorType->currentIndex();
 }
 
-void OutputChannelForm::alignFields()
-{
-    int actuatorWidth=0;
-
-    foreach(OutputChannelForm * form,parent()->findChildren<OutputChannelForm*>())
-    {
-        actuatorWidth = fmax(actuatorWidth, form->ui.actuatorMin->minimumSize().width());
-        actuatorWidth = fmax(actuatorWidth, form->ui.actuatorMin->sizeHint().width());
-        actuatorWidth = fmax(actuatorWidth, form->ui.actuatorMax->minimumSize().width());
-        actuatorWidth = fmax(actuatorWidth, form->ui.actuatorMax->sizeHint().width());
-    }
-
-    foreach(OutputChannelForm * form,parent()->findChildren<OutputChannelForm*>())
-    {
-        form->ui.actuatorMin->setMinimumSize(actuatorWidth, 0);
-        form->ui.actuatorMax->setMinimumSize(actuatorWidth, 0);
-    }
-}
-
 /**
  * Set the channel assignment label.
  */
@@ -247,6 +189,11 @@ void OutputChannelForm::setAssignment(const QString &assignment)
     ui.actuatorName->setMinimumSize(width,0);
 }
 
+bool OutputChannelForm::isAssigned()
+{
+    return ui.actuatorName->text() != "-";
+}
+
 /**
  * Sets the minimum/maximum value of the channel output sliders.
  * Have to do it here because setMinimum is not a slot.
@@ -256,15 +203,18 @@ void OutputChannelForm::setAssignment(const QString &assignment)
  */
 void OutputChannelForm::setChannelRange()
 {
-    if (ui.actuatorMin->value() < ui.actuatorMax->value())
-    {
+    if (ui.actuatorMin->value() < ui.actuatorMax->value()) {
         ui.actuatorNeutral->setRange(ui.actuatorMin->value(), ui.actuatorMax->value());
         ui.actuatorNeutral->setEnabled(true);
-    }
-    else if (ui.actuatorMin->value() > ui.actuatorMax->value())
-    {
+        ui.actuatorNeutral->setInvertedAppearance(false);
+        // Set the QSlider groove colors so that the fill is on the side of the minimum value
+        ui.actuatorNeutral->setProperty("state", "normal");
+    } else if (ui.actuatorMin->value() > ui.actuatorMax->value()) {
         ui.actuatorNeutral->setRange(ui.actuatorMax->value(), ui.actuatorMin->value());
         ui.actuatorNeutral->setEnabled(true);
+        ui.actuatorNeutral->setInvertedAppearance(true);
+        // Set the QSlider groove colors so that the fill is on the side of the minimum value
+        ui.actuatorNeutral->setProperty("state", "inverted");
     } else {
         // when the min and max is equal, disable this slider to prevent crash
         // from Qt bug: https://bugreports.qt.io/browse/QTBUG-43398
@@ -273,8 +223,8 @@ void OutputChannelForm::setChannelRange()
         setNeutral(ui.actuatorMin->value());
     }
 
-    // Force a full slider update
-    updateSlider();
+    // re-apply stylesheet to force refresh
+    ui.actuatorNeutral->setStyle(ui.actuatorNeutral->style());
 }
 
 /**
@@ -286,37 +236,7 @@ void OutputChannelForm::reverseChannel()
     int temp = ui.actuatorMax->value();
     ui.actuatorMax->setValue(ui.actuatorMin->value());
     ui.actuatorMin->setValue(temp);
-
-    // Force slider update
-    setChannelRange();
 }
-
-
-/**
- * Inverts the slider when the output channel is reversed
- */
-/**
- * @brief OutputChannelForm::updateSlider
- */
-void OutputChannelForm::updateSlider()
-{
-    // Invert the slider
-    if(ui.actuatorMin->value() > ui.actuatorMax->value()) {
-        ui.actuatorNeutral->setInvertedAppearance(true);
-
-        // Set the QSlider groove colors so that the fill is on the side of the minimum value
-        ui.actuatorNeutral->setProperty("state", "inverted");
-    } else {
-        ui.actuatorNeutral->setInvertedAppearance(false);
-
-        // Set the QSlider groove colors so that the fill is on the side of the minimum value
-        ui.actuatorNeutral->setProperty("state", "normal");
-    }
-
-    // Force refresh of style sheet.
-    ui.actuatorNeutral->setStyle(QApplication::style());
-}
-
 
 /**
  * Emits the channel value which will be sent to the UAV to move the servo.
@@ -326,7 +246,7 @@ void OutputChannelForm::sendChannelTest(int value)
 {
     int in_value = value;
 
-    QSlider *ob = (QSlider *)QObject::sender();
+    QSlider *ob = qobject_cast<QSlider *>(QObject::sender());
     if (!ob)
         return;
 
@@ -357,23 +277,8 @@ void OutputChannelForm::sendChannelTest(int value)
     emit channelChanged(index(), value);
 }
 
-/**
- * @brief OutputChannelForm::setUpdated Slot that receives signals indicating the UI is updated
- */
-void OutputChannelForm::notifyFormChanged()
+void OutputChannelForm::enableControls(bool enable)
 {
-    // If we are not in Test Output mode, set form as dirty
-    if (!m_inChannelTest){
-        emit formChanged();
-    }
-
-    setChannelRange();
-}
-
-void OutputChannelForm::updateMaxSpinboxValue(int maxPulseWidth)
-{
-    ui.actuatorMin->setMaximum(maxPulseWidth);
-    ui.actuatorMax->setMaximum(maxPulseWidth);
-    setChannelRange();
-    alignFields();
+    ui.actuatorLink->setEnabled(enable);
+    ui.pb_reverseActuator->setEnabled(enable);
 }

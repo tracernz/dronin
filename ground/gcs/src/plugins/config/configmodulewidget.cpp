@@ -48,7 +48,7 @@ ConfigModuleWidget::ConfigModuleWidget(QWidget *parent) : ConfigTaskWidget(paren
     ui = new Ui::Modules();
     ui->setupUi(this);
 
-    connect(this, SIGNAL(autoPilotConnected()), this, SLOT(recheckTabs()));
+    connect(this, SIGNAL(telemetryConnected()), this, SLOT(recheckTabs()));
 
     // Populate UAVO strings
     AirspeedSettings *airspeedSettings;

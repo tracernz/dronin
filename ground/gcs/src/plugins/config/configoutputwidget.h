@@ -28,6 +28,7 @@
 #define CONFIGOUTPUTWIDGET_H
 
 #include "ui_output.h"
+#include "outputbankform.h"
 #include "../uavobjectwidgetutils/configtaskwidget.h"
 #include "extensionsystem/pluginmanager.h"
 #include "uavobjectmanager.h"
@@ -51,40 +52,24 @@ public:
 private:
     Ui_OutputWidget *m_config;
 
-    QList<QSlider> sliders;
-
-    void updateChannelInSlider(QSlider *slider, QLabel *min, QLabel *max, QCheckBox *rev, int value);
-
-    void assignChannel(UAVDataObject *obj, QString str);
-    OutputChannelForm* getOutputChannelForm(const int index) const;
-    int mccDataRate;
-
-    //! List of dropdowns for the timer rate
-    QList<QComboBox*> rateList;
-    //! List of dropdowns for the timer resolution
-    QList<QComboBox*> resList;
-    //! List of timer grouping labels
-    QList<QLabel*> lblList;
-
-    // For naming custom rates and OneShot
-    QString timerFreqToString(quint32) const;
-    quint32 timerStringToFreq(QString) const;
+    QList<OutputBankForm *> outputBanks;
 
     UAVObject::Metadata accInitialData;
 
+    const int numBanks;
+
     virtual void tabSwitchingAway();
+
+signals:
+    void channelBanksUpdated();
 
 private slots:
     void stopTests();
-    virtual void refreshWidgetsValues(UAVObject * obj=NULL);
-    void updateObjectsFromWidgets();
     void runChannelTests(bool state);
     void sendChannelTest(int index, int value);
     void startESCCalibration();
-    void openHelp();
-    void do_SetDirty();
     void assignOutputChannels(UAVObject *obj);
-    void refreshWidgetRanges();
+    void reloadBanks();
 
 protected:
     void enableControls(bool enable);

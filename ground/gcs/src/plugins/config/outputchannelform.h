@@ -31,30 +31,29 @@
 #include "ui_outputchannelform.h"
 #include "configtaskwidget.h"
 
-class OutputChannelForm : public ConfigTaskWidget
+class OutputChannelForm : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit OutputChannelForm(const int index, QWidget *parent = NULL, const bool showLegend = false);
+    explicit OutputChannelForm(const int index, ConfigTaskWidget *parent);
     ~OutputChannelForm();
-    friend class ConfigOnputWidget;
 
     void setAssignment(const QString &assignment);
     int index() const;
+    bool isAssigned();
 
 public slots:
     void setMax(int maximum);
     int max() const;
     void setMin(int minimum);
     int min() const;
-    void setMinmax(int minimum, int maximum);
     void setNeutral(int value);
     int neutral() const;
     void enableChannelTest(bool state);
     void setType(int type);
     int type() const;
-    void updateMaxSpinboxValue(int maxPulseWidth);
+    void enableControls(bool enable);
 
 signals:
     void channelChanged(int index, int value);
@@ -66,15 +65,11 @@ private:
     int m_index;
     bool m_inChannelTest;
 
-    void alignFields();
-
 private slots:
     void linkToggled(bool state);
     void reverseChannel();
-    void updateSlider();
     void sendChannelTest(int value);
     void setChannelRange();
-    void notifyFormChanged();
 };
 
 inline int OutputChannelForm::index() const

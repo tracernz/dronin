@@ -40,21 +40,6 @@ smartSaveButton::smartSaveButton()
 }
 
 /**
- * @brief smartSaveButton::addButtons
- * Called only by the ConfigTaskWidget when adding the smart save buttons, depending
- * on whether we want Apply, Save, or Apply & Save.
- * @param save
- * @param apply
- */
-void smartSaveButton::addButtons(QPushButton *save, QPushButton *apply)
-{
-    buttonList.insert(save,save_button);
-    buttonList.insert(apply,apply_button);
-    connect(save,SIGNAL(clicked()),this,SLOT(processClick()));
-    connect(apply,SIGNAL(clicked()),this,SLOT(processClick()));
-}
-
-/**
  * @brief smartSaveButton::addApplyButton
  * Called only by the ConfigTaskWidget when adding the smart save buttons, depending
  * on whether we want Apply, Save, or Apply & Save.

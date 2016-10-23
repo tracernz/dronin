@@ -142,10 +142,10 @@ ConfigStabilizationWidget::ConfigStabilizationWidget(QWidget *parent) : ConfigTa
 
     disableMouseWheelEvents();
 
-    connect(this,SIGNAL(autoPilotConnected()),this,SLOT(applyRateLimits()));
+    connect(this,SIGNAL(telemetryConnected()),this,SLOT(applyRateLimits()));
 
-    connect(this,SIGNAL(autoPilotConnected()),this,SLOT(enableDerivedControls()));
-    connect(this,SIGNAL(autoPilotDisconnected()),this,SLOT(disableDerivedControls()));
+    connect(this,SIGNAL(telemetryConnected()),this,SLOT(enableDerivedControls()));
+    connect(this,SIGNAL(telemetryDisconnected()),this,SLOT(disableDerivedControls()));
 
     disableDerivedControls();
 }

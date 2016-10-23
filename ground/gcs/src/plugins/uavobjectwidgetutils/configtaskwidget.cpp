@@ -49,8 +49,8 @@ ConfigTaskWidget::ConfigTaskWidget(QWidget *parent) : QWidget(parent),currentBoa
     utilMngr = pm->getObject<UAVObjectUtilManager>();
     connect(telMngr, SIGNAL(connected()), this, SLOT(onAutopilotConnect()),Qt::UniqueConnection);
     connect(telMngr, SIGNAL(disconnected()), this, SLOT(onAutopilotDisconnect()),Qt::UniqueConnection);
-    connect(telMngr, SIGNAL(connected()), this, SIGNAL(autoPilotConnected()),Qt::UniqueConnection);
-    connect(telMngr, SIGNAL(disconnected()), this, SIGNAL(autoPilotDisconnected()),Qt::UniqueConnection);
+    connect(telMngr, SIGNAL(connected()), this, SIGNAL(telemetryConnected()),Qt::UniqueConnection);
+    connect(telMngr, SIGNAL(disconnected()), this, SIGNAL(telemetryDisconnected()),Qt::UniqueConnection);
     UAVSettingsImportExportManager * importexportplugin =  pm->getObject<UAVSettingsImportExportManager>();
     connect(importexportplugin,SIGNAL(importAboutToBegin()),this,SLOT(invalidateObjects()));
 }
@@ -359,7 +359,7 @@ void ConfigTaskWidget::onAutopilotConnect()
     refreshWidgetsValues();
     setDirty(false);
 
-    emit autoPilotConnected();
+    emit telemetryConnected();
 }
 
 void ConfigTaskWidget::loadAllLimits()
@@ -435,29 +435,28 @@ void ConfigTaskWidget::helpButtonPressed()
  */
 void ConfigTaskWidget::addApplySaveButtons(QPushButton *update, QPushButton *save)
 {
-    if(!smartsave)
-    {
-        smartsave=new smartSaveButton();
-        connect(smartsave,SIGNAL(preProcessOperations()), this, SLOT(updateObjectsFromWidgets()));
-        connect(smartsave,SIGNAL(saveSuccessfull()),this,SLOT(clearDirty()));
-        connect(smartsave,SIGNAL(beginOp()),this,SLOT(disableObjUpdates()));
-        connect(smartsave,SIGNAL(endOp()),this,SLOT(enableObjUpdates()));
+    if (!smartsave) {
+        smartsave = new smartSaveButton();
+        connect(smartsave, SIGNAL(preProcessOperations()), this, SLOT(updateObjectsFromWidgets()));
+        connect(smartsave, SIGNAL(saveSuccessfull()), this, SLOT(clearDirty()));
+        connect(smartsave, SIGNAL(beginOp()), this, SLOT(disableObjUpdates()));
+        connect(smartsave, SIGNAL(endOp()), this, SLOT(enableObjUpdates()));
     }
-    if(update && save)
-        smartsave->addButtons(save,update);
-    else if (update)
+
+    if (update) {
         smartsave->addApplyButton(update);
-    else if (save)
+        // hide the apply button if not in expert mode
+        Core::Internal::GeneralSettings *settings = pm->getObject<Core::Internal::GeneralSettings>();
+        update->setVisible(settings->useExpertMode());
+    } else if (save) {
         smartsave->addSaveButton(save);
-    if(objOfInterest.count()>0)
-    {
-        foreach(objectToWidget * oTw,objOfInterest)
-        {
-            smartsave->addObject((UAVDataObject*)oTw->object);
-        }
     }
-    TelemetryManager* telMngr = pm->getObject<TelemetryManager>();
-    if(telMngr->isConnected())
+
+    for (objectToWidget *oTw : objOfInterest)
+        smartsave->addObject(qobject_cast<UAVDataObject *>(oTw->object));
+
+    TelemetryManager *telMngr = pm->getObject<TelemetryManager>();
+    if (telMngr->isConnected())
         enableControls(true);
     else
         enableControls(false);

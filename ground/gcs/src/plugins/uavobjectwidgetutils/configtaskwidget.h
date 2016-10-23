@@ -108,8 +108,24 @@ public:
     bool eventFilter( QObject * obj, QEvent * evt );
 
     void saveObjectToSD(UAVObject *obj);
-    UAVObjectManager* getObjectManager();
-    UAVObjectUtilManager* getObjectUtilManager();
+    UAVObjectManager *getObjectManager();
+    UAVObjectUtilManager *getObjectUtilManager();
+    /**
+     * @brief getObject Fetch UAV Object with the given name
+     * @param name name of object to fetch
+     * @return object pointer on success, null pointer on failure
+     */
+    template<typename T>
+    T *getObject(const QString &name, quint32 instId = 0) {
+        T *obj = qobject_cast<T *>(getObjectManager()->getObject(name, instId));
+        Q_ASSERT(obj);
+        if (!obj) {
+            qWarning() << "Could not get UAVO " << name;
+            return Q_NULLPTR;
+        }
+        return obj;
+    }
+
     static double listMean(QList<double> list);
     static double listVar(QList<double> list);
 
@@ -188,9 +204,9 @@ signals:
     //fired when the framework requests that the UAVObject values be updated from the widgets value, use for custom behaviour
     void updateObjectsFromWidgetsRequested();
     //fired when the autopilot connects
-    void autoPilotConnected();
+    void telemetryConnected();
     //fired when the autopilot disconnects
-    void autoPilotDisconnected();
+    void telemetryDisconnected();
     void defaultRequested(int group);
 
 private slots:

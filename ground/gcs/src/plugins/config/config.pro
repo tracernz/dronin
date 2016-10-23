@@ -48,7 +48,8 @@ HEADERS += calibration.h \
     configmodulewidget.h \
     configosdwidget.h \
     expocurve.h \
-    qreadonlycheckbox.h
+    qreadonlycheckbox.h \
+    outputbankform.h
 
 SOURCES += calibration.cpp \
     configplugin.cpp \
@@ -80,7 +81,8 @@ SOURCES += calibration.cpp \
     vehicletrim.cpp \
     configmodulewidget.cpp \
     configosdwidget.cpp \
-    expocurve.cpp
+    expocurve.cpp \
+    outputbankform.cpp
 
 FORMS += airframe.ui \
     ccpm.ui \
@@ -100,7 +102,8 @@ FORMS += airframe.ui \
     osdpage.ui \
     autotuneproperties.ui \
     autotunesliders.ui \
-    autotunefinalpage.ui
+    autotunefinalpage.ui \
+    outputbankform.ui
 
 RESOURCES += configgadget.qrc
 

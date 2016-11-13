@@ -14,7 +14,7 @@ defineReplace(targetPath) {
     return($$shell_path($$1))
 }
 
-defineReplace(addNewline) { 
+defineReplace(addNewline) {
     return($$escape_expand(\\n\\t))
 }
 
@@ -164,3 +164,18 @@ CONFIG(release, debug|release): unix | win32-msvc* {
     CONFIG += force_debug_info
     CONFIG += separate_debug_info
 }
+
+# check dynamic uavo relations defined in .ui files against the UAVO definitions
+UAVOREL_CHECK = $$PYTHON $$clean_path($$GCS_SOURCE_TREE/../../python/dronin-checkgcsrelation)
+UAVO_PATH = $$clean_path($$GCS_SOURCE_TREE/../../shared/uavobjectdefinition)
+
+# checking deps is only slightly less expensive than the checks themselves so just run always
+uavorel_check.depends = FORCE
+uavorel_check.commands = $$UAVOREL_CHECK --uavos $$UAVO_PATH ${QMAKE_FILE_IN} && touch ${QMAKE_FILE_OUT}
+uavorel_check.output = .uavrel_check
+uavorel_check.input = FORMS
+uavorel_check.variable_out = JUNK
+uavorel_check.CONFIG += no_link combine target_predeps explicit_dependencies
+uavorel_check.name = UAVOREL ${QMAKE_FILE_IN}
+silent:uavorel_check.commands = @echo uavorel ${QMAKE_FILE_IN} && $$uavorel_check.commands
+QMAKE_EXTRA_COMPILERS += uavorel_check

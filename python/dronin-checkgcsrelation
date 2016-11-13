@@ -1,0 +1,169 @@
+#!/usr/bin/env python
+
+from __future__ import print_function
+
+import argparse
+import httplib
+import os
+import sys
+import urllib2
+
+from lxml import etree
+from dronin import uavo_collection
+from pprint import pprint
+
+args = None
+uavos = None
+errors = []
+warnings = []
+dirty = False
+
+BUTTON_TYPES = ['save', 'apply', 'reload', 'default', 'help', 'reboot', 'connectiondiagram']
+
+class HeadRequest(urllib2.Request):
+	def get_method(self):
+		return 'HEAD'
+
+def error(widget, msg):
+	errors.append('Error: {} [{}]: {}'.format(widget.get('name'), widget.get('class'), msg))
+
+def warning(widget, msg):
+	warnings.append('Warning: {} [{}]: {}'.format(widget.get('name'), widget.get('class'), msg))
+
+def _stringlist_to_dict(stringlist_element):
+	props = {}
+	for p in stringlist_element:
+		bits = p.text.split(':', 1)
+		if len(bits) != 2:
+			return None
+		props[bits[0]] = bits[1]
+	return props
+
+def check_button(widget, props):
+	if not props['button'] in BUTTON_TYPES:
+		error(widget, 'Invalid button type "{}", possible types are {}'.format(props['button'], ', '.join(BUTTON_TYPES)))
+		return 1
+	if props['button'] == 'help':
+		if not 'url' in props:
+			error(widget, 'Missing URL')
+		else:
+			try:
+				r = urllib2.urlopen(HeadRequest(props['url']))
+			except urllib2.HTTPError as e:
+				error(widget, str(e))
+	return 0
+
+def check_relation(property_element):
+	global dirty
+
+	l = property_element.xpath('stringlist')
+	if len(l) != 1:
+		return 1
+
+	widget = property_element.getparent()
+
+	if not l[0].get('notr') or l[0].get('notr') != 'true':
+		warning(widget, 'notr is not enabled')
+		l[0].set('notr', 'true')
+		dirty = True
+
+	props = _stringlist_to_dict(l[0])
+	if type(props) != dict:
+		error(widget, 'Malformed stringlist (check each string contains : separator')
+		return 2
+
+	# allow widgets to ignore checking missing fields (they may be added at runtime)
+	if '_ignore' in props:
+		ignore = [strip(p) for p in props['_ignore'].split(',') if len(strip(p))]
+	else:
+		ignore = list()
+
+	if 'button' in props:
+		return 0 if 'button' in ignore else check_button(widget, props)
+
+	if 'objname' in ignore:
+		return  0
+	if not 'objname' in props:
+		return 3
+
+	obj = uavos.find_by_name(props['objname'])
+	if not obj:
+		error(widget, 'Invalid object {}'.format(props['objname']))
+		return 4
+
+	if 'fieldname' in ignore:
+		return 0
+	if not 'fieldname' in props and 'fieldname' not in ignore:
+		return 5
+
+	if not getattr(obj, props['fieldname'], None):
+		error(widget, 'Invalid field {}.{}'.format(props['objname'], props['fieldname']))
+		return 6
+
+	return 0
+
+
+
+def check_ui_file(filename):
+	global dirty, errors, warnings
+
+	dirty = False
+	errors = []
+	warnings = []
+
+	with open(filename, 'r') as f:
+		tree = etree.parse(f)
+
+	root = tree.getroot()
+
+	if root.tag != 'ui':
+		raise RuntimeError('Not a valid Qt UI file!')
+
+	relations = root.xpath('//property[@name="objrelation"]')
+	for r in relations:
+		check_relation(r)
+
+	if dirty and args.fixup:
+		bkp = filename + '.bak'
+		if os.path.exists(bkp):
+			suf = 0
+			while os.path.exists(bkp + str(suf)):
+				suf += 1
+			bkp += str(suf)
+		os.rename(filename, bkp)
+		with open(filename, 'w') as f:
+			# lxml does single quotes in xml decleration which creates diff :(
+			f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
+			tree.write(f, pretty_print=True, xml_declaration=False, encoding='utf-8')
+
+	if len(errors) > 0 or len(warnings) > 0:
+		print('In file: {}'.format(filename), file=sys.stderr)
+		if len(warnings) > 0:
+			print('\n'.join(['    ' + w for w in warnings]), file=sys.stderr)
+		if len(errors) > 0:
+			print('\n'.join(['    ' + e for e in errors]), file=sys.stderr)
+			return 1
+
+	return 0
+
+def main():
+	global args, uavos
+
+	parser = argparse.ArgumentParser(description='Check UAVO relations in .ui files')
+	parser.add_argument('--fixup', action='store_true', help='Fixup any problems found (if possible), a backup of the old file will be created')
+	parser.add_argument('--uavos', default='./shared/uavobjectdefinition', help='UAVO definition directory')
+	parser.add_argument('ui_files', nargs='+', help='.ui files to check')
+	args = parser.parse_args()
+
+	uavos = uavo_collection.UAVOCollection()
+	uavos.from_uavo_xml_path(args.uavos)
+
+	for ui in args.ui_files:
+		ret = check_ui_file(ui)
+		if ret != 0:
+			return ret
+
+	return 0
+
+if __name__ == '__main__':
+	sys.exit(main())

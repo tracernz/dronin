@@ -1,0 +1,213 @@
+#!/usr/bin/env python
+
+from __future__ import print_function
+
+from difflib import SequenceMatcher
+import httplib
+import logging
+import os
+import urllib2
+
+from lxml import etree
+from dronin import uavo_collection
+from pprint import pprint
+
+
+BUTTON_TYPES = ['save', 'apply', 'reload', 'default', 'help', 'reboot', 'connectiondiagram']
+BUTTON_PROPS = set(['button', 'buttongroup', 'url'])
+
+
+log = logging.getLogger()
+fix_log = logging.getLogger('fixups')
+fix_log.FIXUP = 99
+logging.addLevelName(fix_log.FIXUP, 'FIXUP')
+
+
+class ErrorChecker(logging.Handler):
+	def __init__(self, level=logging.NOTSET):
+		logging.Handler.__init__(self, level)
+		self.okay = True
+
+	def emit(self, record):
+		self.okay = False
+
+	def errors_occured(self):
+		return not self.okay
+
+class ErrorPrinter(logging.Handler):
+	def __init__(self, level=logging.NOTSET):
+		logging.Handler.__init__(self, level)
+		self.msgs = []
+
+	def emit(self, record):
+		print('{levelname}: {uiclass}.{widgetname} [{widgetclass}]: {msg}'.format(**record.__dict__), file=sys.stderr)
+
+
+def check_button(props, log_context):
+
+	if not set(props.keys()).issubset(BUTTON_PROPS):
+		log.warning('Unexpected properties: ' + ', '.join(set(props.keys()) - BUTTON_PROPS), extra=log_context)
+
+	if not props['button'] in BUTTON_TYPES:
+		log.error('Invalid button type "{}", possible types are {}'.format(props['button'], ', '.join(BUTTON_TYPES)), extra=log_context)
+
+	if props['button'] == 'help':
+		if not 'url' in props:
+			log.error('Help button missing URL', extra=log_context)
+		else:
+			class HeadRequest(urllib2.Request):
+				def get_method(self):
+					return 'HEAD'
+
+			r = urllib2.urlopen(HeadRequest(props['url']))
+			if r.getcode() != 200:
+				log.warning('Invalid URL ({}), response was {} {}'.format(props['url'], r.getcode(), httplib.responses[r.getcode()]), extra=log_context)
+
+	return 0
+
+def check_relation(property_element, uavos, fixup=False):
+	widget = property_element.getparent()
+	log_context = {'widgetname': widget.get('name'),
+	               'widgetclass': widget.get('class'),
+	               'uiclass': widget.getroottree().find('class').text}
+
+	l = property_element.xpath('stringlist')
+	if len(l) != 1:
+		log.error('No stringlist or more than one stringlist', extra=log_context)
+		return
+
+	if not l[0].get('notr') or l[0].get('notr') != 'true':
+		log.warning('notr is not enabled', extra=log_context)
+		if fixup:
+			l[0].set('notr', 'true')
+			dirty = True
+			fix_log.log(fix_log.FIXUP, 'Set notr=true', extra=log_context)
+
+	def _stringlist_to_dict(stringlist_element):
+		props = {}
+		for p in stringlist_element:
+			bits = p.text.split(':', 1)
+			if len(bits) != 2:
+				return None
+			props[bits[0]] = bits[1]
+		return props
+
+	props = _stringlist_to_dict(l[0])
+	if type(props) != dict:
+		log.error('Malformed stringlist (check each string contains : separator', extra=log_context)
+		return
+
+	if 'button' in props:
+		check_button(props, log_context)
+		return
+
+	if not 'objname' in props:
+		log.error('objname missing', extra=log_context)
+		return
+
+	if not 'fieldname' in props:
+		log.error('fieldname missing', extra=log_context)
+		return
+
+	obj = uavos.find_by_name(props['objname'])
+	if not obj:
+		log.error('Invalid object: {}'.format(props['objname']), extra=log_context)
+		return
+
+	if not getattr(obj, props['fieldname'], None):
+		log.error('Invalid field {}.{}'.format(props['objname'], props['fieldname']), extra=log_context)
+		return
+
+
+def check_ui_file(filename, uavos, fixup=False):
+	with open(filename, 'r') as f:
+		tree = etree.parse(f)
+
+	root = tree.getroot()
+
+	if root.tag != 'ui':
+		raise RuntimeError('Not a valid Qt UI file!')
+
+	if fixup:
+		fix_checker = ErrorChecker(level=fix_log.FIXUP)
+		fix_log.addHandler(fix_checker)
+
+	# check all properties named "objrelation"
+	relations = root.xpath('//property[@name="objrelation"]')
+	for r in relations:
+		check_relation(r, uavos, fixup)
+
+	# check for things similar to objrelation, to catch typos
+	relations = root.xpath('//property[@name!="objrelation"][@stdset="0"]')
+	for r in relations:
+		# magic ratio isn't scientific, objelation has 0.95 similarity to objrelation
+		if SequenceMatcher(None, 'objrelation', r.get('name')).ratio() > 0.8:
+			widget = r.getparent()
+			ctx = {'widgetname': widget.get('name'),
+			       'widgetclass': widget.get('class'),
+			       'uiclass': widget.getroottree().find('class').text}
+			log.warning('Property {}: did you mean objrelation?'.format(r.get('name')), extra=ctx)
+
+	if fixup:
+		fix_log.removeHandler(fix_checker)
+		if fix_checker.errors_occured():
+			bkp = filename + '.bak'
+			if os.path.exists(bkp):
+				suf = 0
+				while os.path.exists(bkp + str(suf)):
+					suf += 1
+				bkp += str(suf)
+			os.rename(filename, bkp)
+			with open(filename, 'w') as f:
+				# lxml does single quotes in xml decleration which creates diff :(
+				f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
+				tree.write(f, pretty_print=True, xml_declaration=False, encoding='utf-8')
+
+
+def main(argv):
+	def check_dir(d):
+		if os.path.isdir(d):
+			return d
+		raise argparse.ArgumentTypeError('%s is not a directory' % d)
+
+	def check_dir_or_file(d):
+		if os.path.exists(d):
+			return d
+		raise argparse.ArgumentTypeError('%s is not a file or directory' % d)
+
+	log_levels = {logging.getLevelName(l): l for l in [logging.NOTSET, logging.WARNING, logging.ERROR]}
+
+	import argparse
+	parser = argparse.ArgumentParser(description='dRonin GCS UAVObject->UI relation analyzer', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+	parser.add_argument('-e', '--error-level', choices=log_levels.keys(), default=logging.getLevelName(logging.ERROR), help='Error level')
+	parser.add_argument('-w', '--warn-level', choices=log_levels.keys(), default=logging.getLevelName(logging.WARNING), help='Warning (printing) level, must be lower than or equal to error level')
+	parser.add_argument('-f', '--fixup', action='store_true', help='Fixup any problems found, where possible')
+	parser.add_argument('-u', '--uavodefs', type=check_dir, default='./shared/uavobjectdefinition', help='Directory containing UAVO definitions')
+	parser.add_argument('ui', type=check_dir_or_file, help='Path to ui file(s), will be searched recursively if a directory')
+	args = parser.parse_args(argv)
+
+	if log_levels[args.warn_level] > log_levels[args.error_level]:
+		parser.print_help()
+		return 1
+
+	log.addHandler(ErrorPrinter(level=log_levels[args.warn_level]))
+	checker = ErrorChecker(level=log_levels[args.error_level])
+	log.addHandler(checker)
+
+	uavos = uavo_collection.UAVOCollection()
+	uavos.from_uavo_xml_path(args.uavodefs)
+
+	if os.path.isdir(args.ui):
+		for root, _, files in os.walk(args.ui):
+			for f in files:
+				if f.endswith('.ui'):
+					path = os.path.join(root, f)
+					check_ui_file(path, uavos, fixup=args.fixup)
+	else:
+	 	check_ui_file(args.ui, uavos, fixup=args.fixup)
+
+	return 1 if checker.errors_occured() else 0
+
+if __name__ == '__main__':
+	import sys
+	sys.exit(main(sys.argv[1:]))

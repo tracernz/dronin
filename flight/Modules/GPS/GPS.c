@@ -52,6 +52,7 @@
 #include "NMEA.h"
 #include "UBX.h"
 #include "ubx_cfg.h"
+#include "mtk_cfg.h"
 
 #include <pios_hal.h>
 
@@ -70,6 +71,7 @@ static void updateSettings();
 
 #define GPS_TIMEOUT_MS                  750
 #define GPS_COM_TIMEOUT_MS              100
+#define GPS_BAUD_CHANGE_MS              50
 
 
 #if defined(PIOS_GPS_MINIMAL)
@@ -232,6 +234,20 @@ static void gpsConfigure(uint8_t gpsProtocol)
 		}
 		break;
 #endif
+#if defined(PIOS_INCLUDE_GPS_NMEA_PARSER)
+		case MODULESETTINGS_GPSDATAPROTOCOL_NMEA:
+		{
+			ModuleSettingsGPSSpeedOptions baud_rate;
+			ModuleSettingsGPSSpeedGet(&baud_rate);
+
+			mtk_cfg_set_baudrate(gpsPort, baud_rate);
+
+			PIOS_Thread_Sleep(1000);
+		}
+		break;
+#endif
+		default:
+			return;
 	}
 #endif /* PIOS_GPS_MINIMAL */
 }
@@ -318,16 +334,16 @@ static void gpsTask(void *parameters)
 		} else {
 			// we appear to be receiving GPS sentences OK, we've had an update
 			//criteria for GPS-OK taken from this post
-			if (gpsposition.PDOP < 3.5f && 
-			    gpsposition.Satellites >= 7 &&
-			    (gpsposition.Status == GPSPOSITION_STATUS_FIX3D ||
-			         gpsposition.Status == GPSPOSITION_STATUS_DIFF3D)) {
-				AlarmsClear(SYSTEMALARMS_ALARM_GPS);
-			} else if (gpsposition.Status == GPSPOSITION_STATUS_FIX3D ||
-			           gpsposition.Status == GPSPOSITION_STATUS_DIFF3D)
-						AlarmsSet(SYSTEMALARMS_ALARM_GPS, SYSTEMALARMS_ALARM_WARNING);
-					else
-						AlarmsSet(SYSTEMALARMS_ALARM_GPS, SYSTEMALARMS_ALARM_CRITICAL);
+			if (gpsposition.Status == GPSPOSITION_STATUS_FIX3D ||
+					gpsposition.Status == GPSPOSITION_STATUS_DIFF3D) {
+				if (gpsposition.PDOP < 3.5f && gpsposition.Satellites >= 7) {
+					AlarmsClear(SYSTEMALARMS_ALARM_GPS);
+				} else {
+					AlarmsSet(SYSTEMALARMS_ALARM_GPS, SYSTEMALARMS_ALARM_WARNING);
+				}
+			} else {
+				AlarmsSet(SYSTEMALARMS_ALARM_GPS, SYSTEMALARMS_ALARM_CRITICAL);
+			}
 		}
 
 	}
@@ -347,6 +363,27 @@ static void updateSettings()
 
 		// Set port speed
 		PIOS_HAL_ConfigureSerialSpeed(gpsPort, speed);
+	}
+}
+
+void GPSSendStringAtAllBaudrates(const char *str)
+{
+	if (!gpsPort)
+		return;
+
+	const uint32_t baudrates[] = {2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400};
+	for (int i = 0; i < NELEMENTS(baudrates); i++) {
+		PIOS_COM_ChangeBaud(gpsPort, baudrates[i]);
+		PIOS_Thread_Sleep(GPS_BAUD_CHANGE_MS);
+
+		// Send the baud rate change message
+		PIOS_COM_SendString(gpsPort, str);
+
+		// Wait until the message has been fully transmitted including all start+stop bits
+		// 34 bytes * 10bits/byte = 340 bits
+		// At 2400bps, that's (340 / 2400) = 142ms
+		// add some margin and we end up with 200ms
+		PIOS_Thread_Sleep(200);
 	}
 }
 

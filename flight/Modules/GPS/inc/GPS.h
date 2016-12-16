@@ -50,6 +50,11 @@ struct GPS_RX_STATS {
 };
 
 int32_t GPSInitialize(void);
+/**
+ * @brief Send a string at a number of common baudrates
+ * @ param[in] str String to send
+*/
+void GPSSendStringAtAllBaudrates(const char *str);
 
 #endif // GPS_H
 

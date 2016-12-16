@@ -460,6 +460,7 @@ bool NMEA_update_position(char *nmea_sentence, GPSPositionData *GpsData)
  */
 static bool nmeaProcessGPGGA(GPSPositionData * GpsData, bool* gpsDataUpdated, char* param[], uint8_t nbParam)
 {
+	static uint32_t last_update = 0;
 
 	if (nbParam != 15)
 		return false;
@@ -502,6 +503,9 @@ static bool nmeaProcessGPGGA(GPSPositionData * GpsData, bool* gpsDataUpdated, ch
 
 	// geoid separation
 	GpsData->GeoidSeparation = NMEA_real_to_float(param[11]);
+
+	GpsData->UpdatePeriod = PIOS_Thread_Systime() - last_update;
+	last_update = PIOS_Thread_Systime();
 
 	return true;
 }

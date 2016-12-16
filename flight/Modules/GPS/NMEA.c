@@ -166,7 +166,7 @@ int parse_nmea_stream (uint8_t c, char *gps_rx_buffer, GPSPositionData *GpsData,
 		// Prepare to consume the sentence from the buffer
 
 		// Validate the checksum over the sentence
-		if (!NMEA_checksum(&gps_rx_buffer[1]))
+		if (!NMEA_check_checksum(&gps_rx_buffer[1]))
 		{	// Invalid checksum.  May indicate dropped characters on Rx.
 			//PIOS_DEBUG_PinHigh(2);
 			gpsRxStats->gpsRxChkSumError++;
@@ -212,13 +212,13 @@ const static struct nmea_parser *NMEA_find_parser_by_prefix(const char *prefix)
 /**
  * Computes NMEA sentence checksum
  * \param[in] Buffer for parsed nmea sentence
+ * \param[out] Pointer to where checksum should be, NULL on error
  * \return false checksum not valid
  * \return true checksum valid
  */
-bool NMEA_checksum(char *nmea_sentence)
+uint8_t NMEA_checksum(char *nmea_sentence, char **checksum_ptr)
 {
 	uint8_t checksum_computed = 0;
-	uint8_t checksum_received;
 
 	while (*nmea_sentence != '\0' && *nmea_sentence != '*') {
 		checksum_computed ^= *nmea_sentence;
@@ -228,11 +228,28 @@ bool NMEA_checksum(char *nmea_sentence)
 	/* Make sure we're now pointing at the checksum */
 	if (*nmea_sentence == '\0') {
 		/* Buffer ran out before we found a checksum marker */
-		return false;
+		if (checksum_ptr)
+			*checksum_ptr = NULL;
+		return 0;
 	}
 
+	if (checksum_ptr)
+		*checksum_ptr = nmea_sentence + 1;
+
+	return checksum_computed;
+}
+
+bool NMEA_check_checksum(char *nmea_sentence)
+{
+	char *checksum_ptr;
+	uint8_t checksum_computed = NMEA_checksum(nmea_sentence, &checksum_ptr);
+
+	/* Make sure we're now pointing at the checksum */
+	if (!checksum_ptr)
+		return false;
+
 	/* Load the checksum from the buffer */
-	checksum_received = strtol(nmea_sentence + 1, NULL, 16);
+	uint8_t checksum_received = strtol(checksum_ptr, NULL, 16);
 
 	//PIOS_COM_SendFormattedStringNonBlocking(COM_DEBUG_USART,"$%d=%d\r\n",checksum_received,checksum_computed);
 

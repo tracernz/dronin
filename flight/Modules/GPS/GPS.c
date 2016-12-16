@@ -243,6 +243,14 @@ static void gpsConfigure(uint8_t gpsProtocol)
 			mtk_cfg_set_baudrate(gpsPort, baud_rate);
 
 			PIOS_Thread_Sleep(1000);
+
+			mtk_cfg_set_fix_period(gpsPort, 500);
+
+			PIOS_Thread_Sleep(1000);
+			
+			mtk_cfg_set_messages(gpsPort);
+
+			PIOS_Thread_Sleep(1000);
 		}
 		break;
 #endif

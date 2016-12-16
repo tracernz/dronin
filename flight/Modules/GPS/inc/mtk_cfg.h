@@ -35,6 +35,8 @@
 #include "modulesettings.h"
 
 void mtk_cfg_set_baudrate(uintptr_t gps_port, ModuleSettingsGPSSpeedOptions baud_rate);
+void mtk_cfg_set_messages(uintptr_t gps_port);
+void mtk_cfg_set_fix_period(uintptr_t gps_port, unsigned period);
 
 #endif /* MTK_CFG_H_ */
 

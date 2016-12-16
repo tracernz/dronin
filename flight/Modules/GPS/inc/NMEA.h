@@ -38,7 +38,15 @@
 #define NMEA_MAX_PACKET_LENGTH          96 // 82 max NMEA msg size plus 12 margin (because some vendors add custom crap) plus CR plus Linefeed
 
 extern bool NMEA_update_position(char *nmea_sentence, GPSPositionData *GpsData);
-extern bool NMEA_checksum(char *nmea_sentence);
+/**
+ * Computes NMEA sentence checksum
+ * \param[in] Buffer for parsed nmea sentence
+ * \param[out] Pointer to where checksum should be, NULL on error
+ * \return false checksum not valid
+ * \return true checksum valid
+ */
+extern uint8_t NMEA_checksum(char *nmea_sentence, char **checksum_ptr);
+extern bool NMEA_check_checksum(char *nmea_sentence);
 extern int parse_nmea_stream(uint8_t, char *, GPSPositionData *, struct GPS_RX_STATS *);
 
 #endif /* NMEA_H */

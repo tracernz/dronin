@@ -35,6 +35,7 @@
 #if !defined(PIOS_GPS_MINIMAL)
 
 #include "GPS.h"
+#include "NMEA.h"
 
 #include "gpsposition.h"
 #include "modulesettings.h"
@@ -46,6 +47,7 @@ enum mtk_command {
 	PMTK_CMD_FULL_COLD_START = 104,
 	PMTK_SET_NMEA_BAUDRATE = 251,
 	PMTK_API_SET_FIX_CTL = 300,
+	PMTK_API_SET_SBAS_ENABLED = 313,
 	PMTK_API_SET_NMEA_OUTPUT = 314,
 	PMTK_API_SET_USER_OPTION = 390,
 	PMTK_API_GET_USER_OPTION = 490,
@@ -76,6 +78,86 @@ enum mtk_sentence_frequency {
 	MTK_FREQ_EVERY_4FIX = 4,
 	MTK_FREQ_EVERY_5FIX = 5,
 };
+
+char *write_int(char *buf, unsigned val, unsigned base, unsigned min_digits)
+{
+	unsigned t = val;
+	unsigned digits = 1;
+	while (t /= base)
+		digits++;
+	if (digits < min_digits) {
+		memset(buf, '0', min_digits - digits);
+		digits = min_digits;
+	}
+	
+	char *p = buf + digits - 1;
+	do {
+		int d = val % base;
+		*p-- = (d < 10) ? '0' + d : 'A' - 10 + d;
+		val /= base;
+	} while (val);
+
+	return buf + digits;
+}
+
+void mtk_cfg_set_fix_period(uintptr_t gps_port, unsigned period)
+{
+	if (period < 200)
+		period = 200; /* hardware limitation */
+	else if (period > 1000)
+		period = 1000; /* arbitrary limitation */
+
+	char buf[50] = "$PMTK300,\0";
+	char *ptr = buf + strlen(buf);
+
+	ptr = write_int(ptr, period, 10, 0);
+	
+	const char *end = ",0,0,0,0*";
+	strcpy(ptr, end);
+	ptr += strlen(end);
+	
+	uint8_t checksum = NMEA_checksum(buf, NULL);
+	ptr = write_int(ptr, checksum, 16, 2);
+	*ptr = '\0';
+
+	PIOS_COM_SendString(gps_port, buf);
+}
+
+void mtk_cfg_set_messages(uintptr_t gps_port)
+{
+	char buf[50] = "$PMTK314\0";
+	char *ptr = buf + strlen(buf);
+
+	const uint8_t rates[] = {
+		MTK_FREQ_DISABLED, /* NMEA_SEN_GLL */
+		MTK_FREQ_EVERY_FIX, /* NMEA_SEN_RMC */
+		MTK_FREQ_EVERY_FIX, /* NMEA_SEN_VTG */
+		MTK_FREQ_EVERY_FIX, /* NMEA_SEN_GGA */
+		MTK_FREQ_EVERY_FIX, /* NMEA_SEN_GSA */
+		MTK_FREQ_EVERY_5FIX, /* NMEA_SEN_GSV */
+		MTK_FREQ_DISABLED, /* NMEA_SEN_GRS */
+		MTK_FREQ_DISABLED, /* NMEA_SEN_GST */
+		MTK_FREQ_DISABLED, /* NMEA_SEN_MALM */
+		MTK_FREQ_DISABLED, /* NMEA_SEN_MEPH */
+		MTK_FREQ_DISABLED, /* NMEA_SEN_MDGP */
+		MTK_FREQ_DISABLED, /* NMEA_SEN_MDBG */
+		MTK_FREQ_EVERY_5FIX, /* NMEA_SEN_ZDA */
+		MTK_FREQ_DISABLED, /* NMEA_SEN_MCHN */
+	};
+
+	for (int i = 0; i < NELEMENTS(rates); i++) {
+		*ptr++ = ',';
+		ptr = write_int(ptr, rates[i], 10, 0);
+	}
+
+	*ptr++ = '*';
+
+	uint8_t checksum = NMEA_checksum(buf, NULL);
+	ptr = write_int(ptr, checksum, 16, 2);
+	*ptr = '\0';
+
+	PIOS_COM_SendString(gps_port, buf);
+}
 
 void mtk_cfg_set_baudrate(uintptr_t gps_port, ModuleSettingsGPSSpeedOptions baudrate)
 {

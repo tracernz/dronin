@@ -579,25 +579,10 @@ void ubx_cfg_set_baudrate(uintptr_t gps_port, ModuleSettingsGPSSpeedOptions baud
         break;
     }
 
-    // Attempt to set baud rate to desired value from a number of
-    // common rates. So this configures the physical baudrate and
-    // tries to send the configuration string to the GPS.
-    const uint32_t baud_rates[] = {2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400};
-    for (uint32_t i = 0; i < NELEMENTS(baud_rates); i++) {
-        PIOS_COM_ChangeBaud(gps_port, baud_rates[i]);
-        PIOS_Thread_Sleep(UBLOX_WAIT_MS);
+    /* send the message at all common baudrates */
+    GPS_SendStringAllBaudrates(msg);
 
-        // Send the baud rate change message
-        PIOS_COM_SendString(gps_port, msg);
-
-        // Wait until the message has been fully transmitted including all start+stop bits
-        // 34 bytes * 10bits/byte = 340 bits
-        // At 2400bps, that's (340 / 2400) = 142ms
-        // add some margin and we end up with 200ms
-        PIOS_Thread_Sleep(200);
-    }
-
-    // Set to proper baud rate
+    /* Set to proper baud rate */
     PIOS_COM_ChangeBaud(gps_port, baud);
 }
 

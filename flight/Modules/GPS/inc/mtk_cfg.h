@@ -34,9 +34,12 @@
 #include "openpilot.h"
 #include "modulesettings.h"
 
+void mtk_cfg_autoconfigure(uintptr_t gps_port, ModuleSettingsGPSSpeedOptions baud_rate,
+	bool sbas_enabled);
 void mtk_cfg_set_baudrate(uintptr_t gps_port, ModuleSettingsGPSSpeedOptions baud_rate);
 void mtk_cfg_set_messages(uintptr_t gps_port);
-void mtk_cfg_set_fix_period(uintptr_t gps_port, unsigned period);
+void mtk_cfg_set_fix_period(uintptr_t gps_port, uint16_t period);
+void mtk_cfg_set_sbas(uintptr_t gps_port, bool enabled);
 
 #endif /* MTK_CFG_H_ */
 

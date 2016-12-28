@@ -166,6 +166,7 @@ int32_t GPSInitialize(void)
 	if (gpsPort && module_enabled) {
 		ModuleSettingsGPSDataProtocolGet(&gpsProtocol);
 		switch (gpsProtocol) {
+			case MODULESETTINGS_GPSDATAPROTOCOL_MTKNMEA:
 			case MODULESETTINGS_GPSDATAPROTOCOL_NMEA:
 				gps_rx_buffer = PIOS_malloc(NMEA_MAX_PACKET_LENGTH);
 				if (gps_rx_buffer == NULL) {
@@ -206,6 +207,18 @@ static void gpsConfigure(uint8_t gpsProtocol)
 
 #if !defined(PIOS_GPS_MINIMAL)
 	switch (gpsProtocol) {
+#if defined(PIOS_INCLUDE_GPS_NMEA_PARSER)
+		case MODULESETTINGS_GPSDATAPROTOCOL_MTKNMEA:
+		{
+			ModuleSettingsGPSSpeedOptions baud_rate;
+			ModuleSettingsGPSSBASConstellationOptions sbas_const;
+			ModuleSettingsGPSSpeedGet(&baud_rate);
+			ModuleSettingsGPSSBASConstellationGet(&sbas_const);
+
+			mtk_cfg_autoconfigure(gpsPort, baud_rate, sbas_const != MODULESETTINGS_GPSSBASCONSTELLATION_NONE);
+		}
+		break;
+#endif
 #if defined(PIOS_INCLUDE_GPS_UBX_PARSER)
 		case MODULESETTINGS_GPSDATAPROTOCOL_UBX:
 		{
@@ -231,26 +244,6 @@ static void gpsConfigure(uint8_t gpsProtocol)
 
 			ubx_cfg_send_configuration(gpsPort, gps_rx_buffer,
 					constellation, sbas_const, dyn_mode);
-		}
-		break;
-#endif
-#if defined(PIOS_INCLUDE_GPS_NMEA_PARSER)
-		case MODULESETTINGS_GPSDATAPROTOCOL_NMEA:
-		{
-			ModuleSettingsGPSSpeedOptions baud_rate;
-			ModuleSettingsGPSSpeedGet(&baud_rate);
-
-			mtk_cfg_set_baudrate(gpsPort, baud_rate);
-
-			PIOS_Thread_Sleep(1000);
-
-			mtk_cfg_set_fix_period(gpsPort, 500);
-
-			PIOS_Thread_Sleep(1000);
-			
-			mtk_cfg_set_messages(gpsPort);
-
-			PIOS_Thread_Sleep(1000);
 		}
 		break;
 #endif
@@ -306,6 +299,7 @@ static void gpsTask(void *parameters)
 			int res;
 			switch (gpsProtocol) {
 #if defined(PIOS_INCLUDE_GPS_NMEA_PARSER)
+				case MODULESETTINGS_GPSDATAPROTOCOL_MTKNMEA:
 				case MODULESETTINGS_GPSDATAPROTOCOL_NMEA:
 					res = parse_nmea_stream (c,gps_rx_buffer, &gpsposition, &gpsRxStats);
 					break;
@@ -374,7 +368,7 @@ static void updateSettings()
 	}
 }
 
-void GPSSendStringAtAllBaudrates(const char *str)
+void GPS_SendStringAllBaudrates(const char *str)
 {
 	if (!gpsPort)
 		return;

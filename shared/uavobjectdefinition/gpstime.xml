@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <xml>
 	<object name="GPSTime" singleinstance="true" settings="false">
-		<description>Contains the GPS time from @ref GPSModule.  Required to compute the world magnetic model correctly when setting the home location.</description>
+		<description>Contains the GPS time (UTC) from @ref GPSModule.  Required to compute the world magnetic model correctly when setting the home location.</description>
 		<field name="Month" units="" type="int8" elements="1"/>
 		<field name="Day" units="" type="int8" elements="1"/>
 		<field name="Year" units="" type="int16" elements="1"/>

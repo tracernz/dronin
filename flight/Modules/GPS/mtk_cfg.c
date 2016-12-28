@@ -34,6 +34,8 @@
 
 #if !defined(PIOS_GPS_MINIMAL)
 
+#include "mtk_cfg.h"
+
 #include "GPS.h"
 #include "NMEA.h"
 
@@ -100,7 +102,7 @@ char *write_int(char *buf, unsigned val, unsigned base, unsigned min_digits)
 	return buf + digits;
 }
 
-void mtk_cfg_set_fix_period(uintptr_t gps_port, unsigned period)
+void mtk_cfg_set_fix_period(uintptr_t gps_port, uint16_t period)
 {
 	if (period < 200)
 		period = 200; /* hardware limitation */
@@ -123,11 +125,24 @@ void mtk_cfg_set_fix_period(uintptr_t gps_port, unsigned period)
 	PIOS_COM_SendString(gps_port, buf);
 }
 
+void mtk_cfg_disable_messages(uintptr_t gps_port)
+{
+	/* disable all message types, allows us to avoid flooding the UART when changing to lower baud */
+	const char *msg = "$PMTK314,0,0,0,0,0,0,0,0,0,0,0,0,0,0*34\r\n";
+	/* send the message at all common baudrates, allows this to be run before initial baudrate config */
+	GPS_SendStringAllBaudrates(msg);
+}
+
 void mtk_cfg_set_messages(uintptr_t gps_port)
 {
 	char buf[50] = "$PMTK314\0";
 	char *ptr = buf + strlen(buf);
 
+	/**
+	 * These are the messages we have parsers for.
+	 * Will need to re-evaluate update rate settings
+	 * in @ref mtk_cfg_autoconfigure if changing these.
+	 */
 	const uint8_t rates[] = {
 		MTK_FREQ_DISABLED, /* NMEA_SEN_GLL */
 		MTK_FREQ_EVERY_FIX, /* NMEA_SEN_RMC */
@@ -193,18 +208,65 @@ void mtk_cfg_set_baudrate(uintptr_t gps_port, ModuleSettingsGPSSpeedOptions baud
 		baud = 57600;
 		break;
 	case MODULESETTINGS_GPSSPEED_115200:
+	default:
 		msg = msg_115200;
 		baud = 115200;
 		break;
-	default:
-		return;
 	}
 
 	/* send the message at all common baudrates */
-	GPSSendStringAtAllBaudrates(msg);
+	GPS_SendStringAllBaudrates(msg);
 	
 	/* better change the port now we're done */
 	PIOS_COM_ChangeBaud(gps_port, baud);
+}
+
+void mtk_cfg_autoconfigure(uintptr_t gps_port, ModuleSettingsGPSSpeedOptions baudrate,
+	bool sbas_enabled)
+{
+	/* disable messages before changing baud to avoid flooding channel */
+	mtk_cfg_disable_messages(gps_port);
+	PIOS_Thread_Sleep(100);
+	mtk_cfg_set_baudrate(gps_port, baudrate);
+	PIOS_Thread_Sleep(500);
+
+	uint16_t period;
+	switch (baudrate) {
+	case MODULESETTINGS_GPSSPEED_4800:
+		period = 1000; /* requires approx 3 kbaud */
+		break;
+	case MODULESETTINGS_GPSSPEED_9600:
+		period = 500; /* requires approx 6 kbaud */
+		break;
+	case MODULESETTINGS_GPSSPEED_19200:
+		period = 250; /* requires approx 12 kbaud */
+		break;
+	case MODULESETTINGS_GPSSPEED_38400:
+		period = 200; /* requires approx 15 kbaud */
+		break;
+	case MODULESETTINGS_GPSSPEED_57600:
+	case MODULESETTINGS_GPSSPEED_115200:
+	default:
+		period = 100; /* minimum, requires approx 30 kbaud */
+		break;
+	}
+	mtk_cfg_set_fix_period(gps_port, period);
+	PIOS_Thread_Sleep(10);
+
+	mtk_cfg_set_sbas(gps_port, sbas_enabled);
+	PIOS_Thread_Sleep(10);
+
+	mtk_cfg_set_messages(gps_port);
+	PIOS_Thread_Sleep(10);
+}
+
+void mtk_cfg_set_sbas(uintptr_t gps_port, bool enabled)
+{
+	const char *msg_enabled = "$PMTK313,1*2E\r\n";
+	const char *msg_disabled = "$PMTK313,0*2F\r\n";
+
+	const char *msg = enabled ? msg_enabled : msg_disabled;
+	PIOS_COM_SendString(gps_port, msg);
 }
 
 #endif /* !defined(PIOS_GPS_MINIMAL) */

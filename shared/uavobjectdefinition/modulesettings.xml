@@ -52,8 +52,9 @@
 			</options>
 		</field>
 		<field name="GPSDataProtocol" units="" type="enum" elements="1" defaultvalue="UBX">
-			<description>Select the protocol used by your GPS.</description>
+			<description>Select the protocol used by your GPS. Note: select the MTK option for MTK GPSs to enable auto-configuration.</description>
 			<options>
+				<option>MTK NMEA</option>
 				<option>NMEA</option>
 				<option>UBX</option>
 			</options>

@@ -29,7 +29,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -73,17 +73,17 @@
      fit-margin-left="1"
      fit-margin-top="1"
      units="px"
-     inkscape:current-layer="layer4"
-     inkscape:window-maximized="0"
+     inkscape:current-layer="layer5"
+     inkscape:window-maximized="1"
      inkscape:window-y="24"
-     inkscape:window-x="1312"
-     inkscape:cy="890.38206"
-     inkscape:cx="268.96455"
-     inkscape:zoom="0.5"
+     inkscape:window-x="65"
+     inkscape:cy="608.27761"
+     inkscape:cx="284.58357"
+     inkscape:zoom="1"
      showgrid="false"
      id="namedview14374"
-     inkscape:window-height="1388"
-     inkscape:window-width="1248"
+     inkscape:window-height="1416"
+     inkscape:window-width="2495"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0"
      guidetolerance="10"
@@ -191,18 +191,6 @@
          style="opacity:0.87900002;fill:#ff6600;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.60000002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.94509804"
          id="circle14960"
          cy="145.95073"
-         cx="13.129456"
-         r="6.9094486" />
-      <circle
-         r="6.9094486"
-         cx="13.129456"
-         cy="127.95067"
-         id="circle14962"
-         style="opacity:1;fill:#ab37c8;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.60000002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.94509804" />
-      <circle
-         style="opacity:1;fill:#ab37c8;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.60000002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.94509804"
-         id="circle14964"
-         cy="109.95064"
          cx="13.129456"
          r="6.9094486" />
       <circle
@@ -425,7 +413,7 @@
            id="tspan6132"
            x="218.83504"
            y="29.76705"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;font-size:5.88689232px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue Bold Condensed';fill:#000000;stroke:none">OUT</tspan></text>
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;font-size:5.88689232px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold Condensed';fill:#000000;stroke:none">OUT</tspan></text>
       <text
          transform="scale(1.0660401,0.93805102)"
          sodipodi:linespacing="125%"
@@ -434,7 +422,7 @@
          x="48.866348"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.31162119px;line-height:125%;font-family:'DIN Schablonierschrift';-inkscape-font-specification:'DIN Schablonierschrift';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
          xml:space="preserve"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;font-size:7.31162119px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue Bold Condensed';fill:#000000;stroke:none"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;font-size:7.31162119px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold Condensed';fill:#000000;stroke:none"
            y="34.870895"
            x="48.866348"
            id="tspan6136"
@@ -470,7 +458,7 @@
          x="228.86971"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.31720924px;line-height:125%;font-family:'DIN Schablonierschrift';-inkscape-font-specification:'DIN Schablonierschrift';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
          xml:space="preserve"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;font-size:8.31720924px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue Bold Condensed';fill:#ffffff;stroke:none"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;font-size:8.31720924px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold Condensed';fill:#ffffff;stroke:none"
            y="517.61847"
            x="228.86971"
            id="tspan6096"
@@ -487,7 +475,7 @@
            id="tspan6100"
            x="246.11218"
            y="517.44153"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;font-size:8.31436539px;font-family:'Helvetica Neue';-inkscape-font-specification:'Helvetica Neue Bold Condensed';fill:#ffffff;stroke:none">RX</tspan></text>
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;font-size:8.31436539px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold Condensed';fill:#ffffff;stroke:none">RX</tspan></text>
     </g>
   </g>
   <g
@@ -511,6 +499,75 @@
          cy="509.21646"
          id="circle14936-6"
          style="opacity:1;fill:#000093;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.60000002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.94509804" />
+    </g>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer1"
+     inkscape:label="UART3"
+     style="display:inline">
+    <g
+       id="uart3"
+       inkscape:label="#uart3">
+      <ellipse
+         ry="23.339075"
+         rx="23.339077"
+         style="display:inline;opacity:1;fill:#ab37c8;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2.02670956;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.94509804"
+         id="circle14962-9"
+         cy="431.1507"
+         cx="43.000008" />
+      <ellipse
+         ry="23.339075"
+         rx="23.339077"
+         cx="43.000008"
+         cy="370.3493"
+         id="circle14964-6"
+         style="display:inline;opacity:1;fill:#ab37c8;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2.02670956;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.94509804" />
+    </g>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer5"
+     inkscape:label="I2C"
+     style="display:inline">
+    <g
+       id="i2c">
+      <circle
+         r="23.339075"
+         style="display:inline;opacity:1;fill:#ab37c8;fill-opacity:1;fill-rule:evenodd;stroke:#ffdd55;stroke-width:2.02670956;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.94509804"
+         id="circle14962"
+         cy="430.1507"
+         cx="43.000004" />
+      <circle
+         r="23.339075"
+         cx="43.000004"
+         cy="369.3493"
+         id="circle14964"
+         style="display:inline;opacity:1;fill:#ab37c8;fill-opacity:1;fill-rule:evenodd;stroke:#ffdd55;stroke-width:2.02670956;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.94509804" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text4931"
+         y="377.15265"
+         x="20.092373"
+         style="font-style:normal;font-weight:normal;font-size:24.6875px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;display:inline;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;font-size:21.25px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold Condensed'"
+           y="377.15265"
+           x="20.092373"
+           id="tspan4933"
+           sodipodi:role="line">SDA</tspan></text>
+      <text
+         sodipodi:linespacing="125%"
+         id="text4931-9"
+         y="437.95407"
+         x="21.551546"
+         style="font-style:normal;font-weight:normal;font-size:24.6875px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;display:inline;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;font-size:21.25px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold Condensed'"
+           y="437.95407"
+           x="21.551546"
+           id="tspan4933-1"
+           sodipodi:role="line">SCL</tspan></text>
     </g>
   </g>
 </svg>

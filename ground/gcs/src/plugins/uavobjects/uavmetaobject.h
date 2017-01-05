@@ -31,13 +31,15 @@
 #include "uavobjects_global.h"
 #include "uavobject.h"
 
-class UAVOBJECTS_EXPORT UAVMetaObject: public UAVObject
+#include <QSharedPointer>
+
+class UAVOBJECTS_EXPORT UAVMetaObject: public UAVObject, private QEnableSharedFromThis<UAVMetaObject>
 {
     Q_OBJECT
 
 public:
-    UAVMetaObject(quint32 objID, const QString& name, UAVObject* parent);
-    UAVObject* getParentObject();
+    UAVMetaObject(quint32 objID, const QString& name, QSharedPointer<UAVObject> parent);
+    QSharedPointer<UAVObject> getParentObject();
     void setMetadata(const Metadata& mdata);
     Metadata getMetadata();
     Metadata getDefaultMetadata();
@@ -45,7 +47,7 @@ public:
     Metadata getData();
 
 private:
-    UAVObject* parent;
+    QSharedPointer<UAVObject> parent;
     Metadata ownMetadata;
     Metadata parentMetadata;
 

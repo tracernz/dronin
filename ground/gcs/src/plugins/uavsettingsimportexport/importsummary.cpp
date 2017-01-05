@@ -32,6 +32,7 @@
 #include <QXmlQuery>
 
 #include <QMessageBox>
+#include <QDebug>
 
 // for Parameterized slots
 #include <QSignalMapper>
@@ -178,8 +179,13 @@ void ImportSummaryDialog::doTheApplySaving()
         QString uavObjectName = ui->importSummaryList->item(i,1)->text();
         QCheckBox *box = dynamic_cast<QCheckBox*>(ui->importSummaryList->cellWidget(i,0));
         if (box->isChecked()) {
-            UAVObject* importedObj = importedObjects->getObject(uavObjectName);
-            UAVObject* boardObj = boardObjManager->getObject(uavObjectName);
+            auto importedObj = importedObjects->getObject(uavObjectName);
+            auto boardObj = boardObjManager->getObject(uavObjectName);
+
+            if (!importedObj || !boardObj) {
+                qWarning() << "Failed to save object" << uavObjectName;
+                continue;
+            }
 
             quint8* data = new quint8[importedObj->getNumBytes()];
             importedObj->pack(data);

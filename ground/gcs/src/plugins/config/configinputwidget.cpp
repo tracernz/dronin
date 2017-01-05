@@ -847,16 +847,16 @@ void ConfigInputWidget::fastMdata()
         foreach (UAVDataObject* obj, list) {
             if(!obj->isSettings()) {
                 UAVObject::Metadata mdata = obj->getMetadata();
-                UAVObject::SetFlightAccess(mdata, UAVObject::ACCESS_READWRITE);
+                UAVObject::setFlightAccess(mdata, UAVObject::ACCESS_READWRITE);
 
                 switch(obj->getObjID()){
                     case ReceiverActivity::OBJID:
                     case FlightStatus::OBJID:
-                        UAVObject::SetFlightTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_ONCHANGE);
+                        UAVObject::setFlightTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_ONCHANGE);
                         break;
                     case AccessoryDesired::OBJID:
                     case ManualControlCommand::OBJID:
-                        UAVObject::SetFlightTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_THROTTLED);
+                        UAVObject::setFlightTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_THROTTLED);
                         mdata.flightTelemetryUpdatePeriod = fastUpdate;
                         break;
                     default:

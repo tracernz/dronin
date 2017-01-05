@@ -44,7 +44,6 @@ LineardialGadgetWidget::LineardialGadgetWidget(QWidget *parent) : QGraphicsView(
 
     paint();
 
-    obj1 = NULL;
     fieldName = NULL;
     fieldValue = NULL;
     indexTarget = 0;
@@ -68,8 +67,8 @@ LineardialGadgetWidget::~LineardialGadgetWidget()
   */
 void LineardialGadgetWidget::connectInput(QString object1, QString nfield1) {
 
-    if (obj1 != NULL)
-        disconnect(obj1,SIGNAL(objectUpdated(UAVObject*)),this,SLOT(updateIndex(UAVObject*)));
+    if (obj1)
+        disconnect(obj1.data(), &UAVObject::objectUpdated, this, &LineardialGadgetWidget::updateIndex);
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
 
@@ -77,18 +76,15 @@ void LineardialGadgetWidget::connectInput(QString object1, QString nfield1) {
 
     // Check validity of arguments first, reject empty args and unknown fields.
     if (!(object1.isEmpty() || nfield1.isEmpty())) {
-        obj1 = dynamic_cast<UAVDataObject*>( objManager->getObject(object1) );
-        if (obj1 != NULL ) {
-            connect(obj1, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(updateIndex(UAVObject*)));
-            if(nfield1.contains("-"))
-            {
+        obj1 = objManager->getObject(object1).dynamicCast<UAVDataObject>();
+        if (obj1) {
+            connect(obj1.data(), &UAVObject::objectUpdated, this, &LineardialGadgetWidget::updateIndex);
+            if(nfield1.contains("-")) {
                 QStringList fieldSubfield = nfield1.split("-", QString::SkipEmptyParts);
                 field1 = fieldSubfield.at(0);
                 subfield1 = fieldSubfield.at(1);
                 haveSubField1 = true;
-            }
-            else
-            {
+            } else {
                 field1=  nfield1;
                 haveSubField1 = false;
             }
@@ -107,9 +103,9 @@ void LineardialGadgetWidget::connectInput(QString object1, QString nfield1) {
 
   Updates the numeric value and/or the icon if the dial wants this.
   */
-void LineardialGadgetWidget::updateIndex(UAVObject *object1) {
+void LineardialGadgetWidget::updateIndex(QSharedPointer<UAVObject> object1) {
     // Double check that the field exists:
-    UAVObjectField* field = object1->getField(field1);
+    auto field = object1->getField(field1);
     if (field) {
         QString s;
         if (field->isNumeric()) {

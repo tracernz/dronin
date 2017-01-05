@@ -56,6 +56,13 @@ typedef enum {
     FIELDTYPE_ENUM
 } FieldType;
 
+typedef enum {
+    FIELDRADIX_BIN = 0,
+    FIELDRADIX_OCT = 1,
+    FIELDRADIX_DEC = 2,
+    FIELDRADIX_HEX = 3,
+} FieldRadix;
+
 typedef struct FieldInfo_s FieldInfo;
 typedef struct ObjectInfo_s ObjectInfo;
 
@@ -63,6 +70,7 @@ struct FieldInfo_s {
     QString name;
     QString units;
     FieldType type;
+    FieldRadix radix;
     int numElements;
     int numBytes;
     QStringList elementNames;
@@ -146,6 +154,7 @@ private:
     QList<ObjectInfo*> objInfo;
     QStringList fieldTypeStrXML;
     QList<int> fieldTypeNumBytes;
+    QStringList fieldRadixStrXML;
     QStringList updateModeStr;
     QStringList updateModeStrXML;
     QStringList accessModeStr;

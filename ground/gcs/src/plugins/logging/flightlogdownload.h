@@ -47,12 +47,11 @@ public:
     ~FlightLogDownload();
 
 private slots:
-    void updateReceived();
+    void updateReceived(QSharedPointer<UAVObject> obj);
     void startDownload();
     void getFilename();
 
 private:
-    LoggingStats *loggingStats;
     QByteArray log;
     QFile *logFile;
 

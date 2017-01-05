@@ -62,8 +62,8 @@ public:
 
     UAVTalk(QIODevice* iodev, UAVObjectManager* objMngr);
     ~UAVTalk();
-    bool sendObject(UAVObject* obj, bool acked, bool allInstances);
-    bool sendObjectRequest(UAVObject* obj, bool allInstances);
+    bool sendObject(QSharedPointer<UAVObject> obj, bool acked, bool allInstances);
+    bool sendObjectRequest(QSharedPointer<UAVObject> obj, bool allInstances);
     ComStats getStats();
     void resetStats();
 
@@ -72,8 +72,8 @@ public:
 signals:
     // The only signals we send to the upper level are when we
     // either receive an ACK or a NACK for a request.
-    void ackReceived(UAVObject* obj);
-    void nackReceived(UAVObject* obj);
+    void ackReceived(QSharedPointer<UAVObject> obj);
+    void nackReceived(QSharedPointer<UAVObject> obj);
 
 private slots:
     void processInputStream(void);
@@ -110,7 +110,7 @@ protected:
 
     // Variables
     QPointer<QIODevice> io;
-    UAVObjectManager* objMngr;
+    QPointer<UAVObjectManager> objMngr;
     quint8 rxBuffer[MAX_PACKET_LENGTH];
     quint8 txBuffer[MAX_PACKET_LENGTH];
     // Variables used by the receive state machine
@@ -133,12 +133,12 @@ protected:
     QByteArray rxDataArray;
 
     // Methods
-    bool objectTransaction(UAVObject* obj, quint8 type, bool allInstances);
+    bool objectTransaction(QSharedPointer<UAVObject> obj, quint8 type, bool allInstances);
     virtual bool receiveObject(quint8 type, quint32 objId, quint16 instId, quint8* data, qint32 length);
-    UAVObject* updateObject(quint32 objId, quint16 instId, quint8* data);
+    QSharedPointer<UAVObject> updateObject(quint32 objId, quint16 instId, quint8* data);
     bool transmitNack(quint32 objId);
-    bool transmitObject(UAVObject* obj, quint8 type, bool allInstances);
-    bool transmitSingleObject(UAVObject* obj, quint8 type, bool allInstances);
+    bool transmitObject(QSharedPointer<UAVObject> obj, quint8 type, bool allInstances);
+    bool transmitSingleObject(QSharedPointer<UAVObject> obj, quint8 type, bool allInstances);
     quint8 updateCRC(quint8 crc, const quint8 data);
     quint8 updateCRC(quint8 crc, const quint8* data, qint32 length);
 };

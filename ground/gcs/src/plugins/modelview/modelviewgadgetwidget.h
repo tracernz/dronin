@@ -92,7 +92,7 @@ private:
     static const QString fallbackAcFilename;
     static const QString fallbackBgFilename;
 
-    AttitudeActual *attState;
+    QSharedPointer<AttitudeActual> attState;
 };
 
 #endif /* MODELVIEWGADGETWIDGET_H_ */

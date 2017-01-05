@@ -50,7 +50,7 @@ public:
     HistogramData(QString uavObject, QString uavField, double binWidth, uint numberOfBins);
     ~HistogramData() {}
 
-    bool append(UAVObject* obj);
+    bool append(QSharedPointer<UAVObject> obj);
 
     virtual void removeStaleData(){}
     virtual void plotNewData(PlotData *, ScopeConfig *, ScopeGadgetWidget *);

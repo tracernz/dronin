@@ -256,8 +256,8 @@ void HistogramScopeConfig::loadConfiguration(ScopeGadgetWidget *scopeGadgetWidge
         //Get the uav object
         ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
         UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-        UAVDataObject* obj = dynamic_cast<UAVDataObject*>(objManager->getObject((histogramData->getUavoName())));
-        if(!obj) {
+        auto obj = objManager->getObject(histogramData->getUavoName()).dynamicCast<UAVDataObject>();
+        if (!obj) {
             qDebug() << "Object " << histogramData->getUavoName() << " is missing";
             return;
         }

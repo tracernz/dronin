@@ -46,7 +46,7 @@ class PlotData : public QObject
 {
     Q_OBJECT
 public:
-    double valueAsDouble(UAVObject* obj, UAVObjectField* field, bool haveSubField, QString uavSubFieldName);
+    double valueAsDouble(QSharedPointer<UAVObjectField> field, const QString &uavElementName = QString());
 
     //Setter functions
     void setXMinimum(double val){xMinimum=val;}
@@ -67,8 +67,8 @@ public:
 
     QString getUavoName(){return uavObjectName;}
     QString getUavoFieldName(){return uavFieldName;}
-    QString getUavoSubFieldName(){return uavSubFieldName;}
-    bool getHaveSubFieldFlag(){return haveSubField;}
+    QString getUavoSubFieldName(){return uavElementName;}
+    bool getHaveSubFieldFlag(){return uavElementName.length() > 0;}
 
     int getScalePower(){return scalePower;}
     int getMeanSamples(){return meanSamples;}
@@ -77,7 +77,7 @@ public:
     QVector<double>* getXData(){return xData;}
     QVector<double>* getYData(){return yData;}
 
-    virtual bool append(UAVObject* obj) = 0;
+    virtual bool append(QSharedPointer<UAVObject> obj) = 0;
     virtual void removeStaleData() = 0;
     virtual void setUpdatedFlagToTrue() = 0;
     virtual bool readAndResetUpdatedFlag() = 0;
@@ -99,8 +99,7 @@ protected:
 
     QString uavObjectName;
     QString uavFieldName;
-    QString uavSubFieldName;
-    bool haveSubField;
+    QString uavElementName;
 
     int scalePower; //This is the power to which each value must be raised
     unsigned int meanSamples;

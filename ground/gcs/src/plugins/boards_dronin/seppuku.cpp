@@ -97,9 +97,12 @@ bool Seppuku::isInputConfigurationSupported(InputType type)
 
 bool Seppuku::setInputType(InputType type)
 {
-    UAVObjectField *rcvrPort = uavoManager->getField(getHwUAVO(), "RcvrPort");
-    if (!rcvrPort)
+    auto rcvrPort = uavoManager->getField(getHwUAVO(), "RcvrPort");
+    if (!rcvrPort) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object field!";
         return false;
+    }
 
     switch (type) {
     case INPUT_TYPE_DISABLED:
@@ -140,9 +143,12 @@ bool Seppuku::setInputType(InputType type)
 
 enum Core::IBoardType::InputType Seppuku::getInputType()
 {
-    UAVObjectField *rcvrPort = uavoManager->getField(getHwUAVO(), "RcvrPort");
-    if (!rcvrPort)
+    auto rcvrPort = uavoManager->getField(getHwUAVO(), "RcvrPort");
+    if (!rcvrPort) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object field!";
         return INPUT_TYPE_UNKNOWN;
+    }
 
     switch (static_cast<HwSeppuku::RcvrPortOptions>(rcvrPort->getValue().toInt())) {
     case HwSeppuku::RCVRPORT_DISABLED:

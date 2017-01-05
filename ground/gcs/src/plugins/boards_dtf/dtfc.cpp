@@ -130,10 +130,17 @@ bool Dtfc::setInputType(enum InputType type)
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwDtfc *hwDtfc = HwDtfc::GetInstance(uavoManager);
-    Q_ASSERT(hwDtfc);
-    if (!hwDtfc)
+    if (!uavoManager) {
+        Q_ASSERT(false);
+        qWarning() << "Could not get UAVObjectManager!";
         return false;
+    }
+    auto hwDtfc = HwDtfc::getInstance(uavoManager);
+    if (!hwDtfc) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object! HwDtfc";
+        return false;
+    }
 
     HwDtfc::DataFields settings = hwDtfc->getData();
 
@@ -167,10 +174,17 @@ enum Core::IBoardType::InputType Dtfc::getInputType()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwDtfc *hwDtfc = HwDtfc::GetInstance(uavoManager);
-    Q_ASSERT(hwDtfc);
-    if (!hwDtfc)
+    if (!uavoManager) {
+        Q_ASSERT(false);
+        qWarning() << "Could not get UAVObjectManager!";
         return INPUT_TYPE_UNKNOWN;
+    }
+    auto hwDtfc = HwDtfc::getInstance(uavoManager);
+    if (!hwDtfc) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object! HwDtfc";
+        return INPUT_TYPE_UNKNOWN;
+    }
 
     HwDtfc::DataFields settings = hwDtfc->getData();
 
@@ -211,10 +225,17 @@ int Dtfc::queryMaxGyroRate()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwDtfc *hwDtfc = HwDtfc::GetInstance(uavoManager);
-    Q_ASSERT(hwDtfc);
-    if (!hwDtfc)
+    if (!uavoManager) {
+        Q_ASSERT(false);
+        qWarning() << "Could not get UAVObjectManager!";
         return 0;
+    }
+    auto hwDtfc = HwDtfc::getInstance(uavoManager);
+    if (!hwDtfc) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object! HwDtfc";
+        return 0;
+    }
 
     HwDtfc::DataFields settings = hwDtfc->getData();
 

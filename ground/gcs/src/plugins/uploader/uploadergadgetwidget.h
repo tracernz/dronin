@@ -136,7 +136,7 @@ private:
     QNetworkAccessManager *netMngr;
     UAVSettingsImportExportManager *importMngr;
 
-    FirmwareIAPObj* firmwareIap;
+    QWeakPointer<FirmwareIAPObj> firmwareIap;
     deviceInfo currentBoard;
     QString ignoredRev;
 

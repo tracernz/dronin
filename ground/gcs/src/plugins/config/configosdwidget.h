@@ -84,7 +84,7 @@ private:
     void copyOsdPage(int to, int from);
     quint8 scaleSwitchChannel(quint8 channelNumber, quint8 switchPositions);
     QVariant getVariantFromWidget(QWidget *widget, double scale, bool usesUnits = false);
-    bool setWidgetFromVariant(QWidget *widget, QVariant value, double scale, QString units = "");
+    bool setWidgetFromVariant(QWidget *widget, QVariant value, double scale, int radix = 10, QString units = "");
 
 
     static QString trueString;

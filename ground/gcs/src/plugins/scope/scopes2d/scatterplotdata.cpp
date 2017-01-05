@@ -82,16 +82,20 @@ void SeriesPlotData::plotNewData(PlotData *plot2dData, ScopeConfig *scopeConfig,
  * @param obj UAVO with new data
  * @return
  */
-bool SeriesPlotData::append(UAVObject* obj)
+bool SeriesPlotData::append(QSharedPointer<UAVObject> obj)
 {
+    if (!obj) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object!";
+        return false;
+    }
+
     if (uavObjectName == obj->getName()) {
 
         //Get the field of interest
-        UAVObjectField* field =  obj->getField(uavFieldName);
+        if (auto field =  obj->getField(uavFieldName)) {
 
-        if (field) {
-
-            double currentValue = valueAsDouble(obj, field, haveSubField, uavSubFieldName) * pow(10, scalePower);
+            double currentValue = valueAsDouble(field, uavElementName) * pow(10, scalePower);
 
             //Perform scope math, if necessary
             if (mathFunction  == "Boxcar average" || mathFunction  == "Standard deviation"){
@@ -150,15 +154,19 @@ bool SeriesPlotData::append(UAVObject* obj)
  * @param obj UAVO with new data
  * @return
  */
-bool TimeSeriesPlotData::append(UAVObject* obj)
+bool TimeSeriesPlotData::append(QSharedPointer<UAVObject> obj)
 {
+    if (!obj) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object!";
+        return false;
+    }
+
     if (uavObjectName == obj->getName()) {
         //Get the field of interest
-        UAVObjectField* field =  obj->getField(uavFieldName);
-
-        if (field) {
+        if (auto field =  obj->getField(uavFieldName)) {
             QDateTime NOW = QDateTime::currentDateTime(); //THINK ABOUT REIMPLEMENTING THIS TO SHOW UAVO TIME, NOT SYSTEM TIME
-            double currentValue = valueAsDouble(obj, field, haveSubField, uavSubFieldName) * pow(10, scalePower);
+            double currentValue = valueAsDouble(field, uavElementName) * pow(10, scalePower);
 
             //Perform scope math, if necessary
             if (mathFunction  == "Boxcar average" || mathFunction  == "Standard deviation"){

@@ -59,9 +59,12 @@ QWidget *DialGadgetOptionsPage::createPage(QWidget *parent)
     // Fills the combo boxes for the UAVObjects
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    QVector< QVector<UAVDataObject*> > objList = objManager->getDataObjectsVector();
-    foreach (QVector<UAVDataObject*> list, objList) {
-        foreach (UAVDataObject* obj, list) {
+    auto objList = objManager->getDataObjectsVector();
+    for (const auto &list : objList) {
+        for (const auto &obj : list) {
+            Q_ASSERT(obj);
+            if (!obj)
+                continue;
             options_page->uavObject1->addItem(obj->getName());
             options_page->uavObject2->addItem(obj->getName());
             options_page->uavObject3->addItem(obj->getName());
@@ -112,11 +115,11 @@ QWidget *DialGadgetOptionsPage::createPage(QWidget *parent)
     if(options_page->uavObject1->findText(m_config->getN1DataObject())!=-1){
         options_page->uavObject1->setCurrentIndex(options_page->uavObject1->findText(m_config->getN1DataObject()));
         // Now load the object field values - 1st check that the object saved in the config still exists
-        UAVDataObject* obj = dynamic_cast<UAVDataObject*>( objManager->getObject(m_config->getN1DataObject()) );
-        if (obj != NULL ) {
-                on_uavObject1_currentIndexChanged(m_config->getN1DataObject());
-                // And set the highlighed value from the settings:
-                options_page->objectField1->setCurrentIndex(options_page->objectField1->findText(m_config->getN1ObjField()));
+        auto obj = objManager->getObject(m_config->getN1DataObject()).dynamicCast<UAVDataObject>();
+        if (obj) {
+            on_uavObject1_currentIndexChanged(m_config->getN1DataObject());
+            // And set the highlighed value from the settings:
+            options_page->objectField1->setCurrentIndex(options_page->objectField1->findText(m_config->getN1ObjField()));
         }
     }
     connect(options_page->uavObject1, SIGNAL(currentIndexChanged(QString)), this, SLOT(on_uavObject1_currentIndexChanged(QString)));
@@ -124,8 +127,8 @@ QWidget *DialGadgetOptionsPage::createPage(QWidget *parent)
     if(options_page->uavObject2->findText(m_config->getN2DataObject())!=-1){
         options_page->uavObject2->setCurrentIndex(options_page->uavObject2->findText(m_config->getN2DataObject()));
         // Now load the object field values:
-        UAVDataObject* obj = dynamic_cast<UAVDataObject*>( objManager->getObject(m_config->getN2DataObject()));
-        if (obj != NULL ) {
+        auto obj = objManager->getObject(m_config->getN2DataObject()).dynamicCast<UAVDataObject>();
+        if (obj) {
             on_uavObject2_currentIndexChanged(m_config->getN2DataObject());
             options_page->objectField2->setCurrentIndex(options_page->objectField2->findText(m_config->getN2ObjField()));
         }
@@ -135,7 +138,7 @@ QWidget *DialGadgetOptionsPage::createPage(QWidget *parent)
     if(options_page->uavObject3->findText(m_config->getN3DataObject())!=-1){
         options_page->uavObject3->setCurrentIndex(options_page->uavObject3->findText(m_config->getN3DataObject()));
         // Now load the object field values:
-        UAVDataObject* obj = dynamic_cast<UAVDataObject*>( objManager->getObject(m_config->getN3DataObject()));
+        auto obj = objManager->getObject(m_config->getN3DataObject()).dynamicCast<UAVDataObject>();
         if (obj != NULL ) {
             on_uavObject3_currentIndexChanged(m_config->getN3DataObject());
                 options_page->objectField3->setCurrentIndex(options_page->objectField3->findText(m_config->getN3ObjField()));
@@ -203,20 +206,21 @@ void DialGadgetOptionsPage::on_uavObject1_currentIndexChanged(QString val) {
     options_page->objectField1->clear();
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    UAVDataObject* obj = dynamic_cast<UAVDataObject*>( objManager->getObject(val) );
-    QList<UAVObjectField*> fieldList = obj->getFields();
-    foreach (UAVObjectField* field, fieldList) {
+    auto obj = objManager->getObject(val).dynamicCast<UAVDataObject>();
+    if (!obj) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object";
+        return;
+    }
+    for (const auto &field : obj->getFields()) {
         if(field->getType() == UAVObjectField::STRING || field->getType() == UAVObjectField::ENUM )
             continue;
-        if(field->getElementNames().count() > 1)
-        {
-            foreach(QString elemName , field->getElementNames())
-            {
+        if(field->getElementNames().count() > 1) {
+            for (const QString &elemName : field->getElementNames())
                 options_page->objectField1->addItem(field->getName() + "-" + elemName);
-            }
-        }
-        else
+        } else {
             options_page->objectField1->addItem(field->getName());
+        }
     }
 }
 
@@ -228,20 +232,16 @@ void DialGadgetOptionsPage::on_uavObject2_currentIndexChanged(QString val) {
     options_page->objectField2->clear();
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    UAVDataObject* obj = dynamic_cast<UAVDataObject*>( objManager->getObject(val) );
-    QList<UAVObjectField*> fieldList = obj->getFields();
-    foreach (UAVObjectField* field, fieldList) {
+    auto obj = objManager->getObject(val).dynamicCast<UAVDataObject>();
+    for (const auto &field : obj->getFields()) {
         if(field->getType() == UAVObjectField::STRING || field->getType() == UAVObjectField::ENUM )
             continue;
-        if(field->getElementNames().count() > 1)
-        {
-            foreach(QString elemName , field->getElementNames())
-            {
+        if(field->getElementNames().count() > 1) {
+            for (const QString &elemName : field->getElementNames())
                 options_page->objectField2->addItem(field->getName() + "-" + elemName);
-            }
-        }
-        else
+        } else {
             options_page->objectField2->addItem(field->getName());
+        }
     }
 }
 
@@ -253,20 +253,16 @@ void DialGadgetOptionsPage::on_uavObject3_currentIndexChanged(QString val) {
     options_page->objectField3->clear();
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    UAVDataObject* obj = dynamic_cast<UAVDataObject*>( objManager->getObject(val) );
-    QList<UAVObjectField*> fieldList = obj->getFields();
-    foreach (UAVObjectField* field, fieldList) {
+    auto obj = objManager->getObject(val).dynamicCast<UAVDataObject>();
+    for (const auto &field : obj->getFields()) {
         if(field->getType() == UAVObjectField::STRING || field->getType() == UAVObjectField::ENUM )
             continue;
-        if(field->getElementNames().count() > 1)
-        {
-            foreach(QString elemName , field->getElementNames())
-            {
+        if (field->getElementNames().count() > 1) {
+            for (const QString &elemName : field->getElementNames())
                 options_page->objectField3->addItem(field->getName() + "-" + elemName);
-            }
-        }
-        else
+        } else {
             options_page->objectField3->addItem(field->getName());
+        }
     }
 }
 

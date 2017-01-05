@@ -115,10 +115,17 @@ bool CC3D::setInputType(enum InputType type)
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwCopterControl *hwCopterControl = HwCopterControl::GetInstance(uavoManager);
-    Q_ASSERT(hwCopterControl);
-    if (!hwCopterControl)
+    if (!uavoManager) {
+        Q_ASSERT(false);
+        qWarning() << "Could not get UAVObjectManager!";
         return false;
+    }
+    auto hwCopterControl = HwCopterControl::getInstance(uavoManager);
+    if (!hwCopterControl) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object! HwCopterControl";
+        return false;
+    }
 
     HwCopterControl::DataFields settings = hwCopterControl->getData();
 
@@ -127,8 +134,8 @@ bool CC3D::setInputType(enum InputType type)
         settings.RcvrPort = HwCopterControl::RCVRPORT_PWM;
         break;
     case INPUT_TYPE_PPM:
-	/* Break from the past; for new builds pick a default that will
-	 * work with OneShot/SyncPWM. */
+    /* Break from the past; for new builds pick a default that will
+     * work with OneShot/SyncPWM. */
         settings.RcvrPort = HwCopterControl::RCVRPORT_PPMONPIN8;
         break;
     case INPUT_TYPE_SBUS:
@@ -159,10 +166,17 @@ enum Core::IBoardType::InputType CC3D::getInputType()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwCopterControl *hwCopterControl = HwCopterControl::GetInstance(uavoManager);
-    Q_ASSERT(hwCopterControl);
-    if (!hwCopterControl)
+    if (!uavoManager) {
+        Q_ASSERT(false);
+        qWarning() << "Could not get UAVObjectManager!";
         return INPUT_TYPE_UNKNOWN;
+    }
+    auto hwCopterControl = HwCopterControl::getInstance(uavoManager);
+    if (!hwCopterControl) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object! HwCopterControl";
+        return INPUT_TYPE_UNKNOWN;
+    }
 
     HwCopterControl::DataFields settings = hwCopterControl->getData();
 
@@ -199,12 +213,18 @@ int CC3D::queryMaxGyroRate()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwCopterControl *hwCopterControl = HwCopterControl::GetInstance(uavoManager);
-    UAVObjectUtilManager* utilMngr = pm->getObject<UAVObjectUtilManager>();
-    Q_ASSERT(hwCopterControl);
-    Q_ASSERT(utilMngr);
-    if (!hwCopterControl)
+    if (!uavoManager) {
+        Q_ASSERT(false);
+        qWarning() << "Could not get UAVObjectManager!";
         return 0;
+    }
+    auto hwCopterControl = HwCopterControl::getInstance(uavoManager);
+    if (!hwCopterControl) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object! HwCopterControl";
+        return 0;
+    }
+
     HwCopterControl::DataFields settings = hwCopterControl->getData();
 
     switch(settings.GyroRange) {

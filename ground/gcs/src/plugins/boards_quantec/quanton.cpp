@@ -108,7 +108,7 @@ int Quanton::queryMaxGyroRate()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwQuanton *hwQuanton = HwQuanton::GetInstance(uavoManager);
+    auto hwQuanton = HwQuanton::getInstance(uavoManager);
     Q_ASSERT(hwQuanton);
     if (!hwQuanton)
         return 0;
@@ -133,7 +133,7 @@ QStringList Quanton::getAdcNames()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwQuanton *hwQuanton = HwQuanton::GetInstance(uavoManager);
+    auto hwQuanton = HwQuanton::getInstance(uavoManager);
     Q_ASSERT(hwQuanton);
     if (!hwQuanton)
         return QStringList();

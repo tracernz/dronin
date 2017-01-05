@@ -40,9 +40,16 @@ SimulationConfiguration::SimulationConfiguration(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    UAVObject *hwSim = getObjectManager()->getObject(HwSimulation::NAME);
-    Q_ASSERT(hwSim);
-    connect(hwSim, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(onLedStateUpdated(UAVObject*)));
+    UAVObjectManager *objManager = getObjectManager();
+    if (!objManager)
+        return;
+    auto hwSim = objManager->getObject(HwSimulation::NAME);
+    if (!hwSim) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object! HwSimulation";
+        return;
+    }
+    connect(hwSim.data(), &UAVObject::objectUpdated, this, &SimulationConfiguration::onLedStateUpdated);
 }
 
 SimulationConfiguration::~SimulationConfiguration()
@@ -50,10 +57,15 @@ SimulationConfiguration::~SimulationConfiguration()
     delete ui;
 }
 
-void SimulationConfiguration::onLedStateUpdated(UAVObject *obj)
+void SimulationConfiguration::onLedStateUpdated(QSharedPointer<UAVObject> obj)
 {
-    HwSimulation *hwSim = qobject_cast<HwSimulation *>(obj);
-    Q_ASSERT(hwSim);
+    auto hwSim = obj.dynamicCast<HwSimulation>();
+    if (!hwSim) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object!";
+        return;
+    }
+
     if (hwSim->getLedState_Heartbeat() == HwSimulation::LEDSTATE_ON)
         ui->lblHeartbeatLed->setPixmap(QPixmap(":/dronin/images/led_heartbeat_on.png"));
     else

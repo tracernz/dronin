@@ -42,7 +42,7 @@ ModelUavoProxy::ModelUavoProxy(QObject *parent, FlightDataModel *model):QObject(
     Q_ASSERT(pm != NULL);
     objManager = pm->getObject<UAVObjectManager>();
     Q_ASSERT(objManager != NULL);
-    waypointObj = Waypoint::GetInstance(objManager);
+    waypointObj = Waypoint::getInstance(objManager);
     Q_ASSERT(waypointObj != NULL);
 }
 
@@ -53,15 +53,15 @@ ModelUavoProxy::ModelUavoProxy(QObject *parent, FlightDataModel *model):QObject(
  */
 bool ModelUavoProxy::modelToObjects()
 {
-    Waypoint *wp = Waypoint::GetInstance(objManager,0);
+    auto wp = Waypoint::getInstance(objManager,0);
     Q_ASSERT(wp);
-    if (wp == NULL)
+    if (!wp)
         return false;
 
     // Make sure the object is acked
     UAVObject::Metadata initialMeta = wp->getMetadata();
     UAVObject::Metadata meta = initialMeta;
-    UAVObject::SetFlightTelemetryAcked(meta, true);
+    UAVObject::setFlightTelemetryAcked(meta, true);
     wp->setMetadata(meta);
 
     double homeLLA[3];
@@ -72,7 +72,6 @@ bool ModelUavoProxy::modelToObjects()
 
     // Get the number of existing waypoints
     int instances = Waypoint::getNumInstances(objManager);
-    int x;
 
     // Figure out the total amount of work to do.
     int progressMax = myModel->rowCount();
@@ -81,26 +80,27 @@ bool ModelUavoProxy::modelToObjects()
         progressMax = instances;
     }
 
-    for(x=0; x<myModel->rowCount(); x++)
-    {
+    int x = 0; // used in another loop below
+    for (; x < myModel->rowCount(); x++) {
         newInstance = false;
-        Waypoint *wp = NULL;    // Shadows above wp
+        auto twp = QSharedPointer<Waypoint>();
 
         // Create new instances of waypoints if this is more than exist
-        if(x >= instances)
-        {
+        if (x >= instances) {
             newInstance = true;
-            wp=new Waypoint;
-            wp->initialize(x,wp->getMetaObject());
-            objManager->registerObject(wp);
-        }
-        else
-        {
-            wp=Waypoint::GetInstance(objManager,x);
+            twp = QSharedPointer<Waypoint>::create();
+            if (!twp)
+                return false;
+            twp->initialize(x, twp->getMetaObject());
+            objManager->registerObject(twp);
+        } else {
+            twp = Waypoint::getInstance(objManager, x);
         }
 
-        Q_ASSERT(wp);
-        Waypoint::DataFields waypoint = wp->getData();
+        Q_ASSERT(twp);
+        if (!twp)
+            return false;
+        Waypoint::DataFields waypoint = twp->getData();
 
         // Convert from LLA to NED for sending to the model
         LLA[0] = myModel->data(myModel->index(x,FlightDataModel::LATPOSITION)).toDouble();
@@ -124,8 +124,7 @@ bool ModelUavoProxy::modelToObjects()
             emit sendPathPlanToUavProgress(100 * (x + 1) / progressMax);
             return false;
         }
-        if(newInstance)
-        {
+        if (newInstance) {
             QEventLoop m_eventloop;
             QTimer::singleShot(800, &m_eventloop, SLOT(quit()));
             m_eventloop.exec();
@@ -135,10 +134,12 @@ bool ModelUavoProxy::modelToObjects()
     /* Continue iterating over any instance indices that aren't needed to
      * represent our model, and mark them invalid.  */
     for (; x < instances; x++) {
-        Waypoint *wp = Waypoint::GetInstance(objManager, x);
-                // shadows wp above
+        auto twp = Waypoint::getInstance(objManager, x);
+        Q_ASSERT(twp);
+        if (!twp)
+            return false;
         
-        Waypoint::DataFields waypoint = wp->getData();
+        Waypoint::DataFields waypoint = twp->getData();
 
         waypoint.Mode = Waypoint::MODE_INVALID;
         if (robustUpdate(waypoint, x)) {
@@ -163,8 +164,13 @@ bool ModelUavoProxy::modelToObjects()
  */
 bool ModelUavoProxy::robustUpdate(Waypoint::DataFields data, int instance)
 {
-    Waypoint *wp = Waypoint::GetInstance(objManager, instance);
-    connect(wp, SIGNAL(transactionCompleted(UAVObject*,bool)), this, SLOT(waypointTransactionCompleted(UAVObject *, bool)));
+    auto wp = Waypoint::getInstance(objManager, instance);
+    Q_ASSERT(wp);
+    if (!wp)
+        return false;
+
+
+    connect(wp.data(), static_cast<void (UAVObject::*)(QSharedPointer<UAVObject>, bool)>(&UAVObject::transactionCompleted), this, &ModelUavoProxy::waypointTransactionCompleted);
     for (int i = 0; i < 10; i++) {
             QEventLoop m_eventloop;
             QTimer::singleShot(1000, &m_eventloop, SLOT(quit()));
@@ -175,7 +181,7 @@ bool ModelUavoProxy::robustUpdate(Waypoint::DataFields data, int instance)
             wp->updated();
             m_eventloop.exec();
             if (waypointTransactionResult.value(instance)) {
-                disconnect(wp, SIGNAL(transactionCompleted(UAVObject*,bool)), this, SLOT(waypointTransactionCompleted(UAVObject *, bool)));
+                disconnect(wp.data(), static_cast<void (UAVObject::*)(QSharedPointer<UAVObject>, bool)>(&UAVObject::transactionCompleted), this, &ModelUavoProxy::waypointTransactionCompleted);
                 return true;
             }
 
@@ -184,7 +190,7 @@ bool ModelUavoProxy::robustUpdate(Waypoint::DataFields data, int instance)
             m_eventloop.exec();
     }
 
-    disconnect(wp, SIGNAL(transactionCompleted(UAVObject*,bool)), this, SLOT(waypointTransactionCompleted(UAVObject *, bool)));
+    disconnect(wp.data(), static_cast<void (UAVObject::*)(QSharedPointer<UAVObject>, bool)>(&UAVObject::transactionCompleted), this, &ModelUavoProxy::waypointTransactionCompleted);
 
     // None of the attempt got an ack
     return false;
@@ -194,7 +200,7 @@ bool ModelUavoProxy::robustUpdate(Waypoint::DataFields data, int instance)
  * @brief waypointTransactionCompleted Map from the transaction complete to whether it
  * did or not
  */
-void ModelUavoProxy::waypointTransactionCompleted(UAVObject *obj, bool success) {
+void ModelUavoProxy::waypointTransactionCompleted(QSharedPointer<UAVObject> obj, bool success) {
     Q_ASSERT(obj->getObjID() == Waypoint::OBJID);
     waypointTransactionResult.insert(obj->getInstID(), success);
     if (success) {
@@ -219,18 +225,14 @@ void ModelUavoProxy::objectsToModel()
     myModel->pauseValidation(true);
 
     myModel->removeRows(0,myModel->rowCount());
-    for(int x=0; x < Waypoint::getNumInstances(objManager) ; ++x) {
-        Waypoint * wp;
-        Waypoint::DataFields wpfields;
-
-        wp = Waypoint::GetInstance(objManager,x);
+    for (int x = 0; x < Waypoint::getNumInstances(objManager); ++x) {
+        auto wp = Waypoint::getInstance(objManager, x);
         Q_ASSERT(wp);
-
-        if(!wp)
+        if (!wp)
             continue;
 
         // Get the waypoint data from the object manager and prepare a row in the internal model
-        wpfields = wp->getData();
+        Waypoint::DataFields wpfields = wp->getData();
 
         if (wpfields.Mode == Waypoint::MODE_INVALID)
             break;
@@ -262,8 +264,8 @@ void ModelUavoProxy::objectsToModel()
 bool ModelUavoProxy::getHomeLocation(double *homeLLA)
 {
     // Compute the coordinates in LLA
-    HomeLocation *home = HomeLocation::GetInstance(objManager);
-    if (home == NULL)
+    auto home = HomeLocation::getInstance(objManager);
+    if (!home)
         return false;
 
     HomeLocation::DataFields homeLocation = home->getData();

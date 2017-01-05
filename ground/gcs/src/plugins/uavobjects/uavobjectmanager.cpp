@@ -52,41 +52,43 @@ UAVObjectManager::~UAVObjectManager()
  * an existing object. The object will be registered and will be properly initialized so that it can accept
  * updates.
  */
-bool UAVObjectManager::registerObject(UAVDataObject* obj)
+bool UAVObjectManager::registerObject(QSharedPointer<UAVDataObject> obj)
 {
+    if (!obj)
+        return false;
+
     // Check if this object type is already in the list
     quint32 objID = obj->getObjID();
-    if (objects.contains(objID))//Known object ID
-    {
+    if (objects.contains(objID)) { //Known object ID
         if (objects.value(objID).contains(obj->getInstID()))//Instance already present
             return false;
         if (obj->isSingleInstance())
             return false;
         if (obj->getInstID() >= MAX_INSTANCES)
             return false;
-        UAVDataObject* refObj = dynamic_cast<UAVDataObject*>(objects.value(objID).first());
-        if (refObj == NULL)
-        {
+
+        QSharedPointer<UAVDataObject> refObj = objects.value(objID).first().dynamicCast<UAVDataObject>();
+        if (!refObj)
             return false;
-        }
-        UAVMetaObject* mobj = refObj->getMetaObject();
-        if (objects.value(objID).last()->getInstID() < obj->getInstID())//Space between last existent instance and new one, lets fill the gaps
-        {
-            for (quint32 instidx = objects.value(objID).last()->getInstID() + 1 ; instidx < obj->getInstID(); ++instidx)
-            {
-                UAVDataObject* cobj = obj->clone(instidx);
+
+        QSharedPointer<UAVMetaObject> mobj = refObj->getMetaObject();
+        if (objects.value(objID).last()->getInstID() < obj->getInstID()) {
+            //Space between last existent instance and new one, lets fill the gaps
+            for (quint32 instidx = objects.value(objID).last()->getInstID() + 1;
+                    instidx < obj->getInstID(); ++instidx) {
+                QSharedPointer<UAVDataObject> cobj = obj->clone(instidx);
+                if (!cobj)
+                    return false;
                 cobj->initialize(instidx,mobj);
-                QMap<quint32,UAVObject*> ppp;
-                ppp.insert(instidx,cobj);
+                QMap<quint32, QSharedPointer<UAVObject>> ppp;
+                ppp.insert(instidx, cobj);
                 objects[objID].insert(instidx,cobj);
                 getObject(cobj->getObjID())->emitNewInstance(cobj);//TODO??
                 emit newInstance(cobj);
             }
-        }
-        else if (obj->getInstID() == 0)
+        } else if (obj->getInstID() == 0) {
             obj->initialize(objects.value(objID).last()->getObjID() + 1, mobj);
-        else
-        {
+        } else {
             return false;
         }
         // Add the actual object instance in the list
@@ -94,15 +96,13 @@ bool UAVObjectManager::registerObject(UAVDataObject* obj)
         getObject(objID)->emitNewInstance(obj);
         emit newInstance(obj);
         return true;
-    }
-    else
-    {
+    } else {
         // If this point is reached then this is the first time this object type (ID) is added in the list
         // create a new list of the instances, add in the object collection and create the object's metaobject
         // Create metaobject
         QString mname = obj->getName();
         mname.append("Meta");
-        UAVMetaObject* mobj = new UAVMetaObject(objID + 1, mname, obj);
+        QSharedPointer<UAVMetaObject> mobj = QSharedPointer<UAVMetaObject>::create(objID + 1, mname, obj);
         // Initialize object
         obj->initialize(0, mobj);
         // Add to list
@@ -117,15 +117,14 @@ bool UAVObjectManager::registerObject(UAVDataObject* obj)
  * @param obj pointer to the object to unregister
  * @return false if object is single instance
  */
-bool UAVObjectManager::unRegisterObject(UAVDataObject* obj)
+bool UAVObjectManager::unRegisterObject(QSharedPointer<UAVDataObject> obj)
 {
     // Check if this object type is already in the list
     quint32 objID = obj->getObjID();
-    if(obj->isSingleInstance())
+    if (obj->isSingleInstance())
         return false;
-    quint32 instances = (quint32)objects.value(obj->getObjID()).count();
-    for(quint32 x = obj->getInstID(); x < instances; ++x)
-    {
+    quint32 instances = static_cast<quint32>(objects.value(obj->getObjID()).count());
+    for (quint32 x = obj->getInstID(); x < instances; ++x) {
         getObject(objects.value(objID).value(x)->getObjID())->emitInstanceRemoved(objects.value(objID).value(x));
         emit instanceRemoved(objects.value(objID).value(x));
         objects[objID].remove(x);
@@ -133,12 +132,12 @@ bool UAVObjectManager::unRegisterObject(UAVDataObject* obj)
     return true;
 }
 
-void UAVObjectManager::addObject(UAVObject* obj)
+void UAVObjectManager::addObject(QSharedPointer<UAVObject> obj)
 {
     // Add to list
-    QMap<quint32,UAVObject*> list;
-    list.insert(obj->getInstID(),obj);
-    objects.insert(obj->getObjID(),list);
+    QMap<quint32, QSharedPointer<UAVObject>> list;
+    list.insert(obj->getInstID(), obj);
+    objects.insert(obj->getObjID(), list);
 
     objectsByName.insert(obj->getName(), list);
 
@@ -149,18 +148,15 @@ void UAVObjectManager::addObject(UAVObject* obj)
  * Get all objects. A two dimentional QVector is returned. Objects are grouped by
  * instances of the same object type.
  */
-QVector< QVector<UAVObject*> > UAVObjectManager::getObjectsVector()
+QVector<QVector<QSharedPointer<UAVObject>>> UAVObjectManager::getObjectsVector()
 {
-    QVector< QVector<UAVObject*> > vector;
-    foreach (const ObjectMap &map,objects.values())
-    {
-        QVector<UAVObject*> vec = map.values().toVector();
-        vector.append(vec);
-    }
+    QVector<QVector<QSharedPointer<UAVObject>>> vector;
+    for (const ObjectMap &map : objects.values())
+        vector.append(map.values().toVector());
     return vector;
 }
 
-QHash<quint32, QMap<quint32, UAVObject *> > UAVObjectManager::getObjects()
+QHash<quint32, UAVObjectManager::ObjectMap> UAVObjectManager::getObjects()
 {
     return objects;
 }
@@ -168,43 +164,33 @@ QHash<quint32, QMap<quint32, UAVObject *> > UAVObjectManager::getObjects()
 /**
  * Same as getObjects() but will only return DataObjects.
  */
-QVector< QVector<UAVDataObject*> > UAVObjectManager::getDataObjectsVector()
+QVector<QVector<QSharedPointer<UAVDataObject>>> UAVObjectManager::getDataObjectsVector()
 {
-    QVector< QVector<UAVDataObject*> > vector;
-    foreach (const ObjectMap &map,objects.values())
-    {
-        UAVDataObject* obj = dynamic_cast<UAVDataObject*>(map.first());
-        if(obj!=NULL)
-        {
-            QVector<UAVDataObject*> vec;
-            foreach(UAVObject* o,map)
-            {
-                UAVDataObject* dobj = dynamic_cast<UAVDataObject*>(o);
-                if(dobj)
+    QVector<QVector<QSharedPointer<UAVDataObject>>> vector;
+    for (const ObjectMap &map : objects.values()) {
+        if (map.first().dynamicCast<UAVDataObject>()) {
+            QVector<QSharedPointer<UAVDataObject>> vec;
+            for (QSharedPointer<UAVObject> o : map) {
+                if(auto dobj = o.dynamicCast<UAVDataObject>())
                     vec.append(dobj);
             }
             vector.append(vec);
         }
-     }
+    }
     return vector;
 }
 
 /**
  * Same as getObjects() but will only return MetaObjects.
  */
-QVector <QVector<UAVMetaObject*> > UAVObjectManager::getMetaObjectsVector()
+QVector<QVector<QSharedPointer<UAVMetaObject>>> UAVObjectManager::getMetaObjectsVector()
 {
-    QVector< QVector<UAVMetaObject*> > vector;
-    foreach(const ObjectMap &map,objects.values())
-    {
-        UAVMetaObject* obj = dynamic_cast<UAVMetaObject*>(map.first());
-        if(obj!=NULL)
-        {
-            QVector<UAVMetaObject*> vec;
-            foreach(UAVObject* o,map)
-            {
-                UAVMetaObject* mobj = dynamic_cast<UAVMetaObject*>(o);
-                if(mobj)
+    QVector< QVector<QSharedPointer<UAVMetaObject>> > vector;
+    for (const ObjectMap &map : objects.values()) {
+        if (auto obj = map.first().dynamicCast<UAVMetaObject>()) {
+            QVector<QSharedPointer<UAVMetaObject>> vec;
+            for (const QSharedPointer<UAVObject> o : map) {
+                if(auto mobj = o.dynamicCast<UAVMetaObject>())
                     vec.append(mobj);
             }
             vector.append(vec);
@@ -217,7 +203,7 @@ QVector <QVector<UAVMetaObject*> > UAVObjectManager::getMetaObjectsVector()
  * Get a specific object given its name and instance ID
  * @returns The object is found or NULL if not
  */
-UAVObject* UAVObjectManager::getObject(const QString& name, quint32 instId)
+QSharedPointer<UAVObject> UAVObjectManager::getObject(const QString& name, quint32 instId)
 {
     return getObject(name, 0, instId);
 }
@@ -226,7 +212,7 @@ UAVObject* UAVObjectManager::getObject(const QString& name, quint32 instId)
  * Get a specific object given its object and instance ID
  * @returns The object is found or NULL if not
  */
-UAVObject* UAVObjectManager::getObject(quint32 objId, quint32 instId)
+QSharedPointer<UAVObject> UAVObjectManager::getObject(quint32 objId, quint32 instId)
 {
     return getObject(NULL, objId, instId);
 }
@@ -234,25 +220,22 @@ UAVObject* UAVObjectManager::getObject(quint32 objId, quint32 instId)
 /**
  * Helper function for the public getObject() functions.
  */
-UAVObject* UAVObjectManager::getObject(const QString& name, quint32 objId, quint32 instId)
+QSharedPointer<UAVObject> UAVObjectManager::getObject(const QString& name, quint32 objId, quint32 instId)
 {
-    if(name != NULL)
-    {
-        if (objectsByName.contains(name)) {
+    if (!name.isNull()) {
+        if (objectsByName.contains(name))
             return objectsByName.value(name).value(instId);
-        }
-
-        return NULL;
-    }
-    else if(objects.contains(objId))
+        return QSharedPointer<UAVObject>();
+    } else if(objects.contains(objId)) {
         return objects.value(objId).value(instId);
-    return NULL;
+    }
+    return QSharedPointer<UAVObject>();
 }
 
 /**
  * Get all the instances of the object specified by name
  */
-QVector<UAVObject*> UAVObjectManager::getObjectInstancesVector(const QString& name)
+QVector<QSharedPointer<UAVObject>> UAVObjectManager::getObjectInstancesVector(const QString& name)
 {
     return getObjectInstancesVector(&name, 0);
 }
@@ -260,7 +243,7 @@ QVector<UAVObject*> UAVObjectManager::getObjectInstancesVector(const QString& na
 /**
  * Get all the instances of the object specified by its ID
  */
-QVector<UAVObject*> UAVObjectManager::getObjectInstancesVector(quint32 objId)
+QVector<QSharedPointer<UAVObject>> UAVObjectManager::getObjectInstancesVector(quint32 objId)
 {
     return getObjectInstancesVector(NULL, objId);
 }
@@ -268,19 +251,17 @@ QVector<UAVObject*> UAVObjectManager::getObjectInstancesVector(quint32 objId)
 /**
  * Helper function for the public getObjectInstances()
  */
-QVector<UAVObject*> UAVObjectManager::getObjectInstancesVector(const QString* name, quint32 objId)
+QVector<QSharedPointer<UAVObject>> UAVObjectManager::getObjectInstancesVector(const QString* name, quint32 objId)
 {
-    if(name != NULL)
-    {
-        foreach(const ObjectMap &map,objects)
-        {
+    if (!name->isNull()) {
+        for (const ObjectMap &map : objects) {
             if(map.first()->getName().compare(name) == 0)
                 return map.values().toVector();
         }
     }
     else if(objects.contains(objId))
         return objects.value(objId).values().toVector();
-    return  QVector<UAVObject*>();
+    return  QVector<QSharedPointer<UAVObject>>();
 }
 
 /**
@@ -304,26 +285,24 @@ qint32 UAVObjectManager::getNumInstances(quint32 objId)
  */
 qint32 UAVObjectManager::getNumInstances(const QString* name, quint32 objId)
 {
-    if(name != NULL)
-    {
-        foreach(const ObjectMap &map,objects)
-        {
+    if (!name->isNull()) {
+        for (const ObjectMap &map : objects) {
             if(map.first()->getName().compare(name) == 0)
                 return map.count();
         }
-    }
-    else if(objects.contains(objId))
+    } else if (objects.contains(objId)) {
         return objects.value(objId).count();
+    }
     return -1;
 }
 
-UAVObjectField *UAVObjectManager::getField(const QString &objName, const QString &fieldName, quint32 instId)
+QSharedPointer<UAVObjectField> UAVObjectManager::getField(const QString &objName, const QString &fieldName, quint32 instId)
 {
-    UAVObject *uavo = getObject(objName, instId);
+    QSharedPointer<UAVObject> uavo = getObject(objName, instId);
     Q_ASSERT(uavo);
     if (!uavo)
-        return Q_NULLPTR;
-    UAVObjectField *field = uavo->getField(fieldName);
+        return QSharedPointer<UAVObjectField>();
+    auto field = uavo->getField(fieldName);
     Q_ASSERT(field);
     return field;
 }

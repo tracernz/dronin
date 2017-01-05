@@ -119,10 +119,17 @@ bool Brain::setInputType(enum InputType type)
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwBrain *hwBrain = HwBrain::GetInstance(uavoManager);
-    Q_ASSERT(hwBrain);
-    if (!hwBrain)
+    if (!uavoManager) {
+        Q_ASSERT(false);
+        qWarning() << "Could not get UAVObjectManager!";
         return false;
+    }
+    auto hwBrain = HwBrain::getInstance(uavoManager);
+    if (!hwBrain) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object! HwBrain";
+        return false;
+    }
 
     HwBrain::DataFields settings = hwBrain->getData();
 
@@ -163,10 +170,17 @@ enum Core::IBoardType::InputType Brain::getInputType()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwBrain *hwBrain = HwBrain::GetInstance(uavoManager);
-    Q_ASSERT(hwBrain);
-    if (!hwBrain)
+    if (!uavoManager) {
+        Q_ASSERT(false);
+        qWarning() << "Could not get UAVObjectManager!";
         return INPUT_TYPE_UNKNOWN;
+    }
+    auto hwBrain = HwBrain::getInstance(uavoManager);
+    if (!hwBrain) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object! HwBrain";
+        return INPUT_TYPE_UNKNOWN;
+    }
 
     HwBrain::DataFields settings = hwBrain->getData();
 
@@ -209,10 +223,17 @@ int Brain::queryMaxGyroRate()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwBrain *hwBrain = HwBrain::GetInstance(uavoManager);
-    Q_ASSERT(hwBrain);
-    if (!hwBrain)
+    if (!uavoManager) {
+        Q_ASSERT(false);
+        qWarning() << "Could not get UAVObjectManager!";
         return 0;
+    }
+    auto hwBrain = HwBrain::getInstance(uavoManager);
+    if (!hwBrain) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object! HwBrain";
+        return 0;
+    }
 
     HwBrain::DataFields settings = hwBrain->getData();
 

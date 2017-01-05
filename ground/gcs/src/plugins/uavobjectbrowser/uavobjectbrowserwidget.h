@@ -135,10 +135,10 @@ private:
     QColor m_notPresentOnHwColor;
     bool m_onlyHighlightChangedValues;
 
-    void updateObjectPersistance(ObjectPersistence::OperationOptions op, UAVObject *obj);
+    void updateObjectPersistance(ObjectPersistence::OperationOptions op, QSharedPointer<UAVObject> obj);
     void enableUAVOBrowserButtons(bool enableState);
     ObjectTreeItem *findCurrentObjectTreeItem();
-    void updateThrottlePeriod(UAVObject *);
+    void updateThrottlePeriod(QSharedPointer<UAVObject> obj);
     void keyPressEvent(QKeyEvent *e);
     void keyReleaseEvent(QKeyEvent *e);
 

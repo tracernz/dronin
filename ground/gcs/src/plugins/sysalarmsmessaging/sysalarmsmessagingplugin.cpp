@@ -49,8 +49,8 @@ void SysAlarmsMessagingPlugin::extensionsInitialized()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    SystemAlarms* obj = dynamic_cast<SystemAlarms*>(objManager->getObject(QString("SystemAlarms")));
-    connect(obj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(updateAlarms(UAVObject*)));
+    auto obj = SystemAlarms::getInstance(objManager);
+    connect(obj.data(), &UAVObject::objectUpdated, this, &SysAlarmsMessagingPlugin::updateAlarms);
 
 }
 
@@ -65,9 +65,18 @@ bool SysAlarmsMessagingPlugin::initialize(const QStringList &arguments, QString 
     Q_UNUSED(errorString);
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    SystemAlarms* obj = SystemAlarms::GetInstance(objManager);
+    auto obj = SystemAlarms::getInstance(objManager);
+    if (!obj) {
+        Q_ASSERT(false);
+        qWarning() << "Could not get SystemAlarms!";
+        return false;
+    }
 
-    foreach (UAVObjectField *field, obj->getFields()) {
+    for (auto field : obj->getFields()) {
+        if (!field) {
+            qWarning() << "Encountered invalid field!";
+            continue;
+        }
         for (uint i = 0; i < field->getNumElements(); ++i) {
             QString element = field->getElementNames()[i];
             GlobalMessage * msg=Core::ICore::instance()->globalMessaging()->addErrorMessage(element,"");
@@ -88,9 +97,19 @@ bool SysAlarmsMessagingPlugin::initialize(const QStringList &arguments, QString 
  * object is updated to set the alarm messages appropriately.
  * @param[in] systemAlarm Must be the SystemAlarms object
  */
-void SysAlarmsMessagingPlugin::updateAlarms(UAVObject* systemAlarm)
+void SysAlarmsMessagingPlugin::updateAlarms(QSharedPointer<UAVObject> systemAlarm)
 {
-    UAVObjectField *field = systemAlarm->getField(QString("Alarm"));
+    if (!systemAlarm) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object received!";
+        return;
+    }
+    auto field = systemAlarm->getField(QString("Alarm"));
+    if (!field) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object received!";
+        return;
+    }
 
     for (uint i = 0; i < field->getNumElements(); ++i) {
         const QString element = field->getElementNames()[i];

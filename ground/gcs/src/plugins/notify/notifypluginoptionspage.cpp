@@ -189,15 +189,17 @@ void NotifyPluginOptionsPage::initRulesTable()
     _optionsPage->notifyRulesView->setDragDropMode(QAbstractItemView::InternalMove);
 }
 
-UAVObjectField* NotifyPluginOptionsPage::getObjectFieldFromSelected()
+QSharedPointer<UAVObjectField> NotifyPluginOptionsPage::getObjectFieldFromSelected()
 {
-    return (_currUAVObject) ? _currUAVObject->getField(_selectedNotification->getObjectField()) : NULL;
+    if (!_currUAVObject)
+        return QSharedPointer<UAVObjectField>();
+    return _currUAVObject->getField(_selectedNotification->getObjectField());
 }
 
 void NotifyPluginOptionsPage::setSelectedNotification(NotificationItem* ntf)
 {
     _selectedNotification = ntf;
-    _currUAVObject = dynamic_cast<UAVDataObject*>(_objManager.getObject(_selectedNotification->getDataObject()));
+    _currUAVObject = _objManager.getObject(_selectedNotification->getDataObject()).dynamicCast<UAVDataObject>();
     if(!_currUAVObject) {
         qNotifyDebug() << "no such UAVObject: " << _selectedNotification->getDataObject();
     }
@@ -228,11 +230,12 @@ void NotifyPluginOptionsPage::addDynamicFieldLayout()
 
     _dynamicFieldCondition = new QComboBox(_form);
     _optionsPage->dynamicValueLayout->addWidget(_dynamicFieldCondition);
-    UAVObjectField* field = getObjectFieldFromSelected();
-    addDynamicField(field);
+    auto field = getObjectFieldFromSelected();
+    if (field)
+        addDynamicField(field);
 }
 
-void NotifyPluginOptionsPage::addDynamicField(UAVObjectField* objField)
+void NotifyPluginOptionsPage::addDynamicField(QSharedPointer<UAVObjectField> objField)
 {
     if(!objField) {
         qNotifyDebug() << "addDynamicField | input objField == NULL";
@@ -267,9 +270,9 @@ void NotifyPluginOptionsPage::addDynamicField(UAVObjectField* objField)
     addDynamicFieldWidget(objField);
 }
 
-void NotifyPluginOptionsPage::addDynamicFieldWidget(UAVObjectField* objField)
+void NotifyPluginOptionsPage::addDynamicFieldWidget(QSharedPointer<UAVObjectField> objField)
 {
-    if(!objField) {
+    if (!objField) {
         qNotifyDebug() << "objField == NULL!";
         return;
     }
@@ -392,10 +395,10 @@ void NotifyPluginOptionsPage::updateConfigView(NotificationItem* notification)
     }
 
     // Fills the combo boxes for the UAVObjects
-    QVector< QVector<UAVDataObject*> > objList = _objManager.getDataObjectsVector();
-    foreach (QVector<UAVDataObject*> list, objList) {
-        foreach (UAVDataObject* obj, list) {
-            _optionsPage->UAVObject->addItem(obj->getName());
+    for (const auto &list : _objManager.getDataObjectsVector()) {
+        for (auto obj : list) {
+            if (obj)
+                _optionsPage->UAVObject->addItem(obj->getName());
         }
     }
 
@@ -404,10 +407,12 @@ void NotifyPluginOptionsPage::updateConfigView(NotificationItem* notification)
     }
 
     _optionsPage->UAVObjectField->clear();
-    if(_currUAVObject) {
-        QList<UAVObjectField*> fieldList = _currUAVObject->getFields();
-        foreach (UAVObjectField* field, fieldList)
-            _optionsPage->UAVObjectField->addItem(field->getName());
+    if (_currUAVObject) {
+        auto fieldList = _currUAVObject->getFields();
+        for (auto field : fieldList) {
+            if (field)
+                _optionsPage->UAVObjectField->addItem(field->getName());
+        }
     }
 
     if (-1 != _optionsPage->UAVObjectField->findText(notification->getObjectField())) {
@@ -455,9 +460,17 @@ void NotifyPluginOptionsPage::updateConfigView(NotificationItem* notification)
 
 void NotifyPluginOptionsPage::on_changedIndex_rangeValue(QString /* rangeStr */)
 {
-    Q_ASSERT(_dynamicFieldWidget);
-    UAVObjectField* field = getObjectFieldFromSelected();
-    Q_ASSERT(!!field);
+    if (!_dynamicFieldWidget) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid widget!";
+        return;
+    }
+    auto field = getObjectFieldFromSelected();
+    if (!field) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object field!";
+        return;
+    }
     addDynamicFieldWidget(field);
     setDynamicFieldValue(_selectedNotification);
 }
@@ -465,24 +478,33 @@ void NotifyPluginOptionsPage::on_changedIndex_rangeValue(QString /* rangeStr */)
 void NotifyPluginOptionsPage::on_changedIndex_UAVField(QString field)
 {
     resetFieldType();
-    Q_ASSERT(_currUAVObject);
+    if (!_currUAVObject) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object!";
+        return;
+    }
     addDynamicField(_currUAVObject->getField(field));
-
 }
 
 void NotifyPluginOptionsPage::on_changedIndex_UAVObject(QString val)
 {
     resetFieldType();
-    _currUAVObject = dynamic_cast<UAVDataObject*>( _objManager.getObject(val) );
-    if(!_currUAVObject) {
+    _currUAVObject = _objManager.getObject(val).dynamicCast<UAVDataObject>();
+    if (!_currUAVObject) {
         qNotifyDebug() << "on_UAVObject_indexChanged | no such UAVOBject";
         return;
     }
-    QList<UAVObjectField*> fieldList = _currUAVObject->getFields();
     disconnect(_optionsPage->UAVObjectField, SIGNAL(currentIndexChanged(QString)), this, SLOT(on_changedIndex_UAVField(QString)));
     _optionsPage->UAVObjectField->clear();
-    foreach (UAVObjectField* field, fieldList) {
+    const auto &fieldList = _currUAVObject->getFields();
+    for (auto field : fieldList) {
+        if (field) {
             _optionsPage->UAVObjectField->addItem(field->getName());
+        } else {
+            Q_ASSERT(false);
+            qWarning() << "Invalid object field!";
+            return; // saves us from blowing up later if item 0 is null
+        }
     }
     connect(_optionsPage->UAVObjectField, SIGNAL(currentIndexChanged(QString)), this, SLOT(on_changedIndex_UAVField(QString)));
     _selectedNotification->setObjectField(fieldList.at(0)->getName());
@@ -536,8 +558,7 @@ void NotifyPluginOptionsPage::on_changedSelection_notifyTable(const QItemSelecti
     if (selected.indexes().size()) {
         select = true;
         setSelectedNotification(_privListNotifications.at(selected.indexes().at(0).row()));
-        UAVObjectField* field = getObjectFieldFromSelected();
-        addDynamicField(field);
+        addDynamicField(getObjectFieldFromSelected()); // field pointer is checked inside
         updateConfigView(_selectedNotification);
     }
 

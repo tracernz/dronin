@@ -74,7 +74,7 @@ public:
     /*!
       \brief Append new data to the plot
       */
-    bool append(UAVObject* obj);
+    bool append(QSharedPointer<UAVObject> obj);
 
 
     /*!
@@ -100,7 +100,7 @@ public:
     ~TimeSeriesPlotData() {
     }
 
-    bool append(UAVObject* obj);
+    bool append(QSharedPointer<UAVObject> obj);
 
     virtual void removeStaleData();
     virtual void plotNewData(PlotData *, ScopeConfig *, ScopeGadgetWidget *);

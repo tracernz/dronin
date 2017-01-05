@@ -42,7 +42,6 @@
 UAVDataObject::UAVDataObject(quint32 objID, bool isSingleInst, bool isSet,const QString& name):
         UAVObject(objID, isSingleInst, name)
 {
-    mobj = NULL;
     this->isSet = isSet;
     this->isPresentOnHardware = false;
 }
@@ -50,7 +49,7 @@ UAVDataObject::UAVDataObject(quint32 objID, bool isSingleInst, bool isSet,const 
 /**
  * Initialize instance ID and assign a metaobject
  */
-void UAVDataObject::initialize(quint32 instID, UAVMetaObject* mobj)
+void UAVDataObject::initialize(quint32 instID, QSharedPointer<UAVMetaObject> mobj)
 {
     this->mobj = mobj;
     UAVObject::initialize(instID);
@@ -59,7 +58,7 @@ void UAVDataObject::initialize(quint32 instID, UAVMetaObject* mobj)
 /**
  * Assign a metaobject
  */
-void UAVDataObject::initialize(UAVMetaObject* mobj)
+void UAVDataObject::initialize(QSharedPointer<UAVMetaObject> mobj)
 {
     this->mobj = mobj;
 }
@@ -101,10 +100,11 @@ UAVObject::Metadata UAVDataObject::getMetadata(void)
 /**
  * Get the metaobject
  */
-UAVMetaObject* UAVDataObject::getMetaObject()
+QSharedPointer<UAVMetaObject> UAVDataObject::getMetaObject()
 {
     return mobj;
 }
+
 bool UAVDataObject::getIsPresentOnHardware() const
 {
     return isPresentOnHardware;
@@ -114,8 +114,9 @@ void UAVDataObject::setIsPresentOnHardware(bool value)
 {
     bool temp = isPresentOnHardware;
     isPresentOnHardware = value;
+    Q_UNUSED(temp)
     if(temp != isPresentOnHardware)
-        emit presentOnHardwareChanged(this);
+        emit presentOnHardwareChanged(QEnableSharedFromThis<UAVDataObject>::sharedFromThis());
 }
 
 

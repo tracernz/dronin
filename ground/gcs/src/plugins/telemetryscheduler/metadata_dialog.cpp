@@ -90,16 +90,16 @@ void MetadataDialog::saveApplyMetadata()
         Q_ASSERT(0);
 
     // Checkboxes
-    UAVObject::SetFlightAccess(*m_mdata, metadata_editor.cbFlightReadOnly->isChecked() ? UAVObject::ACCESS_READONLY : UAVObject::ACCESS_READWRITE);
-    UAVObject::SetGcsAccess(*m_mdata, metadata_editor.cbFlightReadOnly->isChecked() ? UAVObject::ACCESS_READONLY : UAVObject::ACCESS_READWRITE);
-    UAVObject::SetFlightTelemetryAcked(*m_mdata, metadata_editor.cbFlightAcked->isChecked());
-    UAVObject::SetGcsTelemetryAcked(*m_mdata, metadata_editor.cbGCSAcked->isChecked());
+    UAVObject::setFlightAccess(*m_mdata, metadata_editor.cbFlightReadOnly->isChecked() ? UAVObject::ACCESS_READONLY : UAVObject::ACCESS_READWRITE);
+    UAVObject::setGcsAccess(*m_mdata, metadata_editor.cbFlightReadOnly->isChecked() ? UAVObject::ACCESS_READONLY : UAVObject::ACCESS_READWRITE);
+    UAVObject::setFlightTelemetryAcked(*m_mdata, metadata_editor.cbFlightAcked->isChecked());
+    UAVObject::setGcsTelemetryAcked(*m_mdata, metadata_editor.cbGCSAcked->isChecked());
 
     // Comboboxes
     int currentFlightIdx = metadata_editor.cmbFlightTelemetryMode->currentIndex();
     int currentGCSIdx = metadata_editor.cmbGCSTelemetryMode->currentIndex();
-    UAVObject::SetFlightTelemetryUpdateMode(*m_mdata, (UAVObject::UpdateMode) metadata_editor.cmbFlightTelemetryMode->itemData(currentFlightIdx).toInt());
-    UAVObject::SetGcsTelemetryUpdateMode(*m_mdata, (UAVObject::UpdateMode) metadata_editor.cmbGCSTelemetryMode->itemData(currentGCSIdx).toInt());
+    UAVObject::setFlightTelemetryUpdateMode(*m_mdata, (UAVObject::UpdateMode) metadata_editor.cmbFlightTelemetryMode->itemData(currentFlightIdx).toInt());
+    UAVObject::setGcsTelemetryUpdateMode(*m_mdata, (UAVObject::UpdateMode) metadata_editor.cmbGCSTelemetryMode->itemData(currentGCSIdx).toInt());
 
     accept();
 }
@@ -123,17 +123,17 @@ void MetadataDialog::resetMetadataToDefaults()
 void MetadataDialog::fillWidgets()
 {
     // Set checkboxes
-    metadata_editor.cbFlightReadOnly->setChecked(UAVObject::GetFlightAccess(*m_mdata));
-    metadata_editor.cbGCSReadOnly->setChecked(UAVObject::GetGcsAccess(*m_mdata));
-    metadata_editor.cbFlightAcked->setChecked(UAVObject::GetFlightTelemetryAcked(*m_mdata));
-    metadata_editor.cbGCSAcked->setChecked(UAVObject::GetGcsTelemetryAcked(*m_mdata));
+    metadata_editor.cbFlightReadOnly->setChecked(UAVObject::getFlightAccess(*m_mdata));
+    metadata_editor.cbGCSReadOnly->setChecked(UAVObject::getGcsAccess(*m_mdata));
+    metadata_editor.cbFlightAcked->setChecked(UAVObject::getFlightTelemetryAcked(*m_mdata));
+    metadata_editor.cbGCSAcked->setChecked(UAVObject::getGcsTelemetryAcked(*m_mdata));
 
     // Set flight telemetry update mode combo box
-    int accessType = UAVObject::GetFlightTelemetryUpdateMode(*m_mdata);
+    int accessType = UAVObject::getFlightTelemetryUpdateMode(*m_mdata);
     metadata_editor.cmbFlightTelemetryMode->setCurrentIndex(metadata_editor.cmbFlightTelemetryMode->findData(accessType));
 
     // Set GCS telemetry update mode combo box
-    accessType = UAVObject::GetGcsTelemetryUpdateMode(*m_mdata);
+    accessType = UAVObject::getGcsTelemetryUpdateMode(*m_mdata);
     metadata_editor.cmbGCSTelemetryMode->setCurrentIndex(metadata_editor.cmbGCSTelemetryMode->findData(accessType));
 }
 

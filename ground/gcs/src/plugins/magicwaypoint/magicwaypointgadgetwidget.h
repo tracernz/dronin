@@ -48,13 +48,13 @@ signals:
 
 protected slots:
     void scaleChanged(int scale);
-    void positionActualChanged(UAVObject *);
-    void pathDesiredChanged(UAVObject *);
+    void positionActualChanged(QSharedPointer<UAVObject> obj);
+    void pathDesiredChanged(QSharedPointer<UAVObject> obj);
     void positionSelected(double north, double east);
 
 private:
-    PathDesired * getPathDesired();
-    PositionActual * getPositionActual();
+    QSharedPointer<PathDesired> getPathDesired();
+    QSharedPointer<PositionActual> getPositionActual();
     Ui_MagicWaypoint * m_magicwaypoint;
 };
 

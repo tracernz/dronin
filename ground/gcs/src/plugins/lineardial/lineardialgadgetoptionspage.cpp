@@ -81,18 +81,16 @@ QWidget *LineardialGadgetOptionsPage::createPage(QWidget *parent)
     // Fills the combo boxes for the UAVObjects
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    QVector< QVector<UAVDataObject*> > objList = objManager->getDataObjectsVector();
-    foreach (QVector<UAVDataObject*> list, objList) {
-        foreach (UAVDataObject* obj, list) {
+    for (const auto &list : objManager->getDataObjectsVector()) {
+        for (const auto &obj : list)
             options_page->objectName->addItem(obj->getName());
-        }
     }
     //select saved UAV Object field values
     if(options_page->objectName->findText(m_config->getSourceDataObject())!=-1){
         options_page->objectName->setCurrentIndex(options_page->objectName->findText(m_config->getSourceDataObject()));
         // Now load the object field values:
-        UAVDataObject* obj = dynamic_cast<UAVDataObject*>( objManager->getObject(m_config->getSourceDataObject()) );
-        if (obj != NULL ) {
+        auto obj = objManager->getObject(m_config->getSourceDataObject()).dynamicCast<UAVDataObject>();
+        if (obj) {
                 on_objectName_currentIndexChanged(m_config->getSourceDataObject());
                 // And set the highlighed value from the settings:
                 options_page->objectField->setCurrentIndex(options_page->objectField->findText(m_config->getSourceObjectField()));
@@ -185,18 +183,14 @@ void LineardialGadgetOptionsPage::on_objectName_currentIndexChanged(QString val)
     options_page->objectField->clear();
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    UAVDataObject* obj = dynamic_cast<UAVDataObject*>( objManager->getObject(val) );
-    QList<UAVObjectField*> fieldList = obj->getFields();
-    foreach (UAVObjectField* field, fieldList) {
-        if(field->getElementNames().count() > 1)
-        {
-            foreach(QString elemName , field->getElementNames())
-            {
+    auto obj = objManager->getObject(val).dynamicCast<UAVDataObject>();
+    for (const auto &field : obj->getFields()) {
+        if(field->getElementNames().count() > 1) {
+            for (const QString &elemName : field->getElementNames())
                 options_page->objectField->addItem(field->getName() + "-" + elemName);
-            }
-        }
-        else
+        } else {
             options_page->objectField->addItem(field->getName());
+        }
     }
 }
 

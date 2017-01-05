@@ -59,7 +59,7 @@ public:
         this->req = req;
     }
 
-    TransactionKey(UAVObject *obj, bool req) {
+    TransactionKey(QSharedPointer<UAVObject> obj, bool req) {
         this->objId = obj->getObjID();
         this->instId = obj->getInstID();
         this->req = req;
@@ -88,20 +88,19 @@ Telemetry::Telemetry(UAVTalk* utalk, UAVObjectManager* objMngr)
     this->utalk = utalk;
     this->objMngr = objMngr;
     // Process all objects in the list
-    QVector< QVector<UAVObject*> > objs = objMngr->getObjectsVector();
+    auto objs = objMngr->getObjectsVector();
     const int objSize = objs.size();
     for (int objidx = 0; objidx < objSize; ++objidx)
-    {
         registerObject(objs[objidx][0]); // we only need to register one instance per object type
-    }
+
     // Listen to new object creations
-    connect(objMngr, SIGNAL(newObject(UAVObject*)), this, SLOT(newObject(UAVObject*)));
-    connect(objMngr, SIGNAL(newInstance(UAVObject*)), this, SLOT(newInstance(UAVObject*)));
+    connect(objMngr, &UAVObjectManager::newObject, this, &Telemetry::newObject);
+    connect(objMngr, &UAVObjectManager::newInstance, this, &Telemetry::newInstance);
     // Listen to transaction completions
-    connect(utalk, SIGNAL(ackReceived(UAVObject*)), this, SLOT(transactionSuccess(UAVObject*)));
-    connect(utalk, SIGNAL(nackReceived(UAVObject*)), this, SLOT(transactionFailure(UAVObject*)));
+    connect(utalk, &UAVTalk::ackReceived, this, &Telemetry::transactionSuccess);
+    connect(utalk, &UAVTalk::nackReceived, this, &Telemetry::transactionFailure);
     // Get GCS stats object
-    gcsStatsObj = GCSTelemetryStats::GetInstance(objMngr);
+    gcsStatsObj = GCSTelemetryStats::getInstance(objMngr);
     // Setup and start the periodic timer
     timeToNextUpdateMs = 0;
     updateTimer = new QTimer(this);
@@ -122,7 +121,7 @@ Telemetry::~Telemetry()
 /**
  * Register a new object for periodic updates (if enabled)
  */
-void Telemetry::registerObject(UAVObject* obj)
+void Telemetry::registerObject(QSharedPointer<UAVObject> obj)
 {
     // Setup object for periodic updates
     addObject(obj);
@@ -134,7 +133,7 @@ void Telemetry::registerObject(UAVObject* obj)
 /**
  * Add an object in the list used for periodic updates
  */
-void Telemetry::addObject(UAVObject* obj)
+void Telemetry::addObject(QSharedPointer<UAVObject> obj)
 {
     // Check if object type is already in the list
     const QVector<ObjectTimeInfo>::iterator iterEnd = objList.end();
@@ -158,7 +157,7 @@ void Telemetry::addObject(UAVObject* obj)
 /**
  * Update the object's timers
  */
-void Telemetry::setUpdatePeriod(UAVObject* obj, qint32 periodMs)
+void Telemetry::setUpdatePeriod(QSharedPointer<UAVObject> obj, qint32 periodMs)
 {
     // Find object type (not instance!) and update its period
     const quint32 objID = obj->getObjID();
@@ -177,35 +176,29 @@ void Telemetry::setUpdatePeriod(UAVObject* obj, qint32 periodMs)
 /**
  * Connect to all instances of an object depending on the event mask specified
  */
-void Telemetry::connectToObjectInstances(UAVObject* obj, quint32 eventMask)
+void Telemetry::connectToObjectInstances(QSharedPointer<UAVObject> obj, quint32 eventMask)
 {
-    QVector<UAVObject*> objs = objMngr->getObjectInstancesVector(obj->getObjID());
+    auto objs = objMngr->getObjectInstancesVector(obj->getObjID());
     int objsSize = objs.size();
-    for (int n = 0; n < objsSize; ++n)
-    {
+    for (int n = 0; n < objsSize; ++n) {
         // Disconnect all
         objs[n]->disconnect(this);
         // Connect only the selected events
-        if ( (eventMask&EV_UNPACKED) != 0)
-        {
-            connect(objs[n], SIGNAL(objectUnpacked(UAVObject*)), this, SLOT(objectUnpacked(UAVObject*)));
-        }
-        if ( (eventMask&EV_UPDATED) != 0)
-        {
-            connect(objs[n], SIGNAL(objectUpdatedAuto(UAVObject*)), this, SLOT(objectUpdatedAuto(UAVObject*)));
-        }
-        if ( (eventMask&EV_UPDATED_MANUAL) != 0)
-        {
-            connect(objs[n], SIGNAL(objectUpdatedManual(UAVObject*)), this, SLOT(objectUpdatedManual(UAVObject*)));
-        }
-        if ( (eventMask&EV_UPDATED_PERIODIC) != 0)
-        {
-            connect(objs[n], SIGNAL(objectUpdatedPeriodic(UAVObject*)), this, SLOT(objectUpdatedPeriodic(UAVObject*)));
-        }
-        if ( (eventMask&EV_UPDATE_REQ) != 0)
-        {
-            connect(objs[n], SIGNAL(updateRequested(UAVObject*)), this, SLOT(updateRequested(UAVObject*)));
-            connect(objs[n], SIGNAL(updateAllInstancesRequested(UAVObject*)), this, SLOT(updateAllInstancesRequested(UAVObject*)));
+        if ((eventMask&EV_UNPACKED) != 0)
+            connect(objs[n].data(), &UAVObject::objectUnpacked, this, &Telemetry::objectUnpacked);
+
+        if ((eventMask&EV_UPDATED) != 0)
+            connect(objs[n].data(), &UAVObject::objectUpdatedAuto, this, &Telemetry::objectUpdatedAuto);
+
+        if ((eventMask&EV_UPDATED_MANUAL) != 0)
+            connect(objs[n].data(), &UAVObject::objectUpdatedManual, this, &Telemetry::objectUpdatedManual);
+
+        if ((eventMask&EV_UPDATED_PERIODIC) != 0)
+            connect(objs[n].data(), &UAVObject::objectUpdatedPeriodic, this, &Telemetry::objectUpdatedPeriodic);
+
+        if ((eventMask&EV_UPDATE_REQ) != 0) {
+            connect(objs[n].data(), &UAVObject::updateRequested, this, &Telemetry::updateRequested);
+            connect(objs[n].data(), &UAVObject::updateAllInstancesRequested, this, &Telemetry::updateAllInstancesRequested);
         }
     }
 }
@@ -219,11 +212,11 @@ void Telemetry::connectToObjectInstances(UAVObject* obj, quint32 eventMask)
  * Note (elafargue, 2012.11): we listen for "unpacked" events in every case, because we want
  * to track when we receive object updates after doing an object request.
  */
-void Telemetry::updateObject(UAVObject* obj, quint32 eventType)
+void Telemetry::updateObject(QSharedPointer<UAVObject> obj, quint32 eventType)
 {
     // Get metadata
     UAVObject::Metadata metadata = obj->getMetadata();
-    UAVObject::UpdateMode updateMode = UAVObject::GetGcsTelemetryUpdateMode(metadata);
+    UAVObject::UpdateMode updateMode = UAVObject::getGcsTelemetryUpdateMode(metadata);
 
     // Setup object depending on update mode
     qint32 eventMask;
@@ -280,7 +273,7 @@ void Telemetry::updateObject(UAVObject* obj, quint32 eventType)
  * This happens:
  *  - Because we received an ACK from the UAVTalk layer.
  */
-void Telemetry::transactionSuccess(UAVObject* obj)
+void Telemetry::transactionSuccess(QSharedPointer<UAVObject> obj)
 {
     if (updateTransactionMap(obj,false)) {
         TELEMETRY_QXTLOG_DEBUG(QString("[telemetry.cpp] Transaction succeeded:%0 Instance:%1").arg(obj->getName() + QString(QString(" 0x") + QString::number(obj->getObjID(), 16).toUpper())).arg(obj->getInstID()));
@@ -301,7 +294,7 @@ void Telemetry::transactionSuccess(UAVObject* obj)
  *  - Because we did not receive an UNPACK event from an object we had requested and
  *    the object request retries is exceeded.
  */
-void Telemetry::transactionFailure(UAVObject* obj)
+void Telemetry::transactionFailure(QSharedPointer<UAVObject> obj)
 {
     bool nacked = false;
     if(sender() == this->utalk)
@@ -324,7 +317,7 @@ void Telemetry::transactionFailure(UAVObject* obj)
  * This happens:
  *  - Because we received an UNPACK event from an object we had requested.
  */
-void Telemetry::transactionRequestCompleted(UAVObject* obj)
+void Telemetry::transactionRequestCompleted(QSharedPointer<UAVObject> obj)
 {
     if (updateTransactionMap(obj,true)) {
         TELEMETRY_QXTLOG_DEBUG(QString("[telemetry.cpp] Transaction succeeded:%0 Instance:%1").arg(obj->getName() + QString(QString(" 0x") + QString::number(obj->getObjID(), 16).toUpper())).arg(obj->getInstID()));
@@ -346,7 +339,7 @@ void Telemetry::transactionRequestCompleted(UAVObject* obj)
  *                  false if the entry in the transaction map should be an object sent
  *
  */
-bool Telemetry::updateTransactionMap(UAVObject* obj, bool request)
+bool Telemetry::updateTransactionMap(QSharedPointer<UAVObject> obj, bool request)
 {
     TransactionKey key(obj, request);
     QMap<TransactionKey, ObjectTransactionInfo*>::iterator itr = transMap.find(key);
@@ -418,7 +411,7 @@ void Telemetry::processObjectTransaction(ObjectTransactionInfo *transInfo)
  * Process the event received from an object we are following. This method
  * only enqueues objects for later processing
  */
-void Telemetry::processObjectUpdates(UAVObject* obj, EventMask event, bool allInstances, bool priority)
+void Telemetry::processObjectUpdates(QSharedPointer<UAVObject> obj, EventMask event, bool allInstances, bool priority)
 {
     // Push event into queue
     ObjectQueueInfo objInfo;
@@ -502,7 +495,7 @@ void Telemetry::processObjectQueue()
 
     // Setup transaction (skip if unpack event)
     UAVObject::Metadata metadata = objInfo.obj->getMetadata();
-    UAVObject::UpdateMode updateMode = UAVObject::GetGcsTelemetryUpdateMode(metadata);
+    UAVObject::UpdateMode updateMode = UAVObject::getGcsTelemetryUpdateMode(metadata);
     if ( ( objInfo.event != EV_UNPACKED ) && ( ( objInfo.event != EV_UPDATED_PERIODIC ) || ( updateMode != UAVObject::UPDATEMODE_THROTTLED ) ) )
     {
         // We are either going to send an object, or are requesting one:
@@ -516,7 +509,7 @@ void Telemetry::processObjectQueue()
             transInfo->obj = objInfo.obj;
             transInfo->allInstances = objInfo.allInstances;
             transInfo->retriesRemaining = MAX_RETRIES;
-            transInfo->acked = UAVObject::GetGcsTelemetryAcked(metadata);
+            transInfo->acked = UAVObject::getGcsTelemetryAcked(metadata);
             if ( objInfo.event == EV_UPDATED || objInfo.event == EV_UPDATED_MANUAL || objInfo.event == EV_UPDATED_PERIODIC )
             {
                 transInfo->objRequest = false;
@@ -535,15 +528,11 @@ void Telemetry::processObjectQueue()
 
     // If this is a metaobject then make necessary telemetry updates
     // to the connections of this object to Telemetry (this) :
-    UAVMetaObject* metaobj = dynamic_cast<UAVMetaObject*>(objInfo.obj);
-    if ( metaobj != NULL )
-    {
-        updateObject( metaobj->getParentObject(), EV_NONE );
-    }
-    else if ( updateMode != UAVObject::UPDATEMODE_THROTTLED )
-    {
-        updateObject( objInfo.obj, objInfo.event );
-    }
+    auto metaobj = objInfo.obj.dynamicCast<UAVMetaObject>();
+    if (metaobj)
+        updateObject(metaobj->getParentObject(), EV_NONE);
+    else if (updateMode != UAVObject::UPDATEMODE_THROTTLED)
+        updateObject(objInfo.obj, objInfo.event);
 
     // We received an "unpacked" event, check whether
     // this is for an object we were expecting
@@ -646,49 +635,48 @@ void Telemetry::resetStats()
     txRetries = 0;
 }
 
-void Telemetry::objectUpdatedAuto(UAVObject* obj)
+void Telemetry::objectUpdatedAuto(QSharedPointer<UAVObject> obj)
 {
     processObjectUpdates(obj, EV_UPDATED, false, true);
 }
 
-void Telemetry::objectUpdatedManual(UAVObject* obj)
+void Telemetry::objectUpdatedManual(QSharedPointer<UAVObject> obj)
 {
     processObjectUpdates(obj, EV_UPDATED_MANUAL, false, true);
 }
 
-void Telemetry::objectUpdatedPeriodic(UAVObject* obj)
+void Telemetry::objectUpdatedPeriodic(QSharedPointer<UAVObject> obj)
 {
     processObjectUpdates(obj, EV_UPDATED_PERIODIC, false, true);
 }
 
-void Telemetry::objectUnpacked(UAVObject* obj)
+void Telemetry::objectUnpacked(QSharedPointer<UAVObject> obj)
 {
     processObjectUpdates(obj, EV_UNPACKED, false, true);
 }
 
-void Telemetry::updateRequested(UAVObject* obj)
+void Telemetry::updateRequested(QSharedPointer<UAVObject> obj)
 {
     processObjectUpdates(obj, EV_UPDATE_REQ, false, true);
 }
 
-void Telemetry::updateAllInstancesRequested(UAVObject* obj)
+void Telemetry::updateAllInstancesRequested(QSharedPointer<UAVObject> obj)
 {
     processObjectUpdates(obj, EV_UPDATE_REQ, true, true);
 }
 
-void Telemetry::newObject(UAVObject* obj)
+void Telemetry::newObject(QSharedPointer<UAVObject> obj)
 {
     registerObject(obj);
 }
 
-void Telemetry::newInstance(UAVObject* obj)
+void Telemetry::newInstance(QSharedPointer<UAVObject> obj)
 {
     registerObject(obj);
 }
 
 ObjectTransactionInfo::ObjectTransactionInfo(QObject* parent):QObject(parent)
 {
-    obj = 0;
     allInstances = false;
     objRequest = false;
     retriesRemaining = 0;

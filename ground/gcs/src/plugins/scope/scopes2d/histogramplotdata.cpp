@@ -89,18 +89,19 @@ void HistogramData::plotNewData(PlotData* plot2dData, ScopeConfig *scopeConfig, 
  * @param obj UAVO with new data
  * @return
  */
-bool HistogramData::append(UAVObject* obj)
+bool HistogramData::append(QSharedPointer<UAVObject> obj)
 {
+    if (!obj) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object!";
+        return false;
+    }
 
     //Empty histogram data set
     xData->clear();
     yData->clear();
 
     if (uavObjectName == obj->getName()) {
-
-        //Get the field of interest
-        UAVObjectField* field =  obj->getField(uavFieldName);
-
         //Bad place to do this
         double step = binWidth;
         if (step < 1e-6) //Don't allow step size to be 0.
@@ -109,8 +110,8 @@ bool HistogramData::append(UAVObject* obj)
         if (numberOfBins > MAX_NUMBER_OF_INTERVALS)
             numberOfBins = MAX_NUMBER_OF_INTERVALS;
 
-        if (field) {
-            double currentValue = valueAsDouble(obj, field, haveSubField, uavSubFieldName) * pow(10, scalePower);
+        if (auto field =  obj->getField(uavFieldName)) {
+            double currentValue = valueAsDouble(field, uavElementName) * pow(10, scalePower);
 
             // Extend interval, if necessary
             if(!histogramInterval->empty()){
@@ -146,8 +147,7 @@ bool HistogramData::append(UAVObject* obj)
                     }
 
                 }
-            }
-            else{
+            } else {
                 // Create first interval
                 double tmp=0;
                 if (tmp < currentValue){

@@ -106,23 +106,24 @@ TelemetrySchedulerGadgetWidget::TelemetrySchedulerGadgetWidget(QWidget *parent) 
     objManager = pm->getObject<UAVObjectManager>();
     Q_ASSERT(objManager != NULL);
 
-    QVector< QVector<UAVDataObject*> > objList = objManager->getDataObjectsVector();
+    auto objList = objManager->getDataObjectsVector();
     QStringList strList;
-    foreach (QVector<UAVDataObject*> list, objList) {
+    for (const auto &list : objList) {
             if(!list.first()->isSettings()) {
                 strList.append(list.first()->getName());
-                connect(list.first(), SIGNAL(presentOnHardwareChanged(UAVDataObject*)), this, SLOT(uavoPresentOnHardwareChanged(UAVDataObject*)), Qt::UniqueConnection);
+                connect(list.first().data(), &UAVDataObject::presentOnHardwareChanged,
+                        this, &TelemetrySchedulerGadgetWidget::uavoPresentOnHardwareChanged, Qt::UniqueConnection);
             }
     }
     strList.sort(Qt::CaseInsensitive);
     int rowIndex = 1;
-    foreach (QString str, strList) {
+    for (const QString &str : strList) {
             schedulerModel->setVerticalHeaderItem(rowIndex, new QStandardItem(str));
-            UAVObject *obj = objManager->getObject(str);
-            Q_ASSERT(obj);
-            UAVDataObject *dobj = dynamic_cast<UAVDataObject*>(obj);
+            auto dobj = objManager->getObject(str).dynamicCast<UAVDataObject>();
             Q_ASSERT(dobj);
-            uavoIndex.insert(dobj,rowIndex);
+            if (!dobj)
+                continue;
+            uavoIndex.insert(dobj, rowIndex);
             rowIndex++;
     }
 
@@ -148,22 +149,22 @@ TelemetrySchedulerGadgetWidget::TelemetrySchedulerGadgetWidget(QWidget *parent) 
     // 1) Populate the "Current" column with live update rates. 2) Connect these values to
     // the current metadata. 3) Populate the default column.
     rowIndex = 1;
-    foreach (QString objStr, strList) {
+    for (const QString &objStr : strList) {
         // Add defaults
-        UAVObject *obj = objManager->getObject(objStr);
-        Q_ASSERT(obj);
-        UAVObject::Metadata mdataDefault = obj->getDefaultMetadata();
+        auto dobj = objManager->getObject(objStr).dynamicCast<UAVDataObject>();
+        Q_ASSERT(dobj);
+        if (!dobj)
+            continue;
+        UAVObject::Metadata mdataDefault = dobj->getDefaultMetadata();
         QModelIndex index = schedulerModel->index(rowIndex,0, QModelIndex());
         schedulerModel->setData(index, QString("%1ms").arg(mdataDefault.flightTelemetryUpdatePeriod));
 
         // Save default metadata for later use
-        defaultMdata.insert(obj->getName().append("Meta"), mdataDefault);
+        defaultMdata.insert(dobj->getName().append("Meta"), mdataDefault);
 
         // Connect live values to the "Current" column
-        UAVDataObject *dobj = dynamic_cast<UAVDataObject*>(obj);
-        Q_ASSERT(dobj);
-        UAVMetaObject *mobj = dobj->getMetaObject();
-        connect(mobj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(updateCurrentColumn(UAVObject*)));
+        auto mobj = dobj->getMetaObject();
+        connect(mobj.data(), &UAVObject::objectUpdated, this, &TelemetrySchedulerGadgetWidget::updateCurrentColumn);
 
         // Updates the "Current" column with the live value
         updateCurrentColumn(mobj);
@@ -187,23 +188,21 @@ TelemetrySchedulerGadgetWidget::~TelemetrySchedulerGadgetWidget()
  * @brief TelemetrySchedulerGadgetWidget::updateCurrentColumn Updates the "Current" column
  * @param obj UAVObject being updated
  */
-void TelemetrySchedulerGadgetWidget::updateCurrentColumn(UAVObject *obj)
+void TelemetrySchedulerGadgetWidget::updateCurrentColumn(QSharedPointer<UAVObject> obj)
 {
     int rowIndex = -1;
 
-    UAVMetaObject* mobj = dynamic_cast<UAVMetaObject*>(obj);
-    if ( mobj == NULL ) {
+    auto mobj = obj.dynamicCast<UAVMetaObject>();
+    if (!mobj) {
         Q_ASSERT(0);
         return;
     }
 
     // Iterate over all headers, looking for the UAVO
-    for (int i=1; i < schedulerModel->rowCount(); i++)
-    {
+    for (int i = 1; i < schedulerModel->rowCount(); i++) {
         // Add "Meta" to the end of the header name, in order to match the UAVO
         // metadata object name
-        if (schedulerModel->verticalHeaderItem(i)->text().append("Meta") == mobj->getName())
-        {
+        if (schedulerModel->verticalHeaderItem(i)->text().append("Meta") == mobj->getName()) {
             rowIndex = i;
             break;
         }
@@ -219,8 +218,7 @@ void TelemetrySchedulerGadgetWidget::updateCurrentColumn(UAVObject *obj)
     UAVObject::Metadata mdataDefault = defaultMdata.value(mobj->getName());
     UAVObject::Metadata mdata = mobj->getData();
 
-    if (mdata.flightTelemetryUpdatePeriod != mdataDefault.flightTelemetryUpdatePeriod)
-    {
+    if (mdata.flightTelemetryUpdatePeriod != mdataDefault.flightTelemetryUpdatePeriod) {
         QModelIndex index = schedulerModel->index(rowIndex, 1, QModelIndex());
         schedulerModel->setData(index, QString("%1ms").arg(mdata.flightTelemetryUpdatePeriod));
     }
@@ -248,11 +246,13 @@ void TelemetrySchedulerGadgetWidget::dataModel_itemChanged(int col)
     for (int i=1; i<schedulerModel->rowCount(); i++){
         // Get UAVO size
         QString uavObjectName = schedulerModel->verticalHeaderItem(i)->text();
-        UAVObject *obj = objManager->getObject(uavObjectName);
-        UAVDataObject *dobj = dynamic_cast<UAVDataObject*>(obj);
+        auto obj = objManager->getObject(uavObjectName);
+        auto dobj = obj.dynamicCast<UAVDataObject>();
         if(dobj && m_telemetryeditor->hideNotPresent->isChecked() && (!dobj->getIsPresentOnHardware()))
             continue;
         Q_ASSERT(obj);
+        if (!obj)
+            continue;
         quint16 size = obj->getNumBytes();
 
         // Get UAVO speed
@@ -318,11 +318,12 @@ void TelemetrySchedulerGadgetWidget::saveTelemetryToFile()
         root.appendChild(settings);
 
         // iterate over UAVObjects
-        for(int row=1; row<schedulerModel->rowCount(); row++)
-        {
+        for (int row = 1; row < schedulerModel->rowCount(); row++) {
             QString uavObjectName = schedulerModel->verticalHeaderItem(row)->text();
-            UAVObject *obj = objManager->getObject(uavObjectName);
+            auto obj = objManager->getObject(uavObjectName);
             Q_ASSERT(obj);
+            if (!obj)
+                continue;
 
             // add UAVObject to the XML
             QDomElement o = doc.createElement("uavobject");
@@ -371,12 +372,11 @@ void TelemetrySchedulerGadgetWidget::saveTelemetryToFile()
  * @brief TelemetrySchedulerGadgetWidget::applySchedule Uploads new settings to board
  * @returns list of the metaobjects which were actually applied
  */
-QList<UAVMetaObject*> TelemetrySchedulerGadgetWidget::applySchedule()
+QList<QSharedPointer<UAVMetaObject>> TelemetrySchedulerGadgetWidget::applySchedule()
 {
     int col = -1;
-    QList<UAVMetaObject*> metaList;
-    if (m_telemetryeditor->cmbScheduleList->currentText().isEmpty())
-    {
+    QList<QSharedPointer<UAVMetaObject>> metaList;
+    if (m_telemetryeditor->cmbScheduleList->currentText().isEmpty()) {
        QMessageBox::warning(this, tr("No Schedule selected"), tr("Please select a schedule on the dropbox to the left and retry"), QMessageBox::Ok);
        return metaList;
     }
@@ -397,11 +397,10 @@ QList<UAVMetaObject*> TelemetrySchedulerGadgetWidget::applySchedule()
     for (int i=1; i<schedulerModel->rowCount(); i++) {
         // Get UAVO name and metadata
         QString uavObjectName = schedulerModel->verticalHeaderItem(i)->text();
-        UAVObject *obj = objManager->getObject(uavObjectName);
-        UAVDataObject *dobj = dynamic_cast<UAVDataObject*>(obj);
+        auto dobj = objManager->getObject(uavObjectName).dynamicCast<UAVDataObject>();
         if(dobj && !(dobj->getIsPresentOnHardware()))
             continue;
-        UAVObject::Metadata mdata = obj->getMetadata();
+        UAVObject::Metadata mdata = dobj->getMetadata();
 
         // Get update period
         double updatePeriod_ms;
@@ -455,7 +454,7 @@ void TelemetrySchedulerGadgetWidget::onSavedSchedule(bool value)
     }
     connect(getObjectUtilManager(), SIGNAL(saveCompleted(int,bool)), this, SLOT(onCompletedMetadataSave(int, bool)));
     onCompletedMetadataSave(-1,true);
-    foreach (UAVMetaObject* meta, metaObjectsToSave)
+    for (const auto &meta : metaObjectsToSave)
     {
         getObjectUtilManager()->saveObjectToFlash(meta);
     }
@@ -475,29 +474,30 @@ void TelemetrySchedulerGadgetWidget::onCompletedMetadataWrite(bool value)
 void TelemetrySchedulerGadgetWidget::onCompletedMetadataSave(int id, bool result)
 {
     static bool success = true;
-    if(id == -1)
-    {
+    if (id == -1) {
         success = true;
         return;
     }
-    UAVObject *obj = getObjectManager()->getObject(id);
+
+    auto obj = getObjectManager()->getObject(id);
     Q_ASSERT(obj);
-    UAVMetaObject *meta = dynamic_cast<UAVMetaObject*>(obj);
-    if(meta)
-    {
-        if(!result && metaObjectsToSave.contains(meta))
-        {
-            qDebug()<<meta->getName()<<"save failed";
+    if (!obj)
+        return;
+
+    auto meta = obj.dynamicCast<UAVMetaObject>();
+    if (meta) {
+        if (!result && metaObjectsToSave.contains(meta)) {
+            qDebug() << meta->getName() << "save failed";
             success = false;
         }
         metaObjectsToSave.removeAll(meta);
     }
-    if(metaObjectsToSave.isEmpty())
-    {
+    if(metaObjectsToSave.isEmpty()) {
         if(success)
             m_telemetryeditor->bnSaveSchedule->setIcon(QIcon(":/uploader/images/dialog-apply.svg"));
         else
             m_telemetryeditor->bnSaveSchedule->setIcon(QIcon(":/uploader/images/process-stop.svg"));
+
         m_telemetryeditor->bnApplySchedule->setEnabled(true);
         m_telemetryeditor->bnSaveSchedule->setEnabled(true);
         disconnect(getObjectUtilManager(), SIGNAL(saveCompleted(int,bool)), this, SLOT(onCompletedMetadataSave(int, bool)));
@@ -607,8 +607,8 @@ void TelemetrySchedulerGadgetWidget::importTelemetryConfiguration(const QString&
             uint uavObjectID = e.attribute("id").toUInt(NULL,16);
 
             // Sanity Check:
-            UAVObject *obj = objManager->getObject(uavObjectName);
-            if (obj == NULL) {
+            auto obj = objManager->getObject(uavObjectName);
+            if (!obj) {
                 // This object is unknown!
                 qDebug() << "Object unknown:" << uavObjectName << uavObjectID;
             } else {
@@ -730,7 +730,7 @@ void TelemetrySchedulerGadgetWidget::customMenuRequested(QPoint pos)
     }
 }
 
-void TelemetrySchedulerGadgetWidget::uavoPresentOnHardwareChanged(UAVDataObject *obj)
+void TelemetrySchedulerGadgetWidget::uavoPresentOnHardwareChanged(QSharedPointer<UAVDataObject> obj)
 {
     if(m_telemetryeditor->hideNotPresent->isChecked())
         telemetryScheduleView->setRowHidden(uavoIndex.value(obj), !(obj->getIsPresentOnHardware()));
@@ -745,17 +745,16 @@ void TelemetrySchedulerGadgetWidget::uavoPresentOnHardwareChanged(UAVDataObject 
 
 void TelemetrySchedulerGadgetWidget::onHideNotPresent(bool hide)
 {
-    if(hide)
-    {
-        foreach (UAVDataObject* obj, uavoIndex.keys()) {
-            telemetryScheduleView->setRowHidden(uavoIndex.value(obj), !(obj->getIsPresentOnHardware()));
+    if(hide) {
+        for (const auto &obj : uavoIndex.keys()) {
+            if (obj)
+                telemetryScheduleView->setRowHidden(uavoIndex.value(obj), !(obj->getIsPresentOnHardware()));
         }
+
         int width = telemetryScheduleView->verticalHeader()->sizeHint().width();
         telemetryScheduleView->getFrozenTableView()->verticalHeader()->setFixedWidth(width);
         telemetryScheduleView->fixGeometry(width);
-    }
-    else
-    {
+    } else {
         foreach (int index, uavoIndex.values()) {
             telemetryScheduleView->setRowHidden(index, false);
         }
@@ -763,8 +762,8 @@ void TelemetrySchedulerGadgetWidget::onHideNotPresent(bool hide)
         telemetryScheduleView->getFrozenTableView()->verticalHeader()->setFixedWidth(width);
         telemetryScheduleView->fixGeometry(width);
     }
-    for(int x = 0; x < schedulerModel->columnCount(); ++x)
-    {
+
+    for (int x = 0; x < schedulerModel->columnCount(); ++x) {
         dataModel_itemChanged(x);
     }
 }
@@ -777,7 +776,7 @@ void TelemetrySchedulerGadgetWidget::changeVerticalHeader(int headerIndex)
 {
     // Get the UAVO name
     QString uavObjectName = schedulerModel->verticalHeaderItem(headerIndex)->text();
-    UAVObject* uavObj = objManager->getObject(uavObjectName);
+    auto uavObj = objManager->getObject(uavObjectName);
 
     // Get the metadata
     UAVObject::Metadata mdata = uavObj->getMetadata();
@@ -789,22 +788,24 @@ void TelemetrySchedulerGadgetWidget::changeVerticalHeader(int headerIndex)
         return;
 
     UAVObject::Metadata newMetadata;
-    if (metadataDialog.getResetDefaults_flag() == false)
+    if (metadataDialog.getResetDefaults_flag() == false) {
         newMetadata = metadataDialog.getMetadata();
-    else {
+    } else {
         newMetadata = uavObj->getDefaultMetadata();
         newMetadata.flightTelemetryUpdatePeriod = mdata.flightTelemetryUpdatePeriod;
     }
 
     // Update metadata, and save if necessary
     uavObj->setMetadata(newMetadata);
-    if (metadataDialog.getSaveState_flag())
-    {
-        UAVDataObject * obj = dynamic_cast<UAVDataObject*>(objManager->getObject(uavObjectName));
-        if (obj) {
-            UAVMetaObject * meta = obj->getMetaObject();
+    if (metadataDialog.getSaveState_flag()) {
+        auto dobj = uavObj.dynamicCast<UAVDataObject>();
+        if (!dobj)
+            return;
+        auto meta = dobj->getMetaObject();
+        if (meta)
             getObjectUtilManager()->saveObjectToFlash(meta);
-        }
+        else
+            qWarning() << "Failed to save metadata";
     }
 }
 

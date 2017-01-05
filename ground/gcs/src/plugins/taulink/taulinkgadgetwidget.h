@@ -42,11 +42,10 @@ public:
     ~TauLinkGadgetWidget();
 
 private slots:
-    void updateStatus(UAVObject *object);
+    void updateStatus(QSharedPointer<UAVObject> object);
 
 private:
     Ui_TauLink *ui;
-    UAVObject *rfm22bStatusObj;
 
 };
 

@@ -173,9 +173,9 @@ void SoundNotifyPlugin::updateNotificationList(QList<NotificationItem*> list)
 
 void SoundNotifyPlugin::connectNotifications()
 {
-    foreach(UAVDataObject* obj,lstNotifiedUAVObjects) {
-        if (obj != NULL)
-            disconnect(obj,SIGNAL(objectUpdated(UAVObject*)),this,SLOT(on_arrived_Notification(UAVObject*)));
+    for (auto obj : lstNotifiedUAVObjects) {
+        if (obj)
+            disconnect(obj.data(), &UAVObject::objectUpdated, this, &SoundNotifyPlugin::on_arrived_Notification);
     }
     if (phonon.mo != NULL) {
         delete phonon.mo;
@@ -197,19 +197,19 @@ void SoundNotifyPlugin::connectNotifications()
         notify->_isPlayed = false;
         notify->isNowPlaying=false;
 
-        if(notify->mute()) continue;
+        if(notify->mute())
+            continue;
         // check is all sounds presented for notification,
         // if not - we must not subscribe to it at all
         if(notify->toSoundList().isEmpty()) continue;
 
-        UAVDataObject* obj = dynamic_cast<UAVDataObject*>( objManager->getObject(notify->getDataObject()) );
-        if (obj != NULL ) {
+        auto obj = objManager->getObject(notify->getDataObject()).dynamicCast<UAVDataObject>();
+        if (obj) {
             if (!lstNotifiedUAVObjects.contains(obj)) {
                 lstNotifiedUAVObjects.append(obj);
 
-                connect(obj, SIGNAL(objectUpdated(UAVObject*)),
-                        this, SLOT(on_arrived_Notification(UAVObject*)),
-                        Qt::QueuedConnection);
+                connect(obj.data(), &UAVObject::objectUpdated,
+                        this, &SoundNotifyPlugin::on_arrived_Notification, Qt::QueuedConnection);
             }
         } else {
             qNotifyDebug() << "Error: Object is unknown (" << notify->getDataObject() << ").";
@@ -224,8 +224,14 @@ void SoundNotifyPlugin::connectNotifications()
         this, SLOT(stateChanged(QMediaPlayer::State)));
 }
 
-void SoundNotifyPlugin::on_arrived_Notification(UAVObject *object)
+void SoundNotifyPlugin::on_arrived_Notification(QSharedPointer<UAVObject> object)
 {
+    if (!object) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object!";
+        return;
+    }
+
     foreach(NotificationItem* ntf, _notificationList) {
         if (object->getName() != ntf->getDataObject())
             continue;
@@ -255,8 +261,8 @@ void SoundNotifyPlugin::on_arrived_Notification(UAVObject *object)
 
         checkNotificationRule(ntf, object);
     }
-    connect(object, SIGNAL(objectUpdated(UAVObject*)),
-            this, SLOT(on_arrived_Notification(UAVObject*)), Qt::UniqueConnection);
+    connect(object.data(), &UAVObject::objectUpdated,
+            this, &SoundNotifyPlugin::on_arrived_Notification, Qt::UniqueConnection);
 }
 
 
@@ -280,7 +286,7 @@ void SoundNotifyPlugin::on_timerRepeated_Notification()
 
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    UAVObject* object = objManager->getObject(notification->getDataObject());
+    auto object = objManager->getObject(notification->getDataObject());
     if (object)
         checkNotificationRule(notification,object);
 }
@@ -374,7 +380,7 @@ bool checkRange(double fieldValue, double min, double max, int direction)
     return ret;
 }
 
-void SoundNotifyPlugin::checkNotificationRule(NotificationItem* notification, UAVObject* object)
+void SoundNotifyPlugin::checkNotificationRule(NotificationItem* notification, QSharedPointer<UAVObject> object)
 {
     if(notification->getDataObject()!=object->getName() || object->getField(notification->getObjectField())==NULL)
         return;
@@ -385,7 +391,12 @@ void SoundNotifyPlugin::checkNotificationRule(NotificationItem* notification, UA
 
     int direction = notification->getCondition();
     QString fieldName = notification->getObjectField();
-    UAVObjectField* field = object->getField(fieldName);
+    auto field = object->getField(fieldName);
+    if (!field) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object!";
+        return;
+    }
 
     if (field->getName().isEmpty())
         return;

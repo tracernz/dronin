@@ -91,8 +91,8 @@ public:
     bool openFile(QString file, LoggingPlugin * parent);
 
 private slots:
-    void objectUpdated(UAVObject * obj);
-    void transactionCompleted(UAVObject* obj, bool success);
+    void objectUpdated(QSharedPointer<UAVObject> obj);
+    void transactionCompleted(QSharedPointer<UAVObject> obj, bool success);
 
 public slots:
     void stopLogging();
@@ -104,7 +104,7 @@ protected:
     UAVTalk * uavTalk;
 
 private:
-    QQueue<UAVDataObject*> queue;
+    QQueue<QWeakPointer<UAVDataObject>> queue;
 
     void retrieveSettings();
     void retrieveNextObject();

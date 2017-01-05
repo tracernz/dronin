@@ -171,7 +171,7 @@ void Calibration::assignUpdateRate(UAVObject* obj, quint32 updatePeriod)
     UAVDataObject *dobj = dynamic_cast<UAVDataObject*>(obj);
     Q_ASSERT(dobj);
     UAVObject::Metadata mdata = obj->getMetadata();
-    UAVObject::SetFlightTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_THROTTLED);
+    UAVObject::setFlightTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_THROTTLED);
     mdata.flightTelemetryUpdatePeriod = static_cast<quint16>(updatePeriod);
     QEventLoop loop;
     QTimer::singleShot(META_OPERATIONS_TIMEOUT, &loop, SLOT(quit()));

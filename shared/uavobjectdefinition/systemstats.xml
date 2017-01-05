@@ -20,13 +20,13 @@
 		<field name="CPUTemp" units="C" type="int8" elements="1">
 			<description>Current internal CPU temperature.</description>
 		</field>
-		<field name="EventSystemWarningID" units="uavoid" type="uint32" elements="1">
+		<field name="EventSystemWarningID" units="uavoid" type="uint32" elements="1" radix="hex">
 			<description>ID of the last object to cause an event system warning.</description>
 		</field>
-		<field name="ObjectManagerCallbackID" units="uavoid" type="uint32" elements="1">
+		<field name="ObjectManagerCallbackID" units="uavoid" type="uint32" elements="1" radix="hex">
 			<description>ID of the last object to cause an object manager callback warning.</description>
 		</field>
-		<field name="ObjectManagerQueueID" units="uavoid" type="uint32" elements="1">
+		<field name="ObjectManagerQueueID" units="uavoid" type="uint32" elements="1" radix="hex">
 			<description>ID of the last object to cause an object manager queue overflow.</description>
 		</field>
 		<access gcs="readwrite" flight="readwrite"/>

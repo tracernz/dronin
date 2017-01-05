@@ -156,10 +156,16 @@ bool LoggingThread::openFile(QString file, LoggingPlugin * parent)
   * file writing (flight time will be embedded in stream),
   * then object packet size, then the packed UAVObject.
   */
-void LoggingThread::objectUpdated(UAVObject * obj)
+void LoggingThread::objectUpdated(QSharedPointer<UAVObject> obj)
 {
+    if (!obj) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object!";
+        return;
+    }
+
     QWriteLocker locker(&lock);
-    if(!uavTalk->sendObject(obj,false,false) )
+    if(!uavTalk->sendObject(obj, false, false) )
         qDebug() << "Error logging " << obj->getName();
 };
 
@@ -172,32 +178,34 @@ void LoggingThread::run()
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
 
-    QVector< QVector<UAVObject*> > list = objManager->getObjectsVector();
-    QVector< QVector<UAVObject*> >::const_iterator i;
-    QVector<UAVObject*>::const_iterator j;
-    int objects = 0;
+    if (!objManager) {
+        Q_ASSERT(false);
+        qWarning() << "Could not get objManager";
+        return;
+    }
 
-    const QVector< QVector<UAVObject*> >::iterator iEnd = list.end();
-    for (i = list.constBegin(); i != iEnd; ++i)
-    {
-        QVector<UAVObject*>::const_iterator jEnd = (*i).constEnd();
-        for (j = (*i).constBegin(); j != jEnd; ++j)
-        {
-            connect(*j, SIGNAL(objectUpdated(UAVObject*)), (LoggingThread*) this, SLOT(objectUpdated(UAVObject*)));
+    int objects = 0;
+    for (const auto &list : objManager->getObjectsVector()) {
+        for (auto obj : list) { // don't care if pointer is null
+            connect(obj.data(), &UAVObject::objectUpdated, this, &LoggingThread::objectUpdated);
             objects++;
         }
     }
 
-    GCSTelemetryStats* gcsStatsObj = GCSTelemetryStats::GetInstance(objManager);
+    auto gcsStatsObj = GCSTelemetryStats::getInstance(objManager);
+    if (!gcsStatsObj) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object! GCSTelemetryStats";
+        return;
+    }
+
     GCSTelemetryStats::DataFields gcsStats = gcsStatsObj->getData();
-    if ( gcsStats.Status == GCSTelemetryStats::STATUS_CONNECTED )
-    {
+    if (gcsStats.Status == GCSTelemetryStats::STATUS_CONNECTED) {
         qDebug() << "Logging: connected already, ask for all settings";
         retrieveSettings();
     } else {
         qDebug() << "Logging: not connected, do no ask for settings";
     }
-
 
     exec();
 }
@@ -214,18 +222,14 @@ void LoggingThread::stopLogging()
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
 
-    QVector< QVector<UAVObject*> > list = objManager->getObjectsVector();
-    QVector< QVector<UAVObject*> >::const_iterator i;
-    QVector<UAVObject*>::const_iterator j;
-
-    const QVector< QVector<UAVObject*> >::iterator iEnd = list.end();
-    for (i = list.constBegin(); i != iEnd; ++i)
-    {
-        QVector<UAVObject*>::const_iterator jEnd = (*i).constEnd();
-        for (j = (*i).constBegin(); j != jEnd; ++j)
-        {
-            disconnect(*j, SIGNAL(objectUpdated(UAVObject*)), (LoggingThread*) this, SLOT(objectUpdated(UAVObject*)));
+    if (objManager) {
+        for (const auto &list : objManager->getObjectsVector()) {
+            for (auto obj : list) // don't care if pointer is null
+                disconnect(obj.data(), &UAVObject::objectUpdated, this, &LoggingThread::objectUpdated);
         }
+    } else {
+        Q_ASSERT(false);
+        qWarning() << "Could not get objManager";
     }
 
     logFile.close();
@@ -244,18 +248,15 @@ void LoggingThread::retrieveSettings()
     // Get UAVObjectManager instance
     ExtensionSystem::PluginManager* pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objMngr = pm->getObject<UAVObjectManager>();
-    QVector< QVector<UAVDataObject*> > objs = objMngr->getDataObjectsVector();
-    for (int n = 0; n < objs.size(); ++n)
-    {
-        UAVDataObject* obj = objs[n][0];
-        if ( obj->isSettings() )
-                {
-                    queue.enqueue(obj);
-                }
-        }
+
+    for (const auto &list : objMngr->getDataObjectsVector()) {
+        auto obj = list.first();
+        if (obj && obj->isSettings())
+            queue.enqueue(obj);
+    }
     // Start retrieving
     qDebug() << tr("Logging: retrieve settings objects from the autopilot (%1 objects)")
-                  .arg( queue.length());
+                  .arg(queue.length());
     retrieveNextObject();
 }
 
@@ -266,15 +267,24 @@ void LoggingThread::retrieveSettings()
 void LoggingThread::retrieveNextObject()
 {
     // If queue is empty return
-    if ( queue.isEmpty() )
-    {
-        qDebug() << "Logging: Object retrieval completed";
+    if (queue.isEmpty()) {
+        qInfo() << "Logging: Object retrieval completed";
         return;
     }
+
     // Get next object from the queue
-    UAVObject* obj = queue.dequeue();
+    auto obj = queue.dequeue().toStrongRef();
+    while (!obj && !queue.isEmpty())
+        obj = queue.dequeue().toStrongRef();
+
+    if (!obj) {
+        qInfo() << "Logging: Object retrieval completed";
+        return;
+    }
+
     // Connect to object
-    connect(obj, SIGNAL(transactionCompleted(UAVObject*,bool)), this, SLOT(transactionCompleted(UAVObject*,bool)));
+    connect(obj.data(), static_cast<void (UAVObject::*)(QSharedPointer<UAVObject>, bool)>(&UAVObject::transactionCompleted),
+            this, &LoggingThread::transactionCompleted);
     // Request update
     obj->requestUpdate();
 }
@@ -282,7 +292,7 @@ void LoggingThread::retrieveNextObject()
 /**
  * Called by the retrieved object when a transaction is completed.
  */
-void LoggingThread::transactionCompleted(UAVObject* obj, bool success)
+void LoggingThread::transactionCompleted(QSharedPointer<UAVObject> obj, bool success)
 {
     Q_UNUSED(success);
     // Disconnect from sending object
@@ -291,17 +301,22 @@ void LoggingThread::transactionCompleted(UAVObject* obj, bool success)
     // Get stats objects
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    GCSTelemetryStats* gcsStatsObj = GCSTelemetryStats::GetInstance(objManager);
-    GCSTelemetryStats::DataFields gcsStats = gcsStatsObj->getData();
-    if ( gcsStats.Status == GCSTelemetryStats::STATUS_CONNECTED )
-    {
-        retrieveNextObject();
+    if (objManager) {
+        auto gcsStatsObj = GCSTelemetryStats::getInstance(objManager);
+        if (gcsStatsObj) {
+            GCSTelemetryStats::DataFields gcsStats = gcsStatsObj->getData();
+            if (gcsStats.Status == GCSTelemetryStats::STATUS_CONNECTED) {
+                retrieveNextObject();
+                return;
+            }
+        }
+    } else {
+        Q_ASSERT(false);
+        qWarning() << "Could not get UAVObjectManager";
     }
-    else
-    {
-        qDebug() << "Logging: Object retrieval has been cancelled";
-        queue.clear();
-    }
+
+    qDebug() << "Logging: Object retrieval has been cancelled";
+    queue.clear();
 }
 
 

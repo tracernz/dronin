@@ -51,7 +51,7 @@ GCSControlGadgetWidget::GCSControlGadgetWidget(QWidget *parent) : QLabel(parent)
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
 
     // Set up the drop down box for the flightmode
-    FlightStatus* flightStatus = FlightStatus::GetInstance(objManager);;
+    auto flightStatus = FlightStatus::getInstance(objManager);;
     m_gcscontrol->comboBoxFlightMode->addItems(flightStatus->getField("FlightMode")->getOptions());
 
     // Set up slots and signals for joysticks
@@ -65,8 +65,8 @@ GCSControlGadgetWidget::GCSControlGadgetWidget(QWidget *parent) : QLabel(parent)
     connect(m_gcscontrol->checkBoxUDPControl, SIGNAL(stateChanged(int)),this,SLOT(toggleUDPControl(int))); //UDP control checkbox
 
     // Connect object updated event from UAVObject to also update check boxes and dropdown
-    connect(flightStatus,SIGNAL(FlightModeChanged(quint8)), this, SLOT(flightModeChanged(quint8)));
-    connect(flightStatus,SIGNAL(ArmedChanged(quint8)), this, SLOT(armedChanged(quint8)));
+    connect(flightStatus.data(), &FlightStatus::FlightModeChanged, this, &GCSControlGadgetWidget::flightModeChanged);
+    connect(flightStatus.data(), &FlightStatus::ArmedChanged, this, &GCSControlGadgetWidget::armedChanged);
 
     leftX = 0;
     leftY = 0;

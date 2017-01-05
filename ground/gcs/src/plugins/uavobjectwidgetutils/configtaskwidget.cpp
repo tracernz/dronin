@@ -73,11 +73,11 @@ void ConfigTaskWidget::addUAVObject(QString objectName,QList<int> * reloadGroups
     addUAVObjectToWidgetRelation(objectName, "", NULL, 0, 1, false, false, reloadGroups);
 }
 
-void ConfigTaskWidget::addUAVObject(UAVObject *objectName, QList<int> *reloadGroups)
+void ConfigTaskWidget::addUAVObject(QSharedPointer<UAVObject> object, QList<int> *reloadGroups)
 {
     QString objstr;
-    if(objectName)
-        objstr=objectName->getName();
+    if (object)
+        objstr = object->getName();
     addUAVObject(objstr, reloadGroups);
 
 }
@@ -88,25 +88,32 @@ void ConfigTaskWidget::addUAVObject(UAVObject *objectName, QList<int> *reloadGro
  * @param widget pointer to the widget whitch will display/define the field value
  * @param index index of the field element to add to this relation
  */
-void ConfigTaskWidget::addUAVObjectToWidgetRelation(QString object, QString field, QWidget * widget, QString index)
+void ConfigTaskWidget::addUAVObjectToWidgetRelation(QString object, QString field, QWidget *widget, QString index)
 {
-    UAVObject *obj=NULL;
-    UAVObjectField *_field=NULL;
-    obj = objManager->getObject(QString(object));
-    Q_ASSERT(obj);
-    _field = obj->getField(QString(field));
-    Q_ASSERT(_field);
-    addUAVObjectToWidgetRelation(object,field,widget,_field->getElementNames().indexOf(index));
+    auto obj = objManager->getObject(object);
+    if (!obj) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object! " << object;
+        return;
+    }
+    auto _field = obj->getField(field);
+    if (!_field) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object field! " << field;
+        return;
+    }
+    addUAVObjectToWidgetRelation(object, field, widget, _field->getElementNames().indexOf(index));
 }
 
-void ConfigTaskWidget::addUAVObjectToWidgetRelation(UAVObject *obj, UAVObjectField * field, QWidget *widget, QString index)
+void ConfigTaskWidget::addUAVObjectToWidgetRelation(QSharedPointer<UAVObject> obj, QSharedPointer<UAVObjectField> field, QWidget *widget, QString index)
 {
+    Q_ASSERT(obj && field);
     QString objstr;
     QString fieldstr;
-    if(obj)
-        objstr=obj->getName();
-    if(field)
-        fieldstr=field->getName();
+    if (obj)
+        objstr = obj->getName();
+    if (field)
+        fieldstr = field->getName();
     addUAVObjectToWidgetRelation(objstr, fieldstr, widget, index);
 }
 /**
@@ -122,37 +129,46 @@ void ConfigTaskWidget::addUAVObjectToWidgetRelation(UAVObject *obj, UAVObjectFie
  */
 void ConfigTaskWidget::addUAVObjectToWidgetRelation(QString object, QString field, QWidget *widget, QString element, double scale, bool isLimited, bool useUnits, QList<int> *defaultReloadGroups, quint32 instID)
 {
-    UAVObject *obj=objManager->getObject(QString(object),instID);
-    Q_ASSERT(obj);
-    UAVObjectField *_field;
-    int index=0;
-    if(!field.isEmpty() && obj)
-    {
-        _field = obj->getField(QString(field));
-        if(!element.isEmpty())
-            index=_field->getElementNames().indexOf(QString(element));
+    auto obj = objManager->getObject(object, instID);
+    if (!obj) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object! " << object;
+        return;
+    }
+    int index = 0;
+    if (!field.isEmpty() && !element.isEmpty()) {
+        auto _field = obj->getField(field);
+        if (!_field) {
+            Q_ASSERT(false);
+            qWarning() << "Invalid object field! " << field;
+            return;
+        }
+        index= _field->getElementNames().indexOf(QString(element));
     }
     addUAVObjectToWidgetRelation(object, field, widget, index, scale, isLimited, useUnits, defaultReloadGroups, instID);
 }
 
-void ConfigTaskWidget::addUAVObjectToWidgetRelation(UAVObject *obj, UAVObjectField *field, QWidget *widget, QString element, double scale, bool isLimited, bool useUnits, QList<int> *defaultReloadGroups, quint32 instID)
+void ConfigTaskWidget::addUAVObjectToWidgetRelation(QSharedPointer<UAVObject> obj, QSharedPointer<UAVObjectField> field, QWidget *widget, QString element, double scale, bool isLimited, bool useUnits, QList<int> *defaultReloadGroups, quint32 instID)
 {
+    Q_ASSERT(obj && field);
     QString objstr;
     QString fieldstr;
-    if(obj)
-        objstr=obj->getName();
-    if(field)
-        fieldstr=field->getName();
+    if (obj)
+        objstr = obj->getName();
+    if (field)
+        fieldstr = field->getName();
     addUAVObjectToWidgetRelation(objstr, fieldstr, widget, element, scale, isLimited, useUnits, defaultReloadGroups, instID);
 }
-void ConfigTaskWidget::addUAVObjectToWidgetRelation(UAVObject *obj, UAVObjectField *field, QWidget *widget, int index, double scale, bool isLimited, bool useUnits, QList<int>* defaultReloadGroups, quint32 instID)
+
+void ConfigTaskWidget::addUAVObjectToWidgetRelation(QSharedPointer<UAVObject> obj, QSharedPointer<UAVObjectField> field, QWidget *widget, int index, double scale, bool isLimited, bool useUnits, QList<int>* defaultReloadGroups, quint32 instID)
 {
+    Q_ASSERT(obj && field);
     QString objstr;
     QString fieldstr;
-    if(obj)
-        objstr=obj->getName();
-    if(field)
-        fieldstr=field->getName();
+    if (obj)
+        objstr = obj->getName();
+    if (field)
+        fieldstr = field->getName();
     addUAVObjectToWidgetRelation(objstr, fieldstr, widget, index, scale, isLimited, useUnits, defaultReloadGroups, instID);
 }
 
@@ -161,61 +177,57 @@ void ConfigTaskWidget::addUAVObjectToWidgetRelation(QString object, QString fiel
     if(addShadowWidget(object, field, widget, index, scale, isLimited, useUnits, defaultReloadGroups, instID))
         return;
 
-    UAVObject *obj=NULL;
-    UAVObjectField *_field=NULL;
-    if(!object.isEmpty())
-    {
-        obj = objManager->getObject(QString(object),instID);
-        Q_ASSERT(obj);
-        objectUpdates.insert(obj,true);
-        connect(obj, SIGNAL(objectUpdated(UAVObject*)),this, SLOT(objectUpdated(UAVObject*)));
-        connect(obj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(refreshWidgetsValues(UAVObject*)), Qt::UniqueConnection);
-        UAVDataObject *dobj = dynamic_cast<UAVDataObject *>(obj);
-        if(dobj)
-        {
-            connect(dobj, SIGNAL(presentOnHardwareChanged(UAVDataObject*)),this, SLOT(doRefreshHiddenObjects(UAVDataObject*)), Qt::UniqueConnection);
-            if(widget)
+    auto obj = QSharedPointer<UAVObject>();
+    auto _field = QSharedPointer<UAVObjectField>();
+    if (!object.isEmpty()) {
+        obj = objManager->getObject(object, instID);
+        if (!obj) {
+            Q_ASSERT(false);
+            qWarning() << "Invalid object! " << object;
+            return;
+        }
+        objectUpdates.insert(obj.data(), true);
+        connect(obj.data(), &UAVObject::objectUpdated, this, &ConfigTaskWidget::objectUpdated, Qt::UniqueConnection);
+        connect(obj.data(), &UAVObject::objectUpdated, this, &ConfigTaskWidget::refreshWidgetsValues, Qt::UniqueConnection);
+        auto dobj = obj.dynamicCast<UAVDataObject>();
+        if (dobj) {
+            connect(dobj.data(), &UAVDataObject::presentOnHardwareChanged, this,
+                    &ConfigTaskWidget::doRefreshHiddenObjects, Qt::UniqueConnection);
+            if (widget)
                 setWidgetEnabledByObj(widget, dobj->getIsPresentOnHardware());
         }
     }
+
     if(!field.isEmpty() && obj)
-        _field = obj->getField(QString(field));
-    objectToWidget * ow=new objectToWidget();
-    ow->field=_field;
-    ow->object=obj;
-    ow->widget=widget;
-    ow->index=index;
-    ow->scale=scale;
-    ow->isLimited=isLimited;
+        _field = obj->getField(field);
+
+    objectToWidget *ow = new objectToWidget();
+    ow->field = _field;
+    ow->object = obj;
+    ow->widget = widget;
+    ow->index = index;
+    ow->scale = scale;
+    ow->isLimited = isLimited;
     ow->useUnits = useUnits;
     objOfInterest.append(ow);
-    if(obj)
-    {
-        if(smartsave)
-        {
-            smartsave->addObject((UAVDataObject*)obj);
-        }
+
+    if (obj) {
+        if (smartsave)
+            smartsave->addObject(obj.dynamicCast<UAVDataObject>());
     }
-    if(widget==NULL)
-    {
-        if(defaultReloadGroups && obj)
-        {
-            foreach(int i,*defaultReloadGroups)
-            {
-                if(this->defaultReloadGroups.contains(i))
-                {
+
+    if (!ow->widget) {
+        if (defaultReloadGroups && obj) {
+            for (int i : *defaultReloadGroups) {
+                if (this->defaultReloadGroups.contains(i)) {
                     this->defaultReloadGroups.value(i)->append(ow);
-                }
-                else
-                {
-                    this->defaultReloadGroups.insert(i,new QList<objectToWidget*>());
+                } else {
+                    this->defaultReloadGroups.insert(i, new QList<objectToWidget *>());
                     this->defaultReloadGroups.value(i)->append(ow);
                 }
             }
         }
-    }
-    else
-    {
+    } else {
         connectWidgetUpdatesToSlot(widget,SLOT(widgetsContentsChanged()));
         if(defaultReloadGroups)
             addWidgetToDefaultReloadGroups(widget,defaultReloadGroups);
@@ -230,11 +242,14 @@ void ConfigTaskWidget::addUAVObjectToWidgetRelation(QString object, QString fiel
  */
 void ConfigTaskWidget::setNotMandatory(QString object)
 {
-    UAVObject *obj = objManager->getObject(object);
-    Q_ASSERT(obj);
-    if(smartsave) {
-        smartsave->setNotMandatory((UAVDataObject*)obj);
+    auto obj = objManager->getObject(object);
+    if (!obj) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object! " << object;
+        return;
     }
+    if(smartsave)
+        smartsave->setNotMandatory(obj.dynamicCast<UAVDataObject>());
 }
 
 
@@ -262,13 +277,15 @@ ConfigTaskWidget::~ConfigTaskWidget()
     }
 }
 
-void ConfigTaskWidget::saveObjectToSD(UAVObject *obj)
+void ConfigTaskWidget::saveObjectToSD(QSharedPointer<UAVObject> obj)
 {
     // saveObjectToSD is now handled by the UAVUtils plugin in one
     // central place (and one central queue)
-    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    UAVObjectUtilManager* utilMngr = pm->getObject<UAVObjectUtilManager>();
-    utilMngr->saveObjectToFlash(obj);
+    auto utilMngr = getObjectUtilManager();
+    if (utilMngr)
+        utilMngr->saveObjectToFlash(obj);
+    else
+        qWarning() << "Failed to save object to flash!";
 }
 
 
@@ -278,8 +295,11 @@ void ConfigTaskWidget::saveObjectToSD(UAVObject *obj)
  */
 UAVObjectManager* ConfigTaskWidget::getObjectManager() {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
-    UAVObjectManager * objMngr = pm->getObject<UAVObjectManager>();
-    Q_ASSERT(objMngr);
+    UAVObjectManager *objMngr = pm->getObject<UAVObjectManager>();
+    if (!objMngr) {
+        Q_ASSERT(false);
+        qWarning() << "Could not get UAVObjectManager!";
+    }
     return objMngr;
 }
 
@@ -293,42 +313,6 @@ UAVObjectUtilManager* ConfigTaskWidget::getObjectUtilManager() {
     UAVObjectUtilManager* utilMngr = pm->getObject<UAVObjectUtilManager>();
     Q_ASSERT(utilMngr);
     return utilMngr;
-}
-
-
-/**
- * Utility function which calculates the Mean value of a list of values
- * @param list list of double values
- * @returns Mean value of the list of parameter values
- */
-double ConfigTaskWidget::listMean(QList<double> list)
-{
-    double accum = 0;
-    for(int i = 0; i < list.size(); i++)
-        accum += list[i];
-    return accum / list.size();
-}
-
-/**
- * Utility function which calculates the Variance value of a list of values
- * @param list list of double values
- * @returns Variance of the list of parameter values
- */
-double ConfigTaskWidget::listVar(QList<double> list)
-{
-    double mean_accum = 0;
-    double var_accum = 0;
-    double mean;
-
-    for(int i = 0; i < list.size(); i++)
-        mean_accum += list[i];
-    mean = mean_accum / list.size();
-
-    for(int i = 0; i < list.size(); i++)
-        var_accum += (list[i] - mean) * (list[i] - mean);
-
-    // Use unbiased estimator
-    return var_accum / (list.size() - 1);
 }
 
 // ************************************
@@ -390,7 +374,7 @@ void ConfigTaskWidget::populateWidgets()
  * object field added to the framework pool
  * Overwrite this if you need to change the default behavior
  */
-void ConfigTaskWidget::refreshWidgetsValues(UAVObject * obj)
+void ConfigTaskWidget::refreshWidgetsValues(QSharedPointer<UAVObject> obj)
 {
     if (!allowWidgetUpdates)
         return;
@@ -450,12 +434,9 @@ void ConfigTaskWidget::addApplySaveButtons(QPushButton *update, QPushButton *sav
         smartsave->addApplyButton(update);
     else if (save)
         smartsave->addSaveButton(save);
-    if(objOfInterest.count()>0)
-    {
-        foreach(objectToWidget * oTw,objOfInterest)
-        {
-            smartsave->addObject((UAVDataObject*)oTw->object);
-        }
+    if (objOfInterest.count() > 0) {
+        foreach(objectToWidget *oTw, objOfInterest)
+            smartsave->addObject(oTw->object.toStrongRef().dynamicCast<UAVDataObject>());
     }
     TelemetryManager* telMngr = pm->getObject<TelemetryManager>();
     if(telMngr->isConnected())
@@ -484,16 +465,19 @@ void ConfigTaskWidget::enableControls(bool enable)
  */
 void ConfigTaskWidget::forceShadowUpdates()
 {
-    foreach(objectToWidget * oTw,objOfInterest)
-    {
-        foreach (shadow * sh, oTw->shadowsList)
-        {
-            disconnectWidgetUpdatesToSlot((QWidget*)sh->widget,SLOT(widgetsContentsChanged()));
-            checkWidgetsLimits(sh->widget, oTw->field, oTw->index, sh->isLimited, sh->useUnits, getVariantFromWidget(oTw->widget, oTw->scale), sh->scale);
-            setWidgetFromVariant(sh->widget,getVariantFromWidget(oTw->widget,oTw->scale),sh->scale, sh->useUnits ? oTw->field->getUnits() : "");
-            emit widgetContentsChanged((QWidget*)sh->widget);
-            connectWidgetUpdatesToSlot((QWidget*)sh->widget,SLOT(widgetsContentsChanged()));
+    foreach (objectToWidget *oTw, objOfInterest) {
+        foreach (shadow *sh, oTw->shadowsList) {
+            disconnectWidgetUpdatesToSlot(sh->widget, SLOT(widgetsContentsChanged()));
 
+            checkWidgetsLimits(sh->widget, oTw->field, oTw->index, sh->isLimited, sh->useUnits, getVariantFromWidget(oTw->widget, oTw->scale), sh->scale);
+
+            if (auto field = oTw->field.toStrongRef())
+                setWidgetFromVariant(sh->widget, getVariantFromWidget(oTw->widget, oTw->scale), sh->scale, field->getRadix(), sh->useUnits ? field->getUnits() : "");
+            else
+                qWarning() << "Failed to set shadow widget!";
+
+            emit widgetContentsChanged(sh->widget);
+            connectWidgetUpdatesToSlot(sh->widget, SLOT(widgetsContentsChanged()));
         }
     }
 }
@@ -502,48 +486,55 @@ void ConfigTaskWidget::forceShadowUpdates()
  */
 void ConfigTaskWidget::widgetsContentsChanged()
 {
-    emit widgetContentsChanged((QWidget*)sender());
-    double scale = 0;
-    objectToWidget * oTw= shadowsList.value((QWidget*)sender(),NULL);
-    if(oTw)
-    {
-        if(oTw->widget==(QWidget*)sender())
-        {
-            scale=oTw->scale;
-            checkWidgetsLimits(static_cast<QWidget *>(sender()), oTw->field, oTw->index, oTw->isLimited, oTw->useUnits, getVariantFromWidget(static_cast<QWidget *>(sender()), oTw->scale), oTw->scale);
-        }
-        else
-        {
-            foreach (shadow * sh, oTw->shadowsList)
-            {
-                if(sh->widget==(QWidget*)sender())
-                {
-                    scale=sh->scale;
-                    checkWidgetsLimits(static_cast<QWidget *>(sender()), oTw->field, oTw->index, sh->isLimited, sh->useUnits, getVariantFromWidget(static_cast<QWidget *>(sender()), scale), scale);
+    auto from = qobject_cast<QWidget *>(sender());
+    if (!from) {
+        qWarning() << "Spurious signal from non-widget!";
+        return;
+    }
+
+    emit widgetContentsChanged(from);
+    double scale = 1;
+    objectToWidget *oTw = shadowsList.value(from, Q_NULLPTR);
+    if (oTw) {
+        if (oTw->widget == from) {
+            scale = oTw->scale;
+            checkWidgetsLimits(from, oTw->field, oTw->index, oTw->isLimited, oTw->useUnits, getVariantFromWidget(from, oTw->scale), oTw->scale);
+        } else {
+            for (const shadow *sh : oTw->shadowsList) {
+                if (sh->widget == from) {
+                    scale = sh->scale;
+                    checkWidgetsLimits(from, oTw->field, oTw->index, sh->isLimited, sh->useUnits, getVariantFromWidget(from, scale), scale);
                 }
             }
+
+            disconnectWidgetUpdatesToSlot(oTw->widget, SLOT(widgetsContentsChanged()));
+            checkWidgetsLimits(oTw->widget, oTw->field, oTw->index, oTw->isLimited, oTw->useUnits, getVariantFromWidget(from, scale), oTw->scale);
+
+            if (auto field = oTw->field.toStrongRef())
+                setWidgetFromVariant(oTw->widget, getVariantFromWidget(from, scale), oTw->scale, field->getRadix(), oTw->useUnits ? field->getUnits() : "");
+            else
+                qWarning() << "Failed to set shadow widget!";
+
+            emit widgetContentsChanged(oTw->widget);
+            connectWidgetUpdatesToSlot(oTw->widget, SLOT(widgetsContentsChanged()));
         }
-        if(oTw->widget!=(QWidget *)sender())
-        {
-            disconnectWidgetUpdatesToSlot((QWidget*)oTw->widget,SLOT(widgetsContentsChanged()));
-            checkWidgetsLimits(oTw->widget, oTw->field, oTw->index, oTw->isLimited, oTw->useUnits, getVariantFromWidget(static_cast<QWidget *>(sender()), scale), oTw->scale);
-            setWidgetFromVariant(oTw->widget, getVariantFromWidget(static_cast<QWidget *>(sender()), scale), oTw->scale, oTw->useUnits ? oTw->field->getUnits() : "");
-            emit widgetContentsChanged((QWidget*)oTw->widget);
-            connectWidgetUpdatesToSlot((QWidget*)oTw->widget,SLOT(widgetsContentsChanged()));
-        }
-        foreach (shadow * sh, oTw->shadowsList)
-        {
-            if(sh->widget!=(QWidget*)sender())
-            {
-                disconnectWidgetUpdatesToSlot((QWidget*)sh->widget,SLOT(widgetsContentsChanged()));
-                checkWidgetsLimits(sh->widget, oTw->field, oTw->index, sh->isLimited, sh->useUnits, getVariantFromWidget(static_cast<QWidget *>(sender()), scale), sh->scale);
-                setWidgetFromVariant(sh->widget,getVariantFromWidget((QWidget*)sender(),scale),sh->scale, sh->useUnits ? oTw->field->getUnits() : "");
-                emit widgetContentsChanged((QWidget*)sh->widget);
-                connectWidgetUpdatesToSlot((QWidget*)sh->widget,SLOT(widgetsContentsChanged()));
+
+        for (const shadow *sh : oTw->shadowsList) {
+            if (sh->widget!= from) {
+                disconnectWidgetUpdatesToSlot(sh->widget, SLOT(widgetsContentsChanged()));
+                checkWidgetsLimits(sh->widget, oTw->field, oTw->index, sh->isLimited, sh->useUnits, getVariantFromWidget(from, scale), sh->scale);
+
+                if (auto field = oTw->field.toStrongRef())
+                    setWidgetFromVariant(sh->widget, getVariantFromWidget(from, scale), sh->scale, field->getRadix(), sh->useUnits ? field->getUnits() : "");
+                else
+                    qWarning() << "Failed to set shadow widget!";
+
+                emit widgetContentsChanged(sh->widget);
+                connectWidgetUpdatesToSlot(sh->widget, SLOT(widgetsContentsChanged()));
             }
         }
     }
-    if(smartsave)
+    if (smartsave)
         smartsave->resetIcons();
     setDirty(true);
 }
@@ -585,9 +576,9 @@ bool ConfigTaskWidget::isAutopilotConnected()
 void ConfigTaskWidget::disableObjUpdates()
 {
     allowWidgetUpdates = false;
-    foreach(objectToWidget * obj,objOfInterest)
-    {
-        if(obj->object)disconnect(obj->object, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(refreshWidgetsValues(UAVObject*)));
+    for (objectToWidget *obj : objOfInterest) {
+        if (obj->object) // weak ref is okay for disconnect
+            disconnect(obj->object.data(), SIGNAL(objectUpdated(UAVObject*)), this, SLOT(refreshWidgetsValues(UAVObject*)));
     }
 }
 /**
@@ -596,19 +587,19 @@ void ConfigTaskWidget::disableObjUpdates()
 void ConfigTaskWidget::enableObjUpdates()
 {
     allowWidgetUpdates = true;
-    foreach(objectToWidget * obj,objOfInterest)
-    {
-        if(obj->object)
-            connect(obj->object, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(refreshWidgetsValues(UAVObject*)), Qt::UniqueConnection);
+    for (objectToWidget *obj : objOfInterest) {
+        if (obj->object) // weak ref is okay for connect
+            connect(obj->object.data(), SIGNAL(objectUpdated(UAVObject*)), this, SLOT(refreshWidgetsValues(UAVObject*)), Qt::UniqueConnection);
     }
 }
 /**
  * Called when an uav object is updated
  * @param obj pointer to the object whitch has just been updated
  */
-void ConfigTaskWidget::objectUpdated(UAVObject *obj)
+void ConfigTaskWidget::objectUpdated(QWeakPointer<UAVObject> obj)
 {
-    objectUpdates[obj]=true;
+    if (obj)
+        objectUpdates[obj.data()] = true;
 }
 /**
  * Checks if all objects added to the pool have already been updated
@@ -616,12 +607,11 @@ void ConfigTaskWidget::objectUpdated(UAVObject *obj)
  */
 bool ConfigTaskWidget::allObjectsUpdated()
 {
-    bool ret=true;
-    foreach(UAVObject *obj, objectUpdates.keys())
-    {
-        ret=ret & objectUpdates[obj];
+    for (const auto &obj : objectUpdates.keys()) {
+        if (!objectUpdates[obj])
+            return false;
     }
-    return ret;
+    return true;
 }
 /**
  * Adds a new help button
@@ -639,10 +629,8 @@ void ConfigTaskWidget::addHelpButton(QPushButton *button, QString url)
  */
 void ConfigTaskWidget::invalidateObjects()
 {
-    foreach(UAVObject *obj, objectUpdates.keys())
-    {
-        objectUpdates[obj]=false;
-    }
+    for (const auto &obj : objectUpdates.keys())
+        objectUpdates[obj] = false;
 }
 /**
  * SLOT call this to apply changes to uav objects
@@ -666,18 +654,18 @@ void ConfigTaskWidget::save()
  * This function doesn't have to be used directly, addUAVObjectToWidgetRelation will call it if a previous relation exhists.
  * @return returns false if the shadow widget relation failed to be added (no previous relation exhisted)
  */
-bool ConfigTaskWidget::addShadowWidget(QString object, QString field, QWidget *widget, int index, double scale, bool isLimited, bool useUnits, QList<int>* defaultReloadGroups, quint32 instID)
+bool ConfigTaskWidget::addShadowWidget(QString objectName, QString fieldName, QWidget *widget, int index, double scale, bool isLimited, bool useUnits, QList<int>* defaultReloadGroups, quint32 instID)
 {
-    foreach(objectToWidget * oTw,objOfInterest)
-    {
-        if(!oTw->object || !oTw->widget || !oTw->field)
+    for (objectToWidget *oTw : objOfInterest) {
+        auto object = oTw->object.toStrongRef();
+        auto field = oTw->field.toStrongRef();
+        if (!object || !oTw->widget || !field)
             continue;
-        if(oTw->object->getName()==object && oTw->field->getName()==field && oTw->index==index && oTw->object->getInstID()==instID)
-        {
-            shadow * sh=NULL;
+        if (object->getName() == objectName && field->getName() == fieldName && oTw->index == index &&
+                object->getInstID() == instID) {
+            shadow *sh = Q_NULLPTR;
             //prefer anything else to QLabel
-            if(qobject_cast<QLabel *>(oTw->widget) && !qobject_cast<QLabel *>(widget))
-            {
+            if (qobject_cast<QLabel *>(oTw->widget) && !qobject_cast<QLabel *>(widget)) {
                 sh = new shadow;
                 sh->isLimited = oTw->isLimited;
                 sh->scale = oTw->scale;
@@ -687,10 +675,8 @@ bool ConfigTaskWidget::addShadowWidget(QString object, QString field, QWidget *w
                 oTw->scale = scale;
                 oTw->widget = widget;
                 oTw->useUnits = useUnits;
-            }
             //prefer QDoubleSpinBox to anything else
-            else if(!qobject_cast<QDoubleSpinBox *>(oTw->widget) && qobject_cast<QDoubleSpinBox *>(widget))
-            {
+            } else if(!qobject_cast<QDoubleSpinBox *>(oTw->widget) && qobject_cast<QDoubleSpinBox *>(widget)) {
                 sh = new shadow;
                 sh->isLimited = oTw->isLimited;
                 sh->scale = oTw->scale;
@@ -700,27 +686,26 @@ bool ConfigTaskWidget::addShadowWidget(QString object, QString field, QWidget *w
                 oTw->scale = scale;
                 oTw->widget = widget;
                 oTw->useUnits = useUnits;
-            }
-            else
-            {
+            } else {
                 sh = new shadow;
                 sh->isLimited = isLimited;
                 sh->scale = scale;
                 sh->widget = widget;
                 sh->useUnits = useUnits;
             }
-            shadowsList.insert(widget,oTw);
+            shadowsList.insert(widget, oTw);
             oTw->shadowsList.append(sh);
-            connectWidgetUpdatesToSlot(widget,SLOT(widgetsContentsChanged()));
+
+            connectWidgetUpdatesToSlot(widget, SLOT(widgetsContentsChanged()));
             if(defaultReloadGroups)
-                addWidgetToDefaultReloadGroups(widget,defaultReloadGroups);
-            loadWidgetLimits(widget, oTw->field, oTw->index, isLimited, useUnits, scale);
-            UAVDataObject *dobj = dynamic_cast<UAVDataObject *>(oTw->object);
-            if(dobj)
-            {
-                connect(dobj, SIGNAL(presentOnHardwareChanged(UAVDataObject*)),this, SLOT(doRefreshHiddenObjects(UAVDataObject*)), Qt::UniqueConnection);
-                if(widget)
-                    setWidgetEnabledByObj(widget,dobj->getIsPresentOnHardware());
+                addWidgetToDefaultReloadGroups(widget, defaultReloadGroups);
+            loadWidgetLimits(widget, field, oTw->index, isLimited, useUnits, scale);
+            auto dobj = object.dynamicCast<UAVDataObject>();
+            if (dobj) {
+                connect(dobj.data(), &UAVDataObject::presentOnHardwareChanged,this,
+                        &ConfigTaskWidget::doRefreshHiddenObjects, Qt::UniqueConnection);
+                if (widget)
+                    setWidgetEnabledByObj(widget, dobj->getIsPresentOnHardware());
             }
             return true;
         }
@@ -943,9 +928,12 @@ void ConfigTaskWidget::defaultButtonClicked()
     emit defaultRequested(group);
     QList<objectToWidget *> *list = defaultReloadGroups.value(group);
     foreach(objectToWidget *oTw, *list) {
-        if(oTw->object && oTw->field) {
-            UAVDataObject *temp = static_cast<UAVDataObject *>(oTw->object)->dirtyClone();
-            setWidgetFromField(oTw->widget, temp->getField(oTw->field->getName()), oTw->index, oTw->scale, oTw->isLimited, oTw->useUnits);
+        auto object = oTw->object.toStrongRef().dynamicCast<UAVDataObject>();
+        auto field = oTw->field.toStrongRef();
+        if (object && field) {
+            auto temp = object->dirtyClone();
+            if (temp)
+                setWidgetFromField(oTw->widget, temp->getField(field->getName()), oTw->index, oTw->scale, oTw->isLimited, oTw->useUnits);
         }
     }
 }
@@ -954,28 +942,40 @@ void ConfigTaskWidget::defaultButtonClicked()
 void ConfigTaskWidget::rebootButtonClicked()
 {
     QPushButton *button = qobject_cast<QPushButton *>(sender());
-    setWidgetEnabledByObj(button, false);
-    button->setIcon(QIcon(":/uploader/images/system-run.svg"));
 
-    FirmwareIAPObj *iapObj = dynamic_cast<FirmwareIAPObj *>(getObjectManager()->getObject(FirmwareIAPObj::NAME));
-    Core::ConnectionManager *conMngr = Core::ICore::instance()->connectionManager();
-
-    if(!conMngr->isConnected() || !iapObj->getIsPresentOnHardware()) {
-        setWidgetEnabledByObj(button, true);
+    QPointer<UAVObjectManager> objMgr = getObjectManager();
+    if (!objMgr) {
         button->setIcon(QIcon(":/uploader/images/error.svg"));
         return;
     }
+    auto iapObj = FirmwareIAPObj::getInstance(objMgr);
+    if (!iapObj) {
+        Q_ASSERT(false);
+        qWarning() << "Cannot get FirmwareIAPObj!";
+        button->setIcon(QIcon(":/uploader/images/error.svg"));
+        return;
+    }
+
+    Core::ConnectionManager *conMngr = Core::ICore::instance()->connectionManager();
+    if (!conMngr->isConnected() || !iapObj->getIsPresentOnHardware()) {
+        button->setIcon(QIcon(":/uploader/images/error.svg"));
+        return;
+    }
+
+    setWidgetEnabledByObj(button, false);
+    button->setIcon(QIcon(":/uploader/images/system-run.svg"));
+
     QEventLoop loop;
     QTimer timeout;
     timeout.setSingleShot(true);
     iapObj->setBoardRevision(0);
     iapObj->setBoardType(0);
     connect(&timeout, SIGNAL(timeout()), &loop, SLOT(quit()));
-    connect(iapObj, SIGNAL(transactionCompleted(UAVObject*,bool)), &loop, SLOT(quit()));
+    connect(iapObj.data(), static_cast<void (UAVObject::*)(QSharedPointer<UAVObject>, bool)>(&UAVObject::transactionCompleted),
+            &loop, &QEventLoop::quit);
     int magicValue = 1122;
     int magicStep = 1111;
-    for(int i = 0; i < 3; ++i)
-    {
+    for (int i = 0; i < 3; ++i) {
         //Firmware IAP module specifies that the timing between iap commands must be
         //between 500 and 5000ms
         timeout.start(600);
@@ -1005,60 +1005,75 @@ void ConfigTaskWidget::rebootButtonClicked()
  */
 void ConfigTaskWidget::reloadButtonClicked()
 {
-    if(timeOut)
+    if (timeOut)
         return;
-    int group=sender()->property("group").toInt();
-    QList<objectToWidget*> * list=defaultReloadGroups.value(group,NULL);
-    if(!list)
+    if (!sender() || !sender()->property("group").isValid()) {
+        Q_ASSERT(false);
+        qWarning() << "reloadButtonClicked called externally!";
+    }
+
+    int group = sender()->property("group").toInt();
+    auto list = defaultReloadGroups.value(group, NULL);
+    if (!list)
         return;
-    ObjectPersistence* objper = dynamic_cast<ObjectPersistence*>( getObjectManager()->getObject(ObjectPersistence::NAME) );
-    timeOut=new QTimer(this);
-    QEventLoop * eventLoop=new QEventLoop(this);
+
+    auto objMgr = getObjectManager();
+    if (!objMgr) {
+        Q_ASSERT(false);
+        qWarning() << "Could not get UAVObjectManager!";
+        return;
+    }
+    auto objPer = ObjectPersistence::getInstance(objMgr);
+    if (!objPer) {
+        Q_ASSERT(false);
+        qWarning() << "Could not get ObjectPersistence!";
+        return;
+    }
+
+    timeOut = new QTimer(this);
+    QEventLoop *eventLoop = new QEventLoop(this);
     connect(timeOut, SIGNAL(timeout()),eventLoop,SLOT(quit()));
-    connect(objper, SIGNAL(objectUpdated(UAVObject*)), eventLoop, SLOT(quit()));
+    connect(objPer.data(), &UAVObject::objectUpdated, eventLoop, &QEventLoop::quit);
 
     QList<temphelper> temp;
-    foreach(objectToWidget * oTw,*list)
-    {
-        if (oTw->object != NULL)
-        {
-            UAVDataObject * dobj = dynamic_cast<UAVDataObject*>(oTw->object);
-            if(dobj)
+    for (objectToWidget *oTw : *list) {
+        auto obj = oTw->object.toStrongRef();
+        if (obj) {
+            auto dobj = obj.dynamicCast<UAVDataObject>();
+            if (dobj)
                 if(!dobj->getIsPresentOnHardware())
                     continue;
             temphelper value;
-            value.objid=oTw->object->getObjID();
-            value.objinstid=oTw->object->getInstID();
-            if(temp.contains(value))
+            value.objid = obj->getObjID();
+            value.objinstid = obj->getInstID();
+            if (temp.contains(value))
                 continue;
             else
                 temp.append(value);
             ObjectPersistence::DataFields data;
             data.Operation = ObjectPersistence::OPERATION_LOAD;
-            data.ObjectID = oTw->object->getObjID();
-            data.InstanceID = oTw->object->getInstID();
-            objper->setData(data);
-            objper->updated();
+            data.ObjectID = obj->getObjID();
+            data.InstanceID = obj->getInstID();
+            objPer->setData(data);
+            objPer->updated();
             timeOut->start(500);
             eventLoop->exec();
-            if(timeOut->isActive())
-            {
-                oTw->object->requestUpdate();
-                if(oTw->widget)
+            if (timeOut->isActive()) {
+                obj->requestUpdate();
+                if (oTw->widget)
                     setWidgetFromField(oTw->widget, oTw->field, oTw->index, oTw->scale, oTw->isLimited, oTw->useUnits);
             }
             timeOut->stop();
         }
     }
-    if(eventLoop)
-    {
-        delete eventLoop;
-        eventLoop=NULL;
+
+    if (eventLoop) {
+        eventLoop->deleteLater();
+        eventLoop = Q_NULLPTR;
     }
-    if(timeOut)
-    {
-        delete timeOut;
-        timeOut=NULL;
+    if (timeOut) {
+        timeOut->deleteLater();
+        timeOut = Q_NULLPTR;
     }
 }
 
@@ -1068,22 +1083,20 @@ void ConfigTaskWidget::connectionsButtonClicked()
     diagram.exec();
 }
 
-void ConfigTaskWidget::doRefreshHiddenObjects(UAVDataObject * obj)
+void ConfigTaskWidget::doRefreshHiddenObjects(QSharedPointer<UAVDataObject> dobj)
 {
-    foreach(objectToWidget * ow, shadowsList.values())
-    {
-        if(ow->object==NULL || ow->widget==NULL)
-        {
-            //do nothing
-        }
-        else
-        {
-            if(ow->object==obj) {
-                foreach (QWidget *w, shadowsList.keys(ow))
-                    setWidgetEnabledByObj(w, obj->getIsPresentOnHardware());
-            }
-        }
+    if (!dobj) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object!";
+        return;
+    }
 
+    for (objectToWidget *ow : shadowsList.values()) {
+        auto obj = ow->object.toStrongRef();
+        if (obj && ow->widget && obj == dobj) {
+            for (QWidget *w : shadowsList.keys(ow))
+                setWidgetEnabledByObj(w, dobj->getIsPresentOnHardware());
+        }
     }
 }
 
@@ -1202,23 +1215,18 @@ void ConfigTaskWidget::disconnectWidgetUpdatesToSlot(QWidget * widget,const char
  * @param scale scale to be used on the assignement
  * @return returns true if the assignement was successfull
  */
-bool ConfigTaskWidget::setFieldFromWidget(QWidget *widget, UAVObjectField *field, int index, double scale, bool usesUnits)
+bool ConfigTaskWidget::setFieldFromWidget(QWidget *widget, QSharedPointer<UAVObjectField> field, int index, double scale, bool usesUnits)
 {
-    if(!widget || !field)
+    QPointer<QWidget> wid = widget;
+    if (!wid || !field || qobject_cast<QLabel *>(widget)) // Labels are readonly
         return false;
-    QVariant ret = getVariantFromWidget(widget, scale, usesUnits);
-    if(ret.isValid())
-    {
-        field->setValue(ret,index);
+
+    QVariant ret = getVariantFromWidget(wid, scale, usesUnits);
+    if (ret.isValid()) {
+        field->setValue(ret, index);
         return true;
-    }
-    else if(qobject_cast<QLabel *>(widget))
-    { // Labels are readonly
-        return false;
-    }
-    else
-    {
-        qDebug() << __FUNCTION__ << "widget to uavobject relation not implemented for widget: " << widget->objectName()  << "of class:" << widget->metaObject()->className();
+    } else {
+        qWarning() << __FUNCTION__ << "widget to uavobject relation not implemented for widget: " << wid->objectName()  << "of class:" << wid->metaObject()->className();
         return false;
     }
 }
@@ -1244,13 +1252,16 @@ QVariant ConfigTaskWidget::getVariantFromWidget(QWidget *widget, double scale, b
     } else if (QCheckBox *checkBox = qobject_cast<QCheckBox *>(widget)) {
         return getOptionFromChecked(widget, checkBox->isChecked());
     } else if (QLineEdit *lineEdit = qobject_cast<QLineEdit *>(widget)) {
+        QString text = lineEdit->displayText();
+        if (text.startsWith("0b") || text.startsWith("0o") || text.startsWith("0x"))
+            text.remove(0, 2);
         if (usesUnits) {
-            QStringList bits = lineEdit->displayText().split(' ');
+            QStringList bits = text.split(' ');
             if (bits.length())
                 bits.removeLast();
-            return bits.join("");
+            return bits.join(' ');
         } else {
-            return lineEdit->displayText();
+            return text;
         }
     } else {
         return QVariant();
@@ -1264,7 +1275,7 @@ QVariant ConfigTaskWidget::getVariantFromWidget(QWidget *widget, double scale, b
  * @param value value to be used on the assignement
  * @return returns true if the assignement was successfull
  */
-bool ConfigTaskWidget::setWidgetFromVariant(QWidget *widget, QVariant value, double scale, QString units)
+bool ConfigTaskWidget::setWidgetFromVariant(QWidget *widget, QVariant value, double scale, int radix, QString units)
 {
     units = units.trimmed();
     if (!units.isEmpty() && !qFuzzyCompare(1 + 1.0, 1 + scale) && scale != 0)
@@ -1272,14 +1283,47 @@ bool ConfigTaskWidget::setWidgetFromVariant(QWidget *widget, QVariant value, dou
     if(!units.isEmpty())
         units.prepend(' ');
 
+    QString prefix;
+    switch (radix) {
+    case UAVObjectField::BIN:
+        prefix = "0b";
+        break;
+    case UAVObjectField::OCT:
+        prefix = "0o";
+        break;
+    case UAVObjectField::HEX:
+        prefix = "0x";
+        break;
+    default:
+        break;
+    }
+
     if (QComboBox *comboBox = qobject_cast<QComboBox *>(widget)) {
         comboBox->setCurrentIndex(comboBox->findData(value.toString()));
         return true;
     } else if (QLabel *label = qobject_cast<QLabel *>(widget)) {
-        if (scale == 0)
-            label->setText(value.toString() + units);
-        else
-            label->setText(QString::number((value.toDouble() / scale)) + units);
+        QString text;
+        if (qFuzzyCompare(scale, 1)) {
+            switch (static_cast<QMetaType::Type>(value.type())) {
+            case QMetaType::Int:
+            case QMetaType::Long:
+            case QMetaType::Char:
+            case QMetaType::SChar:
+                text = prefix + QString::number(value.toInt(), radix);
+                break;
+            case QMetaType::UInt:
+            case QMetaType::ULong:
+            case QMetaType::UShort:
+            case QMetaType::UChar:
+                text = prefix + QString::number(value.toUInt(), radix);
+                break;
+            default:
+                text = value.toString();
+            }
+        } else {
+            text = QString::number((value.toDouble() / scale));
+        }
+        label->setText(text + units);
         return true;
     } else if (QDoubleSpinBox *dblSpinBox = qobject_cast<QDoubleSpinBox *>(widget)) {
         dblSpinBox->setValue(value.toDouble() / scale);
@@ -1288,6 +1332,8 @@ bool ConfigTaskWidget::setWidgetFromVariant(QWidget *widget, QVariant value, dou
         return true;
     } else if (QSpinBox *spinBox = qobject_cast<QSpinBox *>(widget)) {
         spinBox->setValue(qRound(value.toDouble() / scale));
+        spinBox->setDisplayIntegerBase(radix);
+        spinBox->setPrefix(prefix);
         if (!units.isEmpty())
             spinBox->setSuffix(units);
         return true;
@@ -1301,24 +1347,42 @@ bool ConfigTaskWidget::setWidgetFromVariant(QWidget *widget, QVariant value, dou
         checkBox->setChecked(getCheckedFromOption(widget, value.toString()));
         return true;
     } else if (QLineEdit *lineEdit = qobject_cast<QLineEdit *>(widget)) {
-        // TODO: units, will need to peel off on the other side
-        if (scale == 0)
-            lineEdit->setText(value.toString() + units);
-        else
-            lineEdit->setText(QString::number((value.toDouble() / scale)) + units);
+        QString text;
+        if (qFuzzyCompare(scale, 1)) {
+            switch (static_cast<QMetaType::Type>(value.type())) {
+            case QMetaType::Int:
+            case QMetaType::Long:
+            case QMetaType::Char:
+            case QMetaType::SChar:
+                text = prefix + QString::number(value.toInt(), radix);
+                break;
+            case QMetaType::UInt:
+            case QMetaType::ULong:
+            case QMetaType::UShort:
+            case QMetaType::UChar:
+                text = prefix + QString::number(value.toUInt(), radix);
+                break;
+            default:
+                text = value.toString();
+            }
+        } else {
+            text = QString::number((value.toDouble() / scale));
+        }
+        lineEdit->setText(text + units);
         return true;
     }
 
     return false;
 }
 
-bool ConfigTaskWidget::setWidgetFromField(QWidget *widget, UAVObjectField *field, int index, double scale, bool hasLimits, bool useUnits)
+bool ConfigTaskWidget::setWidgetFromField(QWidget *widget, QSharedPointer<UAVObjectField> field, int index, double scale, bool hasLimits, bool useUnits)
 {
-    if(!widget || !field)
+    QPointer<QWidget> wid(widget);
+    if (!wid || !field)
         return false;
 
     // use UAVO field description as tooltip if the widget doesn't already have one
-    if (!widget->toolTip().length()) {
+    if (!wid->toolTip().length()) {
         QString desc = field->getDescription().trimmed().toHtmlEscaped();
         if (desc.length()) {
             // insert html tags to make this rich text so Qt will take care of wrapping
@@ -1326,36 +1390,35 @@ bool ConfigTaskWidget::setWidgetFromField(QWidget *widget, UAVObjectField *field
             desc.remove("@Ref", Qt::CaseInsensitive);
             desc.append("</span>");
         }
-        widget->setToolTip(desc);
+        wid->setToolTip(desc);
     }
 
-    if(QComboBox * cb=qobject_cast<QComboBox *>(widget))
-    {
-        if(cb->count()==0)
+    if (QComboBox *cb = qobject_cast<QComboBox *>(wid)) {
+        if (cb->count() == 0)
             loadWidgetLimits(cb, field, index, hasLimits, useUnits, scale);
     }
 
-    QVariant var=field->getValue(index);
+    QVariant var = field->getValue(index);
     checkWidgetsLimits(widget, field, index, hasLimits, useUnits, var, scale);
     const QString units = useUnits ? field->getUnits() : "";
-    bool ret = setWidgetFromVariant(widget, var, scale, units);
+    bool ret = setWidgetFromVariant(widget, var, scale, field->getRadix(), units);
 
     if (!ret)
         qDebug() << __FUNCTION__ << "widget to uavobject relation not implemented for widget: " << widget->objectName()  << "of class:" << widget->metaObject()->className();
     return ret;
 }
 
-void ConfigTaskWidget::checkWidgetsLimits(QWidget *widget, UAVObjectField *field, int index, bool hasLimits, bool useUnits, QVariant value, double scale)
+void ConfigTaskWidget::checkWidgetsLimits(QWidget *widget, QSharedPointer<UAVObjectField> field, int index, bool hasLimits, bool useUnits, QVariant value, double scale)
 {
-    if(!hasLimits)
+    if (!hasLimits || !field)
         return;
-    if(!field->isWithinLimits(value,index,currentBoard))
-    {
-        if(!widget->property("styleBackup").isValid())
+
+    if (!field->isWithinLimits(value, index, currentBoard)) {
+        if (!widget->property("styleBackup").isValid())
             widget->setProperty("styleBackup",widget->styleSheet());
         widget->setStyleSheet(outOfLimitsStyle);
-        widget->setProperty("wasOverLimits",(bool)true);
-        if(!widget->property("toolTipBackup").isValid()) {
+        widget->setProperty("wasOverLimits", true);
+        if (!widget->property("toolTipBackup").isValid()) {
             QString tip = widget->toolTip();
             if (tip.length() && !tip.startsWith("<"))
                 tip = tip.prepend("<p>").append("</p>");
@@ -1425,10 +1488,11 @@ void ConfigTaskWidget::checkWidgetsLimits(QWidget *widget, UAVObjectField *field
     }
 }
 
-void ConfigTaskWidget::loadWidgetLimits(QWidget * widget, UAVObjectField * field, int index, bool hasLimits, bool useUnits, double scale)
+void ConfigTaskWidget::loadWidgetLimits(QWidget * widget, QSharedPointer<UAVObjectField> field, int index, bool hasLimits, bool useUnits, double scale)
 {   
-    if(!widget || !field)
+    if (!widget || !field)
         return;
+
     if(QComboBox * cb=qobject_cast<QComboBox *>(widget))
     {
         cb->clear();
@@ -1617,9 +1681,10 @@ QString ConfigTaskWidget::applyScaleToUnits(QString units, double scale)
 
 bool ConfigTaskWidget::resetWidgetToDefault(QWidget *widget)
 {
-    foreach (objectToWidget *ow, objOfInterest) {
-        if (ow->widget == widget && ow->field)
-            return setWidgetFromVariant(widget, ow->field->getDefaultValue(ow->index), ow->scale, ow->useUnits ? ow->field->getUnits() : "");
+    for (objectToWidget *ow : objOfInterest) {
+        auto field = ow->field.toStrongRef();
+        if (ow->widget == widget && field)
+            return setWidgetFromVariant(widget, field->getDefaultValue(ow->index), ow->scale, field->getRadix(), ow->useUnits ? field->getUnits() : "");
     }
     return false;
 }

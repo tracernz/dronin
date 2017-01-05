@@ -40,7 +40,7 @@ GCSControlGadget::GCSControlGadget(QString classId, GCSControlGadgetWidget *widg
         m_widget(widget),
         controlsMode(0)
 {
-    connect(getManualControlCommand(),SIGNAL(objectUpdated(UAVObject*)),this,SLOT(manualControlCommandUpdated(UAVObject*)));
+    connect(getManualControlCommand().data(), &UAVObject::objectUpdated, this, &GCSControlGadget::manualControlCommandUpdated);
     connect(widget,SIGNAL(sticksChanged(double,double,double,double)),this,SLOT(sticksChangedLocally(double,double,double,double)));
     connect(widget,SIGNAL(controlEnabled(bool)), this, SLOT(enableControl(bool)));
     connect(this,SIGNAL(sticksChangedRemotely(double,double,double,double)),widget,SLOT(updateSticks(double,double,double,double)));
@@ -110,10 +110,10 @@ void GCSControlGadget::enableControl(bool enable)
         getGcsControl()->endGCSControl();
 }
 
-ManualControlCommand* GCSControlGadget::getManualControlCommand() {
+QSharedPointer<ManualControlCommand> GCSControlGadget::getManualControlCommand() {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    return dynamic_cast<ManualControlCommand*>( objManager->getObject(QString("ManualControlCommand")) );
+    return ManualControlCommand::getInstance(objManager);
 }
 
 GCSControl* GCSControlGadget::getGcsControl() {
@@ -123,10 +123,10 @@ GCSControl* GCSControlGadget::getGcsControl() {
     return gcsControl;
 }
 
-void GCSControlGadget::manualControlCommandUpdated(UAVObject * obj) {
+void GCSControlGadget::manualControlCommandUpdated(QSharedPointer<UAVObject> obj) {
 
     // Not sending then show updates from transmitter
-    if (enableSending)
+    if (enableSending || !obj)
         return;
 
     double roll = obj->getField("Roll")->getDouble();
@@ -292,7 +292,10 @@ void GCSControlGadget::readUDPCommand()
         }
         if(!badPack && ((GCSControlGadgetWidget *)m_widget)->getUDPControl())
         {
-             ManualControlCommand * obj = getManualControlCommand();
+             auto obj = getManualControlCommand();
+             if (!obj)
+                 continue;
+
              bool update = false;
 
              if(pitch != obj->getField("Pitch")->getDouble()){

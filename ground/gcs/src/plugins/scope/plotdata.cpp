@@ -46,17 +46,12 @@ Plot2dData::Plot2dData(QString p_uavObject, QString p_uavFieldName):
 {
     uavObjectName = p_uavObject;
 
-    if(p_uavFieldName.contains("-")) //For fields with multiple indices, '-' followed by an index indicates which one
-    {
-        QStringList fieldSubfield = p_uavFieldName.split("-", QString::SkipEmptyParts);
-        uavFieldName = fieldSubfield.at(0);
-        uavSubFieldName = fieldSubfield.at(1);
-        haveSubField = true;
-    }
-    else
-    {
+    if (p_uavFieldName.contains("-")) { //For fields with multiple elements, '-' followed by an index indicates which one
+        QStringList bits = p_uavFieldName.split("-", QString::SkipEmptyParts);
+        uavFieldName = bits.at(0);
+        uavElementName = bits.at(1);
+    } else {
         uavFieldName =  p_uavFieldName;
-        haveSubField = false;
     }
 
     xData = new QVector<double>();
@@ -85,17 +80,12 @@ Plot3dData::Plot3dData(QString p_uavObject, QString p_uavFieldName):
 {
     uavObjectName = p_uavObject;
 
-    if(p_uavFieldName.contains("-")) //For fields with multiple indices, '-' followed by an index indicates which one
-    {
-        QStringList fieldSubfield = p_uavFieldName.split("-", QString::SkipEmptyParts);
-        uavFieldName = fieldSubfield.at(0);
-        uavSubFieldName = fieldSubfield.at(1);
-        haveSubField = true;
-    }
-    else
-    {
+    if(p_uavFieldName.contains("-")) { //For fields with multiple elements, '-' followed by an index indicates which one
+        QStringList bits = p_uavFieldName.split("-", QString::SkipEmptyParts);
+        uavFieldName = bits.at(0);
+        uavElementName = bits.at(1);
+    } else {
         uavFieldName =  p_uavFieldName;
-        haveSubField = false;
     }
 
     xData = new QVector<double>();
@@ -152,16 +142,17 @@ Plot3dData::~Plot3dData()
  * @param uavSubFieldName UAVO subfield, if it exists
  * @return
  */
-double PlotData::valueAsDouble(UAVObject* obj, UAVObjectField* field, bool haveSubField, QString uavSubFieldName)
+double PlotData::valueAsDouble(QSharedPointer<UAVObjectField> field, const QString &uavElementName)
 {
-    Q_UNUSED(obj);
-    QVariant value;
+    if (!field) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid field!";
+        return 0;
+    }
 
-    if(haveSubField){
-        int indexOfSubField = field->getElementNames().indexOf(QRegExp(uavSubFieldName, Qt::CaseSensitive, QRegExp::FixedString));
-        value = field->getValue(indexOfSubField);
-    }else
-        value = field->getValue();
+    int elementIndex = 0;
+    if (uavElementName.length())
+        elementIndex = field->getElementNames().indexOf(QRegExp(uavElementName, Qt::CaseSensitive, QRegExp::FixedString));
 
-    return value.toDouble();
+    return field->getDouble(elementIndex);
 }

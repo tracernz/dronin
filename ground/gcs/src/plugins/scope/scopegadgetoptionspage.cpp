@@ -88,37 +88,34 @@ QWidget* ScopeGadgetOptionsPage::createPage(QWidget *parent)
     options_page->cmbColorMapSpectrogram->addItem("Jet", ColorMap::JET);
 
     // Fills the combo boxes for the UAVObjects
+    QStringList toAdd;
+    QString previous;
+
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    QVector< QVector<UAVDataObject*> > objList = objManager->getDataObjectsVector();
-    QStringList toAdd;
+    if (objManager) {
+        for (const auto &list : objManager->getDataObjectsVector()) {
+            for (auto obj : list) {
+                if (!obj)
+                    continue;
 
-    QString previous = NULL;
+                const QString &name = obj->getName();
+                if (obj->isSingleInstance())
+                    toAdd.append(name);
+                else if(name != previous)
+                    toAdd.append(name);
 
-    foreach (QVector<UAVDataObject*> list, objList) {
-        foreach (UAVDataObject* obj, list) {
-	    QString name = obj->getName();
-
-            if (obj->isSingleInstance())
-            {
-		toAdd.append(name);
+                previous = name;
             }
-            else if(name != previous)
-            { //Checks to see if we're duplicating UAVOs because of multiple instances
-		toAdd.append(name);
-            }
-
-            previous = name;
         }
     }
-
     qSort(toAdd);
 
     foreach (QString elem, toAdd) {
-	// Before we only added items to the spectrogram if they were not
-	// single instance; assuming that was in error
-	options_page->cmbUAVObjects->addItem(elem);
-	options_page->cmbUAVObjectsSpectrogram->addItem(elem);
+        // Before we only added items to the spectrogram if they were not
+        // single instance; assuming that was in error
+        options_page->cmbUAVObjects->addItem(elem);
+        options_page->cmbUAVObjectsSpectrogram->addItem(elem);
     }
 
     QStringList mathFunctions;
@@ -248,8 +245,19 @@ void ScopeGadgetOptionsPage::on_cmbSpectrogramSource_currentIndexChanged(QString
         // Load UAVO
         ExtensionSystem::PluginManager* pm = ExtensionSystem::PluginManager::instance();
         UAVObjectManager* objManager = pm->getObject<UAVObjectManager>();
-        VibrationAnalysisOutput* vibrationAnalysisOutput = VibrationAnalysisOutput::GetInstance(objManager);
-        VibrationAnalysisSettings* vibrationAnalysisSettings = VibrationAnalysisSettings::GetInstance(objManager);
+        if (!objManager) {
+            Q_ASSERT(false);
+            qWarning() << "Could not get UAVObjectManager!";
+            return;
+        }
+
+        auto vibrationAnalysisSettings = VibrationAnalysisSettings::getInstance(objManager);
+        auto vibrationAnalysisOutput = VibrationAnalysisOutput::getInstance(objManager);
+        if (!vibrationAnalysisSettings || !vibrationAnalysisOutput) {
+            Q_ASSERT(false);
+            qWarning() << "Invalid object!";
+            return;
+        }
         VibrationAnalysisSettings::DataFields vibrationAnalysisSettingsData = vibrationAnalysisSettings->getData();
 
         // Set combobox field to UAVO name
@@ -285,21 +293,15 @@ void ScopeGadgetOptionsPage::on_cmbSpectrogramSource_currentIndexChanged(QString
 
         options_page->cmbUavoFieldSpectrogram->clear();
 
-        UAVObject* inst = objManager->getObject(vibrationAnalysisOutput->getObjID());
-
-        QList<UAVObjectField*> fieldList = inst->getFields();
-
-        foreach (UAVObjectField* field, fieldList) {
-            if(field->getType() == UAVObjectField::STRING || field->getType() == UAVObjectField::ENUM)
-              continue;
-            
-            if(field->getElementNames().count() > 1) {
+        for (auto field : vibrationAnalysisOutput->getFields()) {
+            if (!field || field->getType() == UAVObjectField::STRING || field->getType() == UAVObjectField::ENUM)
+                continue;
+            if (field->getElementNames().count() > 1) {
                 options_page->cmbUavoFieldSpectrogram->addItem(field->getName());
             }
         }
     
-    }
-    else{
+    } else {
         options_page->cmbUAVObjectsSpectrogram->setEnabled(true);
     }
 
@@ -389,25 +391,26 @@ void ScopeGadgetOptionsPage::on_cmbUAVObjects_currentIndexChanged(QString val)
 
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    UAVDataObject* objData = dynamic_cast<UAVDataObject*>( objManager->getObject(val) );
+    if (!objManager) {
+        Q_ASSERT(false);
+        qWarning() << "Could not get UAVObjectManager!";
+        return;
+    }
 
-    if (objData == NULL)
+    auto objData = objManager->getObject(val).dynamicCast<UAVDataObject>();
+    if (!objData)
         return;
 
-    QList<UAVObjectField*> fieldList = objData->getFields();
-    foreach (UAVObjectField* field, fieldList) {
-        if(field->getType() == UAVObjectField::STRING || field->getType() == UAVObjectField::ENUM )
+    for (auto field : objData->getFields()) {
+        if (!field || field->getType() == UAVObjectField::STRING || field->getType() == UAVObjectField::ENUM)
             continue;
 
-        if(field->getElementNames().count() > 1)
-        {
-            foreach(QString elemName , field->getElementNames())
-            {
+        if (field->getElementNames().count() > 1) {
+            for (const QString &elemName : field->getElementNames())
                 options_page->cmbUAVField->addItem(field->getName() + "-" + elemName);
-            }
-        }
-        else
+        } else {
             options_page->cmbUAVField->addItem(field->getName());
+        }
     }
 }
 
@@ -424,26 +427,27 @@ void ScopeGadgetOptionsPage::on_cmbUAVObjectsSpectrogram_currentIndexChanged(QSt
 
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    UAVDataObject* objData = dynamic_cast<UAVDataObject*>( objManager->getObject(val) );
+    if (!objManager) {
+        Q_ASSERT(false);
+        qWarning() << "Could not get UAVObjectManager!";
+        return;
+    }
 
-    if (objData == NULL)
+    auto objData = objManager->getObject(val).dynamicCast<UAVDataObject>();
+
+    if (!objData)
         return;
 
-    QList<UAVObjectField*> fieldList = objData->getFields();
-    foreach (UAVObjectField* field, fieldList) {
-
-        if(field->getType() == UAVObjectField::STRING || field->getType() == UAVObjectField::ENUM)
+    for (auto field : objData->getFields()) {
+        if (!field || field->getType() == UAVObjectField::STRING || field->getType() == UAVObjectField::ENUM)
             continue;
 
-        if(field->getElementNames().count() > 1)
-        {
-            foreach(QString elemName , field->getElementNames())
-            {
+        if (field->getElementNames().count() > 1) {
+            for (const QString &elemName : field->getElementNames())
                 options_page->cmbUavoFieldSpectrogram->addItem(field->getName() + "-" + elemName);
-            }
-        }
-        else
+        } else {
             options_page->cmbUavoFieldSpectrogram->addItem(field->getName());
+        }
     }
 
     // Get range from UAVO name

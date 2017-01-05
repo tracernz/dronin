@@ -43,6 +43,7 @@
 #include "uavmetaobject.h"
 #include <QVector>
 #include <QHash>
+#include <QSharedPointer>
 
 class UAVOBJECTS_EXPORT UAVObjectManager: public QObject
 {
@@ -51,14 +52,22 @@ class UAVOBJECTS_EXPORT UAVObjectManager: public QObject
 public:
     UAVObjectManager();
     ~UAVObjectManager();
-    typedef QMap<quint32,UAVObject*> ObjectMap;
-    bool registerObject(UAVDataObject* obj);
-    QVector< QVector<UAVObject*> > getObjectsVector();
-    QHash<quint32, QMap<quint32,UAVObject*> > getObjects();
-    QVector< QVector<UAVDataObject*> > getDataObjectsVector();
-    QVector< QVector<UAVMetaObject*> > getMetaObjectsVector();
-    UAVObject* getObject(const QString& name, quint32 instId = 0);
-    UAVObject* getObject(quint32 objId, quint32 instId = 0);
+    typedef QMap<quint32, QSharedPointer<UAVObject>> ObjectMap;
+    bool registerObject(QSharedPointer<UAVDataObject> obj);
+    QVector<QVector<QSharedPointer<UAVObject>>> getObjectsVector();
+    QHash<quint32, ObjectMap> getObjects();
+    QVector<QVector<QSharedPointer<UAVDataObject>>> getDataObjectsVector();
+    QVector<QVector<QSharedPointer<UAVMetaObject>>> getMetaObjectsVector();
+    QSharedPointer<UAVObject> getObject(const QString& name, quint32 instId = 0);
+    QSharedPointer<UAVObject> getObject(quint32 objId, quint32 instId = 0);
+    template <class T> QSharedPointer<T> getObject(quint32 instId = 0) {
+        for (const auto &o : objects) {
+            if (auto obj = o.value(instId).dynamicCast<T>())
+                return obj;
+        }
+        return QSharedPointer<T>();
+    }
+
     /**
      * @brief getField Get a UAV Object field
      * Success is asserted so there is no need to do this again in the caller
@@ -67,24 +76,24 @@ public:
      * @param instId Object instance (optional)
      * @return The field if successful, null pointer otherwise
      */
-    UAVObjectField *getField(const QString &objName, const QString &fieldName, quint32 instId = 0);
-    QVector<UAVObject*> getObjectInstancesVector(const QString& name);
-    QVector<UAVObject*> getObjectInstancesVector(quint32 objId);
+    QSharedPointer<UAVObjectField> getField(const QString &objName, const QString &fieldName, quint32 instId = 0);
+    QVector<QSharedPointer<UAVObject>> getObjectInstancesVector(const QString& name);
+    QVector<QSharedPointer<UAVObject>> getObjectInstancesVector(quint32 objId);
     qint32 getNumInstances(const QString& name);
     qint32 getNumInstances(quint32 objId);    
-    bool unRegisterObject(UAVDataObject *obj);
+    bool unRegisterObject(QSharedPointer<UAVDataObject>);
 signals:
-    void newObject(UAVObject* obj);
-    void newInstance(UAVObject* obj);
-    void instanceRemoved(UAVObject* obj);
+    void newObject(QSharedPointer<UAVObject> obj);
+    void newInstance(QSharedPointer<UAVObject> obj);
+    void instanceRemoved(QSharedPointer<UAVObject> obj);
 private:
     static const quint32 MAX_INSTANCES = 1000;
-    QHash<quint32, QMap<quint32,UAVObject*> > objects;
-    QHash<QString, QMap<quint32,UAVObject*> > objectsByName;
+    QHash<quint32, QMap<quint32, QSharedPointer<UAVObject>>> objects;
+    QHash<QString, QMap<quint32, QSharedPointer<UAVObject>>> objectsByName;
 
-    void addObject(UAVObject* obj);
-    UAVObject* getObject(const QString& name, quint32 objId, quint32 instId);
-    QVector<UAVObject*> getObjectInstancesVector(const QString* name, quint32 objId);
+    void addObject(QSharedPointer<UAVObject> obj);
+    QSharedPointer<UAVObject> getObject(const QString& name, quint32 objId, quint32 instId);
+    QVector<QSharedPointer<UAVObject>> getObjectInstancesVector(const QString* name, quint32 objId);
     qint32 getNumInstances(const QString* name, quint32 objId);
 };
 

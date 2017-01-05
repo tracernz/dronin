@@ -52,7 +52,7 @@ class ObjectTransactionInfo: public QObject {
 public:
     ObjectTransactionInfo(QObject * parent);
     ~ObjectTransactionInfo();
-    UAVObject* obj;
+    QSharedPointer<UAVObject> obj;
     bool allInstances;
     bool objRequest;
     qint32 retriesRemaining;
@@ -110,13 +110,13 @@ private:
     } EventMask;
 
     typedef struct {
-        UAVObject* obj;
+        QSharedPointer<UAVObject> obj;
         qint32 updatePeriodMs;      /** Update period in ms or 0 if no periodic updates are needed */
         qint32 timeToNextUpdateMs;  /** Time delay to the next update */
     } ObjectTimeInfo;
 
     typedef struct {
-        UAVObject* obj;
+        QSharedPointer<UAVObject> obj;
         EventMask event;
         bool allInstances;
     } ObjectQueueInfo;
@@ -124,7 +124,7 @@ private:
     // Variables
     UAVObjectManager* objMngr;
     UAVTalk* utalk;
-    GCSTelemetryStats* gcsStatsObj;
+    QSharedPointer<GCSTelemetryStats> gcsStatsObj;
     QVector<ObjectTimeInfo> objList;
     QQueue<ObjectQueueInfo> objQueue;
     QQueue<ObjectQueueInfo> objPriorityQueue;
@@ -136,30 +136,30 @@ private:
     quint32 txRetries;
 
     // Methods
-    void registerObject(UAVObject* obj);
-    void addObject(UAVObject* obj);
-    void setUpdatePeriod(UAVObject* obj, qint32 periodMs);
-    void connectToObjectInstances(UAVObject* obj, quint32 eventMask);
-    void updateObject(UAVObject* obj, quint32 eventMask);
-    void processObjectUpdates(UAVObject* obj, EventMask event, bool allInstances, bool priority);
+    void registerObject(QSharedPointer<UAVObject> obj);
+    void addObject(QSharedPointer<UAVObject> obj);
+    void setUpdatePeriod(QSharedPointer<UAVObject> obj, qint32 periodMs);
+    void connectToObjectInstances(QSharedPointer<UAVObject> obj, quint32 eventMask);
+    void updateObject(QSharedPointer<UAVObject> obj, quint32 eventMask);
+    void processObjectUpdates(QSharedPointer<UAVObject> obj, EventMask event, bool allInstances, bool priority);
     void processObjectTransaction(ObjectTransactionInfo *transInfo);
     void processObjectQueue();
-    bool updateTransactionMap(UAVObject* obj, bool request);
+    bool updateTransactionMap(QSharedPointer<UAVObject> obj, bool request);
 
 
 private slots:
-    void objectUpdatedAuto(UAVObject* obj);
-    void objectUpdatedManual(UAVObject* obj);
-    void objectUpdatedPeriodic(UAVObject* obj);
-    void objectUnpacked(UAVObject* obj);
-    void updateRequested(UAVObject* obj);
-    void updateAllInstancesRequested(UAVObject* obj);
-    void newObject(UAVObject* obj);
-    void newInstance(UAVObject* obj);
+    void objectUpdatedAuto(QSharedPointer<UAVObject> obj);
+    void objectUpdatedManual(QSharedPointer<UAVObject> obj);
+    void objectUpdatedPeriodic(QSharedPointer<UAVObject> obj);
+    void objectUnpacked(QSharedPointer<UAVObject> obj);
+    void updateRequested(QSharedPointer<UAVObject> obj);
+    void updateAllInstancesRequested(QSharedPointer<UAVObject> obj);
+    void newObject(QSharedPointer<UAVObject> obj);
+    void newInstance(QSharedPointer<UAVObject> obj);
     void processPeriodicUpdates();
-    void transactionSuccess(UAVObject* obj);
-    void transactionFailure(UAVObject* obj);
-    void transactionRequestCompleted(UAVObject* obj);
+    void transactionSuccess(QSharedPointer<UAVObject> obj);
+    void transactionFailure(QSharedPointer<UAVObject> obj);
+    void transactionRequestCompleted(QSharedPointer<UAVObject> obj);
 
 };
 

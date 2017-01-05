@@ -39,20 +39,20 @@
 /**
  * Constructor
  */
-UAVMetaObject::UAVMetaObject(quint32 objID, const QString& name, UAVObject *parent):
+UAVMetaObject::UAVMetaObject(quint32 objID, const QString& name, QSharedPointer<UAVObject> parent):
         UAVObject(objID, true, name)
 {
     this->parent = parent;
     // Setup default metadata of metaobject (can not be changed)
-    UAVObject::MetadataInitialize(ownMetadata);
+    UAVObject::metadataInitialize(ownMetadata);
     // Setup fields
     QStringList modesBitField;
     modesBitField << tr("FlightReadOnly") << tr("GCSReadOnly") << tr("FlightTelemetryAcked") << tr("GCSTelemetryAcked") << tr("FlightUpdatePeriodic") << tr("FlightUpdateOnChange") << tr("GCSUpdatePeriodic") << tr("GCSUpdateOnChange");
-    QList<UAVObjectField*> fields;    
-    fields.append( new UAVObjectField(tr("Modes"), tr("boolean"), UAVObjectField::BITFIELD, modesBitField, QStringList(), QList<int>() ) );
-    fields.append( new UAVObjectField(tr("Flight Telemetry Update Period"), tr("ms"), UAVObjectField::UINT16, 1, QStringList(), QList<int>() ) );
-    fields.append( new UAVObjectField(tr("GCS Telemetry Update Period"), tr("ms"), UAVObjectField::UINT16, 1, QStringList(), QList<int>() ) );
-    fields.append( new UAVObjectField(tr("Logging Update Period"), tr("ms"), UAVObjectField::UINT16, 1, QStringList(), QList<int>() ) );
+    QList<QSharedPointer<UAVObjectField>> fields;
+    fields.append(QSharedPointer<UAVObjectField>::create(tr("Modes"), tr("boolean"), UAVObjectField::BITFIELD, UAVObjectField::BIN, modesBitField, QStringList(), QList<int>()));
+    fields.append(QSharedPointer<UAVObjectField>::create(tr("Flight Telemetry Update Period"), tr("ms"), UAVObjectField::UINT16, UAVObjectField::DEC, 1, QStringList(), QList<int>()));
+    fields.append(QSharedPointer<UAVObjectField>::create(tr("GCS Telemetry Update Period"), tr("ms"), UAVObjectField::UINT16, UAVObjectField::DEC, 1, QStringList(), QList<int>()));
+    fields.append(QSharedPointer<UAVObjectField>::create(tr("Logging Update Period"), tr("ms"), UAVObjectField::UINT16, UAVObjectField::DEC, 1, QStringList(), QList<int>()));
     // Initialize parent
     UAVObject::initialize(0);
     UAVObject::initializeFields(fields, (quint8*)&parentMetadata, sizeof(Metadata));
@@ -63,7 +63,7 @@ UAVMetaObject::UAVMetaObject(quint32 objID, const QString& name, UAVObject *pare
 /**
  * Get the parent object
  */
-UAVObject* UAVMetaObject::getParentObject()
+QSharedPointer<UAVObject> UAVMetaObject::getParentObject()
 {
     return parent;
 }
@@ -100,8 +100,8 @@ UAVObject::Metadata UAVMetaObject::getDefaultMetadata()
 void UAVMetaObject::setData(const Metadata& mdata)
 {
     parentMetadata = mdata;
-    emit objectUpdatedAuto(this); // trigger object updated event
-    emit objectUpdated(this);
+    emit objectUpdatedAuto(QEnableSharedFromThis<UAVMetaObject>::sharedFromThis()); // trigger object updated event
+    emit objectUpdated(QEnableSharedFromThis<UAVMetaObject>::sharedFromThis());
 }
 
 /**

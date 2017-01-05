@@ -103,9 +103,10 @@ UploaderGadgetWidget::UploaderGadgetWidget(QWidget *parent):QWidget(parent),
      */
     connect(telMngr, SIGNAL(connected()), this, SLOT(onAutopilotConnect()), Qt::QueuedConnection);
     connect(telMngr, SIGNAL(disconnected()), this, SLOT(onAutopilotDisconnect()), Qt::QueuedConnection);
-    firmwareIap = FirmwareIAPObj::GetInstance(obm);
 
-    connect(firmwareIap, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(onIAPUpdated()), Qt::QueuedConnection);
+    firmwareIap = FirmwareIAPObj::getInstance(obm); // beware weak pointer (connect is ok if it's null)
+    connect(firmwareIap.data(), &UAVObject::objectUpdated,
+            this, &UploaderGadgetWidget::onIAPUpdated, Qt::QueuedConnection);
 
     //Connect button signals to slots
     connect(m_widget->openButton, SIGNAL(clicked()), this, SLOT(onLoadFirmwareButtonClick()));
@@ -520,7 +521,8 @@ void UploaderGadgetWidget::onFlashButtonClick()
 
 void UploaderGadgetWidget::haltOrReset(bool halting)
 {
-    if(!firmwareIap->getIsPresentOnHardware())
+    auto iapObj = firmwareIap.toStrongRef();
+    if (!iapObj || !iapObj->getIsPresentOnHardware())
         return;
 
     if (halting) {
@@ -532,10 +534,11 @@ void UploaderGadgetWidget::haltOrReset(bool halting)
     QEventLoop loop;
     QTimer timeout;
     timeout.setSingleShot(true);
-    firmwareIap->setBoardRevision(0);
-    firmwareIap->setBoardType(0);
+    iapObj->setBoardRevision(0);
+    iapObj->setBoardType(0);
     connect(&timeout, SIGNAL(timeout()), &loop, SLOT(quit()));
-    connect(firmwareIap,SIGNAL(transactionCompleted(UAVObject*,bool)), &loop, SLOT(quit()));
+    connect(firmwareIap.data(), static_cast<void (UAVObject::*)(QSharedPointer<UAVObject>, bool)>(&UAVObject::transactionCompleted),
+            &loop, &QEventLoop::quit);
     int magicValue = 1122;
     int magicStep = 1111;
     for(int i = 0; i < 3; ++i)
@@ -544,13 +547,13 @@ void UploaderGadgetWidget::haltOrReset(bool halting)
         //between 500 and 5000ms
         timeout.start(600);
         loop.exec();
-        firmwareIap->setCommand(magicValue);
+        iapObj->setCommand(magicValue);
         magicValue += magicStep;
         if((!halting) && (magicValue == 3344))
             magicValue = 4455;
 
         setStatusInfo(QString(tr("Sending IAP Step %0").arg(i + 1)), uploader::STATUSICON_INFO);
-        firmwareIap->updated();
+        iapObj->updated();
         timeout.start(1000);
         loop.exec();
         if(!timeout.isActive())

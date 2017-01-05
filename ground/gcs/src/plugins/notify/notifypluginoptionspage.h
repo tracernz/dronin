@@ -121,12 +121,12 @@ private:
 
     void updateConfigView(NotificationItem* notification);
     void getOptionsPageValues(NotificationItem* notification);
-    UAVObjectField* getObjectFieldFromPage();
-    UAVObjectField* getObjectFieldFromSelected();
+    QSharedPointer<UAVObjectField> getObjectFieldFromPage();
+    QSharedPointer<UAVObjectField> getObjectFieldFromSelected();
 
     void addDynamicFieldLayout();
-    void addDynamicField(UAVObjectField* objField);
-    void addDynamicFieldWidget(UAVObjectField* objField);
+    void addDynamicField(QSharedPointer<UAVObjectField> objField);
+    void addDynamicFieldWidget(QSharedPointer<UAVObjectField> objField);
     void setDynamicFieldValue(NotificationItem* notification);
 
 private:
@@ -180,7 +180,7 @@ private:
 
     //! Retrieved from UAVObjectManager by name from _selectedNotification,
     //! if UAVObjectManager doesn't have such object, this field will be NULL
-    UAVDataObject* _currUAVObject;
+    QSharedPointer<UAVDataObject> _currUAVObject;
 
     QMediaPlaylist *playlist;
 };

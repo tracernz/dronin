@@ -46,17 +46,17 @@ public:
     Q_OBJECT
 public:
     smartSaveButton();
-    void addButtons(QPushButton * save,QPushButton * apply);
-    void setObjects(QList<UAVDataObject *>);
-    void addObject(UAVDataObject *);
-    void addObject(UAVDataObject *, bool);
+    void addButtons(QPushButton *save, QPushButton *apply);
+    void setObjects(QList<QWeakPointer<UAVDataObject>> objs);
+    void addObject(QWeakPointer<UAVDataObject> obj);
+    void addObject(QWeakPointer<UAVDataObject> obj, bool isMandatory);
     void clearObjects();
-    void removeObject(UAVDataObject *obj);
+    void removeObject(QWeakPointer<UAVDataObject> obj);
     void removeAllObjects();
     void addApplyButton(QPushButton *apply);
     void addSaveButton(QPushButton *save);
     void resetIcons();
-    void setNotMandatory(UAVDataObject *);
+    void setNotMandatory(QWeakPointer<UAVDataObject> obj);
 signals:
     void preProcessOperations();
     void saveSuccessfull();
@@ -68,18 +68,12 @@ public slots:
 private slots:
     void processClick();
     void processOperation(QPushButton *button, bool save);
-    void transaction_finished(UAVObject* obj, bool result);
-    void saving_finished(int,bool);
 
 private:
-    quint32 current_objectID;
-    UAVDataObject * current_object;
-    bool upload_result;
-    bool save_result;
     QEventLoop loop;
-    QList<UAVDataObject *> objects;
+    QList<QWeakPointer<UAVDataObject>> objects;
     QMap<QPushButton *,buttonTypeEnum> buttonList;
-    QMap<UAVDataObject *, bool> mandatoryList;
+    QMap<UAVObject *, bool> mandatoryList; // NEVER de-reference
 protected:
 public slots:
     void enableControls(bool value);

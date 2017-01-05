@@ -66,7 +66,7 @@ public:
 
 private:
     //! Get the handle to the ManualControlCommand object
-    ManualControlCommand* getManualControlCommand();
+    QSharedPointer<ManualControlCommand> getManualControlCommand();
 
     //! Get the handle to the GCSReceiver object
     GCSControl* getGcsControl();
@@ -106,7 +106,7 @@ signals:
     void sticksChangedRemotely(double leftX, double leftY, double rightX, double rightY);
 
 protected slots:
-    void manualControlCommandUpdated(UAVObject *);
+    void manualControlCommandUpdated(QSharedPointer<UAVObject> obj);
     void sticksChangedLocally(double leftX, double leftY, double rightX, double rightY);
     void readUDPCommand();
     void flightModeChanged(ManualControlSettings::FlightModePositionOptions mode);

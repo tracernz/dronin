@@ -136,7 +136,7 @@ ConfigOutputWidget::ConfigOutputWidget(QWidget *parent) : ConfigTaskWidget(paren
 
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
     UAVObject* obj = objManager->getObject(QString("ActuatorCommand"));
-    if(UAVObject::GetGcsTelemetryUpdateMode(obj->getMetadata()) == UAVObject::UPDATEMODE_ONCHANGE)
+    if(UAVObject::getGcsTelemetryUpdateMode(obj->getMetadata()) == UAVObject::UPDATEMODE_ONCHANGE)
         this->setEnabled(false);
     connect(SystemSettings::GetInstance(objManager), SIGNAL(objectUpdated(UAVObject*)),this,SLOT(assignOutputChannels(UAVObject*)));
 
@@ -201,10 +201,10 @@ void ConfigOutputWidget::runChannelTests(bool state)
     if (state)
     {
         accInitialData = mdata;
-        UAVObject::SetFlightAccess(mdata, UAVObject::ACCESS_READONLY);
-        UAVObject::SetFlightTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_ONCHANGE);
-        UAVObject::SetGcsTelemetryAcked(mdata, false);
-        UAVObject::SetGcsTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_ONCHANGE);
+        UAVObject::setFlightAccess(mdata, UAVObject::ACCESS_READONLY);
+        UAVObject::setFlightTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_ONCHANGE);
+        UAVObject::setGcsTelemetryAcked(mdata, false);
+        UAVObject::setGcsTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_ONCHANGE);
         mdata.gcsTelemetryUpdatePeriod = 100;
     }
     else
@@ -358,10 +358,10 @@ void ConfigOutputWidget::startESCCalibration()
     accInitialData = mdata;
 
     // Change settings for period of calibration
-    UAVObject::SetFlightAccess(mdata, UAVObject::ACCESS_READONLY);
-    UAVObject::SetFlightTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_ONCHANGE);
-    UAVObject::SetGcsTelemetryAcked(mdata, false);
-    UAVObject::SetGcsTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_ONCHANGE);
+    UAVObject::setFlightAccess(mdata, UAVObject::ACCESS_READONLY);
+    UAVObject::setFlightTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_ONCHANGE);
+    UAVObject::setGcsTelemetryAcked(mdata, false);
+    UAVObject::setGcsTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_ONCHANGE);
     mdata.gcsTelemetryUpdatePeriod = 100;
     actuatorCommand->setMetadata(mdata);
     actuatorCommand->updated();

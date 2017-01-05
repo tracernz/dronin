@@ -39,24 +39,20 @@ TelemetryParser::TelemetryParser(QObject *parent) : GPSParser(parent)
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    UAVDataObject *gpsObj = dynamic_cast<UAVDataObject*>(objManager->getObject("GPSPosition"));
-    if (gpsObj != NULL) {
-        connect(gpsObj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(updateGPS(UAVObject*)));
-    } else {
-        qDebug() << "Error: Object is unknown (GPSPosition).";
-    }
+    if (auto gpsObj = objManager->getObject("GPSPosition").dynamicCast<UAVDataObject>())
+        connect(gpsObj.data(), &UAVObject::objectUpdated, this, &TelemetryParser::updateGPS);
+    else
+        qWarning() << "Error: Object is unknown (GPSPosition).";
 
-    gpsObj = dynamic_cast<UAVDataObject*>(objManager->getObject("GPSTime"));
-    if (gpsObj != NULL) {
-        connect(gpsObj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(updateTime(UAVObject*)));
-    } else {
-        qDebug() << "Error: Object is unknown (GPSTime).";
-    }
+    if (auto gpsObj = objManager->getObject("GPSTime").dynamicCast<UAVDataObject>())
+        connect(gpsObj.data(), &UAVObject::objectUpdated, this, &TelemetryParser::updateTime);
+    else
+        qWarning() << "Error: Object is unknown (GPSTime).";
 
-    gpsObj = dynamic_cast<UAVDataObject*>(objManager->getObject("GPSSatellites"));
-    if (gpsObj != NULL) {
-        connect(gpsObj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(updateSats(UAVObject*)));
-    }
+    if (auto gpsObj = objManager->getObject("GPSSatellites").dynamicCast<UAVDataObject>())
+        connect(gpsObj.data(), &UAVObject::objectUpdated, this, &TelemetryParser::updateSats);
+    else
+        qWarning() << "Error: Object is unknown (GPSSatellites).";
 
 }
 
@@ -66,8 +62,12 @@ TelemetryParser::~TelemetryParser()
 }
 
 
-void TelemetryParser::updateGPS( UAVObject* object1) {
-    UAVObjectField* field = object1->getField(QString("Satellites"));
+void TelemetryParser::updateGPS(QSharedPointer<UAVObject> object1) {
+    auto field = object1->getField(QString("Satellites"));
+    Q_ASSERT(field);
+    if(!field)
+        return;
+
     emit sv(field->getValue().toInt());
 
     double lat = object1->getField(QString("Latitude"))->getDouble();
@@ -92,7 +92,7 @@ void TelemetryParser::updateGPS( UAVObject* object1) {
 
 }
 
-void TelemetryParser::updateTime( UAVObject* object1) {
+void TelemetryParser::updateTime(QSharedPointer<UAVObject> object1) {
     double hour = object1->getField(QString("Hour"))->getDouble();
     double minute = object1->getField(QString("Minute"))->getDouble();
     double second = object1->getField(QString("Second"))->getDouble();
@@ -111,11 +111,11 @@ void TelemetryParser::updateTime( UAVObject* object1) {
   which have changed instead of updating everything... That said, Qt is supposed
   to be able to optimize redraws anyway.
   */
-void TelemetryParser::updateSats( UAVObject* object1) {
-    UAVObjectField* prn = object1->getField(QString("PRN"));
-    UAVObjectField* elevation = object1->getField(QString("Elevation"));
-    UAVObjectField* azimuth = object1->getField(QString("Azimuth"));
-    UAVObjectField* snr = object1->getField(QString("SNR"));
+void TelemetryParser::updateSats(QSharedPointer<UAVObject> object1) {
+    auto prn = object1->getField(QString("PRN"));
+    auto elevation = object1->getField(QString("Elevation"));
+    auto azimuth = object1->getField(QString("Azimuth"));
+    auto snr = object1->getField(QString("SNR"));
 
     for (unsigned int i=0;i< prn->getNumElements();i++) {
         emit satellite(i,prn->getValue(i).toInt(),elevation->getValue(i).toInt(),

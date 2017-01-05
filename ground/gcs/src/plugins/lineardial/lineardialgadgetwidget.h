@@ -59,7 +59,7 @@ public:
    void setDecimalPlaces(int val) { places = val;}
 
 public slots:
-    void updateIndex(UAVObject *object1);
+    void updateIndex(QSharedPointer<UAVObject> object1);
 
 
 protected:
@@ -114,7 +114,7 @@ private:
    QTimer dialTimer;
 
    // Name of the fields to read when an update is received:
-   UAVDataObject* obj1;
+   QSharedPointer<UAVDataObject> obj1;
    QString field1;
    QString subfield1;
    bool haveSubField1;

@@ -147,26 +147,26 @@ bool UAVSettingsImportExportManager::importUAVSettings(const QByteArray &setting
             uint uavObjectID = e.attribute("id").toUInt(NULL,16);
 
             // Sanity Check:
-            UAVObject *obj = boardObjManager->getObject(uavObjectName);
-            UAVDataObject *dobj = dynamic_cast<UAVDataObject*>(obj);
-            if (obj == NULL) {
+            auto obj = boardObjManager->getObject(uavObjectName);
+            auto dobj = obj.dynamicCast<UAVDataObject>();
+            if (!obj) {
                 // This object is unknown!
                 qDebug() << "Object unknown:" << uavObjectName << uavObjectID;
                 swui.addLine(uavObjectName, "Error (Object unknown)", false);
             } else if(dobj && !dobj->getIsPresentOnHardware()) {
                 swui.addLine(uavObjectName, "Error (Object not present on hw)", false);
-            } else {
+            } else if(dobj) {
                 //  - Update each field
                 //  - Issue and "updated" command
-                UAVDataObject *newObj = dobj->clone();
+                auto newObj = dobj->clone();
 
                 bool error = false;
                 bool setError = false;
                 QDomNode field = node.firstChild();
-                while(!field.isNull()) {
+                while (!field.isNull()) {
                     QDomElement f = field.toElement();
                     if (f.tagName() == "field") {
-                        UAVObjectField *uavfield = newObj->getField(f.attribute("name"));
+                        auto uavfield = newObj->getField(f.attribute("name"));
                         if (uavfield) {
                             QStringList list = f.attribute("values").split(",");
                             if (list.length() == 1) {
@@ -209,6 +209,9 @@ bool UAVSettingsImportExportManager::importUAVSettings(const QByteArray &setting
                     swui.addLine(uavObjectName, "OK", true);
                 }
                 importedObjectManager->registerObject(newObj);
+            } else {
+                qWarning() << "Could not convert object to data object! " << uavObjectName;
+                swui.addLine(uavObjectName, "Error (Unknown)", false);
             }
         }
         node = node.nextSibling();
@@ -313,10 +316,10 @@ QString UAVSettingsImportExportManager::createXMLDocument(const enum storedData 
     }
 
     // iterate over settings objects
-    QVector< QVector<UAVDataObject*> > objList = objManager->getDataObjectsVector();
-    foreach (QVector<UAVDataObject*> list, objList) {
-        foreach (UAVDataObject *obj, list) {
-            if(!obj->getIsPresentOnHardware())
+    auto objList = objManager->getDataObjectsVector();
+    for (const auto &list : objList) {
+        for (auto obj : list) {
+            if(!obj || !obj->getIsPresentOnHardware())
                 continue;
             if (((what == Settings) && obj->isSettings()) ||
                     ((what == Data) && !obj->isSettings()) ||
@@ -334,9 +337,7 @@ QString UAVSettingsImportExportManager::createXMLDocument(const enum storedData 
                 }
 
                 // iterate over fields
-                QList<UAVObjectField*> fieldList = obj->getFields();
-
-                foreach (UAVObjectField* field, fieldList) {
+                for (auto field : obj->getFields()) {
                     QDomElement f = doc.createElement("field");
 
                     // iterate over values

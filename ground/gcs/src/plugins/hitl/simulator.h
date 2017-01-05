@@ -283,24 +283,24 @@ protected:
     QUdpSocket* inSocket;//(new QUdpSocket());
     QUdpSocket* outSocket;
 
-    ActuatorCommand* actCommand;
-    ActuatorDesired* actDesired;
-    ManualControlCommand* manCtrlCommand;
-    FlightStatus* flightStatus;
-    BaroAltitude* baroAlt;
-    AirspeedActual* airspeedActual;
-    AttitudeActual* attActual;
-    AttitudeSettings* attitudeSettings;
-    VelocityActual* velActual;
-    GPSPosition* gpsPos;
-    GPSVelocity* gpsVel;
-    PositionActual* posActual;
-    HomeLocation* posHome;
-    Accels* accels;
-    Gyros*  gyros;
-    GCSTelemetryStats* telStats;
-    GCSReceiver* gcsReceiver;
-    GroundTruth* groundTruth;
+    QSharedPointer<ActuatorCommand> actCommand;
+    QSharedPointer<ActuatorDesired> actDesired;
+    QSharedPointer<ManualControlCommand> manCtrlCommand;
+    QSharedPointer<FlightStatus> flightStatus;
+    QSharedPointer<BaroAltitude> baroAlt;
+    QSharedPointer<AirspeedActual> airspeedActual;
+    QSharedPointer<AttitudeActual> attActual;
+    QSharedPointer<AttitudeSettings> attitudeSettings;
+    QSharedPointer<VelocityActual> velActual;
+    QSharedPointer<GPSPosition> gpsPos;
+    QSharedPointer<GPSVelocity> gpsVel;
+    QSharedPointer<PositionActual> posActual;
+    QSharedPointer<HomeLocation> posHome;
+    QSharedPointer<Accels> accels;
+    QSharedPointer<Gyros> gyros;
+    QSharedPointer<GCSTelemetryStats> telStats;
+    QSharedPointer<GCSReceiver> gcsReceiver;
+    QSharedPointer<GroundTruth> groundTruth;
 
     SimulatorSettings settings;
 
@@ -332,8 +332,8 @@ private:
     volatile static bool isStarted;
     static QStringList instances;
     //QList<QScopedPointer<UAVDataObject> > requiredUAVObjects;
-    void setupOutputObject(UAVObject* obj, quint32 updatePeriod);
-    void setupInputObject(UAVObject* obj, quint32 updatePeriod);
+    void setupOutputObject(QSharedPointer<UAVObject> obj, quint32 updatePeriod);
+    void setupInputObject(QSharedPointer<UAVObject> obj, quint32 updatePeriod);
     void setupUAVObjects();
     UAVObjectUtilManager* getObjectUtilManager();
     UAVObjectManager* getObjectManager();

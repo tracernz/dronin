@@ -52,6 +52,9 @@ class FieldTreeItem : public TreeItem
 {
 Q_OBJECT
 public:
+    typedef struct { int base; int v; } FieldInt;
+    typedef struct { int base; unsigned v; } FieldUInt;
+
     FieldTreeItem(int index, const QList<QVariant> &data, TreeItem *parent = 0) :
             TreeItem(data, parent), m_index(index) { }
     FieldTreeItem(int index, const QVariant &data, TreeItem *parent = 0) :
@@ -69,13 +72,18 @@ class EnumFieldTreeItem : public FieldTreeItem
 {
 Q_OBJECT
 public:
-    EnumFieldTreeItem(UAVObjectField *field, int index, const QList<QVariant> &data,
+    EnumFieldTreeItem(QSharedPointer<UAVObjectField> field, int index, const QList<QVariant> &data,
                       TreeItem *parent = 0) :
     FieldTreeItem(index, data, parent), m_enumOptions(field->getOptions()), m_field(field) { }
-    EnumFieldTreeItem(UAVObjectField *field, int index, const QVariant &data,
+    EnumFieldTreeItem(QSharedPointer<UAVObjectField> field, int index, const QVariant &data,
                       TreeItem *parent = 0) :
     FieldTreeItem(index, data, parent), m_enumOptions(field->getOptions()), m_field(field) { }
     void setData(QVariant value, int column) {
+        if (!m_field) {
+            Q_ASSERT(false);
+            qWarning() << "Invalid UAVObjectField!";
+            return;
+        }
         QStringList options = m_field->getOptions();
         QVariant tmpValue = m_field->getValue(m_index);
         int tmpValIndex = options.indexOf(tmpValue.toString());
@@ -89,6 +97,11 @@ public:
         return m_enumOptions.at(index);
     }
     void apply() {
+        if (!m_field) {
+            Q_ASSERT(false);
+            qWarning() << "Invalid UAVObjectField!";
+            return;
+        }
         int value = data(dataColumn).toInt();
         if (value == -1) {
             qDebug() << "Warning, UAVO browser field is outside range. This should never happen!";
@@ -100,6 +113,11 @@ public:
         setChanged(false);
     }
     void update() {
+        if (!m_field) {
+            Q_ASSERT(false);
+            qWarning() << "Invalid UAVObjectField!";
+            return;
+        }
         QStringList options = m_field->getOptions();
         QVariant value = m_field->getValue(m_index);
         int valIndex = options.indexOf(value.toString());
@@ -107,7 +125,7 @@ public:
             TreeItem::setData(valIndex);
             setHighlight(true);
         }
-        UAVDataObject *obj = qobject_cast<UAVDataObject *>(m_field->getObject());
+        auto obj = m_field->getObject().dynamicCast<UAVDataObject>();
         if (obj && obj->isSettings())
             setIsDefaultValue(m_field->isDefaultValue(m_index));
     }
@@ -130,23 +148,28 @@ public:
     }
 private:
     QStringList m_enumOptions;
-    UAVObjectField *m_field;
+    QSharedPointer<UAVObjectField> m_field;
 };
 
 class IntFieldTreeItem : public FieldTreeItem
 {
 Q_OBJECT
 public:
-    IntFieldTreeItem(UAVObjectField *field, int index, const QList<QVariant> &data, TreeItem *parent = 0) :
+    IntFieldTreeItem(QSharedPointer<UAVObjectField> field, int index, const QList<QVariant> &data, TreeItem *parent = 0) :
             FieldTreeItem(index, data, parent), m_field(field) {
         setMinMaxValues();
     }
-    IntFieldTreeItem(UAVObjectField *field, int index, const QVariant &data, TreeItem *parent = 0) :
+    IntFieldTreeItem(QSharedPointer<UAVObjectField> field, int index, const QVariant &data, TreeItem *parent = 0) :
             FieldTreeItem(index, data, parent), m_field(field) {
         setMinMaxValues();
     }
 
     void setMinMaxValues() {
+        if (!m_field) {
+            Q_ASSERT(false);
+            qWarning() << "Invalid UAVObjectField!";
+            return;
+        }
         switch (m_field->getType()) {
         case UAVObjectField::INT8:
             m_minValue = QINT8MIN;
@@ -179,30 +202,91 @@ public:
     }
 
     QWidget *createEditor(QWidget *parent) {
+        if (!m_field) {
+            Q_ASSERT(false);
+            qWarning() << "Invalid UAVObjectField!";
+            return Q_NULLPTR;
+        }
         QSpinBox *editor = new QSpinBox(parent);
         editor->setMinimum(m_minValue);
         editor->setMaximum(m_maxValue);
+        editor->setDisplayIntegerBase(m_field->getRadix());
+        switch (m_field->getRadix()) {
+        case UAVObjectField::BIN:
+            editor->setPrefix("0b");
+            break;
+        case UAVObjectField::OCT:
+            editor->setPrefix("0o");
+            break;
+        case UAVObjectField::HEX:
+            editor->setPrefix("0x");
+            break;
+        default:
+            break;
+        }
         return editor;
     }
 
     QVariant getEditorValue(QWidget *editor) {
+        if (!m_field) {
+            Q_ASSERT(false);
+            qWarning() << "Invalid UAVObjectField!";
+            return QVariant();
+        }
         QSpinBox *spinBox = static_cast<QSpinBox*>(editor);
         spinBox->interpretText();
-        return spinBox->value();
+        switch (m_field->getType()) {
+        case UAVObjectField::INT8:
+        case UAVObjectField::INT16:
+        case UAVObjectField::INT32:
+        {
+            FieldInt v;
+            v.v = spinBox->value();
+            v.base = m_field->getRadix();
+            return QVariant::fromValue(v);
+        }
+        case UAVObjectField::UINT8:
+        case UAVObjectField::UINT16:
+        case UAVObjectField::UINT32:
+        {
+            FieldUInt v;
+            v.v = spinBox->value();
+            v.base = m_field->getRadix();
+            return QVariant::fromValue(v);
+        }
+        default:
+            Q_ASSERT(false);
+            return 0;
+        }
     }
 
     void setEditorValue(QWidget *editor, QVariant value) {
+        if (!m_field) {
+            Q_ASSERT(false);
+            qWarning() << "Invalid UAVObjectField!";
+            return;
+        }
         QSpinBox *spinBox = static_cast<QSpinBox*>(editor);
         switch (m_field->getType()) {
         case UAVObjectField::INT8:
         case UAVObjectField::INT16:
         case UAVObjectField::INT32:
-            spinBox->setValue(value.toInt());
+            if (value.userType() == QMetaType::type("FieldTreeItem::FieldInt")) {
+                FieldInt v = value.value<FieldInt>();
+                spinBox->setValue(v.v);
+            } else {
+                spinBox->setValue(value.toInt());
+            }
             break;
         case UAVObjectField::UINT8:
         case UAVObjectField::UINT16:
         case UAVObjectField::UINT32:
-            spinBox->setValue(value.toUInt());
+            if (value.userType() == QMetaType::type("FieldTreeItem::FieldUInt")) {
+                FieldUInt v = value.value<FieldUInt>();
+                spinBox->setValue(v.v);
+            } else {
+                spinBox->setValue(value.toUInt());
+            }
             break;
         default:
             Q_ASSERT(false);
@@ -210,20 +294,41 @@ public:
         }
     }
     void setData(QVariant value, int column) {
+        if (!m_field) {
+            Q_ASSERT(false);
+            qWarning() << "Invalid UAVObjectField!";
+            return;
+        }
         setChanged(m_field->getValue(m_index) != value);
         TreeItem::setData(value, column);
     }
     void apply() {
+        if (!m_field) {
+            Q_ASSERT(false);
+            qWarning() << "Invalid UAVObjectField!";
+            return;
+        }
+        QVariant d = data(dataColumn);
         switch (m_field->getType()) {
         case UAVObjectField::INT8:
         case UAVObjectField::INT16:
         case UAVObjectField::INT32:
-            m_field->setValue(data(dataColumn).toInt(), m_index);
+            if (d.userType() == QMetaType::type("FieldTreeItem::FieldInt")) {
+                FieldInt v = d.value<FieldInt>();
+                m_field->setValue(v.v, m_index);
+            } else {
+                m_field->setValue(d.toInt(), m_index);
+            }
             break;
         case UAVObjectField::UINT8:
         case UAVObjectField::UINT16:
         case UAVObjectField::UINT32:
-            m_field->setValue(data(dataColumn).toUInt(), m_index);
+            if (d.userType() == QMetaType::type("FieldTreeItem::FieldUInt")) {
+                FieldUInt v = d.value<FieldUInt>();
+                m_field->setValue(v.v, m_index);
+            } else {
+                m_field->setValue(d.toUInt(), m_index);
+            }
             break;
         default:
             Q_ASSERT(false);
@@ -232,34 +337,50 @@ public:
         setChanged(false);
     }
     void update() {
-
+        if (!m_field) {
+            Q_ASSERT(false);
+            qWarning() << "Invalid UAVObjectField!";
+            return;
+        }
         QVariant value = m_field->getValue(m_index);
         if (data() != value || changed()) {
+            QVariant newVal;
             switch (m_field->getType()) {
             case UAVObjectField::INT8:
             case UAVObjectField::INT16:
             case UAVObjectField::INT32:
-                TreeItem::setData(value.toInt());
+            {
+                FieldInt v;
+                v.v = value.toInt();
+                v.base = m_field->getRadix();
+                newVal.setValue(v);
+            }
                 break;
             case UAVObjectField::UINT8:
             case UAVObjectField::UINT16:
             case UAVObjectField::UINT32:
-                TreeItem::setData(value.toUInt());
+            {
+                FieldUInt v;
+                v.v = value.toUInt();
+                v.base = m_field->getRadix();
+                newVal.setValue(v);
+            }
                 break;
             default:
                 Q_ASSERT(false);
                 break;
             }
+            TreeItem::setData(newVal);
             setHighlight(true);
         }
 
-        UAVDataObject *obj = qobject_cast<UAVDataObject *>(m_field->getObject());
+        auto obj = m_field->getObject().dynamicCast<UAVDataObject>();
         if (obj && obj->isSettings())
             setIsDefaultValue(m_field->isDefaultValue(m_index));
     }
 
 private:
-    UAVObjectField *m_field;
+    QSharedPointer<UAVObjectField> m_field;
     int m_minValue;
     int m_maxValue;
 };
@@ -268,22 +389,32 @@ class FloatFieldTreeItem : public FieldTreeItem
 {
 Q_OBJECT
 public:
-    FloatFieldTreeItem(UAVObjectField *field, int index, const QList<QVariant> &data, bool scientific = false, TreeItem *parent = 0) :
+    FloatFieldTreeItem(QSharedPointer<UAVObjectField> field, int index, const QList<QVariant> &data, bool scientific = false, TreeItem *parent = 0) :
         FieldTreeItem(index, data, parent), m_field(field), m_useScientificNotation(scientific){}
-    FloatFieldTreeItem(UAVObjectField *field, int index, const QVariant &data, bool scientific = false, TreeItem *parent = 0) :
+    FloatFieldTreeItem(QSharedPointer<UAVObjectField> field, int index, const QVariant &data, bool scientific = false, TreeItem *parent = 0) :
             FieldTreeItem(index, data, parent), m_field(field), m_useScientificNotation(scientific) { }
     void setData(QVariant value, int column) {
         setChanged(m_field->getValue(m_index) != value);
         TreeItem::setData(value, column);
     }
     void apply() {
+        if (!m_field) {
+            Q_ASSERT(false);
+            qWarning() << "Invalid UAVObjectField!";
+            return;
+        }
         m_field->setValue(data(dataColumn).toDouble(), m_index);
         setChanged(false);
-        UAVDataObject *obj = qobject_cast<UAVDataObject *>(m_field->getObject());
+        auto obj = m_field->getObject().dynamicCast<UAVDataObject>();
         if (obj && obj->isSettings())
             setIsDefaultValue(m_field->isDefaultValue(m_index));
     }
     void update() {
+        if (!m_field) {
+            Q_ASSERT(false);
+            qWarning() << "Invalid UAVObjectField!";
+            return;
+        }
         double value = m_field->getValue(m_index).toDouble();
         if (data() != value || changed()) {
             TreeItem::setData(value);
@@ -320,7 +451,6 @@ public:
     }
 
     void setEditorValue(QWidget *editor, QVariant value) {
-
         if(m_useScientificNotation) {
             QScienceSpinBox *spinBox = static_cast<QScienceSpinBox*>(editor);
             spinBox->setValue(value.toDouble());
@@ -330,9 +460,12 @@ public:
         }
     }
 private:
-    UAVObjectField *m_field;
+    QSharedPointer<UAVObjectField> m_field;
     bool m_useScientificNotation;
 
 };
+
+Q_DECLARE_METATYPE(FieldTreeItem::FieldInt)
+Q_DECLARE_METATYPE(FieldTreeItem::FieldUInt)
 
 #endif // FIELDTREEITEM_H

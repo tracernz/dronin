@@ -87,7 +87,7 @@ public:
     ~ScopeGadgetWidget();
 
     QString getUavObjectFieldUnits(QString uavObjectName, QString uavObjectFieldName);
-    void connectUAVO(UAVDataObject* obj);
+    void connectUAVO(QSharedPointer<UAVDataObject> obj);
 
     void setScope(ScopeConfig *val){m_scope = val;}
     QMap<QString, PlotData*> getDataSources(){return m_dataSources;}
@@ -110,7 +110,7 @@ protected:
     void showEvent(QShowEvent *event);
 
 private slots:
-    void uavObjectReceived(UAVObject*);
+    void uavObjectReceived(QSharedPointer<UAVObject> obj);
     void replotNewData();
     void showCurve(const QVariant & itemInfo, bool on, int index);
     void startPlotting();

@@ -721,8 +721,8 @@ bool FlightDataModel::getHomeLocation(double *homeLLA) const
     UAVObjectManager * objMngr = pm->getObject<UAVObjectManager>();
     Q_ASSERT(objMngr);
 
-    HomeLocation *home = HomeLocation::GetInstance(objMngr);
-    if (home == NULL)
+    auto home = HomeLocation::getInstance(objMngr);
+    if (!home)
         return false;
 
     HomeLocation::DataFields homeLocation = home->getData();
@@ -746,8 +746,8 @@ bool FlightDataModel::setHomeLocation(double *homeLLA)
     UAVObjectManager * objMngr = pm->getObject<UAVObjectManager>();
     Q_ASSERT(objMngr);
 
-    HomeLocation *home = HomeLocation::GetInstance(objMngr);
-    if (home == NULL)
+    auto home = HomeLocation::getInstance(objMngr);
+    if (!home)
         return false;
 
     // Check that home location is sensible

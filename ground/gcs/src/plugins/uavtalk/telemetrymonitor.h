@@ -69,32 +69,32 @@ signals:
     void telemetryUpdated(double txRate, double rxRate);
 
 public slots:
-    void transactionCompleted(UAVObject* obj, bool success);
+    void transactionCompleted(QSharedPointer<UAVObject> obj, bool success);
     void processStatsUpdates();
-    void flightStatsUpdated(UAVObject* obj);
-    void checkSessionObjNacked(UAVObject*, bool, bool);
+    void flightStatsUpdated(QSharedPointer<UAVObject> obj);
+    void checkSessionObjNacked(QSharedPointer<UAVObject> obj, bool, bool);
 private slots:
-    void sessionObjUnpackedCB(UAVObject*obj);
+    void sessionObjUnpackedCB(QSharedPointer<UAVObject> obj);
     void objectRetrieveTimeoutCB();
     void sessionRetrieveTimeoutCB();
     void sessionInitialRetrieveTimeoutCB();
     void saveSession();
-    void newInstanceSlot(UAVObject*);
+    void newInstanceSlot(QSharedPointer<UAVObject>);
 private:
-    QList<UAVDataObject *> delayedUpdate;
+    QList<QSharedPointer<UAVDataObject>> delayedUpdate;
     enum connectionStatusEnum {CON_DISCONNECTED, CON_INITIALIZING, CON_SESSION_INITIALIZING, CON_RETRIEVING_OBJECTS, CON_CONNECTED_UNMANAGED,CON_CONNECTED_MANAGED};
     static const int STATS_UPDATE_PERIOD_MS = 1600;
     static const int STATS_CONNECT_PERIOD_MS = 350;
     static const int CONNECTION_TIMEOUT_MS = 8000;
     connectionStatusEnum connectionStatus;
-    UAVObjectManager* objMngr;
-    Telemetry* tel;
-    QQueue<UAVObject*> queue;
-    GCSTelemetryStats* gcsStatsObj;
-    FlightTelemetryStats* flightStatsObj;
+    QPointer<UAVObjectManager> objMngr;
+    QPointer<Telemetry> tel;
+    QQueue<QSharedPointer<UAVObject>> queue;
+    QSharedPointer<GCSTelemetryStats> gcsStatsObj;
+    QSharedPointer<FlightTelemetryStats> flightStatsObj;
     QTimer* statsTimer;
     QTime* connectionTimer;
-    SessionManaging* sessionObj;
+    QSharedPointer<SessionManaging> sessionObj;
     void startRetrievingObjects();
     void retrieveNextObject();
     quint16 sessionID;
@@ -104,7 +104,7 @@ private:
     QTimer* sessionInitialRetrieveTimeout;
     int retries;
     void changeObjectInstances(quint32 objID, quint32 instID, bool delayed);
-    void startSessionRetrieving(UAVObject *session);
+    void startSessionRetrieving(QSharedPointer<UAVObject> session = QSharedPointer<UAVObject>());
     void sessionFallback();
     bool isManaged;
     QHash<quint16, QList<objStruc> > sessions;

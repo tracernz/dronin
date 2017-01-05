@@ -130,7 +130,7 @@ signals:
     void overlayOpacityChanged(qreal);
 
 public slots:
-    void homePositionUpdated(UAVObject *);
+    void homePositionUpdated(QSharedPointer<UAVObject> obj);
     void onTelemetryConnect();
     void onTelemetryDisconnect();
 
@@ -147,7 +147,7 @@ private slots:
 
     void zoomIn();
     void zoomOut();
-    void updateWindspeed(UAVObject *obj);
+    void updateWindspeed(QSharedPointer<UAVObject> obj);
 
     /**
     * @brief signals received from the various map plug-in widget user controls

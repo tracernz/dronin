@@ -42,10 +42,18 @@
 #include "taskinfo.h"
 #include "loggingsettings.h"
 
+#include "uavobjectwidgetutils/objrelation.h"
+#include "uavobjectwidgetutils/objrelationmanager.h"
+#include <QSharedPointer>
+
 ConfigModuleWidget::ConfigModuleWidget(QWidget *parent) : ConfigTaskWidget(parent)
 {
     ui = new Ui::Modules();
     ui->setupUi(this);
+
+    QSharedPointer<ObjRelation> rel = QSharedPointer<ObjRelation>(new ObjRelation(ui->sbLel, "ModuleSettings", "ComUsbBridgeSpeed"));
+    ObjRelationManager *m = new ObjRelationManager(this);
+    m->addRelation(rel);
 
     connect(this, SIGNAL(autoPilotConnected()), this, SLOT(recheckTabs()));
 
@@ -58,9 +66,9 @@ ConfigModuleWidget::ConfigModuleWidget(QWidget *parent) : ConfigTaskWidget(paren
     ui->saveRAM->setVisible(settings->useExpertMode());
 
     // Don't allow these to be changed here, only in the respective tabs.
-    ui->cbAutotune->setDisabled(true);
-    ui->cbTxPid->setDisabled(true);
-    ui->cbCameraStab->setDisabled(true);
+    setWidgetEnabled(ui->cbAutotune, false);
+    setWidgetEnabled(ui->cbTxPid, false);
+    setWidgetEnabled(ui->cbCameraStab, false);
 
     // Connect auto-cell detection logic
     connect(ui->gbAutoCellDetection, SIGNAL(toggled(bool)), this, SLOT(autoCellDetectionToggled(bool)));
@@ -157,12 +165,6 @@ void ConfigModuleWidget::recheckTabs()
     obj = getObjectManager()->getObject(LoggingSettings::NAME);
     connect(obj, SIGNAL(transactionCompleted(UAVObject*,bool)), this, SLOT(objectUpdated(UAVObject*,bool)), Qt::UniqueConnection);
     obj->requestUpdate();
-
-    // This requires re-evaluation so that board connection doesn't re-enable
-    // the fields. TODO: use new ConfigTaskWidget::setWidgetEnabled function
-    ui->cbAutotune->setDisabled(true);
-    ui->cbTxPid->setDisabled(true);
-    ui->cbCameraStab->setDisabled(true);
 }
 
 //! Enable appropriate tab when objects are updated
@@ -361,17 +363,23 @@ void ConfigModuleWidget::updateVoltageFactorFromUavo(float value)
 
 void ConfigModuleWidget::autoCellDetectionToggled(bool checked)
 {
-    ui->sbMaxCellVoltage->setEnabled(checked);
-    ui->lblMaxCellVoltage->setEnabled(checked);
-    ui->sb_numBatteryCells->setEnabled(!checked);
-    ui->lblNumBatteryCells->setEnabled(!checked);
+    setWidgetEnabled(ui->sbMaxCellVoltage, checked);
+    setWidgetEnabled(ui->lblMaxCellVoltage, checked);
+    setWidgetEnabled(ui->sb_numBatteryCells, !checked);
+    setWidgetEnabled(ui->lblNumBatteryCells, !checked);
     if (checked) {
-        if (ui->sbMaxCellVoltage->property("ValueBackup").isValid())
+        if (ui->sbMaxCellVoltage->property("ValueBackup").isValid()) {
             ui->sbMaxCellVoltage->setValue(ui->sbMaxCellVoltage->property("ValueBackup").toDouble());
-        else
-            ui->sbMaxCellVoltage->setValue(4.2); // TODO: set this to default UAVO val instead of hardcoding?
+        } else {
+            UAVObjectField *mcv = getObjectManager()->getField("FlightBatterySettings", "MaxCellVoltage");
+            if (mcv)
+                ui->sbMaxCellVoltage->setValue(mcv->getDefaultValue().toDouble());
+            else
+                ui->sbMaxCellVoltage->setValue(4.2);
+        }
     } else {
-        ui->sbMaxCellVoltage->setProperty("ValueBackup", ui->sbMaxCellVoltage->value());
+        if (ui->sbMaxCellVoltage->value() > 0)
+            ui->sbMaxCellVoltage->setProperty("ValueBackup", ui->sbMaxCellVoltage->value());
         ui->sbMaxCellVoltage->setValue(0.0);
     }
 }

@@ -93,24 +93,26 @@ void UAVObjectBrowserWidget::onTreeItemExpanded(QModelIndex currentProxyIndex)
     TopTreeItem *top = dynamic_cast<TopTreeItem*>(item->parent());
 
     //Check if current tree index is the child of the top tree item
-    if (top)
-    {
+    if (top) {
         ObjectTreeItem *objItem = dynamic_cast<ObjectTreeItem*>(item);
         //If the cast succeeds, then this is a UAVO
-        if (objItem)
-        {
-            UAVObject *obj = objItem->object();
+        if (objItem) {
+            auto obj = objItem->object();
             // Check for multiple instance UAVO
-            if(!obj){
+            if (!obj) {
                 objItem = dynamic_cast<ObjectTreeItem*>(item->getChild(0));
                 obj = objItem->object();
             }
-            Q_ASSERT(obj);
+            if (!obj) {
+                Q_ASSERT(false);
+                qWarning() << "Invalid object!";
+                return;
+            }
             UAVObject::Metadata mdata = obj->getMetadata();
 
             // Determine fastest update
             quint16 tmpUpdatePeriod = MAXIMUM_UPDATE_PERIOD;
-            int accessType = UAVObject::GetGcsTelemetryUpdateMode(mdata);
+            int accessType = UAVObject::getGcsTelemetryUpdateMode(mdata);
             if (accessType != UAVObject::UPDATEMODE_MANUAL){
                 switch(accessType){
                 case UAVObject::UPDATEMODE_ONCHANGE:
@@ -123,7 +125,7 @@ void UAVObjectBrowserWidget::onTreeItemExpanded(QModelIndex currentProxyIndex)
                 }
             }
 
-            accessType = UAVObject::GetFlightTelemetryUpdateMode(mdata);
+            accessType = UAVObject::getFlightTelemetryUpdateMode(mdata);
             if (accessType != UAVObject::UPDATEMODE_MANUAL){
                 switch(accessType){
                 case UAVObject::UPDATEMODE_ONCHANGE:
@@ -153,20 +155,22 @@ void UAVObjectBrowserWidget::onTreeItemCollapsed(QModelIndex currentProxyIndex)
     TopTreeItem *top = dynamic_cast<TopTreeItem*>(item->parent());
 
     //Check if current tree index is the child of the top tree item
-    if (top)
-    {
+    if (top) {
         ObjectTreeItem *objItem = dynamic_cast<ObjectTreeItem*>(item);
         //If the cast succeeds, then this is a UAVO
-        if (objItem)
-        {
-            UAVObject *obj = objItem->object();
+        if (objItem) {
+            auto obj = objItem->object();
 
             // Check for multiple instance UAVO
-            if(!obj){
+            if (!obj) {
                 objItem = dynamic_cast<ObjectTreeItem*>(item->getChild(0));
                 obj = objItem->object();
             }
-            Q_ASSERT(obj);
+            if (!obj) {
+                Q_ASSERT(false);
+                qWarning() << "Invalid object!";
+                return;
+            }
 
             //Remove the UAVO, getting its stored value first.
             quint16 tmpUpdatePeriod = expandedUavoItems.value(obj->getName());
@@ -189,15 +193,22 @@ void UAVObjectBrowserWidget::onTreeItemCollapsed(QModelIndex currentProxyIndex)
     }
 }
 
-void UAVObjectBrowserWidget::updateThrottlePeriod(UAVObject *obj)
+void UAVObjectBrowserWidget::updateThrottlePeriod(QSharedPointer<UAVObject> obj)
 {
+    Q_ASSERT(obj);
+    if (!obj)
+        return;
     // Test if this is a metadata object. A UAVO's metadata's object ID is the UAVO's object ID + 1
-    if ((obj->getObjID() & 0x01) == 1){
+    if ((obj->getObjID() & 0x01) == 1) {
         ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
         Q_ASSERT(pm);
+        if (!pm)
+            return;
         UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
         Q_ASSERT(objManager);
-        QVector<UAVObject*> list = objManager->getObjectInstancesVector(obj->getObjID() - 1);
+        if (!objManager)
+            return;
+        QVector<QSharedPointer<UAVObject>> list = objManager->getObjectInstancesVector(obj->getObjID() - 1);
         obj = list.at(0);
     }
 
@@ -206,7 +217,7 @@ void UAVObjectBrowserWidget::updateThrottlePeriod(UAVObject *obj)
 
     // Determine fastest update
     quint16 tmpUpdatePeriod = MAXIMUM_UPDATE_PERIOD;
-    int accessType = UAVObject::GetGcsTelemetryUpdateMode(mdata);
+    int accessType = UAVObject::getGcsTelemetryUpdateMode(mdata);
     if (accessType != UAVObject::UPDATEMODE_MANUAL){
         switch(accessType){
         case UAVObject::UPDATEMODE_ONCHANGE:
@@ -219,7 +230,7 @@ void UAVObjectBrowserWidget::updateThrottlePeriod(UAVObject *obj)
         }
     }
 
-    accessType = UAVObject::GetFlightTelemetryUpdateMode(mdata);
+    accessType = UAVObject::getFlightTelemetryUpdateMode(mdata);
     if (accessType != UAVObject::UPDATEMODE_MANUAL){
         switch(accessType){
         case UAVObject::UPDATEMODE_ONCHANGE:
@@ -367,16 +378,17 @@ void UAVObjectBrowserWidget::sendUpdate()
        return;
     }
 
-    UAVDataObject * dataObj=qobject_cast<UAVDataObject *>(objItem->object());
-    if(dataObj && dataObj->isSettings())
+    auto dataObj = objItem->object().dynamicCast<UAVDataObject>();
+    if (dataObj && dataObj->isSettings())
         objItem->setUpdatedOnly(true);
     objItem->apply();
-    UAVObject *obj = objItem->object();
+    auto obj = objItem->object();
     Q_ASSERT(obj);
-    obj->updated();
-
-    // Search for the new fastest UAVO
-    updateThrottlePeriod(obj);
+    if (obj) {
+        obj->updated();
+        // Search for the new fastest UAVO
+        updateThrottlePeriod(obj);
+    }
 }
 
 
@@ -392,12 +404,14 @@ void UAVObjectBrowserWidget::requestUpdate()
        return;
     }
 
-    UAVObject *obj = objItem->object();
+    auto obj = objItem->object();
     Q_ASSERT(obj);
-    obj->requestUpdate();
+    if (obj) {
+        obj->requestUpdate();
 
-    // Search for the new fastest UAVO
-    updateThrottlePeriod(obj);
+        // Search for the new fastest UAVO
+        updateThrottlePeriod(obj);
+    }
 }
 
 
@@ -444,15 +458,18 @@ void UAVObjectBrowserWidget::saveObject()
        return;
     }
 
-    UAVDataObject * dataObj=qobject_cast<UAVDataObject *>(objItem->object());
-    if(dataObj && dataObj->isSettings())
+    auto dataObj = objItem->object().dynamicCast<UAVDataObject>();
+    if (dataObj && dataObj->isSettings())
         objItem->setUpdatedOnly(false);
-    UAVObject *obj = objItem->object();
-    Q_ASSERT(obj);
-    updateObjectPersistance(ObjectPersistence::OPERATION_SAVE, obj);
 
-    // Search for the new fastest UAVO
-    updateThrottlePeriod(obj);
+    auto obj = objItem->object();
+    Q_ASSERT(obj);
+    if (obj) {
+        updateObjectPersistance(ObjectPersistence::OPERATION_SAVE, obj);
+
+        // Search for the new fastest UAVO
+        updateThrottlePeriod(obj);
+    }
 }
 
 
@@ -469,14 +486,16 @@ void UAVObjectBrowserWidget::loadObject()
        return;
     }
 
-    UAVObject *obj = objItem->object();
+    auto obj = objItem->object();
     Q_ASSERT(obj);
-    updateObjectPersistance(ObjectPersistence::OPERATION_LOAD, obj);
-    // Retrieve object so that latest value is displayed
-    requestUpdate();
+    if (obj) {
+        updateObjectPersistance(ObjectPersistence::OPERATION_LOAD, obj);
+        // Retrieve object so that latest value is displayed
+        requestUpdate();
 
-    // Search for the new fastest UAVO
-    updateThrottlePeriod(obj);
+        // Search for the new fastest UAVO
+        updateThrottlePeriod(obj);
+    }
 }
 
 
@@ -492,9 +511,10 @@ void UAVObjectBrowserWidget::eraseObject()
        return;
     }
 
-    UAVObject *obj = objItem->object();
+    auto obj = objItem->object();
     Q_ASSERT(obj);
-    updateObjectPersistance(ObjectPersistence::OPERATION_DELETE, obj);
+    if (obj)
+        updateObjectPersistance(ObjectPersistence::OPERATION_DELETE, obj);
 }
 
 
@@ -503,13 +523,12 @@ void UAVObjectBrowserWidget::eraseObject()
  * @param op  ObjectPersistence::OperationOptions enum
  * @param obj UAVObject that will be operated on
  */
-void UAVObjectBrowserWidget::updateObjectPersistance(ObjectPersistence::OperationOptions op, UAVObject *obj)
+void UAVObjectBrowserWidget::updateObjectPersistance(ObjectPersistence::OperationOptions op, QSharedPointer<UAVObject> obj)
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    ObjectPersistence* objper = dynamic_cast<ObjectPersistence*>( objManager->getObject(ObjectPersistence::NAME) );
-    if (obj != NULL)
-    {
+    auto objper = objManager->getObject<ObjectPersistence>();
+    if (obj && objper) {
         ObjectPersistence::DataFields data;
         data.Operation = op;
         data.ObjectID = obj->getObjID();

@@ -35,10 +35,15 @@ TauLinkGadgetWidget::TauLinkGadgetWidget(QWidget *parent) : ConfigTaskWidget(par
     // Connect to the LinkStatus object updates
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    rfm22bStatusObj = dynamic_cast<UAVDataObject*>(objManager->getObject("RFM22BStatus"));
+    if (!objManager) {
+        Q_ASSERT(false);
+        qWarning() << "Could not get UAVObjectManager!";
+        return;
+    }
+    auto rfm22bStatusObj = objManager->getObject("RFM22BStatus");
 
-    if (rfm22bStatusObj != NULL ) {
-        connect(rfm22bStatusObj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(updateStatus(UAVObject*)));
+    if (rfm22bStatusObj) {
+        connect(rfm22bStatusObj.data(), &UAVObject::objectUpdated, this, &TauLinkGadgetWidget::updateStatus);
         rfm22bStatusObj->requestUpdate();
 
         autoLoadWidgets();
@@ -65,18 +70,26 @@ TauLinkGadgetWidget::~TauLinkGadgetWidget()
 /*!
   \brief Called by updates to @RFM22BStatus
   */
-void TauLinkGadgetWidget::updateStatus(UAVObject *object)
+void TauLinkGadgetWidget::updateStatus(QSharedPointer<UAVObject> object)
 {
+    if (!object) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object!";
+    }
     // Update the DeviceID field
-    UAVObjectField* idField = object->getField("DeviceID");
+    auto idField = object->getField("DeviceID");
     if (idField) {
         ui->DeviceID->setText(QString::number(idField->getValue().toUInt(), 16).toUpper());
+    } else {
+        qWarning() << "Invalid object field!";
     }
 
     // Update the link state
-    UAVObjectField* linkField = object->getField("LinkState");
+    auto linkField = object->getField("LinkState");
     if (linkField) {
         ui->LinkState->setText(linkField->getValue().toString());
+    } else {
+        qWarning() << "Invalid object field!";
     }
 }
 /**

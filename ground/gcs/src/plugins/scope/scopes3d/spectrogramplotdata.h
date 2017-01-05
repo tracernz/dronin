@@ -53,7 +53,7 @@ public:
     /*!
       \brief Append new data to the plot
       */
-    bool append(UAVObject* obj);
+    bool append(QSharedPointer<UAVObject> obj);
 
     /*!
       \brief Removes the old data from the buffer

@@ -115,10 +115,17 @@ bool Lux::setInputType(enum InputType type)
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwLux *hwLux = HwLux::GetInstance(uavoManager);
-    Q_ASSERT(hwLux);
-    if (!hwLux)
+    if (!uavoManager) {
+        Q_ASSERT(false);
+        qWarning() << "Could not get UAVObjectManager!";
         return false;
+    }
+    auto hwLux = HwLux::getInstance(uavoManager);
+    if (!hwLux) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object! HwLux";
+        return false;
+    }
 
     HwLux::DataFields settings = hwLux->getData();
 
@@ -156,10 +163,17 @@ enum Core::IBoardType::InputType Lux::getInputType()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwLux *hwLux = HwLux::GetInstance(uavoManager);
-    Q_ASSERT(hwLux);
-    if (!hwLux)
+    if (!uavoManager) {
+        Q_ASSERT(false);
+        qWarning() << "Could not get UAVObjectManager!";
         return INPUT_TYPE_UNKNOWN;
+    }
+    auto hwLux = HwLux::getInstance(uavoManager);
+    if (!hwLux) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object! HwLux";
+        return INPUT_TYPE_UNKNOWN;
+    }
 
     HwLux::DataFields settings = hwLux->getData();
 
@@ -181,10 +195,17 @@ int Lux::queryMaxGyroRate()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwLux *hwLux = HwLux::GetInstance(uavoManager);
-    Q_ASSERT(hwLux);
-    if (!hwLux)
+    if (!uavoManager) {
+        Q_ASSERT(false);
+        qWarning() << "Could not get UAVObjectManager!";
         return 0;
+    }
+    auto hwLux = HwLux::getInstance(uavoManager);
+    if (!hwLux) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object! HwLux";
+        return 0;
+    }
 
     HwLux::DataFields settings = hwLux->getData();
 

@@ -65,10 +65,10 @@ void OutputCalibrationUtil::startChannelOutput(quint16 channel, quint16 safeValu
 
         // Enable actuator control from GCS...
         // Store current metadata for later restore
-        UAVObject::SetFlightAccess(metaData, UAVObject::ACCESS_READONLY);
-        UAVObject::SetFlightTelemetryUpdateMode(metaData, UAVObject::UPDATEMODE_ONCHANGE);
-        UAVObject::SetGcsTelemetryAcked(metaData, false);
-        UAVObject::SetGcsTelemetryUpdateMode(metaData, UAVObject::UPDATEMODE_ONCHANGE);
+        UAVObject::setFlightAccess(metaData, UAVObject::ACCESS_READONLY);
+        UAVObject::setFlightTelemetryUpdateMode(metaData, UAVObject::UPDATEMODE_ONCHANGE);
+        UAVObject::setGcsTelemetryAcked(metaData, false);
+        UAVObject::setGcsTelemetryUpdateMode(metaData, UAVObject::UPDATEMODE_ONCHANGE);
         metaData.gcsTelemetryUpdatePeriod = 100;
 
         // Apply changes

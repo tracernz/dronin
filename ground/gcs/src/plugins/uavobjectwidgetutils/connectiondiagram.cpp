@@ -201,7 +201,7 @@ void ConnectionDiagram::saveToFile()
 
 void ConnectionDiagram::addUavoFieldElements(QStringList &elements, const QString &objName, const QString &fieldName, const QString &prefix)
 {
-    UAVObjectField *field = uavoMngr->getField(objName, fieldName);
+    auto field = uavoMngr->getField(objName, fieldName);
     Q_ASSERT(field);
     if (!field)
         return;

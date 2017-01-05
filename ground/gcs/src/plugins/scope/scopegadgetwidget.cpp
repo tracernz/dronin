@@ -101,10 +101,9 @@ ScopeGadgetWidget::~ScopeGadgetWidget()
     // Get the object to de-monitor
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    foreach (QString uavObjName, m_connectedUAVObjects)
-    {
-        UAVDataObject *obj = dynamic_cast<UAVDataObject*>(objManager->getObject(uavObjName));
-        disconnect(obj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(uavObjectReceived(UAVObject*)));
+    for (const QString &uavObjName : m_connectedUAVObjects) {
+        auto obj = objManager->getObject(uavObjName).dynamicCast<UAVDataObject>();
+        disconnect(obj.data(), &UAVObject::objectUpdated, this, &ScopeGadgetWidget::uavObjectReceived);
     }
 
     // Clear the plot
@@ -359,8 +358,10 @@ void ScopeGadgetWidget::showCurve(const QVariant & itemInfo, bool on, int index)
  * @brief ScopeGadgetWidget::uavObjectReceived
  * @param obj
  */
-void ScopeGadgetWidget::uavObjectReceived(UAVObject* obj)
+void ScopeGadgetWidget::uavObjectReceived(QSharedPointer<UAVObject> obj)
 {
+    if (!obj)
+        return;
     foreach(PlotData* plotdData, m_dataSources.values()) {
         bool ret = plotdData->append(obj);
         if (ret)
@@ -421,13 +422,15 @@ QString ScopeGadgetWidget::getUavObjectFieldUnits(QString uavObjectName, QString
     //Get the uav object
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    UAVDataObject* obj = dynamic_cast<UAVDataObject*>(objManager->getObject(uavObjectName));
-    if(!obj) {
+    if (!objManager)
+        return "";
+    auto obj = objManager->getObject(uavObjectName).dynamicCast<UAVDataObject>();
+    if (!obj) {
         qDebug() << "In scope gadget, UAVObject " << uavObjectName << " is missing";
         return "";
     }
-    UAVObjectField* field = obj->getField(uavObjectFieldName);
-    if(!field) {
+    auto field = obj->getField(uavObjectFieldName);
+    if (!field) {
         qDebug() << "In scope gadget, in fields loaded from GCS config file, field" << uavObjectFieldName << " of UAVObject " << uavObjectName << " is missing";
         return "";
     }
@@ -456,11 +459,16 @@ void ScopeGadgetWidget::showEvent(QShowEvent *event)
  * @brief ScopeGadgetWidget::connectUAVO Connects UAVO update signal, but only if it hasn't yet been connected
  * @param obj
  */
-void ScopeGadgetWidget::connectUAVO(UAVDataObject* obj){
+void ScopeGadgetWidget::connectUAVO(QSharedPointer<UAVDataObject> obj){
+    if (!obj) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object!";
+        return;
+    }
     //Link to the new signal data only if this UAVObject has not been connected yet
     if (!m_connectedUAVObjects.contains(obj->getName())) {
         m_connectedUAVObjects.append(obj->getName());
-        connect(obj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(uavObjectReceived(UAVObject*)));
+        connect(obj.data(), &UAVObject::objectUpdated, this, &ScopeGadgetWidget::uavObjectReceived);
     }
 
 }

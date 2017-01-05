@@ -37,9 +37,9 @@
 #include <QtEndian>
 #include <QDebug>
 
-UAVObjectField::UAVObjectField(const QString& name, const QString& units, FieldType type, quint32 numElements,
-                               const QStringList& options, const QList<int>& indices, const QString &limits,
-                               const QString &description, const QList<QVariant> defaultValues)
+UAVObjectField::UAVObjectField(const QString& name, const QString& units, FieldType type, FieldRadix radix,
+                               quint32 numElements, const QStringList& options, const QList<int>& indices,
+                               const QString &limits, const QString &description, const QList<QVariant> defaultValues)
 {
     QStringList elementNames;
     // Set element names
@@ -48,31 +48,32 @@ UAVObjectField::UAVObjectField(const QString& name, const QString& units, FieldT
         elementNames.append(QString("%1").arg(n));
     }
     // Initialize
-    constructorInitialize(name, units, type, elementNames, options, indices, limits, description, defaultValues);
+    constructorInitialize(name, units, type, radix, elementNames, options, indices, limits, description, defaultValues);
 
 }
 
-UAVObjectField::UAVObjectField(const QString& name, const QString& units, FieldType type, const QStringList& elementNames,
-                               const QStringList& options, const QList<int>& indices, const QString &limits,
-                               const QString &description, const QList<QVariant> defaultValues)
+UAVObjectField::UAVObjectField(const QString& name, const QString& units, FieldType type, FieldRadix radix,
+                               const QStringList& elementNames, const QStringList& options, const QList<int>& indices,
+                               const QString &limits, const QString &description, const QList<QVariant> defaultValues)
 {
-    constructorInitialize(name, units, type, elementNames, options, indices, limits, description, defaultValues);
+    constructorInitialize(name, units, type, radix, elementNames, options, indices, limits, description, defaultValues);
 }
 
-void UAVObjectField::constructorInitialize(const QString& name, const QString& units, FieldType type, const QStringList& elementNames,
-                                           const QStringList& options, const QList<int>& indices, const QString &limits,
-                                           const QString &description, const QList<QVariant> defaultValues)
+void UAVObjectField::constructorInitialize(const QString& name, const QString& units, FieldType type, FieldRadix radix,
+                                           const QStringList& elementNames, const QStringList& options,
+                                           const QList<int>& indices, const QString &limits, const QString &description,
+                                           const QList<QVariant> defaultValues)
 {
     // Copy params
     this->name = name;
     this->units = units;
     this->type = type;
+    this->radix = radix;
     this->options = options;
     this->indices = indices;
     this->numElements = elementNames.length();
     this->offset = 0;
     this->data = NULL;
-    this->obj = NULL;
     this->elementNames = elementNames;
     this->description = description;
     // Set field size
@@ -493,7 +494,7 @@ QVariant UAVObjectField::getMinLimit(quint32 index, int board)
     }
     return QVariant();
 }
-void UAVObjectField::initialize(quint8* data, quint32 dataOffset, UAVObject* obj)
+void UAVObjectField::initialize(quint8* data, quint32 dataOffset, QSharedPointer<UAVObject> obj)
 {
     this->data = data;
     this->offset = dataOffset;
@@ -540,7 +541,7 @@ QStringList UAVObjectField::getElementNames()
     return elementNames;
 }
 
-UAVObject* UAVObjectField::getObject()
+QSharedPointer<UAVObject> UAVObjectField::getObject()
 {
     return obj;
 }
@@ -758,6 +759,7 @@ qint32 UAVObjectField::unpack(const quint8* dataIn)
         memcpy(&data[offset], dataIn, numElements);
         break;
     }
+    emit fieldUpdated(sharedFromThis());
     // Done
     return getNumBytes();
 }
@@ -943,7 +945,7 @@ bool UAVObjectField::checkValue(const QVariant& value, quint32 index)
     // Get metadata
     UAVObject::Metadata mdata = obj->getMetadata();
     // Update value if the access mode permits
-    if ( UAVObject::GetFlightAccess(mdata) == UAVObject::ACCESS_READWRITE )
+    if ( UAVObject::getFlightAccess(mdata) == UAVObject::ACCESS_READWRITE )
     {
         switch (type)
         {
@@ -983,7 +985,7 @@ void UAVObjectField::setValue(const QVariant& value, quint32 index)
     // Get metadata
     UAVObject::Metadata mdata = obj->getMetadata();
     // Update value if the access mode permits
-    if ( UAVObject::GetGcsAccess(mdata) == UAVObject::ACCESS_READWRITE )
+    if ( UAVObject::getGcsAccess(mdata) == UAVObject::ACCESS_READWRITE )
     {
         switch (type)
         {
@@ -1061,6 +1063,7 @@ void UAVObjectField::setValue(const QVariant& value, quint32 index)
         }
         }
     }
+    emit fieldUpdated(sharedFromThis());
 }
 
 double UAVObjectField::getDouble(quint32 index)
@@ -1121,6 +1124,11 @@ bool UAVObjectField::isDefaultValue(quint32 index)
 
     Q_ASSERT(false);
     return false;
+}
+
+int UAVObjectField::getRadix()
+{
+    return static_cast<int>(radix);
 }
 
 /**

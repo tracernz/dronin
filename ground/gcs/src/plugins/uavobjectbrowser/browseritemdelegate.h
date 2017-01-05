@@ -53,6 +53,7 @@ public:
         const QStyleOptionViewItem &option, const QModelIndex &index) const;
     QSize sizeHint(const QStyleOptionViewItem & option,
                                         const QModelIndex &index) const;
+    QString displayText(const QVariant &value, const QLocale &locale) const;
 
 
 signals:

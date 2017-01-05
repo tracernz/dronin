@@ -47,7 +47,7 @@ public:
     ~SimulationConfiguration();
 
 private slots:
-    void onLedStateUpdated(UAVObject *obj);
+    void onLedStateUpdated(QSharedPointer<UAVObject> obj);
 
 private:
     Ui::SimulationConfiguration *ui;

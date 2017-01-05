@@ -109,7 +109,7 @@ UAVObjectManager* UAVObjectUtilManager::getObjectManager() {
  *    once the operation is completed. We need therefore to listen to updates on the objectPersistence
  *    object, and check the "Operation" field, which should be set to "completed", or "error".
  */
-void UAVObjectUtilManager::saveObjectToFlash(UAVObject *obj)
+void UAVObjectUtilManager::saveObjectToFlash(QSharedPointer<UAVObject> obj)
 {
     // Add to queue
     queue.enqueue(obj);
@@ -129,29 +129,38 @@ void UAVObjectUtilManager::saveObjectToFlash(UAVObject *obj)
  */
 void UAVObjectUtilManager::saveNextObject()
 {
-    if ( queue.isEmpty() ) {
+    if (queue.isEmpty())
         return;
-    }
 
     Q_ASSERT(saveState == IDLE);
 
     // Get next object from the queue (don't dequeue yet)
-    UAVObject* obj = queue.head();
+    auto obj = queue.head();
     Q_ASSERT(obj);
+    if (!obj) {
+        qWarning() << "Saved failed! Invalid object at queue head";
+        queue.dequeue();
+        saveNextObject();
+        return;
+    }
     UAVOBJECTUTIL_QXTLOG_DEBUG(QString("Send save object request to board %0").arg(obj->getName()));
 
-    ObjectPersistence * objectPersistence = ObjectPersistence::GetInstance(getObjectManager());
+    auto objectPersistence = ObjectPersistence::getInstance(getObjectManager());
     Q_ASSERT(objectPersistence);
+    if (!objectPersistence) {
+        qWarning() << "Save failed, no ObjectPersistence instance available!";
+        return;
+    }
 
     // "transactionCompleted" is emitted once the objectPersistence object is sent over the telemetry link.
     // Since its metadata state that it should be ACK'ed on flight telemetry, the transactionCompleted signal
     // will be triggered once the GCS telemetry manager receives an ACK from the flight controller, or times
     // out. the success value will reflect success or failure.
-    connect(objectPersistence, SIGNAL(transactionCompleted(UAVObject*,bool)), this, SLOT(objectPersistenceTransactionCompleted(UAVObject*,bool)), Qt::UniqueConnection);
+    connect(objectPersistence.data(), static_cast<void (UAVObject::*)(QSharedPointer<UAVObject>, bool)>(&UAVObject::transactionCompleted), this, &UAVObjectUtilManager::objectPersistenceTransactionCompleted, Qt::UniqueConnection);
     // After we update the objectPersistence UAVO, we need to listen to its "objectUpdated" event, which will occur
     // once the flight controller sends this object back to the GCS, with the "Operation" field set to "Completed"
     // or "Error".
-    connect(objectPersistence, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(objectPersistenceUpdated(UAVObject *)), Qt::UniqueConnection);
+    connect(objectPersistence.data(), &UAVObject::objectUpdated, this, &UAVObjectUtilManager::objectPersistenceUpdated, Qt::UniqueConnection);
     saveState = AWAITING_ACK;
     UAVOBJECTUTIL_QXTLOG_DEBUG(QString("[saveObjectToFlash] Moving on to AWAITING_ACK"));
 
@@ -180,9 +189,9 @@ void UAVObjectUtilManager::saveNextObject()
   * signal (saveCompleted with 'false').  After a succesful
   * transaction it will then wait for a "save completed" update from the autopilot.
   */
-void UAVObjectUtilManager::objectPersistenceTransactionCompleted(UAVObject* obj, bool success)
+void UAVObjectUtilManager::objectPersistenceTransactionCompleted(QSharedPointer<UAVObject> obj, bool success)
 {
-    if (success) {
+    if (obj && success) {
         Q_ASSERT(obj->getName().compare("ObjectPersistence") == 0);
         Q_ASSERT(saveState == AWAITING_ACK);
         // Two things can happen then:
@@ -194,21 +203,23 @@ void UAVObjectUtilManager::objectPersistenceTransactionCompleted(UAVObject* obj,
         // the queue:
         saveState = AWAITING_COMPLETED;
         UAVOBJECTUTIL_QXTLOG_DEBUG(QString("[saveObjectToFlash] Moving on to AWAITING_COMPLETED"));
-        disconnect(obj, SIGNAL(transactionCompleted(UAVObject*,bool)), this, SLOT(objectPersistenceTransactionCompleted(UAVObject*,bool)));
+        disconnect(obj.data(), static_cast<void (UAVObject::*)(QSharedPointer<UAVObject>, bool)>(&UAVObject::transactionCompleted),
+                   this, &UAVObjectUtilManager::objectPersistenceTransactionCompleted);
         failureTimer.start(2000); // Create a timeout
     } else {
         // Can be caused by timeout errors on sending.  Forget it and send next.
         UAVOBJECTUTIL_QXTLOG_DEBUG(QString("objectPersistenceTranscationCompleted (error))"));
-        ObjectPersistence * objectPersistence = ObjectPersistence::GetInstance(getObjectManager());
+        auto objectPersistence = ObjectPersistence::getInstance(getObjectManager());
         Q_ASSERT(objectPersistence);
-
-        objectPersistence->disconnect(this);
+        if (objectPersistence)
+             objectPersistence->disconnect(this);
         queue.dequeue(); // We can now remove the object, it failed anyway.
         saveState = IDLE;
         // Careful below: objectPersistence contains a field 'ObjectID' that corresponds to
         // the objectID we wanted to save. Don't confuse with the OBJID of the Objectpersistence
         // UAVO itself!
-        emit saveCompleted(objectPersistence->getObjectID(), false);
+        if (objectPersistence)
+            emit saveCompleted(objectPersistence->getObjectID(), false);
         saveNextObject();
     }
 }
@@ -222,16 +233,17 @@ void UAVObjectUtilManager::objectPersistenceOperationFailed()
 {
     if (saveState == AWAITING_COMPLETED) {
 
-        ObjectPersistence * objectPersistence = ObjectPersistence::GetInstance(getObjectManager());
+        auto objectPersistence = ObjectPersistence::getInstance(getObjectManager());
         Q_ASSERT(objectPersistence);
 
-        UAVObject* obj = queue.dequeue(); // We can now remove the object, it failed anyway.
+        auto obj = queue.dequeue(); // We can now remove the object, it failed anyway.
         Q_ASSERT(obj);
 
         objectPersistence->disconnect(this);
 
         saveState = IDLE;
-        emit saveCompleted(obj->getObjID(), false);
+        if (obj)
+            emit saveCompleted(obj->getObjID(), false);
 
         saveNextObject();
     }
@@ -244,17 +256,21 @@ void UAVObjectUtilManager::objectPersistenceOperationFailed()
   * then requests next object be saved.
   * @param[in] The object just received.  Must be ObjectPersistance
   */
-void UAVObjectUtilManager::objectPersistenceUpdated(UAVObject * obj)
+void UAVObjectUtilManager::objectPersistenceUpdated(QSharedPointer<UAVObject> obj)
 {
-    Q_ASSERT(obj);
-    Q_ASSERT(obj->getObjID() == ObjectPersistence::OBJID);
+    auto objPersistence = obj.dynamicCast<ObjectPersistence>();
+    Q_ASSERT(objPersistence);
+    if (!objPersistence) {
+        qWarning() << "Object persistance update failed, wrong object received!";
+        return;
+    }
 
     if (saveState != AWAITING_COMPLETED) {
         // We'll get two of those before we're in AWAITING_COMPLETED state...
         return;
     }
 
-    ObjectPersistence::DataFields objectPersistence = ((ObjectPersistence *)obj)->getData();
+    ObjectPersistence::DataFields objectPersistence = objPersistence->getData();
 
     if (objectPersistence.Operation == ObjectPersistence::OPERATION_ERROR) {
         failureTimer.stop();
@@ -262,13 +278,13 @@ void UAVObjectUtilManager::objectPersistenceUpdated(UAVObject * obj)
     } else if (objectPersistence.Operation == ObjectPersistence::OPERATION_COMPLETED) {
         failureTimer.stop();
         // Check right object saved
-        UAVObject* savingObj = queue.head();
-        if (objectPersistence.ObjectID != savingObj->getObjID() ) {
+        auto savingObj = queue.head();
+        if (objectPersistence.ObjectID != savingObj->getObjID()) {
             objectPersistenceOperationFailed();
             return;
         }
 
-        obj->disconnect(this);
+        objPersistence->disconnect(this);
         queue.dequeue(); // We can now remove the object, it's done.
         saveState = IDLE;
         UAVOBJECTUTIL_QXTLOG_DEBUG(QString("[saveObjectToFlash] Object save succeeded"));
@@ -300,9 +316,9 @@ QMap<QString, UAVObject::Metadata> UAVObjectUtilManager::readMetadata(metadataSe
 
     // Save all metadata objects.
     UAVObjectManager *objManager = getObjectManager();
-    QVector< QVector<UAVDataObject*> > objList = objManager->getDataObjectsVector();
-    foreach (QVector<UAVDataObject*> list, objList) {
-        foreach (UAVDataObject* obj, list) {
+    auto objList = objManager->getDataObjectsVector();
+    for (const auto &list : objList) {
+        for (const auto &obj : list) {
             bool updateMetadataFlag = false;
             switch (metadataReadType){
             case ALL_METADATA:
@@ -358,7 +374,7 @@ bool UAVObjectUtilManager::setMetadata(QMap<QString, UAVObject::Metadata> metaDa
     // Load all metadata objects.
     UAVObjectManager *objManager = getObjectManager();
     foreach (QString str, metaDataSetList.keys()){
-        UAVDataObject *obj = dynamic_cast<UAVDataObject*>(objManager->getObject(str));
+        auto obj = objManager->getObject(str).dynamicCast<UAVDataObject>();
         bool updateMetadataFlag = false;
         switch (metadataSetType){
         case ALL_METADATA:
@@ -388,10 +404,10 @@ bool UAVObjectUtilManager::setMetadata(QMap<QString, UAVObject::Metadata> metaDa
         emit completedMetadataWrite(true);
         return true;
     }
-    UAVDataObject *obj = metadataSendlist.keys().first();
+    QSharedPointer<UAVDataObject> obj = metadataSendlist.keys().first();
 
     // Connect transaction and timeout timers before making the request
-    connect(obj->getMetaObject(), SIGNAL(transactionCompleted(UAVObject*,bool)), this, SLOT(metadataTransactionCompleted(UAVObject*,bool)), Qt::UniqueConnection);
+    connect(obj->getMetaObject().data(), SIGNAL(transactionCompleted(UAVObject*,bool)), this, SLOT(metadataTransactionCompleted(UAVObject*,bool)), Qt::UniqueConnection);
     obj->setMetadata(metadataSendlist.value(obj));
 
     return true;
@@ -408,11 +424,10 @@ bool UAVObjectUtilManager::resetMetadataToDefaults()
 
     // Load all metadata object defaults
     UAVObjectManager *objManager = getObjectManager();
-    QVector< QVector<UAVDataObject*> > objList = objManager->getDataObjectsVector();
-    foreach (QVector<UAVDataObject*> list, objList) {
-        foreach (UAVDataObject* obj, list) {
+    auto objList = objManager->getDataObjectsVector();
+    for (const auto &list : objList) {
+        for (const auto &obj : list)
             metaDataList.insert(obj->getName(), obj->getDefaultMetadata());
-        }
     }
 
     // Save metadata
@@ -428,30 +443,28 @@ bool UAVObjectUtilManager::resetMetadataToDefaults()
  * @param uavoObject
  * @param success
  */
-void UAVObjectUtilManager::metadataTransactionCompleted(UAVObject* uavoObject, bool success)
+void UAVObjectUtilManager::metadataTransactionCompleted(QSharedPointer<UAVObject> uavoObject, bool success)
 {
-    UAVMetaObject *mobj = dynamic_cast<UAVMetaObject*>(uavoObject);
-    UAVDataObject *dobj = dynamic_cast<UAVDataObject*>(mobj->getParentObject());
+    auto mobj = uavoObject.dynamicCast<UAVMetaObject>();
+    auto dobj = mobj->getParentObject().dynamicCast<UAVDataObject>();
     Q_ASSERT(mobj);
     Q_ASSERT(dobj);
-    if (metadataSendlist.contains(dobj))
-    {
-        if (success)
-        {
+    if (!mobj || !dobj)
+        return;
+
+    if (metadataSendlist.contains(dobj)) {
+        if (success) {
             UAVOBJECTUTIL_QXTLOG_DEBUG(QString("Writing metadata succeded on %0").arg(uavoObject->getName()));
-        }
-        else
-        {
-            // If unsuccessful
+        } else {
             metadataSendSuccess = false;
             UAVOBJECTUTIL_QXTLOG_DEBUG(QString("metadata send failed").arg(metadataSendlist.keys().first()->getName()));
         }
-        disconnect(mobj, SIGNAL(transactionCompleted(UAVObject*,bool)), this, SLOT(metadataTransactionCompleted(UAVObject*,bool)));
+        disconnect(mobj.data(), SIGNAL(transactionCompleted(UAVObject*,bool)), this, SLOT(metadataTransactionCompleted(UAVObject*,bool)));
         metadataSendlist.take(dobj);
         if(!metadataSendlist.keys().isEmpty())
         {
             metadataSendlist.keys().first()->setMetadata(metadataSendlist.value(metadataSendlist.keys().first()));
-            connect(metadataSendlist.keys().first()->getMetaObject(), SIGNAL(transactionCompleted(UAVObject*,bool)), this, SLOT(metadataTransactionCompleted(UAVObject*,bool)), Qt::UniqueConnection);
+            connect(metadataSendlist.keys().first()->getMetaObject().data(), SIGNAL(transactionCompleted(UAVObject*,bool)), this, SLOT(metadataTransactionCompleted(UAVObject*,bool)), Qt::UniqueConnection);
             return;
         }
         else {
@@ -467,7 +480,7 @@ FirmwareIAPObj::DataFields UAVObjectUtilManager::getFirmwareIap()
 {
     FirmwareIAPObj::DataFields dummy;
 
-    FirmwareIAPObj *firmwareIap = FirmwareIAPObj::GetInstance(obm);
+    auto firmwareIap = FirmwareIAPObj::getInstance(obm);
     Q_ASSERT(firmwareIap);
     if (!firmwareIap)
         return dummy;
@@ -562,8 +575,10 @@ int UAVObjectUtilManager::setHomeLocation(double LLA[3], bool save_to_sdcard)
     // ******************
     // save the new settings
 
-    HomeLocation *homeLocation = HomeLocation::GetInstance(obm);
-    Q_ASSERT(homeLocation != NULL);
+    auto homeLocation = HomeLocation::getInstance(obm);
+    Q_ASSERT(homeLocation);
+    if (!homeLocation)
+        return -2;
 
     HomeLocation::DataFields homeLocationData = homeLocation->getData();
     homeLocationData.Latitude = LLA[0] * 1e7;
@@ -586,8 +601,10 @@ int UAVObjectUtilManager::setHomeLocation(double LLA[3], bool save_to_sdcard)
 
 int UAVObjectUtilManager::getHomeLocation(bool &set, double LLA[3])
 {
-    HomeLocation *homeLocation = HomeLocation::GetInstance(obm);
-    Q_ASSERT(homeLocation != NULL);
+    auto homeLocation = HomeLocation::getInstance(obm);
+    Q_ASSERT(homeLocation);
+    if (!homeLocation)
+        return -1;
 
     HomeLocation::DataFields homeLocationData = homeLocation->getData();
 
@@ -620,8 +637,10 @@ int UAVObjectUtilManager::getHomeLocation(bool &set, double LLA[3])
 
 int UAVObjectUtilManager::getGPSPosition(double LLA[3])
 {
-    GPSPosition *gpsPosition = GPSPosition::GetInstance(obm);
-    Q_ASSERT(gpsPosition != NULL);
+    auto gpsPosition = GPSPosition::getInstance(obm);
+    Q_ASSERT(gpsPosition);
+    if (!gpsPosition)
+        return -1;
 
     GPSPosition::DataFields gpsPositionData = gpsPosition->getData();
 

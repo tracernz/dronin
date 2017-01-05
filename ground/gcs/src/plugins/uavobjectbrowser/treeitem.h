@@ -240,25 +240,27 @@ class ObjectTreeItem : public TreeItem
 Q_OBJECT
 public:
     ObjectTreeItem(const QList<QVariant> &data, TreeItem *parent = 0) :
-            TreeItem(data, parent), m_obj(0) { }
+            TreeItem(data, parent) { }
     ObjectTreeItem(const QVariant &data, TreeItem *parent = 0) :
-            TreeItem(data, parent), m_obj(0) { }
-    virtual void setObject(UAVObject *obj) {
-        m_obj = obj; setDescription(obj->getDescription());
+            TreeItem(data, parent) { }
+    virtual void setObject(QSharedPointer<UAVObject> obj) {
+        m_obj = obj;
+        if (obj)
+            setDescription(obj->getDescription());
     }
-    inline UAVObject *object() { return m_obj; }
+    inline QSharedPointer<UAVObject> object() { return m_obj; }
 
 private:
-    UAVObject *m_obj;
+    QSharedPointer<UAVObject> m_obj;
 };
 
 class MetaObjectTreeItem : public ObjectTreeItem
 {
 Q_OBJECT
 public:
-    MetaObjectTreeItem(UAVObject *obj, const QList<QVariant> &data, TreeItem *parent = 0) :
+    MetaObjectTreeItem(QSharedPointer<UAVObject> obj, const QList<QVariant> &data, TreeItem *parent = 0) :
             ObjectTreeItem(data, parent) { setObject(obj); }
-    MetaObjectTreeItem(UAVObject *obj, const QVariant &data, TreeItem *parent = 0) :
+    MetaObjectTreeItem(QSharedPointer<UAVObject> obj, const QVariant &data, TreeItem *parent = 0) :
             ObjectTreeItem(data, parent) { setObject(obj); }
 };
 
@@ -289,19 +291,15 @@ public:
         ObjectTreeItem::appendChild(child);
         child->setIsPresentOnHardware(isPresentOnHardware);
     }
-    void setObject(UAVObject *obj)
+    void setObject(QSharedPointer<UAVObject> obj)
     {
-        UAVDataObject * dobj = dynamic_cast<UAVDataObject*>(obj);
-        if(dobj)
-        {
+        auto dobj = obj.dynamicCast<UAVDataObject>();
+        if (dobj) {
             ObjectTreeItem::setObject(obj);
-            connect(dobj, SIGNAL(presentOnHardwareChanged(UAVDataObject*)), this, SLOT(doRefreshHiddenObjects(UAVDataObject*)));
+            connect(dobj.data(), &UAVDataObject::presentOnHardwareChanged, this, &DataObjectTreeItem::doRefreshHiddenObjects);
             doRefreshHiddenObjects(dobj);
-        }
-        else
-        {
-            foreach (TreeItem *item, treeChildren())
-            {
+        } else {
+            for (TreeItem *item : treeChildren()) {
                 DataObjectTreeItem *inst = dynamic_cast<DataObjectTreeItem*>(item);
                 if(!inst)
                     item->setIsPresentOnHardware(false);
@@ -317,7 +315,7 @@ public:
         isPresentOnHardware = value;
     }
 protected slots:
-    virtual void doRefreshHiddenObjects(UAVDataObject *dobj) {
+    virtual void doRefreshHiddenObjects(QSharedPointer<UAVDataObject> dobj) {
         foreach (TreeItem *item, treeChildren()) {
             item->setIsPresentOnHardware(dobj->getIsPresentOnHardware());
         }
@@ -329,14 +327,14 @@ class InstanceTreeItem : public DataObjectTreeItem
 {
 Q_OBJECT
 public:
-    InstanceTreeItem(UAVObject *obj, const QList<QVariant> &data, TreeItem *parent = 0) :
+    InstanceTreeItem(QSharedPointer<UAVObject> obj, const QList<QVariant> &data, TreeItem *parent = 0) :
             DataObjectTreeItem(data, parent) { setObject(obj); }
-    InstanceTreeItem(UAVObject *obj, const QVariant &data, TreeItem *parent = 0) :
+    InstanceTreeItem(QSharedPointer<UAVObject> obj, const QVariant &data, TreeItem *parent = 0) :
             DataObjectTreeItem(data, parent) { setObject(obj); }
     virtual void apply() { TreeItem::apply(); }
     virtual void update() { TreeItem::update(); }
 protected slots:
-    virtual void doRefreshHiddenObjects(UAVDataObject *dobj) {
+    virtual void doRefreshHiddenObjects(QSharedPointer<UAVDataObject> dobj) {
         foreach (TreeItem *item, treeChildren()) {
             item->setIsPresentOnHardware(dobj->getIsPresentOnHardware());
         }

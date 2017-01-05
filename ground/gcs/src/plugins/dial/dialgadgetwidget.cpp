@@ -47,9 +47,6 @@ DialGadgetWidget::DialGadgetWidget(QWidget *parent) : QGraphicsView(parent)
 
     m_renderer = new QSvgRenderer();
 
-    obj1 = NULL;
-    obj2 = NULL;
-    obj3 = NULL;
     m_text1 = NULL;
     m_text2 = NULL;
     m_text3 = NULL; // Should be initialized to NULL otherwise the setFont method
@@ -73,35 +70,32 @@ DialGadgetWidget::~DialGadgetWidget()
 
 /*!
   \brief Connects the widget to the relevant UAVObjects
+  \todo Rewrite this whole mess with copy-pasta
   */
 void DialGadgetWidget::connectNeedles(QString object1, QString nfield1,
                                           QString object2, QString nfield2,
                                           QString object3, QString nfield3) {
-    if (obj1 != NULL)
-        disconnect(obj1,SIGNAL(objectUpdated(UAVObject*)),this,SLOT(updateNeedle1(UAVObject*)));
-    if (obj2 != NULL)
-        disconnect(obj2,SIGNAL(objectUpdated(UAVObject*)),this,SLOT(updateNeedle2(UAVObject*)));
-    if (obj3 != NULL)
-        disconnect(obj3,SIGNAL(objectUpdated(UAVObject*)),this,SLOT(updateNeedle3(UAVObject*)));
+    if (obj1)
+        disconnect(obj1.data(), &UAVObject::objectUpdated, this, &DialGadgetWidget::updateNeedle1);
+    if (obj2)
+        disconnect(obj2.data(), &UAVObject::objectUpdated, this, &DialGadgetWidget::updateNeedle2);
+    if (obj3)
+        disconnect(obj3.data(), &UAVObject::objectUpdated, this, &DialGadgetWidget::updateNeedle3);
 
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
 
     // Check validity of arguments first, reject empty args and unknown fields.
     if (!(object1.isEmpty() || nfield1.isEmpty())) {
-        obj1 = dynamic_cast<UAVDataObject*>( objManager->getObject(object1) );
-        if (obj1 != NULL ) {
-            // qDebug() << "Connected Object 1 (" << object1 << ").";
-            connect(obj1, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(updateNeedle1(UAVObject*)));
-            if(nfield1.contains("-"))
-            {
+        obj1 = objManager->getObject(object1).dynamicCast<UAVDataObject>();
+        if (obj1) {
+            connect(obj1.data(), &UAVObject::objectUpdated, this, &DialGadgetWidget::updateNeedle1);
+            if(nfield1.contains("-")) {
                 QStringList fieldSubfield = nfield1.split("-", QString::SkipEmptyParts);
                 field1 = fieldSubfield.at(0);
                 subfield1 = fieldSubfield.at(1);
                 haveSubField1 = true;
-            }
-            else
-            {
+            } else {
                 field1=  nfield1;
                 haveSubField1 = false;
             }
@@ -112,19 +106,15 @@ void DialGadgetWidget::connectNeedles(QString object1, QString nfield1,
 
     // And do the same for the second needle.
     if (!(object2.isEmpty() || nfield2.isEmpty())) {
-        obj2 = dynamic_cast<UAVDataObject*>( objManager->getObject(object2) );
-        if (obj2 != NULL ) {
-            // qDebug() << "Connected Object 2 (" << object2 << ").";
-            connect(obj2, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(updateNeedle2(UAVObject*)));
-            if(nfield2.contains("-"))
-            {
+        obj2 = objManager->getObject(object2).dynamicCast<UAVDataObject>();
+        if (obj2) {
+            connect(obj2.data(), &UAVObject::objectUpdated, this, &DialGadgetWidget::updateNeedle2);
+            if(nfield2.contains("-")) {
                 QStringList fieldSubfield = nfield2.split("-", QString::SkipEmptyParts);
                 field2 = fieldSubfield.at(0);
                 subfield2 = fieldSubfield.at(1);
                 haveSubField2 = true;
-            }
-            else
-            {
+            } else {
                 field2=  nfield2;
                 haveSubField2 = false;
             }
@@ -135,19 +125,15 @@ void DialGadgetWidget::connectNeedles(QString object1, QString nfield1,
 
     // And do the same for the third needle.
     if (!(object3.isEmpty() || nfield3.isEmpty())) {
-        obj3 = dynamic_cast<UAVDataObject*>( objManager->getObject(object3) );
-        if (obj3 != NULL ) {
-            // qDebug() << "Connected Object 3 (" << object3 << ").";
-            connect(obj3, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(updateNeedle3(UAVObject*)));
-            if(nfield3.contains("-"))
-            {
-                QStringList fieldSubfield = nfield3.split("-", QString::SkipEmptyParts);
-                field3 = fieldSubfield.at(0);
-                subfield3 = fieldSubfield.at(1);
-                haveSubField3 = true;
-            }
-            else
-            {
+        obj3 = objManager->getObject(object3).dynamicCast<UAVDataObject>();
+        if (obj3) {
+            connect(obj3.data(), &UAVObject::objectUpdated, this, &DialGadgetWidget::updateNeedle3);
+                if(nfield3.contains("-")) {
+                    QStringList fieldSubfield = nfield3.split("-", QString::SkipEmptyParts);
+                    field3 = fieldSubfield.at(0);
+                    subfield3 = fieldSubfield.at(1);
+                    haveSubField3 = true;
+            } else {
                 field3=  nfield3;
                 haveSubField3 = false;
             }
@@ -160,10 +146,10 @@ void DialGadgetWidget::connectNeedles(QString object1, QString nfield1,
 /*!
   \brief Called by the UAVObject which got updated
   */
-void DialGadgetWidget::updateNeedle1(UAVObject *object1) {
+void DialGadgetWidget::updateNeedle1(QSharedPointer<UAVObject> object1) {
     // Double check that the field exists:
     double value;
-    UAVObjectField* field = object1->getField(field1);
+    auto field = object1->getField(field1);
     if (field) {
         if(haveSubField1){
             int indexOfSubField = field->getElementNames().indexOf(QRegExp(subfield1, Qt::CaseSensitive, QRegExp::FixedString));
@@ -183,9 +169,9 @@ void DialGadgetWidget::updateNeedle1(UAVObject *object1) {
 /*!
   \brief Called by the UAVObject which got updated
   */
-void DialGadgetWidget::updateNeedle2(UAVObject *object2) {
+void DialGadgetWidget::updateNeedle2(QSharedPointer<UAVObject> object2) {
     double value;
-    UAVObjectField* field = object2->getField(field2);
+    auto field = object2->getField(field2);
     if (field) {
         if(haveSubField2){
             int indexOfSubField = field->getElementNames().indexOf(QRegExp(subfield2, Qt::CaseSensitive, QRegExp::FixedString));
@@ -205,9 +191,9 @@ void DialGadgetWidget::updateNeedle2(UAVObject *object2) {
 /*!
   \brief Called by the UAVObject which got updated
   */
-void DialGadgetWidget::updateNeedle3(UAVObject *object3) {
+void DialGadgetWidget::updateNeedle3(QSharedPointer<UAVObject> object3) {
     double value;
-    UAVObjectField* field = object3->getField(field3);
+    auto field = object3->getField(field3);
     if (field) {
         if(haveSubField3){
             int indexOfSubField = field->getElementNames().indexOf(QRegExp(subfield3, Qt::CaseSensitive, QRegExp::FixedString));

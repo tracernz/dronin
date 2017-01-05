@@ -51,7 +51,7 @@ $(FIELDDESCRIPTIONS_STRINGS)};
 $(NAME)::$(NAME)(): UAVDataObject(OBJID, ISSINGLEINST, ISSETTINGS, NAME)
 {
     // Create fields
-    QList<UAVObjectField*> fields;
+    QList<QSharedPointer<UAVObjectField>> fields;
 $(FIELDSINIT)
     // Initialize object
     initializeFields(fields, (quint8*)&data, NUMBYTES);
@@ -63,8 +63,7 @@ $(FIELDSINIT)
     // Set the Category of this object type
     setCategory(CATEGORY);
 
-    connect(this, SIGNAL(objectUpdated(UAVObject*)),
-            SLOT(emitNotifications()));
+    connect(this, &$(NAME)::objectUpdated, this, &$(NAME)::emitNotifications);
 }
 
 /**
@@ -112,11 +111,10 @@ void $(NAME)::setData(const DataFields& data)
     // Get metadata
     Metadata mdata = getMetadata();
     // Update object if the access mode permits
-    if ( UAVObject::GetGcsAccess(mdata) == ACCESS_READWRITE )
-    {
+    if (UAVObject::getGcsAccess(mdata) == ACCESS_READWRITE) {
         this->data = data;
-        emit objectUpdatedAuto(this); // trigger object updated event
-        emit objectUpdated(this);
+        emit objectUpdatedAuto(QEnableSharedFromThis<$(NAME)>::sharedFromThis()); // trigger object updated event
+        emit objectUpdated(QEnableSharedFromThis<$(NAME)>::sharedFromThis());
     }
 }
 
@@ -130,9 +128,9 @@ void $(NAME)::emitNotifications()
  * Do not use this function directly to create new instances, the
  * UAVObjectManager should be used instead.
  */
-UAVDataObject* $(NAME)::clone(quint32 instID)
+QSharedPointer<UAVDataObject> $(NAME)::clone(quint32 instID)
 {
-    $(NAME)* obj = new $(NAME)();
+    auto obj = QSharedPointer<$(NAME)>::create();
     obj->initialize(instID, this->getMetaObject());
     return obj;
 }
@@ -140,18 +138,17 @@ UAVDataObject* $(NAME)::clone(quint32 instID)
 /**
  * Create a clone of this object only to be used to retrieve defaults
  */
-UAVDataObject* $(NAME)::dirtyClone()
+QSharedPointer<UAVDataObject> $(NAME)::dirtyClone()
 {
-    $(NAME)* obj = new $(NAME)();
-    return obj;
+    return QSharedPointer<$(NAME)>::create();
 }
 
 /**
  * Static function to retrieve an instance of the object.
  */
-$(NAME)* $(NAME)::GetInstance(UAVObjectManager* objMngr, quint32 instID)
+QSharedPointer<$(NAME)> $(NAME)::getInstance(UAVObjectManager* objMngr, quint32 instID)
 {
-    return dynamic_cast<$(NAME)*>(objMngr->getObject($(NAME)::OBJID, instID));
+    return objMngr->getObject($(NAME)::OBJID, instID).dynamicCast<$(NAME)>();
 }
 
 $(PROPERTIES_IMPL)

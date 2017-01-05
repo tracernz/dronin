@@ -156,7 +156,7 @@ void UAVTalk::dummyUDPRead()
  * \param[in] allInstances If set true then all instances will be updated
  * \return Success (true), Failure (false)
  */
-bool UAVTalk::sendObjectRequest(UAVObject* obj, bool allInstances)
+bool UAVTalk::sendObjectRequest(QSharedPointer<UAVObject> obj, bool allInstances)
 {
     return objectTransaction(obj, TYPE_OBJ_REQ, allInstances);
 }
@@ -168,16 +168,11 @@ bool UAVTalk::sendObjectRequest(UAVObject* obj, bool allInstances)
  * \param[in] allInstances If set true then all instances will be updated
  * \return Success (true), Failure (false)
  */
-bool UAVTalk::sendObject(UAVObject* obj, bool acked, bool allInstances)
+bool UAVTalk::sendObject(QSharedPointer<UAVObject> obj, bool acked, bool allInstances)
 {
     if (acked)
-    {
         return objectTransaction(obj, TYPE_OBJ_ACK, allInstances);
-    }
-    else
-    {
-        return objectTransaction(obj, TYPE_OBJ, allInstances);
-    }
+    return objectTransaction(obj, TYPE_OBJ, allInstances);
 }
 
 /**
@@ -190,15 +185,11 @@ bool UAVTalk::sendObject(UAVObject* obj, bool acked, bool allInstances)
  * \param[in] allInstances If set true then all instances will be updated
  * \return Success (true), Failure (false)
  */
-bool UAVTalk::objectTransaction(UAVObject* obj, quint8 type, bool allInstances)
+bool UAVTalk::objectTransaction(QSharedPointer<UAVObject> obj, quint8 type, bool allInstances)
 {
     if (type == TYPE_OBJ_ACK || type == TYPE_OBJ_REQ || type == TYPE_OBJ)
-    {
         return transmitObject(obj, type, allInstances);
-    } else
-    {
-        return false;
-    }
+    return false;
 }
 
 /**
@@ -305,16 +296,13 @@ bool UAVTalk::processInputByte(quint8 rxbyte)
             // Search for object, if not found reset state machine
             rxObjId = (qint32)qFromLittleEndian<quint32>(rxTmpBuffer);
             {
-                UAVObject *rxObj = objMngr->getObject(rxObjId);
-                if (rxObj == NULL && rxType != TYPE_OBJ_REQ)
-                {
+                auto rxObj = objMngr->getObject(rxObjId);
+                if (!rxObj && rxType != TYPE_OBJ_REQ) {
                     stats.rxErrors++;
                     rxState = STATE_SYNC;
                     UAVTALK_QXTLOG_DEBUG("UAVTalk: ObjID->Sync (badtype)");
                     break;
-                }
-                else if (rxObj == NULL)
-                {
+                } else if (!rxObj) {
                    // This is a non-existing object, just skip to checksum
                    // and we'll send a NACK next.
                    rxState   = STATE_CS;
@@ -479,70 +467,53 @@ bool UAVTalk::processInputByte(quint8 rxbyte)
 bool UAVTalk::receiveObject(quint8 type, quint32 objId, quint16 instId, quint8* data, qint32 length)
 {
     Q_UNUSED(length);
-    UAVObject* obj = NULL;
+    auto obj = QSharedPointer<UAVObject>();
     bool error = false;
-    bool allInstances =  (instId == ALL_INSTANCES);
+    bool allInstances = (instId == ALL_INSTANCES);
 
     // Process message type
     switch (type) {
     case TYPE_OBJ: // We have received an object.
         // All instances, not allowed for OBJ messages
-        if (!allInstances)
-        {
+        if (!allInstances) {
             // Get object and update its data
             obj = updateObject(objId, instId, data);
-            if (obj == NULL)
-            {
+            if (!obj) {
                 UAVTALK_QXTLOG_DEBUG(QString("[uavtalk.cpp  ] Received a UAVObject update for a UAVObject we don't know about OBJID:%0 INSTID:%1").arg(QString(QString("0x") + QString::number(objId, 16).toUpper())).arg(instId));
                 error = true;
             }
-        }
-        else
-        {
+        } else {
             error = true;
         }
         break;
     case TYPE_OBJ_ACK: // We have received an object and are asked for an ACK
         // All instances, not allowed for OBJ_ACK messages
-        if (!allInstances)
-        {
+        if (!allInstances) {
             // Get object and update its data
             obj = updateObject(objId, instId, data);
             // Transmit ACK
-            if ( obj != NULL )
-            {
+            if (!obj) {
                transmitObject(obj, TYPE_ACK, false);
-            }
-            else
-            {
+            } else {
                 UAVTALK_QXTLOG_DEBUG(QString("[uavtalk.cpp  ] Received an acknowledged UAVObject update for a UAVObject we don't know about:").arg(obj->getName()));
                 // UAVTALK Protocol update 2013.07.10 (E. Lafargue): send a NACK packet for this ObjID
                 transmitNack(objId);
                 error = true;
             }
-        }
-        else
-        {
+        } else {
             error = true;
         }
         break;
     case TYPE_OBJ_REQ:  // We are being asked for an object
         // Get object, if all instances are requested get instance 0 of the object
         if (allInstances)
-        {
             obj = objMngr->getObject(objId);
-        }
         else
-        {
             obj = objMngr->getObject(objId, instId);
-        }
         // If object was found transmit it
-        if (obj != NULL)
-        {
+        if (obj) {
             transmitObject(obj, TYPE_OBJ, allInstances);
-        }
-        else
-        {
+        } else {
             // Object was not found, transmit a NACK with the
             // objId which was not found.
             transmitNack(objId);
@@ -552,18 +523,14 @@ bool UAVTalk::receiveObject(quint8 type, quint32 objId, quint16 instId, quint8* 
     case TYPE_NACK: // We have received a NACK for an object that does not exist on the remote end.
                     // (but should exist on our end)
         // All instances, not allowed for NACK messages
-        if (!allInstances)
-        {
+        if (!allInstances) {
             // Get object
             obj = objMngr->getObject(objId, instId);
             // Check if object exists:
-            if (obj != NULL)
-            {
+            if (obj) {
                 UAVTALK_QXTLOG_DEBUG(QString("[uavtalk.cpp  ] The %0 UAVObject does not exist on the remote end, got a Nack").arg(obj->getName() + QString(QString(" 0x") + QString::number(objId, 16).toUpper())));
                 emit nackReceived(obj);
-            }
-            else
-            {
+            } else {
                 UAVTALK_QXTLOG_DEBUG(QString("[uavtalk.cpp  ] Critical error: Received a Nack for an unknown UAVObject:%0").arg(QString(QString("0x") + QString::number(objId, 16).toUpper())));
                 error = true;
             }
@@ -571,20 +538,16 @@ bool UAVTalk::receiveObject(quint8 type, quint32 objId, quint16 instId, quint8* 
         break;
     case TYPE_ACK: // We have received a ACK, supposedly after sending an object with OBJ_ACK
         // All instances, not allowed for ACK messages
-        if (!allInstances)
-        {
+        if (!allInstances) {
             // Get object
             obj = objMngr->getObject(objId, instId);
             UAVTALK_QXTLOG_DEBUG(QString("[uavtalk.cpp  ] Got ack for instance:%0 of UAVObject:%1 with ID:%2").arg(instId).arg(obj->getName()).arg(QString(QString("0x") + QString::number(objId, 16).toUpper())));
             // Check if we actually know this object (tiny chance the ObjID
             // could be unknown and got through CRC check...)
-            if (obj != NULL)
-            {
+            if (obj) {
                 UAVTALK_QXTLOG_DEBUG(QString("[uavtalk.cpp  ] UAVObject name:%0").arg(obj->getName()));
                 emit ackReceived(obj);
-            }
-            else
-            {
+            } else {
                 error = true;
             }
         }
@@ -601,36 +564,27 @@ bool UAVTalk::receiveObject(quint8 type, quint32 objId, quint16 instId, quint8* 
  * If the object instance could not be found in the list, then a
  * new one is created.
  */
-UAVObject* UAVTalk::updateObject(quint32 objId, quint16 instId, quint8* data)
+QSharedPointer<UAVObject> UAVTalk::updateObject(quint32 objId, quint16 instId, quint8* data)
 {
     // Get object
-    UAVObject* obj = objMngr->getObject(objId, instId);
+    auto obj = objMngr->getObject(objId, instId);
     // If the instance does not exist create it
-    if (obj == NULL)
-    {
+    if (!obj) {
         // Get the object type
-        UAVObject* tobj = objMngr->getObject(objId);
-        if (tobj == NULL)
-        {
-            return NULL;
-        }
+        auto tobj = objMngr->getObject(objId);
+        if (!tobj)
+            return QSharedPointer<UAVObject>();
         // Make sure this is a data object
-        UAVDataObject* dobj = dynamic_cast<UAVDataObject*>(tobj);
-        if (dobj == NULL)
-        {
-            return NULL;
-        }
+        auto dobj = tobj.dynamicCast<UAVDataObject>();
+        if (!dobj)
+            return QSharedPointer<UAVObject>();
         // Create a new instance, unpack and register
-        UAVDataObject* instobj = dobj->clone(instId);
-        if ( !objMngr->registerObject(instobj) )
-        {
-            return NULL;
-        }
+        auto instobj = dobj->clone(instId);
+        if (!objMngr->registerObject(instobj))
+            return QSharedPointer<UAVObject>();
         instobj->unpack(data);
         return instobj;
-    }
-    else
-    {
+    } else {
         // Unpack data into object instance
         obj->unpack(data);
         return obj;
@@ -645,51 +599,37 @@ UAVObject* UAVTalk::updateObject(quint32 objId, quint16 instId, quint8* data)
  * \param[in] allInstances True is all instances of the object are to be sent
  * \return Success (true), Failure (false)
  */
-bool UAVTalk::transmitObject(UAVObject* obj, quint8 type, bool allInstances)
+bool UAVTalk::transmitObject(QSharedPointer<UAVObject> obj, quint8 type, bool allInstances)
 {   
+    Q_ASSERT(obj);
+    if (!obj)
+        return false;
     // If all instances are requested on a single instance object it is an error
     if (allInstances && obj->isSingleInstance())
-    {
         allInstances = false;
-    }
 
     // Process message type
-    if ( type == TYPE_OBJ || type == TYPE_OBJ_ACK )
-    {
-        if (allInstances)
-        {
+    if (type == TYPE_OBJ || type == TYPE_OBJ_ACK) {
+        if (allInstances) {
             // Get number of instances
             quint32 numInst = objMngr->getNumInstances(obj->getObjID());
             // Send all instances
-            for (quint32 instId = 0; instId < numInst; ++instId)
-            {
-                UAVObject* inst = objMngr->getObject(obj->getObjID(), instId);
+            for (quint32 instId = 0; instId < numInst; ++instId) {
+                auto inst = objMngr->getObject(obj->getObjID(), instId);
                 transmitSingleObject(inst, type, false);
             }
             return true;
-        }
-        else
-        {
+        } else {
             return transmitSingleObject(obj, type, false);
         }
-    }
-    else if (type == TYPE_OBJ_REQ)
-    {
+    } else if (type == TYPE_OBJ_REQ) {
         return transmitSingleObject(obj, TYPE_OBJ_REQ, allInstances);
-    }
-    else if (type == TYPE_ACK)
-    {
+    } else if (type == TYPE_ACK) {
         if (!allInstances)
-        {
             return transmitSingleObject(obj, TYPE_ACK, false);
-        }
         else
-        {
             return false;
-        }
-    }
-    else
-    {
+    } else {
         return false;
     }
 }
@@ -743,8 +683,12 @@ bool UAVTalk::transmitNack(quint32 objId)
  * \param[in] type Transaction type
  * \return Success (true), Failure (false)
  */
-bool UAVTalk::transmitSingleObject(UAVObject* obj, quint8 type, bool allInstances)
+bool UAVTalk::transmitSingleObject(QSharedPointer<UAVObject> obj, quint8 type, bool allInstances)
 {
+    Q_ASSERT(obj);
+    if (!obj)
+        return false;
+
     qint32 length;
     qint32 dataOffset;
     quint32 objId;

@@ -46,9 +46,9 @@ public:
    ~TelemetryParser();
 
 public slots:
-   void updateGPS(UAVObject* object1);
-   void updateTime(UAVObject* object1);
-   void updateSats(UAVObject* object1);
+   void updateGPS(QSharedPointer<UAVObject> object1);
+   void updateTime(QSharedPointer<UAVObject> object1);
+   void updateSats(QSharedPointer<UAVObject> object1);
 
 };
 

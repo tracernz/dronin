@@ -42,11 +42,15 @@
  * board connection is established or when there is no board
  * @param parent The main configuration widget
  */
-DefaultHwSettingsWidget::DefaultHwSettingsWidget(UAVObject *settingsObj, QWidget *parent) :
+DefaultHwSettingsWidget::DefaultHwSettingsWidget(QSharedPointer<UAVObject> settingsObj, QWidget *parent) :
         ConfigTaskWidget(parent),
         defaultHWSettingsWidget(new Ui_defaulthwsettings)
 {
-    Q_ASSERT(settingsObj);
+    if (!settingsObj) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object!";
+        return;
+    }
 
     defaultHWSettingsWidget->setupUi(this);
 
@@ -54,9 +58,11 @@ DefaultHwSettingsWidget::DefaultHwSettingsWidget(UAVObject *settingsObj, QWidget
     QWidget *wdg;
     QLabel *lbl;
 
-    QList <UAVObjectField*> fields = settingsObj->getFields();
-    for (int i = 0; i < fields.size(); i++) {
-        switch (fields[i]->getType()) {
+    const auto &fields = settingsObj->getFields();
+    for (auto field : fields) {
+        if (!field)
+            continue;
+        switch (field->getType()) {
         case UAVObjectField::BITFIELD:
         case UAVObjectField::ENUM:
             wdg = new QComboBox(this);
@@ -67,17 +73,11 @@ DefaultHwSettingsWidget::DefaultHwSettingsWidget(UAVObject *settingsObj, QWidget
         case UAVObjectField::UINT8:
         case UAVObjectField::UINT16:
         case UAVObjectField::UINT32: {
-            QSpinBox *sbx = new QSpinBox(this);
-            if (fields[i]->getUnits().length())
-                sbx->setSuffix(QString(" %1").arg(fields[i]->getUnits()));
-            wdg = sbx;
+            wdg = new QSpinBox(this);
             break;
         }
         case UAVObjectField::FLOAT32: {
-            QDoubleSpinBox *sbx = new QDoubleSpinBox(this);
-            if (fields[i]->getUnits().length())
-                sbx->setSuffix(QString(" %1").arg(fields[i]->getUnits()));
-            wdg = sbx;
+            wdg = new QDoubleSpinBox(this);
             break;
         }
         case UAVObjectField::STRING:
@@ -92,10 +92,10 @@ DefaultHwSettingsWidget::DefaultHwSettingsWidget(UAVObject *settingsObj, QWidget
         objRelation.append(QString("fieldname:%1").arg(fields[i]->getName()));
         objRelation.append(QString("buttongroup:1"));
         objRelation.append(QString("haslimits:yes"));
-
+        objRelation.append(QString("useunits:yes"));
         wdg->setProperty("objrelation", objRelation);
 
-        lbl = new QLabel(fields[i]->getName(), this);
+        lbl = new QLabel(field->getName(), this);
         layout->addRow(lbl, wdg);
     }
 

@@ -80,25 +80,24 @@ void UAVObject::initialize(quint32 instID)
  * @param data Pointer to that actual object data, this is needed by the fields to access the data
  * @param numBytes Number of bytes in the object (total, including all fields)
  */
-void UAVObject::initializeFields(QList<UAVObjectField*>& fields, quint8* data, quint32 numBytes)
+void UAVObject::initializeFields(QList<QSharedPointer<UAVObjectField>>& fields, quint8* data, quint32 numBytes)
 {
     this->numBytes = numBytes;
     this->data = data;
     this->fields = fields;
     // Initialize fields
     quint32 offset = 0;
-    for (int n = 0; n < fields.length(); ++n)
-    {
-        fields[n]->initialize(data, offset, this);
+    for (int n = 0; n < fields.length(); ++n) {
+        fields[n]->initialize(data, offset, sharedFromThis());
         offset += fields[n]->getNumBytes();
-        connect(fields[n], SIGNAL(fieldUpdated(UAVObjectField*)), this, SLOT(fieldUpdated(UAVObjectField*)));
+        connect(fields[n].data(), &UAVObjectField::fieldUpdated, this, &UAVObject::fieldUpdated);
     }
 }
 
 /**
  * Called from the fields each time they are updated
  */
-void UAVObject::fieldUpdated(UAVObjectField* field)
+void UAVObject::fieldUpdated(QSharedPointer<UAVObjectField> field)
 {
     Q_UNUSED(field);
 //    emit objectUpdatedAuto(this); // trigger object updated event
@@ -183,7 +182,7 @@ quint32 UAVObject::getNumBytes()
  */
 void UAVObject::requestUpdate()
 {
-    emit updateRequested(this);
+    emit updateRequested(sharedFromThis());
 }
 
 /**
@@ -191,7 +190,7 @@ void UAVObject::requestUpdate()
  */
 void UAVObject::requestUpdateAllInstances()
 {
-    emit updateAllInstancesRequested(this);
+    emit updateAllInstancesRequested(sharedFromThis());
 }
 
 /**
@@ -199,8 +198,8 @@ void UAVObject::requestUpdateAllInstances()
  */
 void UAVObject::updated()
 {
-    emit objectUpdatedManual(this);
-    emit objectUpdated(this);
+    emit objectUpdatedManual(sharedFromThis());
+    emit objectUpdated(sharedFromThis());
 }
 
 /**
@@ -214,7 +213,7 @@ qint32 UAVObject::getNumFields()
 /**
  * Get the object's fields
  */
-QList<UAVObjectField*> UAVObject::getFields()
+QList<QSharedPointer<UAVObjectField>> UAVObject::getFields()
 {
     return fields;
 }
@@ -229,7 +228,7 @@ QJsonObject UAVObject::getJsonRepresentation() {
     obj["id"] = static_cast <qint64> (getObjID());
     obj["name"] = getName();
 
-    foreach (UAVObjectField* field, fields) {
+    foreach (const auto &field, fields) {
         quint32 nelem = field->getNumElements();
 
         if (nelem > 1) {
@@ -253,19 +252,17 @@ QJsonObject UAVObject::getJsonRepresentation() {
  * Get a specific field
  * @returns The field or NULL if not found
  */
-UAVObjectField* UAVObject::getField(const QString& name)
+QSharedPointer<UAVObjectField> UAVObject::getField(const QString& name)
 {
     // Look for field
-    for (int n = 0; n < fields.length(); ++n)
-    {
+    for (int n = 0; n < fields.length(); ++n) {
         if (name.compare(fields[n]->getName()) == 0)
-        {
             return fields[n];
-        }
     }
     // If this point is reached then the field was not found
     qWarning()<<"UAVObject::getField Non existant field "<<name<<" requested.  This indicates a bug.  Make sure you also have null checking for non-debug code.";
-    return NULL;
+    Q_ASSERT(false);
+    return QSharedPointer<UAVObjectField>();
 }
 
 /**
@@ -275,9 +272,8 @@ UAVObjectField* UAVObject::getField(const QString& name)
 qint32 UAVObject::pack(quint8* dataOut)
 {
     qint32 offset = 0;
-    for (QList<UAVObjectField*>::iterator iter = fields.begin(); iter != fields.end(); ++iter)
-    {
-        UAVObjectField *field = *iter;
+    for (auto iter = fields.begin(); iter != fields.end(); ++iter) {
+        auto field = *iter;
         field->pack(&dataOut[offset]);
         offset += field->getNumBytes();
     }
@@ -291,14 +287,13 @@ qint32 UAVObject::pack(quint8* dataOut)
 qint32 UAVObject::unpack(const quint8* dataIn)
 {
     qint32 offset = 0;
-    for (QList<UAVObjectField*>::iterator iter = fields.begin(); iter != fields.end(); ++iter)
-    {
-        UAVObjectField *field = *iter;
+    for (auto iter = fields.begin(); iter != fields.end(); ++iter) {
+        auto field = *iter;
         field->unpack(&dataIn[offset]);
         offset += field->getNumBytes();
     }
-    emit objectUnpacked(this); // trigger object updated event
-    emit objectUpdated(this);
+    emit objectUnpacked(sharedFromThis()); // trigger object updated event
+    emit objectUpdated(sharedFromThis());
 
     return numBytes;
 }
@@ -336,9 +331,9 @@ QString UAVObject::toStringData()
 {
     QString sout;
     sout.append("Data:\n");
-    for (QList<UAVObjectField*>::iterator iter = fields.begin(); iter != fields.end(); ++iter)
+    for (auto iter = fields.begin(); iter != fields.end(); ++iter)
     {
-        UAVObjectField *field = *iter;
+        auto field = *iter;
         sout.append( QString("\t%1").arg(field->toString()) );
     }
     return sout;
@@ -349,7 +344,7 @@ QString UAVObject::toStringData()
  */
 void UAVObject::emitTransactionCompleted(bool success)
 {
-    emit transactionCompleted(this, success);
+    emit transactionCompleted(sharedFromThis(), success);
 }
 
 /**
@@ -357,13 +352,13 @@ void UAVObject::emitTransactionCompleted(bool success)
  */
 void UAVObject::emitTransactionCompleted(bool success, bool nacked)
 {
-    emit transactionCompleted(this, success, nacked);
+    emit transactionCompleted(sharedFromThis(), success, nacked);
 }
 
 /**
  * Emit the newInstance event
  */
-void UAVObject::emitNewInstance(UAVObject * obj)
+void UAVObject::emitNewInstance(QSharedPointer<UAVObject> obj)
 {
     emit newInstance(obj);
 }
@@ -371,7 +366,7 @@ void UAVObject::emitNewInstance(UAVObject * obj)
 /**
  * Emit the instanceRemoved event
  */
-void UAVObject::emitInstanceRemoved(UAVObject * obj)
+void UAVObject::emitInstanceRemoved(QSharedPointer<UAVObject> obj)
 {
     emit instanceRemoved(obj);
 }
@@ -380,7 +375,7 @@ void UAVObject::emitInstanceRemoved(UAVObject * obj)
  * Initialize a default UAVObjMetadata object.
  * \param[in] metadata The metadata object
  */
-void UAVObject::MetadataInitialize(UAVObject::Metadata& metadata)
+void UAVObject::metadataInitialize(UAVObject::Metadata& metadata)
 {
 	metadata.flags =
 		ACCESS_READWRITE << UAVOBJ_ACCESS_SHIFT |
@@ -399,7 +394,7 @@ void UAVObject::MetadataInitialize(UAVObject::Metadata& metadata)
  * \param[in] metadata The metadata object
  * \return the access type
  */
-UAVObject::AccessMode UAVObject::GetFlightAccess(const UAVObject::Metadata& metadata)
+UAVObject::AccessMode UAVObject::getFlightAccess(const UAVObject::Metadata& metadata)
 {
 	return UAVObject::AccessMode((metadata.flags >> UAVOBJ_ACCESS_SHIFT) & 1);
 }
@@ -409,7 +404,7 @@ UAVObject::AccessMode UAVObject::GetFlightAccess(const UAVObject::Metadata& meta
  * \param[in] metadata The metadata object
  * \param[in] mode The access mode
  */
-void UAVObject::SetFlightAccess(UAVObject::Metadata& metadata, UAVObject::AccessMode mode)
+void UAVObject::setFlightAccess(UAVObject::Metadata& metadata, UAVObject::AccessMode mode)
 {
 	SET_BITS(metadata.flags, UAVOBJ_ACCESS_SHIFT, mode, 1);
 }
@@ -419,7 +414,7 @@ void UAVObject::SetFlightAccess(UAVObject::Metadata& metadata, UAVObject::Access
  * \param[in] metadata The metadata object
  * \return the GCS access type
  */
-UAVObject::AccessMode UAVObject::GetGcsAccess(const UAVObject::Metadata& metadata)
+UAVObject::AccessMode UAVObject::getGcsAccess(const UAVObject::Metadata& metadata)
 {
 	return UAVObject::AccessMode((metadata.flags >> UAVOBJ_GCS_ACCESS_SHIFT) & 1);
 }
@@ -429,7 +424,7 @@ UAVObject::AccessMode UAVObject::GetGcsAccess(const UAVObject::Metadata& metadat
  * \param[in] metadata The metadata object
  * \param[in] mode The access mode
  */
-void UAVObject::SetGcsAccess(UAVObject::Metadata& metadata, UAVObject::AccessMode mode) {
+void UAVObject::setGcsAccess(UAVObject::Metadata& metadata, UAVObject::AccessMode mode) {
 	SET_BITS(metadata.flags, UAVOBJ_GCS_ACCESS_SHIFT, mode, 1);
 }
 
@@ -438,7 +433,7 @@ void UAVObject::SetGcsAccess(UAVObject::Metadata& metadata, UAVObject::AccessMod
  * \param[in] metadata The metadata object
  * \return the telemetry acked boolean
  */
-quint8 UAVObject::GetFlightTelemetryAcked(const UAVObject::Metadata& metadata) {
+quint8 UAVObject::getFlightTelemetryAcked(const UAVObject::Metadata& metadata) {
 	return (metadata.flags >> UAVOBJ_TELEMETRY_ACKED_SHIFT) & 1;
 }
 
@@ -447,7 +442,7 @@ quint8 UAVObject::GetFlightTelemetryAcked(const UAVObject::Metadata& metadata) {
  * \param[in] metadata The metadata object
  * \param[in] val The telemetry acked boolean
  */
-void UAVObject::SetFlightTelemetryAcked(UAVObject::Metadata& metadata, quint8 val) {
+void UAVObject::setFlightTelemetryAcked(UAVObject::Metadata& metadata, quint8 val) {
 	SET_BITS(metadata.flags, UAVOBJ_TELEMETRY_ACKED_SHIFT, val, 1);
 }
 
@@ -456,7 +451,7 @@ void UAVObject::SetFlightTelemetryAcked(UAVObject::Metadata& metadata, quint8 va
  * \param[in] metadata The metadata object
  * \return the telemetry acked boolean
  */
-quint8 UAVObject::GetGcsTelemetryAcked(const UAVObject::Metadata& metadata) {
+quint8 UAVObject::getGcsTelemetryAcked(const UAVObject::Metadata& metadata) {
 	return (metadata.flags >> UAVOBJ_GCS_TELEMETRY_ACKED_SHIFT) & 1;
 }
 
@@ -465,7 +460,7 @@ quint8 UAVObject::GetGcsTelemetryAcked(const UAVObject::Metadata& metadata) {
  * \param[in] metadata The metadata object
  * \param[in] val The GCS telemetry acked boolean
  */
-void UAVObject::SetGcsTelemetryAcked(UAVObject::Metadata& metadata, quint8 val) {
+void UAVObject::setGcsTelemetryAcked(UAVObject::Metadata& metadata, quint8 val) {
 	SET_BITS(metadata.flags, UAVOBJ_GCS_TELEMETRY_ACKED_SHIFT, val, 1);
 }
 
@@ -474,7 +469,7 @@ void UAVObject::SetGcsTelemetryAcked(UAVObject::Metadata& metadata, quint8 val) 
  * \param[in] metadata The metadata object
  * \return the telemetry update mode
  */
-UAVObject::UpdateMode UAVObject::GetFlightTelemetryUpdateMode(const UAVObject::Metadata& metadata) {
+UAVObject::UpdateMode UAVObject::getFlightTelemetryUpdateMode(const UAVObject::Metadata& metadata) {
 	return UAVObject::UpdateMode((metadata.flags >> UAVOBJ_TELEMETRY_UPDATE_MODE_SHIFT) & UAVOBJ_UPDATE_MODE_MASK);
 }
 
@@ -483,7 +478,7 @@ UAVObject::UpdateMode UAVObject::GetFlightTelemetryUpdateMode(const UAVObject::M
  * \param[in] metadata The metadata object
  * \param[in] val The telemetry update mode
  */
-void UAVObject::SetFlightTelemetryUpdateMode(UAVObject::Metadata& metadata, UAVObject::UpdateMode val) {
+void UAVObject::setFlightTelemetryUpdateMode(UAVObject::Metadata& metadata, UAVObject::UpdateMode val) {
 	SET_BITS(metadata.flags, UAVOBJ_TELEMETRY_UPDATE_MODE_SHIFT, val, UAVOBJ_UPDATE_MODE_MASK);
 }
 
@@ -492,7 +487,7 @@ void UAVObject::SetFlightTelemetryUpdateMode(UAVObject::Metadata& metadata, UAVO
  * \param[in] metadata The metadata object
  * \return the GCS telemetry update mode
  */
-UAVObject::UpdateMode UAVObject::GetGcsTelemetryUpdateMode(const UAVObject::Metadata& metadata) {
+UAVObject::UpdateMode UAVObject::getGcsTelemetryUpdateMode(const UAVObject::Metadata& metadata) {
 	return UAVObject::UpdateMode((metadata.flags >> UAVOBJ_GCS_TELEMETRY_UPDATE_MODE_SHIFT) & UAVOBJ_UPDATE_MODE_MASK);
 }
 
@@ -501,6 +496,6 @@ UAVObject::UpdateMode UAVObject::GetGcsTelemetryUpdateMode(const UAVObject::Meta
  * \param[in] metadata The metadata object
  * \param[in] val The GCS telemetry update mode
  */
-void UAVObject::SetGcsTelemetryUpdateMode(UAVObject::Metadata& metadata, UAVObject::UpdateMode val) {
+void UAVObject::setGcsTelemetryUpdateMode(UAVObject::Metadata& metadata, UAVObject::UpdateMode val) {
 	SET_BITS(metadata.flags, UAVOBJ_GCS_TELEMETRY_UPDATE_MODE_SHIFT, val, UAVOBJ_UPDATE_MODE_MASK);
 }

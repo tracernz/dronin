@@ -61,8 +61,8 @@ public slots:
     bool setChannel(quint8 channel, float value);
 
 private:
-    ManualControlSettings *manControlSettingsUAVO;
-    GCSReceiver *m_gcsReceiver;
+    QSharedPointer<ManualControlSettings> manControlSettingsUAVO;
+    QSharedPointer<GCSReceiver> m_gcsReceiver;
     static bool firstInstance;
     ManualControlSettings::DataFields dataBackup;
     ManualControlSettings::Metadata metaBackup;
@@ -71,7 +71,7 @@ private:
 
     GCSControlGadgetFactory *mf;
 private slots:
-    void objectsUpdated(UAVObject *);
+    void objectsUpdated(QSharedPointer<UAVObject> obj);
     void receiverActivitySlot();
 };
 

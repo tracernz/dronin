@@ -58,8 +58,7 @@ private slots:
     void eraseAllSettings();
     void onAutopilotConnect();
     void onAutopilotDisconnect();
-    void eraseDone(UAVObject *);
-    void eraseFailed();
+    void eraseDone(QSharedPointer<UAVObject> obj);
 
  private:
     ConfigGadgetFactory *cf;

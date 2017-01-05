@@ -51,8 +51,17 @@ FlightLogDownload::FlightLogDownload(QWidget *parent) :
 
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    loggingStats = LoggingStats::GetInstance(uavoManager);
-    Q_ASSERT(loggingStats);
+    if (!uavoManager) {
+        Q_ASSERT(false);
+        qWarning() << "Could not get UAVOManager!";
+        return;
+    }
+    auto loggingStats = LoggingStats::getInstance(uavoManager);
+    if (!loggingStats) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object! LoggingStats";
+        return;
+    }
 
     connect(ui->fileNameButton, SIGNAL(clicked()), this, SLOT(getFilename()));
     connect(ui->saveButton, SIGNAL(clicked()), this, SLOT(startDownload()));
@@ -62,7 +71,7 @@ FlightLogDownload::FlightLogDownload(QWidget *parent) :
     ui->fileName->setText(QDir::current().relativeFilePath(fileName));
 
     // Get the current status
-    connect(loggingStats, SIGNAL(objectUnpacked(UAVObject*)), this, SLOT(updateReceived()));
+    connect(loggingStats.data(), &UAVObject::objectUnpacked, this, &FlightLogDownload::updateReceived);
     loggingStats->requestUpdate();
 }
 
@@ -86,8 +95,14 @@ void FlightLogDownload::getFilename()
  * from the LoggingStats object and store the data during a
  * download
  */
-void FlightLogDownload::updateReceived()
+void FlightLogDownload::updateReceived(QSharedPointer<UAVObject> obj)
 {
+    auto loggingStats = obj.dynamicCast<LoggingStats>();
+    if (!loggingStats) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object!";
+        return;
+    }
     LoggingStats::DataFields logging = loggingStats->getData();
 
     switch(dl_state) {
@@ -124,7 +139,7 @@ void FlightLogDownload::updateReceived()
         dl_state = DL_IDLE;
 
         mdata = loggingStats->getMetadata();
-        UAVObject::SetFlightTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_MANUAL);
+        UAVObject::setFlightTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_MANUAL);
         loggingStats->setMetadata(mdata);
 
         logFile->write(log);
@@ -137,7 +152,7 @@ void FlightLogDownload::updateReceived()
         dl_state = DL_IDLE;
 
         mdata = loggingStats->getMetadata();
-        UAVObject::SetFlightTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_MANUAL);
+        UAVObject::setFlightTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_MANUAL);
         loggingStats->setMetadata(mdata);
 
         ui->lb_operationStatus->setText("Download error.");
@@ -165,6 +180,20 @@ void FlightLogDownload::startDownload()
 
     log.clear();
 
+    ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
+    UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
+    if (!uavoManager) {
+        Q_ASSERT(false);
+        qWarning() << "Could not get UAVOManager!";
+        return;
+    }
+    auto loggingStats = LoggingStats::getInstance(uavoManager);
+    if (!loggingStats) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object! LoggingStats";
+        return;
+    }
+
     LoggingStats::DataFields logging = loggingStats->getData();
 
     // Stop any existing log file
@@ -174,7 +203,7 @@ void FlightLogDownload::startDownload()
     loggingStats->updated();
 
     UAVObject::Metadata mdata = loggingStats->getMetadata();
-    UAVObject::SetFlightTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_ONCHANGE);
+    UAVObject::setFlightTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_ONCHANGE);
     loggingStats->setMetadata(mdata);
 
     qDebug() << "Download file id: " << file_id;

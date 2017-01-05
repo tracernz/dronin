@@ -46,6 +46,8 @@ bool UAVObjectGeneratorGCS::generate(UAVObjectParser* parser,QString templatepat
     fieldTypeStrCPPClass << "INT8" << "INT16" << "INT32"
         << "UINT8" << "UINT16" << "UINT32" << "FLOAT32" << "ENUM";
 
+    fieldRadixStrCPP << "BIN" << "OCT" << "DEC" << "HEX";
+
     gcsCodePath = QDir( templatepath + QString(GCS_CODE_DIR));
     gcsOutputPath = QDir( outputpath + QString("gcs") );
     gcsOutputPath.mkpath(gcsOutputPath.absolutePath());
@@ -67,7 +69,7 @@ bool UAVObjectGeneratorGCS::generate(UAVObjectParser* parser,QString templatepat
         ObjectInfo* info=parser->getObjectByIndex(objidx);
         process_object(info);
 
-        gcsObjInit.append("    objMngr->registerObject( new " + info->name + "() );\n");
+        gcsObjInit.append("    objMngr->registerObject(QSharedPointer<" + info->name + ">::create());\n");
         gcsObjInit.append("    qmlRegisterType<" + info->name + ">(\"com.dronin.uavo\", 1, 0, \"" + info->name + "Class\");\n");
         objInc.append("#include \"" + info->namelc + ".h\"\n");
     }
@@ -346,7 +348,9 @@ bool UAVObjectGeneratorGCS::process_object(ObjectInfo* info)
 
             const QString defaultValuesInit = "\"" + info->fields[n]->defaultValues.join("\",\"") + "\"";
 
-            finit.append( QString("    fields.append( new UAVObjectField(QString(\"%1\"), QString(\"%2\"), UAVObjectField::ENUM, %3, %4, %5, QString(\"%6\"), FIELD_DESCRIPTIONS[\"%1\"], QList<QVariant>({%7})));\n")
+            finit.append( QString("    fields.append(QSharedPointer<UAVObjectField>::create(QString(\"%1\"), QString(\"%2\"), "
+                "UAVObjectField::ENUM, UAVObjectField::DEC,%3, %4, %5, QString(\"%6\"), "
+                "FIELD_DESCRIPTIONS[\"%1\"], QList<QVariant>({%7})));\n")
                           .arg(info->fields[n]->name)
                           .arg(info->fields[n]->units)
                           .arg(varElemName)
@@ -359,13 +363,17 @@ bool UAVObjectGeneratorGCS::process_object(ObjectInfo* info)
         else {
             const QString defaultValuesInit = info->fields[n]->defaultValues.join(',');
 
-            finit.append( QString("    fields.append( new UAVObjectField(QString(\"%1\"), QString(\"%2\"), UAVObjectField::%3, %4, QStringList(), QList<int>(), QString(\"%5\"), FIELD_DESCRIPTIONS[\"%1\"], QList<QVariant>({%7})));\n")
+            finit.append( QString("    fields.append(QSharedPointer<UAVObjectField>::create(QString(\"%1\"), "
+                "QString(\"%2\"), UAVObjectField::%3, UAVObjectField::%8, %4, QStringList(), "
+                "QList<int>(), QString(\"%5\"), FIELD_DESCRIPTIONS[\"%1\"], "
+                "QList<QVariant>({%7})));\n")
                           .arg(info->fields[n]->name)
                           .arg(info->fields[n]->units)
                           .arg(fieldTypeStrCPPClass[info->fields[n]->type])
                           .arg(varElemName)
                           .arg(info->fields[n]->limitValues)
-                          .arg(defaultValuesInit));
+                          .arg(defaultValuesInit)
+                          .arg(fieldRadixStrCPP[info->fields[n]->radix]));
         }
     }
     outCode.replace(QString("$(FIELDSINIT)"), finit);

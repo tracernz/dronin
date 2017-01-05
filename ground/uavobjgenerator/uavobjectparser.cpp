@@ -39,6 +39,8 @@ UAVObjectParser::UAVObjectParser()
     fieldTypeStrXML << "int8" << "int16" << "int32" << "uint8"
         << "uint16" << "uint32" <<"float" << "enum";
 
+    fieldRadixStrXML << "bin" << "oct" << "dec" << "hex";
+
     updateModeStrXML << "manual" << "periodic" << "onchange" << "throttled";
 
     accessModeStr << "ACCESS_READWRITE" << "ACCESS_READONLY";
@@ -826,6 +828,14 @@ QString UAVObjectParser::processObjectFields(QDomNode& childNode, ObjectInfo* in
         if (!description.isNull() && description.isText() && !description.nodeValue().isEmpty()) {
             field->description = description.nodeValue().trimmed();
         }
+    }
+
+    // Look for radix attribute (used for display of int type fields)
+    elemAttr = elemAttributes.namedItem("radix");
+    if (elemAttr.isNull() || !fieldRadixStrXML.contains(elemAttr.nodeValue())) {
+        field->radix = FIELDRADIX_DEC;
+    } else {
+        field->radix = static_cast<FieldRadix>(fieldRadixStrXML.indexOf(elemAttr.nodeValue()));
     }
 
     // Add field to object

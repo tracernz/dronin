@@ -47,8 +47,8 @@ MagicWaypointGadgetWidget::MagicWaypointGadgetWidget(QWidget *parent) : QLabel(p
     m_magicwaypoint->setupUi(this);
 
     // Connect object updated event from UAVObject to also update check boxes
-    connect(getPathDesired(), SIGNAL(objectUpdated(UAVObject*)), this, SLOT(pathDesiredChanged(UAVObject*)));
-    connect(getPositionActual(), SIGNAL(objectUpdated(UAVObject*)), this, SLOT(positionActualChanged(UAVObject*)));
+    connect(getPathDesired().data(), &UAVObject::objectUpdated, this, &MagicWaypointGadgetWidget::pathDesiredChanged);
+    connect(getPositionActual().data(), &UAVObject::objectUpdated, this, &MagicWaypointGadgetWidget::positionActualChanged);
 
     // Connect updates from the position widget to this widget
     connect(m_magicwaypoint->widgetPosition, SIGNAL(positionClicked(double,double)), this, SLOT(positionSelected(double,double)));
@@ -72,24 +72,24 @@ MagicWaypointGadgetWidget::~MagicWaypointGadgetWidget()
  * @brief MagicWaypointGadgetWidget::getPathDesired Returns the @ref PathDesired UAVObject
  * @return PathDesired
  */
-PathDesired* MagicWaypointGadgetWidget::getPathDesired()
+QSharedPointer<PathDesired> MagicWaypointGadgetWidget::getPathDesired()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    PathDesired* obj = PathDesired::GetInstance(objManager);
-    Q_ASSERT(obj != NULL); // Save crashes later
+    auto obj = PathDesired::getInstance(objManager);
+    Q_ASSERT(obj); // Save crashes later
     return obj;
 }
 
 /*!
   \brief Returns the @ref PositionActual UAVObject
   */
-PositionActual* MagicWaypointGadgetWidget::getPositionActual()
+QSharedPointer<PositionActual> MagicWaypointGadgetWidget::getPositionActual()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    PositionActual *obj = PositionActual::GetInstance(objManager);
-    Q_ASSERT(obj != NULL);
+    auto obj = PositionActual::getInstance(objManager);
+    Q_ASSERT(obj);
     return obj;
 }
 
@@ -105,8 +105,9 @@ void MagicWaypointGadgetWidget::scaleChanged(int scale) {
 /**
   * Emit a position changed signal when @ref PositionActual object is changed
   */
-void MagicWaypointGadgetWidget::positionActualChanged(UAVObject *)
+void MagicWaypointGadgetWidget::positionActualChanged(QSharedPointer<UAVObject> obj)
 {
+    Q_UNUSED(obj)
     PositionActual::DataFields positionActual = getPositionActual()->getData();
     double scale = m_magicwaypoint->horizontalSliderScale->value();
 
@@ -117,8 +118,9 @@ void MagicWaypointGadgetWidget::positionActualChanged(UAVObject *)
 /**
   * Emit a position changed signal when @ref PathDesired is changed
   */
-void MagicWaypointGadgetWidget::pathDesiredChanged(UAVObject *)
+void MagicWaypointGadgetWidget::pathDesiredChanged(QSharedPointer<UAVObject> obj)
 {
+    Q_UNUSED(obj)
     PathDesired::DataFields pathDesired = getPathDesired()->getData();
     double scale = m_magicwaypoint->horizontalSliderScale->value();
 

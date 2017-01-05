@@ -753,7 +753,7 @@ QVariant ConfigOsdWidget::getVariantFromWidget(QWidget *widget, double scale, bo
  * @param value value to be used on the assignement
  * @return returns true if the assignement was successfull
  */
-bool ConfigOsdWidget::setWidgetFromVariant(QWidget *widget, QVariant value, double scale, QString units)
+bool ConfigOsdWidget::setWidgetFromVariant(QWidget *widget, QVariant value, double scale, int radix, QString units)
 {
     if(QGroupBox * groupBox=qobject_cast<QGroupBox *>(widget)) {
         bool bvalue;
@@ -776,7 +776,7 @@ bool ConfigOsdWidget::setWidgetFromVariant(QWidget *widget, QVariant value, doub
         checkBox->setChecked(bvalue);
         return true;
     } else {
-        return ConfigTaskWidget::setWidgetFromVariant(widget, value, scale, units);
+        return ConfigTaskWidget::setWidgetFromVariant(widget, value, scale, radix, units);
     }
 }
 /**

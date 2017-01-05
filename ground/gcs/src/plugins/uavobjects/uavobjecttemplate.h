@@ -39,9 +39,11 @@
 
 #include "uavogcsversion.h"
 
+#include <QSharedPointer>
+
 $(PARENT_INCLUDES)
 
-class UAVOBJECTS_EXPORT $(NAME): public UAVDataObject
+class UAVOBJECTS_EXPORT $(NAME): public UAVDataObject, private QEnableSharedFromThis<$(NAME)>
 {
     Q_OBJECT
 $(PROPERTIES)
@@ -79,10 +81,10 @@ $(DATAFIELDINFO)
     DataFields getData();
     void setData(const DataFields& data);
     Metadata getDefaultMetadata();
-    UAVDataObject* clone(quint32 instID);
-    UAVDataObject* dirtyClone();
-	
-    static $(NAME)* GetInstance(UAVObjectManager* objMngr, quint32 instID = 0);
+    QSharedPointer<UAVDataObject> clone(quint32 instID);
+    QSharedPointer<UAVDataObject> dirtyClone();
+
+    static QSharedPointer<$(NAME)> getInstance(UAVObjectManager* objMngr, quint32 instID = 0);
     static qint32 getNumInstances(UAVObjectManager* objMngr) {return objMngr->getNumInstances(OBJID);}
 
 $(PROPERTY_GETTERS)
@@ -95,7 +97,7 @@ $(PROPERTY_NOTIFICATIONS)
 
 private slots:
     void emitNotifications();
-	
+
 private:
     DataFields data;
 

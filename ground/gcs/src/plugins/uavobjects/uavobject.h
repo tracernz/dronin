@@ -44,6 +44,8 @@
 #include <QString>
 #include <QList>
 #include <QFile>
+#include <QSharedPointer>
+#include <QEnableSharedFromThis>
 #include <qglobal.h>
 #include "uavobjectfield.h"
 
@@ -63,7 +65,7 @@
 
 class UAVObjectField;
 
-class UAVOBJECTS_EXPORT UAVObject: public QObject
+class UAVOBJECTS_EXPORT UAVObject: public QObject, private QEnableSharedFromThis<UAVObject>
 {
     Q_OBJECT
 
@@ -126,31 +128,31 @@ public:
     virtual Metadata getMetadata() = 0;
     virtual Metadata getDefaultMetadata() = 0;
     qint32 getNumFields();
-    QList<UAVObjectField*> getFields();
-    UAVObjectField* getField(const QString& name);
+    QList<QSharedPointer<UAVObjectField>> getFields();
+    QSharedPointer<UAVObjectField> getField(const QString& name);
     QString toString();
     QString toStringBrief();
     QString toStringData();
     QJsonObject getJsonRepresentation();
     void emitTransactionCompleted(bool success);
     void emitTransactionCompleted(bool success, bool nacked);
-    void emitNewInstance(UAVObject *);
-    void emitInstanceRemoved(UAVObject *);
+    void emitNewInstance(QSharedPointer<UAVObject>);
+    void emitInstanceRemoved(QSharedPointer<UAVObject>);
 
     // Metadata accessors
-    static void MetadataInitialize(Metadata& meta);
-    static AccessMode GetFlightAccess(const Metadata& meta);
-    static void SetFlightAccess(Metadata& meta, AccessMode mode);
-    static AccessMode GetGcsAccess(const Metadata& meta);
-    static void SetGcsAccess(Metadata& meta, AccessMode mode);
-    static quint8 GetFlightTelemetryAcked(const Metadata& meta);
-    static void SetFlightTelemetryAcked(Metadata& meta, quint8 val);
-    static quint8 GetGcsTelemetryAcked(const Metadata& meta);
-    static void SetGcsTelemetryAcked(Metadata& meta, quint8 val);
-    static UpdateMode GetFlightTelemetryUpdateMode(const Metadata& meta);
-    static void SetFlightTelemetryUpdateMode(Metadata& meta, UpdateMode val);
-    static UpdateMode GetGcsTelemetryUpdateMode(const Metadata& meta);
-    static void SetGcsTelemetryUpdateMode(Metadata& meta, UpdateMode val);
+    static void metadataInitialize(Metadata& meta);
+    static AccessMode getFlightAccess(const Metadata& meta);
+    static void setFlightAccess(Metadata& meta, AccessMode mode);
+    static AccessMode getGcsAccess(const Metadata& meta);
+    static void setGcsAccess(Metadata& meta, AccessMode mode);
+    static quint8 getFlightTelemetryAcked(const Metadata& meta);
+    static void setFlightTelemetryAcked(Metadata& meta, quint8 val);
+    static quint8 getGcsTelemetryAcked(const Metadata& meta);
+    static void setGcsTelemetryAcked(Metadata& meta, quint8 val);
+    static UpdateMode getFlightTelemetryUpdateMode(const Metadata& meta);
+    static void setFlightTelemetryUpdateMode(Metadata& meta, UpdateMode val);
+    static UpdateMode getGcsTelemetryUpdateMode(const Metadata& meta);
+    static void setGcsTelemetryUpdateMode(Metadata& meta, UpdateMode val);
 		
 public slots:
     void requestUpdate();
@@ -168,7 +170,7 @@ signals:
      * as well.
      *
      */
-    void objectUpdated(UAVObject* obj);
+    void objectUpdated(QSharedPointer<UAVObject> obj);
 
     /**
      * @brief objectUpdatedAuto: triggered on "setData" only (Object data updated by changing the data structure)
@@ -177,7 +179,7 @@ signals:
      * link.
      * @param obj
      */
-    void objectUpdatedAuto(UAVObject* obj);
+    void objectUpdatedAuto(QSharedPointer<UAVObject> obj);
 
     /**
      * @brief objectUpdatedManual: triggered only from the "updated" slot in uavobject
@@ -185,32 +187,32 @@ signals:
      * link.
      * @param obj
      */
-    void objectUpdatedManual(UAVObject* obj);
+    void objectUpdatedManual(QSharedPointer<UAVObject> obj);
 
     /**
      * @brief objectUpdatedPeriodic: not used anywhere ?
      * @param obj
      */
-    void objectUpdatedPeriodic(UAVObject* obj);
+    void objectUpdatedPeriodic(QSharedPointer<UAVObject> obj);
 
     /**
      * @brief objectUnpacked: triggered whenever an object is unpacked
      * (i.e. arrives from the telemetry link)
      * @param obj
      */
-    void objectUnpacked(UAVObject* obj);
+    void objectUnpacked(QSharedPointer<UAVObject> obj);
 
     /**
      * @brief updateRequested
      * @param obj
      */
-    void updateRequested(UAVObject* obj);
+    void updateRequested(QSharedPointer<UAVObject> obj);
 
     /**
      * @brief updateAllInstancesRequested
      * @param obj
      */
-    void updateAllInstancesRequested(UAVObject* obj);
+    void updateAllInstancesRequested(QSharedPointer<UAVObject> obj);
     /**
      * @brief transactionCompleted. Triggered by a call to
      * emitTransactionCompleted - done in telemetry.cpp whenever a
@@ -218,22 +220,22 @@ signals:
      * @param obj
      * @param success
      */
-    void transactionCompleted(UAVObject* obj, bool success);
-    void transactionCompleted(UAVObject* obj, bool success, bool nack);
+    void transactionCompleted(QSharedPointer<UAVObject> obj, bool success);
+    void transactionCompleted(QSharedPointer<UAVObject> obj, bool success, bool nack);
     /**
      * @brief newInstance
      * @param obj
      */
-    void newInstance(UAVObject* obj);
+    void newInstance(QSharedPointer<UAVObject> obj);
 
     /**
      * @brief instance removed from manager
      * @param obj
      */
-    void instanceRemoved(UAVObject* obj);
+    void instanceRemoved(QSharedPointer<UAVObject> obj);
 
 private slots:
-    void fieldUpdated(UAVObjectField* field);
+    void fieldUpdated(QSharedPointer<UAVObjectField> field);
 
 protected:
     quint32 objID;
@@ -244,8 +246,8 @@ protected:
     QString category;
     quint32 numBytes;
     quint8* data;
-    QList<UAVObjectField*> fields;
-    void initializeFields(QList<UAVObjectField*>& fields, quint8* data, quint32 numBytes);
+    QList<QSharedPointer<UAVObjectField>> fields;
+    void initializeFields(QList<QSharedPointer<UAVObjectField>> &fields, quint8* data, quint32 numBytes);
     void setDescription(const QString& description);
     void setCategory(const QString& category);
 

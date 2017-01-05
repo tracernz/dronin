@@ -42,7 +42,10 @@ BrainRE1Configuration::BrainRE1Configuration(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    re1_settings_obj = HwBrainRE1::GetInstance(getObjectManager());
+    auto uavoMgr = getObjectManager();
+    if (!uavoMgr)
+        return;
+    re1_settings_obj = HwBrainRE1::GetInstance(uavoMgr);
 
     addApplySaveButtons(ui->applySettings,ui->saveSettings);
     addUAVObjectToWidgetRelation("HwBrainRE1", "RxPort",ui->cmbRxPort);

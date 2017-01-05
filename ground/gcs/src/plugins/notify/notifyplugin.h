@@ -75,7 +75,7 @@ private:
     Q_DISABLE_COPY(SoundNotifyPlugin)
 
     bool playNotification(NotificationItem* notification);
-    void checkNotificationRule(NotificationItem* notification, UAVObject* object);
+    void checkNotificationRule(NotificationItem* notification, QSharedPointer<UAVObject> object);
 
 private slots:
 
@@ -84,7 +84,7 @@ private slots:
     void connectNotifications();
     void updateNotificationList(QList<NotificationItem*> list);
     void resetNotification(void);
-    void on_arrived_Notification(UAVObject *object);
+    void on_arrived_Notification(QSharedPointer<UAVObject> object);
     void on_timerRepeated_Notification(void);
     void on_expiredTimer_Notification(void);
     void stateChanged(QMediaPlayer::State newstate);
@@ -92,7 +92,7 @@ private slots:
 private:
     bool enableSound;
 
-    QList<UAVDataObject*> lstNotifiedUAVObjects;
+    QList<QSharedPointer<UAVDataObject>> lstNotifiedUAVObjects;
     QList<NotificationItem*> _notificationList;
     QList<NotificationItem*> _pendingNotifications;
     QList<NotificationItem*> _toRemoveNotifications;

@@ -38,12 +38,13 @@
 
 class UAVObject;
 
-class UAVOBJECTS_EXPORT UAVObjectField: public QObject
+class UAVOBJECTS_EXPORT UAVObjectField: public QObject, public QEnableSharedFromThis<UAVObjectField>
 {
     Q_OBJECT
 
 public:
     typedef enum { INT8 = 0, INT16, INT32, UINT8, UINT16, UINT32, FLOAT32, ENUM, BITFIELD, STRING } FieldType;
+    typedef enum { BIN = 2, OCT = 8, DEC = 10, HEX = 16 } FieldRadix;
     typedef enum { EQUAL,NOT_EQUAL,BETWEEN,BIGGER,SMALLER } LimitType;
     typedef struct
     {
@@ -52,16 +53,17 @@ public:
         int board;
     } LimitStruct;
 
-    UAVObjectField(const QString& name, const QString& units, FieldType type, quint32 numElements,
+    UAVObjectField(const QString& name, const QString& units, FieldType type, FieldRadix radix, quint32 numElements,
                    const QStringList& options, const QList<int>& indices, const QString& limits=QString(),
                    const QString& description=QString(), const QList<QVariant> defaultValues = QList<QVariant>());
-    UAVObjectField(const QString& name, const QString& units, FieldType type,
+    UAVObjectField(const QString& name, const QString& units, FieldType type, FieldRadix radix,
                    const QStringList& elementNames, const QStringList& options, const QList<int>& indices,
                    const QString& limits=QString(), const QString& description=QString(),
                    const QList<QVariant> defaultValues = QList<QVariant>());
-    void initialize(quint8* data, quint32 dataOffset, UAVObject* obj);
-    UAVObject* getObject();
+    void initialize(quint8* data, quint32 dataOffset, QSharedPointer<UAVObject> obj);
+    QSharedPointer<UAVObject> getObject();
     FieldType getType();
+    int getRadix();
     QString getTypeAsString();
     QString getName();
     QString getUnits();
@@ -104,12 +106,13 @@ public:
     QVariant getMaxLimit(quint32 index, int board=0);
     QVariant getMinLimit(quint32 index, int board=0);
 signals:
-    void fieldUpdated(UAVObjectField* field);
+    void fieldUpdated(QSharedPointer<UAVObjectField> field);
 
 protected:
     QString name;
     QString units;
     FieldType type;
+    FieldRadix radix;
     QStringList elementNames;
     QList<int> indices;
     QStringList options;
@@ -117,14 +120,14 @@ protected:
     quint32 numBytesPerElement;
     quint32 offset;
     quint8* data;
-    UAVObject* obj;
+    QSharedPointer<UAVObject> obj;
     QMap<quint32, QList<LimitStruct> > elementLimits;
     QString description;
     QList<QVariant> defaultValues;
     void clear();
-    void constructorInitialize(const QString& name, const QString& units, FieldType type, const QStringList& elementNames,
-                               const QStringList& options, const QList<int> &indices, const QString &limits,
-                               const QString &description, const QList<QVariant> defaultValues);
+    void constructorInitialize(const QString& name, const QString& units, FieldType type, FieldRadix radix,
+                               const QStringList& elementNames, const QStringList& options, const QList<int> &indices,
+                               const QString &limits, const QString &description, const QList<QVariant> defaultValues);
     void limitsInitialize(const QString &limits);
 
 

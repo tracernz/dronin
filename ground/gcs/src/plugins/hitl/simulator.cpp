@@ -146,24 +146,24 @@ void Simulator::onStart()
     // Get required UAVObjects
     ExtensionSystem::PluginManager* pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager* objManager = pm->getObject<UAVObjectManager>();
-    actDesired = ActuatorDesired::GetInstance(objManager);
-    actCommand = ActuatorCommand::GetInstance(objManager);
-    manCtrlCommand = ManualControlCommand::GetInstance(objManager);
-    gcsReceiver = GCSReceiver::GetInstance(objManager);
-    flightStatus = FlightStatus::GetInstance(objManager);
-    posHome = HomeLocation::GetInstance(objManager);
-    velActual = VelocityActual::GetInstance(objManager);
-    posActual = PositionActual::GetInstance(objManager);
-    baroAlt = BaroAltitude::GetInstance(objManager);
-    airspeedActual = AirspeedActual::GetInstance(objManager);
-    attActual = AttitudeActual::GetInstance(objManager);
-    attitudeSettings = AttitudeSettings::GetInstance(objManager);
-    accels = Accels::GetInstance(objManager);
-    gyros = Gyros::GetInstance(objManager);
-    gpsPos = GPSPosition::GetInstance(objManager);
-    gpsVel = GPSVelocity::GetInstance(objManager);
-    telStats = GCSTelemetryStats::GetInstance(objManager);
-    groundTruth = GroundTruth::GetInstance(objManager);
+    actDesired = ActuatorDesired::getInstance(objManager);
+    actCommand = ActuatorCommand::getInstance(objManager);
+    manCtrlCommand = ManualControlCommand::getInstance(objManager);
+    gcsReceiver = GCSReceiver::getInstance(objManager);
+    flightStatus = FlightStatus::getInstance(objManager);
+    posHome = HomeLocation::getInstance(objManager);
+    velActual = VelocityActual::getInstance(objManager);
+    posActual = PositionActual::getInstance(objManager);
+    baroAlt = BaroAltitude::getInstance(objManager);
+    airspeedActual = AirspeedActual::getInstance(objManager);
+    attActual = AttitudeActual::getInstance(objManager);
+    attitudeSettings = AttitudeSettings::getInstance(objManager);
+    accels = Accels::getInstance(objManager);
+    gyros = Gyros::getInstance(objManager);
+    gpsPos = GPSPosition::getInstance(objManager);
+    gpsVel = GPSVelocity::getInstance(objManager);
+    telStats = GCSTelemetryStats::getInstance(objManager);
+    groundTruth = GroundTruth::getInstance(objManager);
 
     // Listen to autopilot connection events
     TelemetryManager* telMngr = pm->getObject<TelemetryManager>();
@@ -246,12 +246,11 @@ void Simulator::setupUAVObjects()
 
     // Iterate over list of UAVObjects, setting all dynamic data metadata objects to slow update rate.
     UAVObjectManager *objManager = getObjectManager();
-    QVector< QVector<UAVDataObject*> > objList = objManager->getDataObjectsVector();
-    foreach (QVector<UAVDataObject*> list, objList) {
-        foreach (UAVDataObject* obj, list) {
-            if(!obj->isSettings()) {
+    for (const auto &list : objManager->getDataObjectsVector()) {
+        for (auto obj : list) {
+            if(obj && !obj->isSettings()) {
                 UAVObject::Metadata mdata = obj->getMetadata();
-                UAVObject::SetFlightTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_PERIODIC);
+                UAVObject::setFlightTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_PERIODIC);
 
                 // Default configuration for all UAVO data rates is "slowUpdate". Add a random factor
                 // so that not all UAVOs update at the same time, which otherwise congests the bus.
@@ -322,21 +321,27 @@ void Simulator::setupUAVObjects()
  * @param obj
  * @param updatePeriod
  */
-void Simulator::setupInputObject(UAVObject* obj, quint32 updatePeriod)
+void Simulator::setupInputObject(QSharedPointer<UAVObject> obj, quint32 updatePeriod)
 {
+    if (!obj) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object";
+        return;
+    }
+
     // Fetch value from QMap
     UAVObject::Metadata mdata = metaDataList.value(obj->getName());
 
     // Update GCS-side metadata
-    UAVObject::SetGcsAccess(mdata, UAVObject::ACCESS_READONLY);
-    UAVObject::SetGcsTelemetryAcked(mdata, false);
-    UAVObject::SetGcsTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_MANUAL);
+    UAVObject::setGcsAccess(mdata, UAVObject::ACCESS_READONLY);
+    UAVObject::setGcsTelemetryAcked(mdata, false);
+    UAVObject::setGcsTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_MANUAL);
     mdata.gcsTelemetryUpdatePeriod = 0;
 
     // Update flight-side metadata
-    UAVObject::SetFlightAccess(mdata, UAVObject::ACCESS_READWRITE);
-    UAVObject::SetFlightTelemetryAcked(mdata, false);
-    UAVObject::SetFlightTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_PERIODIC);
+    UAVObject::setFlightAccess(mdata, UAVObject::ACCESS_READWRITE);
+    UAVObject::setFlightTelemetryAcked(mdata, false);
+    UAVObject::setFlightTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_PERIODIC);
     mdata.flightTelemetryUpdatePeriod = updatePeriod;
 
     // Update QMap value
@@ -350,20 +355,26 @@ void Simulator::setupInputObject(UAVObject* obj, quint32 updatePeriod)
  * @param obj
  * @param updatePeriod
  */
-void Simulator::setupOutputObject(UAVObject* obj, quint32 updatePeriod)
+void Simulator::setupOutputObject(QSharedPointer<UAVObject> obj, quint32 updatePeriod)
 {
+    if (!obj) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object";
+        return;
+    }
+
     // Fetch value from QMap
     UAVObject::Metadata mdata = metaDataList.value(obj->getName());
 
     // Update GCS-side metadata
-    UAVObject::SetGcsAccess(mdata, UAVObject::ACCESS_READWRITE);
-    UAVObject::SetGcsTelemetryAcked(mdata, false);
-    UAVObject::SetGcsTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_THROTTLED);
+    UAVObject::setGcsAccess(mdata, UAVObject::ACCESS_READWRITE);
+    UAVObject::setGcsTelemetryAcked(mdata, false);
+    UAVObject::setGcsTelemetryUpdateMode(mdata, UAVObject::UPDATEMODE_THROTTLED);
     mdata.gcsTelemetryUpdatePeriod = updatePeriod;
 
     // Update flight-side metadata
-    UAVObject::SetFlightAccess(mdata, UAVObject::ACCESS_READONLY);
-    UAVObject::SetFlightTelemetryUpdateMode(mdata,UAVObject::UPDATEMODE_MANUAL);
+    UAVObject::setFlightAccess(mdata, UAVObject::ACCESS_READONLY);
+    UAVObject::setFlightTelemetryUpdateMode(mdata,UAVObject::UPDATEMODE_MANUAL);
 
     // Update QMap value
     metaDataList.insert(obj->getName(), mdata);

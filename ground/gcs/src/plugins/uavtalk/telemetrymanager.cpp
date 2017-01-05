@@ -102,15 +102,10 @@ void TelemetryManager::onDisconnect()
 
 void TelemetryManager::onGeneralSettingsChanged()
 {
-    if (!settings->useSessionManaging())
-    {
-        foreach(UAVObjectManager::ObjectMap map, objMngr->getObjects())
-        {
-            foreach(UAVObject* obj, map.values())
-            {
-                UAVDataObject* dobj = dynamic_cast<UAVDataObject*>(obj);
-                if(dobj)
-                {
+    if (!settings->useSessionManaging()) {
+        for (const auto &map : objMngr->getObjects()) {
+            for (const auto &obj : map.values()) {
+                if (auto dobj = obj.dynamicCast<UAVDataObject>()) {
                     dobj->setIsPresentOnHardware(false);
                     dobj->setIsPresentOnHardware(true);
                 }

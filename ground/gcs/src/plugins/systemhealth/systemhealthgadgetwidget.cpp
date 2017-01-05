@@ -56,8 +56,8 @@ SystemHealthGadgetWidget::SystemHealthGadgetWidget(QWidget *parent) : QGraphicsV
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
 
-    SystemAlarms* obj = SystemAlarms::GetInstance(objManager);
-    connect(obj, SIGNAL(objectUpdated(UAVObject*)), this, SLOT(updateAlarms(UAVObject*)));
+    QSharedPointer<SystemAlarms> obj = SystemAlarms::getInstance(objManager);
+    connect(obj.data(), &UAVObject::objectUpdated, this, &SystemHealthGadgetWidget::updateAlarms);
 
     // Listen to autopilot connection events
     TelemetryManager* telMngr = pm->getObject<TelemetryManager>();
@@ -83,7 +83,7 @@ void SystemHealthGadgetWidget::onAutopilotDisconnect()
     nolink->setVisible(true);
 }
 
-void SystemHealthGadgetWidget::updateAlarms(UAVObject* systemAlarm)
+void SystemHealthGadgetWidget::updateAlarms(QSharedPointer<UAVObject> systemAlarm)
 {
     static QList<QString> warningClean;
     // This code does not know anything about alarms beforehand, and
@@ -96,10 +96,18 @@ void SystemHealthGadgetWidget::updateAlarms(UAVObject* systemAlarm)
         delete item; // removeItem does _not_ delete the item.
     }
 
-    UAVObjectField *field = systemAlarm->getField("Alarm");
-    Q_ASSERT(field);
-    if (field == NULL)
+    if (!systemAlarm) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object!";
         return;
+    }
+
+    auto field = systemAlarm->getField("Alarm");
+    if (!field) {
+        Q_ASSERT(false);
+        qWarning() << "Could not get SystemAlarms.Alarm!";
+        return;
+    }
 
     for (uint i = 0; i < field->getNumElements(); ++i) {
         QString element = field->getElementNames()[i];
@@ -169,13 +177,13 @@ void SystemHealthGadgetWidget::setSystemFile(QString dfn)
          TelemetryManager* telMngr = pm->getObject<TelemetryManager>();
          if (telMngr->isConnected()) {
              onAutopilotConnect();
-             SystemAlarms* obj = SystemAlarms::GetInstance(objManager);
-             updateAlarms(obj);
+             auto obj = SystemAlarms::getInstance(objManager);
+             updateAlarms(obj); // obj pointer checked in updateAlarms
          }
        }
+   } else {
+       qDebug() <<"SystemHealthGadget: no file";
    }
-   else
-   { qDebug() <<"SystemHealthGadget: no file"; }
 }
 
 void SystemHealthGadgetWidget::paint()
@@ -281,7 +289,15 @@ QString SystemHealthGadgetWidget::getAlarmDescriptionFileName(const QString item
     QString alarmDescriptionFileName;
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager* objManager = pm->getObject<UAVObjectManager>();
-    SystemAlarms::DataFields systemAlarmsData = SystemAlarms::GetInstance(objManager)->getData();
+
+    auto obj = SystemAlarms::getInstance(objManager);
+    if (!obj) {
+        Q_ASSERT(false);
+        qWarning() << "Could not get SystemAlarms!";
+        return alarmDescriptionFileName;
+    }
+    SystemAlarms::DataFields systemAlarmsData = obj->getData();
+
     if (itemId.contains("SystemConfiguration-")) {
         switch(systemAlarmsData.ConfigError) {
         case SystemAlarms::CONFIGERROR_STABILIZATION:

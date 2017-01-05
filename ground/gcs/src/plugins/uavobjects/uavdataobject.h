@@ -34,30 +34,31 @@
 #include "uavobjectfield.h"
 #include "uavmetaobject.h"
 #include <QList>
+#include <QSharedPointer>
 
-class UAVOBJECTS_EXPORT UAVDataObject: public UAVObject
+class UAVOBJECTS_EXPORT UAVDataObject: public UAVObject, private QEnableSharedFromThis<UAVDataObject>
 {
     Q_OBJECT
 
 public:
     UAVDataObject(quint32 objID, bool isSingleInst, bool isSet, const QString& name);
-    void initialize(quint32 instID, UAVMetaObject* mobj);
-    void initialize(UAVMetaObject* mobj);
+    void initialize(quint32 instID, QSharedPointer<UAVMetaObject> mobj);
+    void initialize(QSharedPointer<UAVMetaObject> mobj);
     bool isSettings();
     void setMetadata(const Metadata& mdata);
     Metadata getMetadata();
-    UAVMetaObject* getMetaObject();
-    virtual UAVDataObject* clone(quint32 instID = 0) = 0;
-    virtual UAVDataObject* dirtyClone() = 0;
+    QSharedPointer<UAVMetaObject> getMetaObject();
+    virtual QSharedPointer<UAVDataObject> clone(quint32 instID = 0) = 0;
+    virtual QSharedPointer<UAVDataObject> dirtyClone() = 0;
 
     bool getIsPresentOnHardware() const;
     void setIsPresentOnHardware(bool value);
 
 signals:
-    void presentOnHardwareChanged(UAVDataObject*);
+    void presentOnHardwareChanged(QSharedPointer<UAVDataObject> obj);
 
 private:
-    UAVMetaObject* mobj;
+    QSharedPointer<UAVMetaObject> mobj;
     bool isSet;
     bool isPresentOnHardware;
 

@@ -59,7 +59,7 @@ private:
     QMap<QString,GlobalMessage*> errorMessages;
     QMap<QString,GlobalMessage*> warningMessages;
 private slots:
-    void updateAlarms(UAVObject*);
+    void updateAlarms(QSharedPointer<UAVObject> obj);
     void onAutopilotDisconnect();
 
 };

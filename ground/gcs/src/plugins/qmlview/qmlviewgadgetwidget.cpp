@@ -48,10 +48,12 @@ QmlViewGadgetWidget::QmlViewGadgetWidget(QWindow *parent) :
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
 
-    QVector<QVector<UAVObject*>> objects = objManager->getObjectsVector();
+    auto objects = objManager->getObjectsVector();
 
-    foreach (const QVector<UAVObject*> &objInst, objects)
-        engine()->rootContext()->setContextProperty(objInst.at(0)->getName(), objInst.at(0));
+    for (const auto &objInst : objects) {
+        if (objInst.at(0))
+            engine()->rootContext()->setContextProperty(objInst.at(0)->getName(), objInst.at(0).data());
+    }
 
     engine()->rootContext()->setContextProperty("qmlWidget", this);
 }

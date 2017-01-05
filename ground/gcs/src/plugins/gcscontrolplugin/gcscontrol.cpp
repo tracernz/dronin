@@ -52,10 +52,10 @@ void GCSControl::extensionsInitialized()
     UAVObjectManager * objMngr = pm->getObject<UAVObjectManager>();
     Q_ASSERT(objMngr);
 
-    manControlSettingsUAVO = ManualControlSettings::GetInstance(objMngr);
+    manControlSettingsUAVO = ManualControlSettings::getInstance(objMngr);
     Q_ASSERT(manControlSettingsUAVO);
 
-    m_gcsReceiver = GCSReceiver::GetInstance(objMngr);
+    m_gcsReceiver = GCSReceiver::getInstance(objMngr);
     Q_ASSERT(m_gcsReceiver);
 }
 
@@ -104,7 +104,7 @@ bool GCSControl::beginGCSControl()
     dataBackup = manControlSettingsUAVO->getData();
     metaBackup = manControlSettingsUAVO->getMetadata();
     ManualControlSettings::Metadata meta = manControlSettingsUAVO->getDefaultMetadata();
-    UAVObject::SetGcsAccess(meta,UAVObject::ACCESS_READWRITE);
+    UAVObject::setGcsAccess(meta,UAVObject::ACCESS_READWRITE);
 
     // No need to set flight mode, we leave that at none and directly change
     // the setting
@@ -145,7 +145,7 @@ bool GCSControl::beginGCSControl()
     manControlSettingsUAVO->setFlightModeNumber(1);
     manControlSettingsUAVO->setFlightModePosition(0,ManualControlSettings::FLIGHTMODEPOSITION_STABILIZED1);
     manControlSettingsUAVO->updated();
-    connect(manControlSettingsUAVO,SIGNAL(objectUpdated(UAVObject*)),this,SLOT(objectsUpdated(UAVObject*)));
+    connect(manControlSettingsUAVO.data(), &UAVObject::objectUpdated, this, &GCSControl::objectsUpdated);
     hasControl = true;
     for(quint8 x = 0; x < GCSReceiver::CHANNEL_NUMELEM; ++x)
         setChannel(x,0);
@@ -160,7 +160,7 @@ bool GCSControl::endGCSControl()
 {
     if(!hasControl)
         return false;
-    disconnect(manControlSettingsUAVO,SIGNAL(objectUpdated(UAVObject*)),this,SLOT(objectsUpdated(UAVObject*)));
+    disconnect(manControlSettingsUAVO.data(), &UAVObject::objectUpdated, this, &GCSControl::objectsUpdated);
     manControlSettingsUAVO->setData(dataBackup);
     manControlSettingsUAVO->setMetadata(metaBackup);
     manControlSettingsUAVO->updated();
@@ -214,9 +214,10 @@ bool GCSControl::setChannel(quint8 channel, float value)
     return true;
 }
 
-void GCSControl::objectsUpdated(UAVObject *obj)
+void GCSControl::objectsUpdated(QSharedPointer<UAVObject> obj)
 {
-    qDebug()<< "GCSControl::objectsUpdated" <<"Object"<<obj->getName()<<"changed outside this class";
+    if (obj)
+        qDebug()<< "GCSControl::objectsUpdated" <<"Object"<<obj->getName()<<"changed outside this class";
 }
 
 void GCSControl::receiverActivitySlot()

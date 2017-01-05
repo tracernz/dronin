@@ -32,6 +32,8 @@
 #include "uavobjectutil/uavobjectutilmanager.h"
 #include <extensionsystem/pluginmanager.h>
 
+#include <QDebug>
+
 #include "hwsparky.h"
 
 /**
@@ -122,10 +124,17 @@ bool Sparky::setInputType(enum InputType type)
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwSparky *hwSparky = HwSparky::GetInstance(uavoManager);
-    Q_ASSERT(hwSparky);
-    if (!hwSparky)
+    if (!uavoManager) {
+        Q_ASSERT(false);
+        qWarning() << "Could not get UAVObjectManager!";
         return false;
+    }
+    auto hwSparky = HwSparky::getInstance(uavoManager);
+    if (!hwSparky) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object! HwSparky";
+        return false;
+    }
 
     HwSparky::DataFields settings = hwSparky->getData();
 
@@ -134,11 +143,11 @@ bool Sparky::setInputType(enum InputType type)
         settings.RcvrPort = HwSparky::RCVRPORT_PPM;
         break;
     case INPUT_TYPE_SBUS:
-	    settings.RcvrPort = HwSparky::RCVRPORT_SBUS;
+        settings.RcvrPort = HwSparky::RCVRPORT_SBUS;
         break;
-	case INPUT_TYPE_SBUSNONINVERTED:
-		settings.RcvrPort = HwSparky::RCVRPORT_SBUSNONINVERTED;
-		break;
+    case INPUT_TYPE_SBUSNONINVERTED:
+        settings.RcvrPort = HwSparky::RCVRPORT_SBUSNONINVERTED;
+        break;
     case INPUT_TYPE_DSM:
         settings.RcvrPort = HwSparky::RCVRPORT_DSM;
         break;
@@ -163,10 +172,17 @@ enum Core::IBoardType::InputType Sparky::getInputType()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwSparky *hwSparky = HwSparky::GetInstance(uavoManager);
-    Q_ASSERT(hwSparky);
-    if (!hwSparky)
+    if (!uavoManager) {
+        Q_ASSERT(false);
+        qWarning() << "Could not get UAVObjectManager!";
         return INPUT_TYPE_UNKNOWN;
+    }
+    auto hwSparky = HwSparky::getInstance(uavoManager);
+    if (!hwSparky) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object! HwSparky";
+        return INPUT_TYPE_UNKNOWN;
+    }
 
     HwSparky::DataFields settings = hwSparky->getData();
 
@@ -174,10 +190,10 @@ enum Core::IBoardType::InputType Sparky::getInputType()
     case HwSparky::RCVRPORT_PPM:
         return INPUT_TYPE_PPM;
     case HwSparky::RCVRPORT_SBUS:
-	    return INPUT_TYPE_SBUS;
+        return INPUT_TYPE_SBUS;
     case HwSparky::RCVRPORT_SBUSNONINVERTED:
-		return INPUT_TYPE_SBUSNONINVERTED;
-	case HwSparky::RCVRPORT_DSM:
+        return INPUT_TYPE_SBUSNONINVERTED;
+    case HwSparky::RCVRPORT_DSM:
         return INPUT_TYPE_DSM;
     case HwSparky::RCVRPORT_HOTTSUMD:
         return INPUT_TYPE_HOTTSUMD;
@@ -190,10 +206,17 @@ int Sparky::queryMaxGyroRate()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwSparky *hwSparky = HwSparky::GetInstance(uavoManager);
-    Q_ASSERT(hwSparky);
-    if (!hwSparky)
+    if (!uavoManager) {
+        Q_ASSERT(false);
+        qWarning() << "Could not get UAVObjectManager!";
         return 0;
+    }
+    auto hwSparky = HwSparky::getInstance(uavoManager);
+    if (!hwSparky) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object! HwSparky";
+        return 0;
+    }
 
     HwSparky::DataFields settings = hwSparky->getData();
 
@@ -215,10 +238,17 @@ QStringList Sparky::getAdcNames()
 {
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *uavoManager = pm->getObject<UAVObjectManager>();
-    HwSparky *hwSparky = HwSparky::GetInstance(uavoManager);
-    Q_ASSERT(hwSparky);
-    if (!hwSparky)
+    if (!uavoManager) {
+        Q_ASSERT(false);
+        qWarning() << "Could not get UAVObjectManager!";
         return QStringList();
+    }
+    auto hwSparky = HwSparky::getInstance(uavoManager);
+    if (!hwSparky) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object! HwSparky";
+        return QStringList();
+    }
 
     QStringList names;
     HwSparky::DataFields settings = hwSparky->getData();

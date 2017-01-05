@@ -72,9 +72,9 @@ public:
    void setDialFont(QString fontProps);
 
 public slots:
-   void updateNeedle1(UAVObject *object1); // Called by the UAVObject
-   void updateNeedle2(UAVObject *object2); // Called by the UAVObject
-   void updateNeedle3(UAVObject *object3); // Called by the UAVObject
+   void updateNeedle1(QSharedPointer<UAVObject> object1); // Called by the UAVObject
+   void updateNeedle2(QSharedPointer<UAVObject> object2); // Called by the UAVObject
+   void updateNeedle3(QSharedPointer<UAVObject> object3); // Called by the UAVObject
 
 protected:
    void paintEvent(QPaintEvent *event);
@@ -131,9 +131,7 @@ private:
    double needle3Value;
 
    // Name of the fields to read when an update is received:
-   UAVDataObject* obj1;
-   UAVDataObject* obj2;
-   UAVDataObject* obj3;
+   QSharedPointer<UAVDataObject> obj1, obj2, obj3;
    QString field1;
    QString subfield1;
    bool haveSubField1;

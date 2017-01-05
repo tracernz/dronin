@@ -138,15 +138,15 @@ void SpectrogramData::plotNewData(PlotData *plot3dData, ScopeConfig *scopeConfig
 /**
  * @brief SpectrogramData::append Appends data to spectrogram
  * @param obj UAVO with new data
+ * @todo unravel this shambles
  * @return
  */
-bool SpectrogramData::append(UAVObject* multiObj)
+bool SpectrogramData::append(QSharedPointer<UAVObject> multiObj)
 {
     QDateTime NOW = QDateTime::currentDateTime(); //TODO: Upgrade this to show UAVO time and not system time
 
     // Check to make sure it's the correct UAVO
-    if (uavObjectName == multiObj->getName()) {
-
+    if (multiObj && uavObjectName == multiObj->getName()) {
         // Only run on UAVOs that have multiple instances
         if (multiObj->isSingleInstance()) {
             return false;
@@ -162,17 +162,26 @@ bool SpectrogramData::append(UAVObject* multiObj)
 
 
         // Get list of object instances
-        QVector<UAVObject*> list = objManager->getObjectInstancesVector(multiObj->getName());
-
-        uint16_t newWindowWidth = list.size() * list.front()->getField(uavFieldName)->getNumElements();
+        const auto &list = objManager->getObjectInstancesVector(multiObj->getName());
+        if (!list.front()) {
+            Q_ASSERT(false);
+            qWarning() << "Invalid object!";
+            return false;
+        }
+        auto f = list.front()->getField(uavFieldName);
+        if (!f) {
+            Q_ASSERT(false);
+            qWarning() << "Invalid object field!";
+            return false;
+        }
+        uint16_t newWindowWidth = list.size() * f->getNumElements();
 
         /* Check if the instance has a samples field as this will override the windowWidth
         *  Field can be used in objects that have dynamic size 
         *  like the case of the Vibration Analysis modeule
         */
-        QList<UAVObjectField*> fieldList = multiObj->getFields();
-        foreach (UAVObjectField* field, fieldList) {
-            if (field->getType() == UAVObjectField::INT16 && field->getName() == "samples") {
+        for (auto field : multiObj->getFields()) {
+            if (field && field->getType() == UAVObjectField::INT16 && field->getName() == "samples") {
                 newWindowWidth = field->getValue().toDouble();
                 break;
             }
@@ -202,18 +211,22 @@ bool SpectrogramData::append(UAVObject* multiObj)
             qDebug() << "Spectrogram width adjusted to " << windowWidth;
         }
 
-        UAVObjectField* multiField = multiObj->getField(uavFieldName);
+        auto multiField = multiObj->getField(uavFieldName);
         Q_ASSERT(multiField);
         if (multiField ) {
-
             // Get the field of interest
-            foreach (UAVObject *obj, list) {
-                UAVObjectField* field = obj->getField(uavFieldName);
+            for (auto obj : list) {
+                auto field = obj->getField(uavFieldName);
+                if (!field)
+                    continue;
+
                 int numElements = field->getNumElements();
 
                 double scale = 1;
-                QList<UAVObjectField*> fieldList = obj->getFields();
-                foreach (UAVObjectField* field, fieldList) {
+                for (auto field : obj->getFields()) {
+                    if (!field)
+                        return false;
+
                     // Check if the instance has a scale field
                     if(field->getType() == UAVObjectField::FLOAT32 && field->getName() == "scale"){
                         scale = field->getValue().toDouble();

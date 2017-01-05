@@ -14,7 +14,9 @@ HEADERS += uavobjectwidgetutils_global.h \
     mixercurveline.h \
     smartsavebutton.h \
     popupwidget.h \
-    connectiondiagram.h
+    connectiondiagram.h \
+    objrelationmanager.h \
+    objrelation.h
 
 SOURCES += uavobjectwidgetutilsplugin.cpp \
     configtaskwidget.cpp \
@@ -23,7 +25,9 @@ SOURCES += uavobjectwidgetutilsplugin.cpp \
     mixercurveline.cpp \
     smartsavebutton.cpp \
     popupwidget.cpp \
-    connectiondiagram.cpp
+    connectiondiagram.cpp \
+    objrelationmanager.cpp \
+    objrelation.cpp
 
 OTHER_FILES += UAVObjectWidgetUtils.pluginspec \
     UAVObjectWidgetUtils.json

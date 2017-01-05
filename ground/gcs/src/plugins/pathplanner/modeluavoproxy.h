@@ -53,7 +53,7 @@ public slots:
     void objectsToModel();
 
     //! Whenever a waypoint transaction is completed
-    void waypointTransactionCompleted(UAVObject *, bool);
+    void waypointTransactionCompleted(QSharedPointer<UAVObject>, bool);
 
 signals:
     void waypointTransactionSucceeded();
@@ -61,8 +61,8 @@ signals:
     void sendPathPlanToUavProgress(int percent);
 private:
     UAVObjectManager *objManager;
-    Waypoint         *waypointObj;
-    FlightDataModel  *myModel;
+    QSharedPointer<Waypoint> waypointObj;
+    FlightDataModel *myModel;
 
     //! Track if each waypoint was updated
     QMap<int, bool>  waypointTransactionResult;

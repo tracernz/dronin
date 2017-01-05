@@ -60,13 +60,13 @@ private slots:
     void loadTelemetryFromFile();
 
     //! Apply selected telemetry schedule to the UAV
-    QList<UAVMetaObject *> applySchedule();
+    QList<QSharedPointer<UAVMetaObject>> applySchedule();
     //! Save selected telemetry schedule on the UAV
     void saveSchedule();
     void onSavedSchedule(bool);
     void onCompletedMetadataWrite(bool);
     void onCompletedMetadataSave(int, bool);
-    void updateCurrentColumn(UAVObject *);
+    void updateCurrentColumn(QSharedPointer<UAVObject> obj);
     void dataModel_itemChanged(int col);
     void dataModel_itemChanged(QStandardItem *item);
     void addTelemetryColumn();
@@ -74,11 +74,11 @@ private slots:
     void changeVerticalHeader(int);
     void changeHorizontalHeader(int);
     void customMenuRequested(QPoint pos);
-    void uavoPresentOnHardwareChanged(UAVDataObject*);
+    void uavoPresentOnHardwareChanged(QSharedPointer<UAVDataObject> dobj);
     void onHideNotPresent(bool);
 private:
     int stripMs(QVariant rate_ms);
-    QList<UAVMetaObject *> metaObjectsToSave;
+    QList<QSharedPointer<UAVMetaObject>> metaObjectsToSave;
     void importTelemetryConfiguration(const QString& fileName);
     UAVObjectUtilManager *getObjectUtilManager();
     UAVObjectManager *getObjectManager();
@@ -89,7 +89,7 @@ private:
     QString filename;
 
     QMap<QString, UAVObject::Metadata> defaultMdata;
-    QMap<UAVDataObject*, int> uavoIndex;
+    QMap<QSharedPointer<UAVDataObject>, int> uavoIndex;
 
     QStringList columnHeaders;
 

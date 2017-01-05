@@ -334,11 +334,13 @@ QStringList valueToSoundList(QString value)
     return digitWavs;
 }
 
-QString stringFromValue(QVariant value, UAVObjectField* field)
+QString stringFromValue(QVariant value, QSharedPointer<UAVObjectField> field)
 {
-    if(field==NULL)
+    if (!field) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid Object Field!";
         return "";
-    Q_ASSERT(field);
+    }
     Q_ASSERT(!value.isNull());
     QString str;
     if (UAVObjectField::ENUM == field->getType()) {
@@ -354,8 +356,7 @@ QString stringFromValue(QVariant value, UAVObjectField* field)
 QString NotificationItem::toString()
 {
     QString str;
-    UAVObjectField* field = getUAVObjectField();
-    QString value = stringFromValue(singleValue(), field);
+    QString value = stringFromValue(singleValue(), getUAVObjectField());
 
     int pos = getSayOrder()-1;
     QStringList lst;
@@ -384,16 +385,21 @@ QString NotificationItem::toString()
 
 QStringList& NotificationItem::toSoundList()
 {
+    _messageSequence.clear();
     // tips:
     // check of *.wav files exist needed for playing phonon queues;
     // if phonon player don't find next file in queue, it buzz
-    UAVObjectField* field = getUAVObjectField();
+    auto field = getUAVObjectField();
+    if (!field) {
+        Q_ASSERT(false);
+        qWarning() << "Invalid object!";
+        return _messageSequence;
+    }
     QString value = stringFromValue(singleValue(), field);
 
     // generate queue of sound files to play
-    _messageSequence.clear();
-    int pos = getSayOrder()-1;
     QStringList lst;
+    int pos = getSayOrder()-1;
     if(!getSound1().isEmpty())
         lst.append(getSound1());
     if(!getSound2().isEmpty())
@@ -429,10 +435,17 @@ QString NotificationItem::getSoundCaption(QString fileName)
     return fileName;
 }
 
-UAVObjectField* NotificationItem::getUAVObjectField() {
-    return getUAVObject()->getField(getObjectField());
+QSharedPointer<UAVObjectField> NotificationItem::getUAVObjectField() {
+    auto obj = getUAVObject();
+    if (!obj)
+        return QSharedPointer<UAVObjectField>();
+    return obj->getField(getObjectField());
 }
 
-UAVDataObject* NotificationItem::getUAVObject() {
-    return dynamic_cast<UAVDataObject*>((ExtensionSystem::PluginManager::instance()->getObject<UAVObjectManager>())->getObject(getDataObject()));
+QSharedPointer<UAVDataObject> NotificationItem::getUAVObject() {
+    auto pm = ExtensionSystem::PluginManager::instance(); // we can assume this succeeds since we are a plugin
+    auto objMgr = pm->getObject<UAVObjectManager>();
+    if (!objMgr)
+        return QSharedPointer<UAVDataObject>();
+    return objMgr->getObject(getDataObject()).dynamicCast<UAVDataObject>();
 }

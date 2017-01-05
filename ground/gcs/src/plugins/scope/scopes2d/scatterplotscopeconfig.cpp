@@ -261,8 +261,8 @@ void Scatterplot2dScopeConfig::loadConfiguration(ScopeGadgetWidget *scopeGadgetW
         //Get the uav object
         ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
         UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-        UAVDataObject* obj = dynamic_cast<UAVDataObject*>(objManager->getObject((scatterplotData->getUavoName())));
-        if(!obj) {
+        auto obj = objManager->getObject(scatterplotData->getUavoName()).dynamicCast<UAVDataObject>();
+        if (!obj) {
             qDebug() << "Object " << scatterplotData->getUavoName() << " is missing";
             return;
         }

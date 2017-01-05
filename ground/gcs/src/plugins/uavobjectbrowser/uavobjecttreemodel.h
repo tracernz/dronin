@@ -92,30 +92,30 @@ public:
 signals:
     void presentOnHardwareChanged();
 public slots:
-    void newObject(UAVObject *obj);
+    void newObject(QSharedPointer<UAVObject> obj);
     void initializeModel(bool categorize = true, bool useScientificFloatNotation = true);
-    void instanceRemove(UAVObject*);
+    void instanceRemove(QSharedPointer<UAVObject> obj);
 private slots:
-    void highlightUpdatedObject(UAVObject *obj);
+    void highlightUpdatedObject(QSharedPointer<UAVObject> obj);
     void updateHighlight(TreeItem*);
     void updateCurrentTime();
-    void presentOnHardwareChangedCB(UAVDataObject*);
+    void presentOnHardwareChangedCB(QSharedPointer<UAVDataObject> obj);
 
 private:
     void setupModelData(UAVObjectManager *objManager, bool categorize = true, bool useScientificFloatNotation = true);
     QModelIndex index(TreeItem *item);
-    void addDataObject(UAVDataObject *obj, bool categorize = true);
-    MetaObjectTreeItem *addMetaObject(UAVMetaObject *obj, TreeItem *parent);
-    void addArrayField(UAVObjectField *field, TreeItem *parent);
-    void addSingleField(int index, UAVObjectField *field, TreeItem *parent);
-    void addInstance(UAVObject *obj, TreeItem *parent);
+    void addDataObject(QSharedPointer<UAVDataObject> obj, bool categorize = true);
+    MetaObjectTreeItem *addMetaObject(QSharedPointer<UAVMetaObject> obj, TreeItem *parent);
+    void addArrayField(QSharedPointer<UAVObjectField> field, TreeItem *parent);
+    void addSingleField(int index, QSharedPointer<UAVObjectField> field, TreeItem *parent);
+    void addInstance(QSharedPointer<UAVObject> obj, TreeItem *parent);
 
     TreeItem *createCategoryItems(QStringList categoryPath, TreeItem *root);
 
     QString updateMode(quint8 updateMode);
-    ObjectTreeItem *findObjectTreeItem(UAVObject *obj);
-    DataObjectTreeItem *findDataObjectTreeItem(UAVDataObject *obj);
-    MetaObjectTreeItem *findMetaObjectTreeItem(UAVMetaObject *obj);
+    ObjectTreeItem *findObjectTreeItem(QSharedPointer<UAVObject> obj);
+    DataObjectTreeItem *findDataObjectTreeItem(QSharedPointer<UAVDataObject> obj);
+    MetaObjectTreeItem *findMetaObjectTreeItem(QSharedPointer<UAVMetaObject> obj);
 
     TreeItem *m_rootItem;
     TopTreeItem *m_settingsTree;

@@ -40,7 +40,7 @@ class DefaultHwSettingsWidget : public ConfigTaskWidget
     Q_OBJECT
 
 public:
-    explicit DefaultHwSettingsWidget(UAVObject *settingsObj, QWidget *parent = 0);
+    explicit DefaultHwSettingsWidget(QSharedPointer<UAVObject> settingsObj, QWidget *parent = 0);
     ~DefaultHwSettingsWidget();
 
 private:

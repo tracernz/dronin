@@ -36,6 +36,7 @@
 #include "qsettings.h"
 #include <qstringlist.h>
 #include <QTimer>
+#include <QSharedPointer>
 
 using namespace Core;
 
@@ -107,8 +108,8 @@ public:
     void restoreState(QSettings* settings);
 
 
-    UAVDataObject* getUAVObject(void);
-    UAVObjectField* getUAVObjectField(void);
+    QSharedPointer<UAVDataObject> getUAVObject(void);
+    QSharedPointer<UAVObjectField> getUAVObjectField(void);
 
     void serialize(QDataStream& stream);
     void deserialize(QDataStream& stream);

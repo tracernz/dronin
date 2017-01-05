@@ -248,8 +248,8 @@ void SpectrogramScopeConfig::loadConfiguration(ScopeGadgetWidget *scopeGadgetWid
     //Get the uav object
     ExtensionSystem::PluginManager *pm = ExtensionSystem::PluginManager::instance();
     UAVObjectManager *objManager = pm->getObject<UAVObjectManager>();
-    UAVDataObject* obj = dynamic_cast<UAVDataObject*>(objManager->getObject((spectrogramData->getUavoName())));
-    if(!obj) {
+    auto obj = objManager->getObject(spectrogramData->getUavoName()).dynamicCast<UAVDataObject>();
+    if (!obj) {
         qDebug() << "Object " << spectrogramData->getUavoName() << " is missing";
         return;
     }

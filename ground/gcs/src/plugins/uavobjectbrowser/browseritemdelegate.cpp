@@ -98,3 +98,38 @@ QSize BrowserItemDelegate::sizeHint(const QStyleOptionViewItem & option, const Q
     Q_UNUSED(index);
     return QSpinBox().sizeHint();
 }
+
+QString BrowserItemDelegate::displayText(const QVariant &value, const QLocale &locale) const
+{
+    Q_UNUSED(locale)
+    if (value.type() == QVariant::UserType) {
+        int base = 10;
+        QString res;
+        if (value.userType() == QMetaType::type("FieldTreeItem::FieldUInt")) {
+            FieldTreeItem::FieldUInt v = value.value<FieldTreeItem::FieldUInt>();
+            res = QString::number(v.v, v.base);
+            base = v.base;
+        } else if (value.userType() == QMetaType::type("FieldTreeItem::FieldInt")) {
+            FieldTreeItem::FieldInt v = value.value<FieldTreeItem::FieldInt>();
+            res = QString::number(v.v, v.base);
+            base = v.base;
+        } else {
+            return QStyledItemDelegate::displayText(value, locale);
+        }
+        switch (base) {
+        case 2:
+            res.prepend("0b");
+            break;
+        case 8:
+            res.prepend("0o");
+            break;
+        case 16:
+            res.prepend("0x");
+            break;
+        default:
+            break;
+        }
+        return res;
+    }
+    return QStyledItemDelegate::displayText(value, locale);
+}

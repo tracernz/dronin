@@ -69,7 +69,7 @@ public:
     bool getBoardDescriptionStruct(deviceDescriptorStruct &device);
     static bool descriptionToStructure(QByteArray desc,deviceDescriptorStruct & struc);
     UAVObjectManager* getObjectManager();
-    void saveObjectToFlash(UAVObject *obj);
+    void saveObjectToFlash(QSharedPointer<UAVObject> obj);
     QMap<QString, UAVObject::Metadata> readMetadata(metadataSetEnum metadataReadType);
     QMap<QString, UAVObject::Metadata> readAllNonSettingsMetadata();
     bool setMetadata(QMap<QString, UAVObject::Metadata>, metadataSetEnum metadataUpdateType);
@@ -81,23 +81,23 @@ public:
 protected:
     FirmwareIAPObj::DataFields getFirmwareIap();
 signals:
-    void saveCompleted(int objectID, bool status);
+    void saveCompleted(quint32 objectID, bool status);
     void completedMetadataWrite(bool);
 
 private:
-    QQueue<UAVObject *> queue;
+    QQueue<QSharedPointer<UAVObject>> queue;
     enum {IDLE, AWAITING_ACK, AWAITING_COMPLETED} saveState;
     void saveNextObject();
     QTimer failureTimer;
     ExtensionSystem::PluginManager *pm;
     UAVObjectManager *obm;
-    QMap<UAVDataObject*, UAVObject::Metadata> metadataSendlist;
+    QMap<QSharedPointer<UAVDataObject>, UAVObject::Metadata> metadataSendlist;
     bool metadataSendSuccess;
 private slots:
-    void objectPersistenceTransactionCompleted(UAVObject* obj, bool success);
-    void objectPersistenceUpdated(UAVObject * obj);
+    void objectPersistenceTransactionCompleted(QSharedPointer<UAVObject> obj, bool success);
+    void objectPersistenceUpdated(QSharedPointer<UAVObject> obj);
     void objectPersistenceOperationFailed();
-    void metadataTransactionCompleted(UAVObject*, bool);
+    void metadataTransactionCompleted(QSharedPointer<UAVObject>, bool);
 };
 
 

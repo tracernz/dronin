@@ -53,10 +53,10 @@ public:
 protected:
    void paintEvent(QPaintEvent *event);
    void resizeEvent(QResizeEvent *event);
-   void mousePressEvent ( QMouseEvent * event );
+   void mousePressEvent (QMouseEvent * event);
 
 private slots:
-   void updateAlarms(UAVObject *systemAlarm); // Called by the systemalarms UAVObject
+   void updateAlarms(QSharedPointer<UAVObject> systemAlarm); // Called by the systemalarms UAVObject
    void onAutopilotConnect();
    void onAutopilotDisconnect();
 

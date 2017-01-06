@@ -221,6 +221,11 @@ void PIOS_USBHOOK_EndpointRx(uint8_t epnum, uint8_t *buf, uint16_t len)
 	DCD_EP_PrepareRx(&pios_usb_otg_core_handle, epnum, buf, len);
 }
 
+void PIOS_USBHOOK_EndpointFlush(uint8_t epnum)
+{
+	DCD_EP_Flush(&pios_usb_otg_core_handle, epnum);
+}
+
 /*
  * Device level hooks into STM USB library
  */
@@ -373,13 +378,14 @@ static uint8_t PIOS_USBHOOK_CLASS_Setup(void *pdev, USB_SETUP_REQ *req)
 		} else {
 			/* No Setup handler or Setup handler failed */
 			USBD_CtlError (&pios_usb_otg_core_handle, req);
+			return USBD_FAIL;
 		}
 		break;
 	}
 	default:
 		/* Unhandled Setup */
 		USBD_CtlError (&pios_usb_otg_core_handle, req);
- 		break;
+		return USBD_FAIL;
 	}
 
 	return USBD_OK;

@@ -33,8 +33,9 @@
 #define PIOS_USB_BOARD_CDC_DATA_LENGTH 64
 #define PIOS_USB_BOARD_CDC_MGMT_LENGTH 32
 #define PIOS_USB_BOARD_HID_DATA_LENGTH 64
+#define PIOS_USB_BOARD_MSC_DATA_LENGTH 64
 
-#define PIOS_USB_BOARD_EP_NUM 4
+#define PIOS_USB_BOARD_EP_NUM 5
 
 #include "pios_usb_defs.h" 	/* USB_* macros */
 

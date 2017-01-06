@@ -46,7 +46,16 @@ enum usb_desc_types {
 enum usb_interface_class {
 	USB_INTERFACE_CLASS_CDC  = 0x02,
 	USB_INTERFACE_CLASS_HID  = 0x03,
+	USB_INTERFACE_CLASS_MSC  = 0x08,
 	USB_INTERFACE_CLASS_DATA = 0x0A,
+} __attribute__((packed));
+
+enum usb_msc_intf_subclasses {
+	USB_MSC_INTF_SUBCLASS_SCSI = 0x06,
+} __attribute__((packed));
+
+enum usb_msc_intf_protocols {
+	USB_MSC_INTF_PROTOCOL_BULKONLY = 0x50,
 } __attribute__((packed));
 
 enum usb_cdc_desc_subtypes {

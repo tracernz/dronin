@@ -181,6 +181,9 @@ struct usb_config_hid_cdc {
 	struct usb_hid_desc                   hid;
 	struct usb_endpoint_desc              hid_in;
 	struct usb_endpoint_desc              hid_out;
+	struct usb_interface_desc             msc_if;
+	struct usb_endpoint_desc              msc_in;
+	struct usb_endpoint_desc              msc_out;
 } __attribute__((packed));
 
 static const struct usb_config_hid_cdc config_hid_cdc = {
@@ -311,6 +314,33 @@ static const struct usb_config_hid_cdc config_hid_cdc = {
 		.bmAttributes         = USB_EP_ATTR_TT_INTERRUPT,
 		.wMaxPacketSize       = htousbs(PIOS_USB_BOARD_HID_DATA_LENGTH),
 		.bInterval            = 4, /* ms */
+	},
+	.msc_if = {
+		.bLength              = sizeof(struct usb_interface_desc),
+		.bDescriptorType      = USB_DESC_TYPE_INTERFACE,
+		.bInterfaceNumber     = 3,
+		.bAlternateSetting    = 0,
+		.bNumEndpoints        = 2,
+		.bInterfaceClass      = USB_INTERFACE_CLASS_MSC,
+		.bInterfaceSubClass   = USB_MSC_INTF_SUBCLASS_SCSI,
+		.nInterfaceProtocol   = USB_MSC_INTF_PROTOCOL_BULKONLY,
+		.iInterface           = 0,
+	},
+	.msc_in = {
+		.bLength              = sizeof(struct usb_endpoint_desc),
+		.bDescriptorType      = USB_DESC_TYPE_ENDPOINT,
+		.bEndpointAddress     = USB_EP_IN(4),
+		.bmAttributes         = USB_EP_ATTR_TT_BULK,
+		.wMaxPacketSize       = htousbs(PIOS_USB_BOARD_MSC_DATA_LENGTH),
+		.bInterval            = 0, /* does not apply to bulk ep */
+	},
+	.msc_out = {
+		.bLength              = sizeof(struct usb_endpoint_desc),
+		.bDescriptorType      = USB_DESC_TYPE_ENDPOINT,
+		.bEndpointAddress     = USB_EP_OUT(4),
+		.bmAttributes         = USB_EP_ATTR_TT_BULK,
+		.wMaxPacketSize       = htousbs(PIOS_USB_BOARD_MSC_DATA_LENGTH),
+		.bInterval            = 0, /* does not apply to bulk ep */
 	},
 };
 

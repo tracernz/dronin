@@ -248,6 +248,14 @@ void PIOS_Board_Init(void) {
 	
 #endif	/* PIOS_INCLUDE_USB_CDC */
 
+#if defined(PIOS_INCLUDE_USB_MSC)
+	void *pios_usb_msc_id;
+	if (PIOS_USB_MSC_Init(&pios_usb_msc_id, &pios_usb_msc_cfg, (void *)pios_usb_id)) {
+		PIOS_Assert(0);
+	}
+
+#endif	/* PIOS_INCLUDE_USB_MSC */
+
 #if defined(PIOS_INCLUDE_USB_HID)
 	/* Configure the usb HID port */
 	uint8_t hw_usb_hidport;

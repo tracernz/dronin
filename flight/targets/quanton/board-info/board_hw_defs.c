@@ -2216,6 +2216,18 @@ const struct pios_usb_hid_cfg pios_usb_hid_cfg = {
 };
 #endif	/* PIOS_INCLUDE_USB_HID && PIOS_INCLUDE_USB_CDC */
 
+#if defined(PIOS_INCLUDE_USB_MSC)
+
+#include <pios_usb_msc_priv.h>
+
+const struct pios_usb_msc_cfg pios_usb_msc_cfg = {
+	.data_if = 3,
+	.data_rx_ep = 4,
+	.data_tx_ep = 4,
+};
+
+#endif /* PIOS_INCLUDE_USB_MSC */
+
 #if defined(PIOS_INCLUDE_ADC)
 #include "pios_adc_priv.h"
 #include "pios_internal_adc_priv.h"

@@ -1,0 +1,10 @@
+language: c
+
+install:
+  - make arm_sdk_install
+
+env:
+  - FLIGHT_BUILD_CONF=release
+
+script:
+  - make -j2 all_flight

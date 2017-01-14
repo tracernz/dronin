@@ -9,6 +9,10 @@ cache:
 before_cache:
   - find downloads -type f -not -name 'gcc-arm-none-eabi-*.bz2' -print0 | xargs -0 rm --
 
+# need to be able to see back to upstream/next for version-info.py ancestor
+git:
+  depth: 100
+
 addons:
   apt:
     packages:
@@ -29,6 +33,8 @@ install:
 
 before-script:
   - ccache -z
+# remove this before checking into main repo
+  - git remote add upstream https://github.com/d-ronin/dronin.git
 
 script:
   - make -j2 gcs

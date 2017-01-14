@@ -1,0 +1,38 @@
+language: c++
+dist: trusty
+sudo: false
+
+cache: 
+  - ccache
+  - directories:
+    - downloads
+before_cache:
+  - find downloads -type f -not -name 'gcc-arm-none-eabi-*.bz2' -print0 | xargs -0 rm --
+
+addons:
+  apt:
+    packages:
+    # deps
+    - gcc-multilib
+    - zlib1g-dev
+    - libusb-1.0-0-dev
+    - libudev-dev
+    - libgl1-mesa-dev
+
+before_install:
+  - gcc --version
+  - g++ --version
+
+install:
+  - xvfb-run make qt_sdk_install | grep -Ev "(^\[[0-9]*\] Warning:|^[0-9\. \t]*[KMG])"
+  - make arm_sdk_install
+
+before-script:
+  - ccache -z
+
+script:
+  - make -j2 gcs
+  - make -j2 all_flight
+
+after-script:
+  - ccache -s

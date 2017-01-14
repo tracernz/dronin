@@ -40,6 +40,10 @@ endif
 QT_SDK_DIR := $(TOOLS_DIR)/Qt$(QT_VERSION_FULL)
 
 
+ifdef IGNORE_MISSING_TOOLCHAIN
+tools_required_qt:
+	$(warning "Skipping Qt toolchain check!")
+else
 ifdef WINDOWS
 tools_required_qt:
 	$(V1) echo "*** Not checking Qt version on Windows ***"
@@ -50,7 +54,8 @@ ifeq ($(wildcard $(QT_SDK_DIR)/*),)
 else
 	$(info "Qt SDK found in $(QT_SDK_DIR)")
 endif
-endif
+endif # WINDOWS
+endif # IGNORE_MISSING_TOOLCHAIN
 
 ifdef LINUX
   ifdef AMD64

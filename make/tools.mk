@@ -22,20 +22,34 @@ ifdef OPENOCD_FTDI
 endif
 
 # Change the Qt version here, format is e.g. 5.8.0, 5.8.0-1 or 5.8.0-beta etc.
-QT_VERSION_FULL := 5.8.0
+
+QT_VERSION := 5.8.0-rc_605
 QT_MINGW_VERSION := 530
 
 # These bits are not user serviceable
-QT_VERSION := $(word 1, $(subst -, , $(QT_VERSION_FULL)))
-QT_VERSION_SUFFIX := $(word 2, $(subst -, ,$(QT_VERSION_FULL)))
-ifneq ($(words $(subst ., , $(QT_VERSION))),3)
+QT_VERSION_LONG := $(word 1, $(subst -, , $(QT_VERSION)))
+ifneq ($(words $(subst ., , $(QT_VERSION_LONG))),3)
 $(error Invalid Qt version!)
+endif
+QT_VERSION_SUFFIX := $(word 2, $(subst -, ,$(QT_VERSION)))
+ifneq ($(subst _, ,$(QT_VERSION_SUFFIX)), 1)
+QT_VERSION_EXTRA := $(word 2, $(subst _, ,$(QT_VERSION_SUFFIX)))
+QT_VERSION_SUFFIX := $(word 1, $(subst _, ,$(QT_VERSION_SUFFIX)))
+endif
+QT_VERSION_FULL := $(QT_VERSION_LONG)
+ifneq ($(strip $(QT_VERSION_SUFFIX)),)
+QT_VERSION_FULL := $(QT_VERSION_FULL)-$(QT_VERSION_SUFFIX)
+endif
+ifneq ($(strip $(QT_VERSION_EXTRA)),)
+QT_VERSION_EXTRA := _$(strip $(QT_VERSION_EXTRA))
+else
+undefine QT_VERSION_EXTRA
 endif
 QT_VERSION_SHORT := $(word 1, $(subst ., , $(QT_VERSION_FULL))).$(word 2, $(subst ., , $(QT_VERSION_FULL)))
 ifeq ($(words $(filter alpha beta rc, $(QT_VERSION_SUFFIX))), 1)
-QT_VERSION_TYPE := development
+QT_VERSION_SOURCE := development
 else
-QT_VERSION_TYPE := official
+QT_VERSION_SOURCE := official
 endif
 QT_SDK_DIR := $(TOOLS_DIR)/Qt$(QT_VERSION_FULL)
 
@@ -87,11 +101,11 @@ OPENOCD_FTDI ?= yes
 .PHONY: qt_sdk_install
 
 # QT SDK download URL
-QT_URL_PREFIX := http://download.qt.io/$(QT_VERSION_TYPE)_releases/qt/$(QT_VERSION_SHORT)/$(QT_VERSION_FULL)/qt-opensource-
+QT_URL_PREFIX := http://download.qt.io/$(QT_VERSION_SOURCE)_releases/qt/$(QT_VERSION_SHORT)/$(QT_VERSION_FULL)/qt-opensource-
 ifdef LINUX
   ifdef AMD64
     # Linux 64-bit
-    qt_sdk_install: QT_SDK_URL := $(QT_URL_PREFIX)linux-x64-$(QT_VERSION_FULL).run
+    qt_sdk_install: QT_SDK_URL := $(QT_URL_PREFIX)linux-x64-$(QT_VERSION_FULL)$(QT_VERSION_EXTRA).run
     QT_SDK_QMAKE_PATH := $(QT_SDK_DIR)/$(QT_VERSION_SHORT)/gcc_64/bin/qmake
   else
     $(warning Build is only supported on 64-bit Linux)
@@ -99,14 +113,14 @@ ifdef LINUX
 endif
 
 ifdef MACOSX
-  qt_sdk_install: QT_SDK_URL  := $(QT_URL_PREFIX)mac-x64-clang-$(QT_VERSION_FULL).dmg
+  qt_sdk_install: QT_SDK_URL  := $(QT_URL_PREFIX)mac-x64-clang-$(QT_VERSION_FULL)$(QT_VERSION_EXTRA).dmg
   QT_SDK_QMAKE_PATH := $(QT_SDK_DIR)/$(QT_VERSION_SHORT)/clang_64/bin/qmake
 
   export QT_SDK_BIN_PATH := $(QT_SDK_DIR)/$(QT_VERSION_SHORT)/clang_64/bin
 endif
 
 ifdef WINDOWS
-  qt_sdk_install: QT_SDK_URL  := $(QT_URL_PREFIX)windows-x86-mingw$(QT_MINGW_VERSION)-$(QT_VERSION_FULL).exe
+  qt_sdk_install: QT_SDK_URL  := $(QT_URL_PREFIX)windows-x86-mingw$(QT_MINGW_VERSION)-$(QT_VERSION_FULL)$(QT_VERSION_EXTRA).exe
   QT_SDK_QMAKE_PATH := $(QT_SDK_DIR)/$(QT_VERSION_SHORT)/mingw$(QT_MINGW_VERSION)_32/bin/qmake
 endif
 
@@ -115,7 +129,7 @@ qt_sdk_install: QT_SDK_FILE := $(notdir $(QT_SDK_URL))
 # order-only prereq on directory existance:
 qt_sdk_install : | $(DL_DIR) $(TOOLS_DIR)
 qt_sdk_install: qt_sdk_clean
-	# download the source only if it's newer than what we already have
+        # download the source only if it's newer than what we already have
 ifneq ($(OSFAMILY), windows)
 	$(V1) wget -N -P "$(DL_DIR)" "$(QT_SDK_URL)"
 else
@@ -131,14 +145,17 @@ endif
 
 ifneq (,$(filter $(UNAME), Darwin))
 	$(V1) hdiutil attach -quiet -private -mountpoint /tmp/qt-installer "$(DL_DIR)/$(QT_SDK_FILE)" 
-	$(V1) /tmp/qt-installer/qt-opensource-mac-x64-clang-$(QT_VERSION).app/Contents/MacOS/qt-opensource-mac-x64-clang-$(QT_VERSION)
+	$(V1) dronin_qt_path="$(QT_SDK_DIR)" \
+		/tmp/qt-installer/qt-opensource-mac-x64-clang-$(QT_VERSION_LONG).app/Contents/MacOS/qt-opensource-mac-x64-clang-$(QT_VERSION_LONG) \
+		--script $(ROOT_DIR)/make/scripts/qt-install.qs
 	$(V1) hdiutil detach -quiet /tmp/qt-installer
 endif
 
 ifneq (,$(filter $(UNAME), Linux))
         #installer is an executable, make it executable and run it
 	$(V1) chmod u+x "$(DL_DIR)/$(QT_SDK_FILE)"
-	$(V1) "$(DL_DIR)/$(QT_SDK_FILE)"
+	$(V1) dronin_qt_path="$(QT_SDK_DIR)" "$(DL_DIR)/$(QT_SDK_FILE)" \
+		--script $(ROOT_DIR)/make/scripts/qt-install.qs
 endif
 
 ifdef WINDOWS

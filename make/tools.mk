@@ -23,8 +23,8 @@ endif
 
 # Change the Qt version here, format is e.g. 5.8.0, 5.8.0-1 or 5.8.0-beta etc.
 
-QT_VERSION := 5.8.0-rc_605
-QT_MINGW_VERSION := 530
+QT_VERSION := 5.6.1
+QT_MINGW_VERSION := 492
 
 # These bits are not user serviceable
 QT_VERSION_LONG := $(word 1, $(subst -, , $(QT_VERSION)))
@@ -41,7 +41,7 @@ ifneq ($(strip $(QT_VERSION_SUFFIX)),)
 QT_VERSION_FULL := $(QT_VERSION_FULL)-$(QT_VERSION_SUFFIX)
 endif
 ifneq ($(strip $(QT_VERSION_EXTRA)),)
-QT_VERSION_EXTRA := _$(strip $(QT_VERSION_EXTRA))
+QT_VERSION_EXTRA :=_$(strip $(QT_VERSION_EXTRA))
 else
 undefine QT_VERSION_EXTRA
 endif

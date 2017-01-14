@@ -1,0 +1,75 @@
+language: c++
+dist: trusty
+sudo: false
+cache:
+- ccache
+- directories:
+  - downloads
+  - tools/breakpad
+before_cache:
+- find downloads -type f -not -name 'gcc-arm-none-eabi-*.bz2' -print0 | xargs -0 rm
+env:
+- GCS_BUILD_CONF=release FLIGHT_BUILD_CONF=release
+git:
+  depth: 100
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - g++-5
+    - gcc-5
+    - gcc-5-multilib
+    - gcc-multilib
+    - zlib1g-dev
+    - libusb-1.0-0-dev
+    - libudev-dev
+    - libgl1-mesa-dev
+    - libpulse0
+    - libpulse-mainloop-glib0
+    - libpulse-dev
+before_install:
+- mkdir -p ~/bin
+- ln -fs /usr/bin/gcc-5 ~/bin/gcc
+- ln -fs /usr/bin/g++-5 ~/bin/g++
+- gcc --version
+- g++ --version
+install:
+- xvfb-run make qt_sdk_install | grep -Ev "(^\[[0-9]*\] Warning:|^[0-9\. \t]*[KMG])"
+- make arm_sdk_install
+- make tools_required_breakpad || make breakpad_install
+before_script:
+- ccache -z
+- git remote add upstream https://github.com/d-ronin/dronin.git && git fetch -q --depth=100
+  upstream next
+- git merge-base upstream/next HEAD
+script:
+- make -j4 gcs 2> >(tee gcserr.log >&2)
+- make -j4 all_flight 2> >(tee flighterr.log >&2)
+- V=0 make package_flight
+- V=0 make package_all_compress
+after_script:
+- ccache -s
+after_failure:
+- echo -e "\n********************\n* GCS Build Errors *\n********************\n" &&
+  cat gcserr.log
+- echo -e "\n********************\nFlight Build Errors\n********************\n" &&
+  cat flighterr.log
+after_success:
+- mkdir -p ${TRAVIS_BUILD_DIR}/build/packages
+- mv ${TRAVIS_BUILD_DIR}/build/dronin-*.tar.xz ${TRAVIS_BUILD_DIR}/build/packages
+deploy:
+  provider: s3
+  region: us-west-1
+  access_key_id: AKIAI3MUPYJQY4BER5MA
+  secret_access_key:
+    secure: qqlbJvWc0zFDI8vaGrrtl5NGBM4kulP86lSsrCJg/45G7l3Pd76kNuoKnJsLut3FAjAHL6ho10rSF72Ja8x5peLn/4O/o2DzuS1lFp4HUEzV2eCOMrSWxGLDk7Pix2ea0c+h81HSXVL17JYRU+EG0NJQP6fy9ObS5izauKLDT4yIDOr08eJaNxM65yIIIBpcl3RreeRwvI5bOJjMYQtQ/8a63a/TZG4Qn5hbrsMkz/oGVa/jO2hX6uIFj12j7D17L2D3jzIBRCZwlsYDfVFTk/eZofNq34G6zs61jltYwyI9cA/HXngqOJpXeK2znvAMyEiD5NpYxzWUfi8po6uhHIoOodBZB8ATf2fU+P3c0RmQIhS0K5mELATr3yf/hpTOsNwPQNVWwAtgiEyRvDlRBI+TsQDNTd7WdK4+O6TmI1AJysVrXoMRcm7fSX4Y7xtu2rRq1nC+9N8TOuyQ6p64tkCV5Ho9Y4T39uJIX8+uNbXOCJ8D9oTEQohmwcWewgKZ8X8rsHSPU5K8b74u2MCTDmGHKpR6BDiCzQDELnW6arGiTUQNVGhlcUUbtK54ZrSUBOF28WCpyfbbFiOHsKJl85sigbAJirLY26HVstAh9LCnDyz7jyMNJ8AP1OjMDTYjCP29PVgKFZKLrITbDYsq8PoDhPx3Gh/1tQd2I5RHpq0=
+  bucket: dronin-builds
+  upload-dir: drtest/${TRAVIS_BUILD_NUMBER}-${TRAVIS_EVENT_TYPE}
+  skip_cleanup: true
+  local-dir: build/packages
+  on:
+    repo: tracernz/dronin
+    #branch: mrc-test-travis58-rel
+    tags: true
+    condition: $GCS_BUILD_CONF = release

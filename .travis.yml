@@ -41,7 +41,7 @@ before_install:
 install:
   - xvfb-run make qt_sdk_install | grep -Ev "(^\[[0-9]*\] Warning:|^[0-9\. \t]*[KMG])"
   - make arm_sdk_install
-  - make breadpad_install
+  - make breakpad_install
 
 before_script:
   - ccache -z

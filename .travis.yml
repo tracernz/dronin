@@ -27,6 +27,8 @@ addons:
     - libusb-1.0-0-dev
     - libudev-dev
     - libgl1-mesa-dev
+    - libpulse0
+    - libpulse-mainloop-glib0
 
 before_install:
 # sneaky hax to use gcc-5 without sudo

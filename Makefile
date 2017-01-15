@@ -269,7 +269,7 @@ endif
 endif
 
 .PHONY: gcs
-gcs: tools_required_qt uavobjects
+gcs: tools_required_qt tools_required_breakpad uavobjects
 ifeq ($(USE_MSVC), NO)
 	$(V1) mkdir -p $(BUILD_DIR)/ground/$@
 	$(V1) ( cd $(BUILD_DIR)/ground/$@ && \

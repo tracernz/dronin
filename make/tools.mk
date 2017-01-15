@@ -54,6 +54,7 @@ endif
 QT_SDK_DIR := $(TOOLS_DIR)/Qt$(QT_VERSION_FULL)
 
 
+.PHONY: tools_required_qt
 ifdef IGNORE_MISSING_TOOLCHAIN
 tools_required_qt:
 	$(warning "Skipping Qt toolchain check!")
@@ -584,7 +585,7 @@ BREAKPAD_REV := 20160909
 BREAKPAD_DIR := $(TOOLS_DIR)/breakpad/$(BREAKPAD_REV)
 BREAKPAD_BUILD_DIR := $(DL_DIR)/breakpad
 
-.PHONY: breakpad_install breakpad_clean breakpad_dist_clean
+.PHONY: breakpad_install breakpad_clean breakpad_dist_clean tools_required_breakpad
 
 ifndef WINDOWS
 
@@ -645,6 +646,13 @@ breakpad_dist_clean:
 breakpad_clean:
 	$(V0) @echo " CLEAN        $(BREAKPAD_DIR)"
 	$(V1) [ ! -d "$(BREAKPAD_DIR)" ] || $(RM) -rf $(BREAKPAD_DIR)
+
+tools_required_breakpad:
+ifeq ($(wildcard $(BREAKPAD_DIR)/*),)
+	$(error "Breakpad not found, please run `make breakpad_install`")
+else
+	$(info "Breakpad found in $(BREAKPAD_DIR)")
+endif
 
 
 ##############################

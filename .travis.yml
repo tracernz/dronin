@@ -22,8 +22,8 @@ addons:
     # tools
     - g++-5
     - gcc-5
+    - gcc-5:i386
     # deps
-    - gcc-multilib
     - zlib1g-dev
     - libusb-1.0-0-dev
     - libudev-dev
@@ -42,7 +42,7 @@ before_install:
 install:
   - xvfb-run make qt_sdk_install | grep -Ev "(^\[[0-9]*\] Warning:|^[0-9\. \t]*[KMG])"
   - make arm_sdk_install
-  - make breakpad_install
+  - make tools_required_breakpad || make breakpad_install
 
 before_script:
   - ccache -z

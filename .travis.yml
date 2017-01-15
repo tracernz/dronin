@@ -42,8 +42,9 @@ install:
 
 before-script:
   - ccache -z
-# remove this before checking into main repo
-  - git remote add upstream https://github.com/d-ronin/dronin.git
+# remove this before checking into main repo, will still fetch to fetch next branch though
+  - git remote add upstream https://github.com/d-ronin/dronin.git && git fetch -q --depth=100 upstream/next
+  - git merge-base upstream/next HEAD
 
 script:
   - make -j2 gcs

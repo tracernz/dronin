@@ -30,6 +30,7 @@ addons:
 
 before_install:
   - echo $PATH
+  - mkdir -p ~/bin
   - ln -fs /usr/bin/gcc-5 ~/bin/gcc
   - ln -fs /usr/bin/g++-5 ~/bin/g++
   - gcc --version

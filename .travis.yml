@@ -30,6 +30,7 @@ addons:
     - libgl1-mesa-dev
     - libpulse0
     - libpulse-mainloop-glib0
+    - libpulse-dev
 
 before_install:
 # sneaky hax to use gcc-5 without sudo

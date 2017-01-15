@@ -58,5 +58,7 @@ script:
 
 after_script:
   - ccache -s
-  - echo "\nGCS Build Errors:\n" && cat gcserr.log
-  - echo "\nFlight Build Errors:\n" && cat flighterr.log
+
+after_failure:
+  - echo -e "\n********************\n* GCS Build Errors *\n********************\n" && cat gcserr.log
+  - echo -e "\n********************\nFlight Build Errors\n********************\n" && cat flighterr.log

@@ -1,6 +1,6 @@
 language: c++
 dist: trusty
-sudo: true
+sudo: false
 
 cache:
   - ccache
@@ -30,8 +30,8 @@ addons:
 
 before_install:
   - echo $PATH
-  - sudo ln -fs /usr/bin/gcc-5 /usr/bin/gcc
-  - sudo ln -fs /usr/bin/g++-5 /usr/bin/g++
+  - ln -fs /usr/bin/gcc-5 ~/bin/gcc
+  - ln -fs /usr/bin/g++-5 ~/bin/g++
   - gcc --version
   - g++ --version
 

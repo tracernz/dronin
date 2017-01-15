@@ -39,15 +39,7 @@
 #include "client/windows/handler/exception_handler.h"
 #include "common/windows/guid_string.h"
 
-#include "yvals.h"
-
 namespace google_breakpad {
-
-static const int kWaitForHandlerThreadMs = 60000;
-static const int kExceptionHandlerThreadInitialStackSize = 64 * 1024;
-
-// As documented on MSDN, on failure SuspendThread returns (DWORD) -1
-static const DWORD kFailedToSuspendThread = static_cast<DWORD>(-1);
 
 // This is passed as the context to the MinidumpWriteDump callback.
 typedef struct {
@@ -163,9 +155,9 @@ void ExceptionHandler::Initialize(
   uuid_create_ = NULL;
   handler_types_ = handler_types;
   previous_filter_ = NULL;
-//#if _MSC_VER >= 1400  // MSVC 2005/8
+#if _MSC_VER >= 1400  // MSVC 2005/8
   previous_iph_ = NULL;
-//#endif  // _MSC_VER >= 1400
+#endif  // _MSC_VER >= 1400
   previous_pch_ = NULL;
   handler_thread_ = NULL;
   is_shutdown_ = false;
@@ -176,6 +168,7 @@ void ExceptionHandler::Initialize(
   assertion_ = NULL;
   handler_return_value_ = false;
   handle_debug_exceptions_ = false;
+  consume_invalid_handle_exceptions_ = false;
 
   // Attempt to use out-of-process if user has specified a pipe or a
   // crash generation client.
@@ -218,6 +211,7 @@ void ExceptionHandler::Initialize(
     // Don't attempt to create the thread if we could not create the semaphores.
     if (handler_finish_semaphore_ != NULL && handler_start_semaphore_ != NULL) {
       DWORD thread_id;
+      const int kExceptionHandlerThreadInitialStackSize = 64 * 1024;
       handler_thread_ = CreateThread(NULL,         // lpThreadAttributes
                                      kExceptionHandlerThreadInitialStackSize,
                                      ExceptionHandlerThreadMain,
@@ -354,6 +348,7 @@ ExceptionHandler::~ExceptionHandler() {
     // inside DllMain.
     is_shutdown_ = true;
     ReleaseSemaphore(handler_start_semaphore_, 1, NULL);
+    const int kWaitForHandlerThreadMs = 60000;
     WaitForSingleObject(handler_thread_, kWaitForHandlerThreadMs);
 #else
     TerminateThread(handler_thread_, 1);
@@ -444,9 +439,9 @@ class AutoExceptionHandler {
     // In case another exception occurs while this handler is doing its thing,
     // it should be delivered to the previous filter.
     SetUnhandledExceptionFilter(handler_->previous_filter_);
-//#if _MSC_VER >= 1400  // MSVC 2005/8
+#if _MSC_VER >= 1400  // MSVC 2005/8
     _set_invalid_parameter_handler(handler_->previous_iph_);
-//#endif  // _MSC_VER >= 1400
+#endif  // _MSC_VER >= 1400
     _set_purecall_handler(handler_->previous_pch_);
   }
 
@@ -481,7 +476,14 @@ LONG ExceptionHandler::HandleException(EXCEPTION_POINTERS* exinfo) {
   DWORD code = exinfo->ExceptionRecord->ExceptionCode;
   LONG action;
   bool is_debug_exception = (code == EXCEPTION_BREAKPOINT) ||
-                            (code == EXCEPTION_SINGLE_STEP);
+                            (code == EXCEPTION_SINGLE_STEP) ||
+                            (code == DBG_PRINTEXCEPTION_C) ||
+                            (code == DBG_PRINTEXCEPTION_WIDE_C);
+
+  if (code == EXCEPTION_INVALID_HANDLE &&
+      current_handler->consume_invalid_handle_exceptions_) {
+    return EXCEPTION_CONTINUE_EXECUTION;
+  }
 
   bool success = false;
 
@@ -614,7 +616,7 @@ void ExceptionHandler::HandleInvalidParameter(const wchar_t* expression,
 #ifdef _DEBUG
       _invalid_parameter(expression, function, file, line, reserved);
 #else  // _DEBUG
-//      _invalid_parameter_noinfo();
+      _invalid_parameter_noinfo();
 #endif  // _DEBUG
     }
   }
@@ -760,9 +762,10 @@ bool ExceptionHandler::WriteMinidumpForException(EXCEPTION_POINTERS* exinfo) {
 // static
 bool ExceptionHandler::WriteMinidump(const wstring &dump_path,
                                      MinidumpCallback callback,
-                                     void* callback_context) {
+                                     void* callback_context,
+                                     MINIDUMP_TYPE dump_type) {
   ExceptionHandler handler(dump_path, NULL, callback, callback_context,
-                           HANDLER_NONE);
+                           HANDLER_NONE, dump_type, (HANDLE)NULL, NULL);
   return handler.WriteMinidump();
 }
 
@@ -771,10 +774,13 @@ bool ExceptionHandler::WriteMinidumpForChild(HANDLE child,
                                              DWORD child_blamed_thread,
                                              const wstring& dump_path,
                                              MinidumpCallback callback,
-                                             void* callback_context) {
+                                             void* callback_context,
+                                             MINIDUMP_TYPE dump_type) {
   EXCEPTION_RECORD ex;
   CONTEXT ctx;
   EXCEPTION_POINTERS exinfo = { NULL, NULL };
+  // As documented on MSDN, on failure SuspendThread returns (DWORD) -1
+  const DWORD kFailedToSuspendThread = static_cast<DWORD>(-1);
   DWORD last_suspend_count = kFailedToSuspendThread;
   HANDLE child_thread_handle = OpenThread(THREAD_GET_CONTEXT |
                                           THREAD_QUERY_INFORMATION |
@@ -802,7 +808,7 @@ bool ExceptionHandler::WriteMinidumpForChild(HANDLE child,
   }
 
   ExceptionHandler handler(dump_path, NULL, callback, callback_context,
-                           HANDLER_NONE);
+                           HANDLER_NONE, dump_type, (HANDLE)NULL, NULL);
   bool success = handler.WriteMinidumpWithExceptionForProcess(
       child_blamed_thread,
       exinfo.ExceptionRecord ? &exinfo : NULL,

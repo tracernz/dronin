@@ -29,7 +29,7 @@ addons:
     - libgl1-mesa-dev
 
 before_install:
-  - echo $PATH
+# sneaky hax to use gcc-5 without sudo
   - mkdir -p ~/bin
   - ln -fs /usr/bin/gcc-5 ~/bin/gcc
   - ln -fs /usr/bin/g++-5 ~/bin/g++

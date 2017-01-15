@@ -250,14 +250,17 @@ bool PeCoffObjectFileReader<PeCoffClassTraits>::ExportedSymbolsToModule(
         continue;
       const char* export_name = reinterpret_cast<const char*>(ConvertRVAToPointer(obj_base, export_name_rva));
 
-      // find the corresponding export address table entry
-      uint16_t export_ordinal = eot[i];
+      // get the corresponding ordinal
+      // (the PE/COFF specification seems to claim that EOT entries are not
+      // biased by ordinalbase, but that doesn't seem to match reality...)
+      uint16_t export_ordinal = eot[i] + export_table->mOrdinalBase;
       if ((export_ordinal < export_table->mOrdinalBase) ||
           (export_ordinal >= (export_table->mOrdinalBase + export_table->mAddressTableEntries))) {
         fprintf(stderr, "exported ordinal %d out of range for EAT!\n", export_ordinal);
         continue;
       }
 
+      // find the corresponding export address table entry
       uint32_t eat_index = export_ordinal - export_table->mOrdinalBase;
       uint32_t export_rva = eat[eat_index];
 
@@ -267,9 +270,8 @@ bool PeCoffObjectFileReader<PeCoffClassTraits>::ExportedSymbolsToModule(
           (export_rva < (data_directory_export_entry->mVirtualAddress + data_directory_export_entry->mSize)))
         continue;
 
-      Module::Extern* ext = new Module::Extern;
+      Module::Extern* ext = new Module::Extern(export_rva + GetLoadingAddress(obj_base));
       ext->name = export_name;
-      ext->address = export_rva + GetLoadingAddress(obj_base);
       module->AddExtern(ext);
     }
 
@@ -312,7 +314,7 @@ PeCoffObjectFileReader<PeCoffClassTraits>::FileIdentifierFromMappedFile(
   // dashes removed.
   char identifier_str[40];
   int buffer_idx = 0;
-  for (int idx = 0; idx < kMDGUIDSize; ++idx) {
+  for (unsigned int idx = 0; idx < kMDGUIDSize; ++idx) {
     int hi = (identifier_swapped[idx] >> 4) & 0x0F;
     int lo = (identifier_swapped[idx]) & 0x0F;
 
@@ -355,7 +357,7 @@ bool PeCoffObjectFileReader<PeCoffClassTraits>::GetBuildID(
   }
 
   // search the debug directory for a codeview entry
-  for (int i = 0; i < debug_directory_size/sizeof(PeDebugDirectory); i++) {
+  for (unsigned int i = 0; i < debug_directory_size/sizeof(PeDebugDirectory); i++) {
     if (debug_directory[i].mType == IMAGE_DEBUG_TYPE_CODEVIEW) {
       // interpret the codeview record to get build-id
       const CvInfoPbd70* codeview_record = reinterpret_cast<const CvInfoPbd70*>
@@ -446,7 +448,7 @@ const char* PeCoffObjectFileReader<PeCoffClassTraits>::GetStringTable(
 template<class PeCoffClassTraits>
 const PeDataDirectory*
 PeCoffObjectFileReader<PeCoffClassTraits>::GetDataDirectoryEntry(
-    ObjectFileBase obj_base, int entry) {
+    ObjectFileBase obj_base, unsigned int entry) {
   const PeOptionalHeader* peOptionalHeader = GetOptionalHeader(obj_base);
 
   // the data directory immediately follows the optional header

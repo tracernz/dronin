@@ -74,8 +74,12 @@ namespace google_breakpad {
 
 static union {
 #if USE_PROTECTED_ALLOCATIONS
+#if defined PAGE_MAX_SIZE
+  char protected_buffer[PAGE_MAX_SIZE] __attribute__((aligned(PAGE_MAX_SIZE)));
+#else
   char protected_buffer[PAGE_SIZE] __attribute__((aligned(PAGE_SIZE)));
-#endif
+#endif  // defined PAGE_MAX_SIZE
+#endif  // USE_PROTECTED_ALLOCATIONS
   google_breakpad::ExceptionHandler *handler;
 } gProtectedData;
 
@@ -122,7 +126,7 @@ extern "C" {
                        mach_msg_header_t* reply);
 
   // This symbol must be visible to dlsym() - see
-  // http://code.google.com/p/google-breakpad/issues/detail?id=345 for details.
+  // https://bugs.chromium.org/p/google-breakpad/issues/detail?id=345 for details.
   kern_return_t catch_exception_raise(mach_port_t target_port,
                                       mach_port_t failed_thread,
                                       mach_port_t task,
@@ -326,7 +330,7 @@ bool ExceptionHandler::WriteMinidumpForChild(mach_port_t child,
                                     EXC_I386_BPT,
 #elif defined(__ppc__) || defined(__ppc64__)
                                     EXC_PPC_BREAKPOINT,
-#elif defined(__arm__) || defined(__arm64__)
+#elif defined(__arm__) || defined(__aarch64__)
                                     EXC_ARM_BREAKPOINT,
 #else
 #error architecture not supported
@@ -351,6 +355,11 @@ bool ExceptionHandler::WriteMinidumpWithException(
     bool exit_after_write,
     bool report_current_thread) {
   bool result = false;
+
+#if TARGET_OS_IPHONE
+  // _exit() should never be called on iOS.
+  exit_after_write = false;
+#endif
 
   if (directCallback_) {
     if (directCallback_(callback_context_,
@@ -455,7 +464,7 @@ kern_return_t ForwardException(mach_port_t task, mach_port_t failed_thread,
 
   kern_return_t result;
   // TODO: Handle the case where |target_behavior| has MACH_EXCEPTION_CODES
-  // set. https://code.google.com/p/google-breakpad/issues/detail?id=551
+  // set. https://bugs.chromium.org/p/google-breakpad/issues/detail?id=551
   switch (target_behavior) {
     case EXCEPTION_DEFAULT:
       result = exception_raise(target_port, failed_thread, task, exception,
@@ -522,7 +531,7 @@ void* ExceptionHandler::WaitForMessage(void* exception_handler_class) {
           exception_code = EXC_I386_BPT;
 #elif defined(__ppc__) || defined(__ppc64__)
           exception_code = EXC_PPC_BREAKPOINT;
-#elif defined(__arm__) || defined(__arm64__)
+#elif defined(__arm__) || defined(__aarch64__)
           exception_code = EXC_ARM_BREAKPOINT;
 #else
 #error architecture not supported
@@ -632,12 +641,7 @@ bool ExceptionHandler::InstallHandler() {
     struct sigaction sa;
     memset(&sa, 0, sizeof(sa));
     sigemptyset(&sa.sa_mask);
-    /* Mask further badness during execution of handler.  Which is kinda
-     * naughty.  But stuff may be happening in other threads. */
     sigaddset(&sa.sa_mask, SIGABRT);
-    sigaddset(&sa.sa_mask, SIGSEGV);
-    sigaddset(&sa.sa_mask, SIGBUS);
-    sigaddset(&sa.sa_mask, SIGILL);
     sa.sa_sigaction = ExceptionHandler::SignalHandler;
     sa.sa_flags = SA_SIGINFO;
 
@@ -645,20 +649,7 @@ bool ExceptionHandler::InstallHandler() {
     if (sigaction(SIGABRT, &sa, old.get()) == -1) {
       return false;
     }
-    old_ABRT_handler_.swap(old);
-    if (sigaction(SIGSEGV, &sa, old.get()) == -1) {
-      return false;
-    }
-    old_SEGV_handler_.swap(old);
-    if (sigaction(SIGBUS, &sa, old.get()) == -1) {
-      return false;
-    }
-    old_BUS_handler_.swap(old);
-    if (sigaction(SIGILL, &sa, old.get()) == -1) {
-      return false;
-    }
-    old_ILL_handler_.swap(old);
-
+    old_handler_.swap(old);
     gProtectedData.handler = this;
 #if USE_PROTECTED_ALLOCATIONS
     assert(((size_t)(gProtectedData.protected_buffer) & PAGE_MASK) == 0);
@@ -703,34 +694,17 @@ bool ExceptionHandler::InstallHandler() {
 bool ExceptionHandler::UninstallHandler(bool in_exception) {
   kern_return_t result = KERN_SUCCESS;
 
-  if (old_ABRT_handler_.get()) {
-    sigaction(SIGABRT, old_ABRT_handler_.get(), NULL);
-    old_ABRT_handler_.reset();
-  }
-
-  if (old_SEGV_handler_.get()) {
-    sigaction(SIGSEGV, old_SEGV_handler_.get(), NULL);
-    old_SEGV_handler_.reset();
-  }
-
-  if (old_BUS_handler_.get()) {
-    sigaction(SIGBUS, old_BUS_handler_.get(), NULL);
-    old_BUS_handler_.reset();
-  }
-
-  if (old_ILL_handler_.get()) {
-    sigaction(SIGILL, old_ILL_handler_.get(), NULL);
-    old_ILL_handler_.reset();
-  }
-
-  if (installed_exception_handler_) {
+  if (old_handler_.get()) {
+    sigaction(SIGABRT, old_handler_.get(), NULL);
 #if USE_PROTECTED_ALLOCATIONS
     mprotect(gProtectedData.protected_buffer, PAGE_SIZE,
         PROT_READ | PROT_WRITE);
 #endif
-
+    old_handler_.reset();
     gProtectedData.handler = NULL;
+  }
 
+  if (installed_exception_handler_) {
     mach_port_t current_task = mach_task_self();
 
     // Restore the previous ports

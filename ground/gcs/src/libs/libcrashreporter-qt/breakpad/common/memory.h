@@ -38,9 +38,12 @@
 #include <memory>
 #include <vector>
 
+#if defined(MEMORY_SANITIZER)
+#include <sanitizer/msan_interface.h>
+#endif
+
 #ifdef __APPLE__
 #define sys_mmap mmap
-#define sys_mmap2 mmap
 #define sys_munmap munmap
 #define MAP_ANONYMOUS MAP_ANON
 #else
@@ -60,14 +63,15 @@ class PageAllocator {
       : page_size_(getpagesize()),
         last_(NULL),
         current_page_(NULL),
-        page_offset_(0) {
+        page_offset_(0),
+        pages_allocated_(0) {
   }
 
   ~PageAllocator() {
     FreeAll();
   }
 
-  void *Alloc(unsigned bytes) {
+  void *Alloc(size_t bytes) {
     if (!bytes)
       return NULL;
 
@@ -82,7 +86,7 @@ class PageAllocator {
       return ret;
     }
 
-    const unsigned pages =
+    const size_t pages =
         (bytes + sizeof(PageHeader) + page_size_ - 1) / page_size_;
     uint8_t *const ret = GetNPages(pages);
     if (!ret)
@@ -108,22 +112,27 @@ class PageAllocator {
     return false;
   }
 
+  unsigned long pages_allocated() { return pages_allocated_; }
+
  private:
-  uint8_t *GetNPages(unsigned num_pages) {
-#ifdef __x86_64
+  uint8_t *GetNPages(size_t num_pages) {
     void *a = sys_mmap(NULL, page_size_ * num_pages, PROT_READ | PROT_WRITE,
                        MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-#else
-    void *a = sys_mmap2(NULL, page_size_ * num_pages, PROT_READ | PROT_WRITE,
-                        MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-#endif
     if (a == MAP_FAILED)
       return NULL;
+
+#if defined(MEMORY_SANITIZER)
+    // We need to indicate to MSan that memory allocated through sys_mmap is
+    // initialized, since linux_syscall_support.h doesn't have MSan hooks.
+    __msan_unpoison(a, page_size_ * num_pages);
+#endif
 
     struct PageHeader *header = reinterpret_cast<PageHeader*>(a);
     header->next = last_;
     header->num_pages = num_pages;
     last_ = header;
+
+    pages_allocated_ += num_pages;
 
     return reinterpret_cast<uint8_t*>(a);
   }
@@ -139,13 +148,14 @@ class PageAllocator {
 
   struct PageHeader {
     PageHeader *next;  // pointer to the start of the next set of pages.
-    unsigned num_pages;  // the number of pages in this set.
+    size_t num_pages;  // the number of pages in this set.
   };
 
-  const unsigned page_size_;
+  const size_t page_size_;
   PageHeader *last_;
   uint8_t *current_page_;
-  unsigned page_offset_;
+  size_t page_offset_;
+  unsigned long pages_allocated_;
 };
 
 // Wrapper to use with STL containers
@@ -154,12 +164,30 @@ struct PageStdAllocator : public std::allocator<T> {
   typedef typename std::allocator<T>::pointer pointer;
   typedef typename std::allocator<T>::size_type size_type;
 
-  explicit PageStdAllocator(PageAllocator& allocator): allocator_(allocator) {}
+  explicit PageStdAllocator(PageAllocator& allocator) : allocator_(allocator),
+                                                        stackdata_(NULL),
+                                                        stackdata_size_(0)
+  {}
+
   template <class Other> PageStdAllocator(const PageStdAllocator<Other>& other)
-      : allocator_(other.allocator_) {}
+      : allocator_(other.allocator_),
+        stackdata_(nullptr),
+        stackdata_size_(0)
+  {}
+
+  explicit PageStdAllocator(PageAllocator& allocator,
+                            pointer stackdata,
+                            size_type stackdata_size) : allocator_(allocator),
+      stackdata_(stackdata),
+      stackdata_size_(stackdata_size)
+  {}
 
   inline pointer allocate(size_type n, const void* = 0) {
-    return static_cast<pointer>(allocator_.Alloc(sizeof(T) * n));
+    const size_type size = sizeof(T) * n;
+    if (size <= stackdata_size_) {
+      return stackdata_;
+    }
+    return static_cast<pointer>(allocator_.Alloc(size));
   }
 
   inline void deallocate(pointer, size_type) {
@@ -177,6 +205,8 @@ struct PageStdAllocator : public std::allocator<T> {
   template<typename Other> friend struct PageStdAllocator;
 
   PageAllocator& allocator_;
+  pointer stackdata_;
+  size_type stackdata_size_;
 };
 
 // A wasteful vector is a std::vector, except that it allocates memory from a
@@ -188,6 +218,24 @@ class wasteful_vector : public std::vector<T, PageStdAllocator<T> > {
   wasteful_vector(PageAllocator* allocator, unsigned size_hint = 16)
       : std::vector<T, PageStdAllocator<T> >(PageStdAllocator<T>(*allocator)) {
     std::vector<T, PageStdAllocator<T> >::reserve(size_hint);
+  }
+ protected:
+  wasteful_vector(PageStdAllocator<T> allocator)
+      : std::vector<T, PageStdAllocator<T> >(allocator) {}
+};
+
+// auto_wasteful_vector allocates space on the stack for N entries to avoid
+// using the PageAllocator for small data, while still allowing for larger data.
+template<class T, unsigned int N>
+class auto_wasteful_vector : public wasteful_vector<T> {
+ T stackdata_[N];
+ public:
+  auto_wasteful_vector(PageAllocator* allocator)
+      : wasteful_vector<T>(
+            PageStdAllocator<T>(*allocator,
+                                &stackdata_[0],
+                                sizeof(stackdata_))) {
+    std::vector<T, PageStdAllocator<T> >::reserve(N);
   }
 };
 

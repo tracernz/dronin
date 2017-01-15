@@ -155,6 +155,18 @@ NSString* GetPlatform() {
   });
 }
 
+// This method must be called from the breakpad queue.
+- (void)threadUnsafeSendReportWithConfiguration:(NSDictionary*)configuration
+                                withBreakpadRef:(BreakpadRef)ref {
+  NSAssert(started_, @"The controller must be started before "
+                     "threadUnsafeSendReportWithConfiguration is called");
+  if (breakpadRef_) {
+    BreakpadUploadReportWithParametersAndConfiguration(breakpadRef_,
+                                                       uploadTimeParameters_,
+                                                       configuration);
+  }
+}
+
 - (void)setUploadingEnabled:(BOOL)enabled {
   NSAssert(started_,
       @"The controller must be started before setUploadingEnabled is called");
@@ -260,6 +272,25 @@ NSString* GetPlatform() {
   });
 }
 
+- (void)getNextReportConfigurationOrSendDelay:
+    (void(^)(NSDictionary*, int))callback {
+  NSAssert(started_, @"The controller must be started before "
+                     "getNextReportConfigurationOrSendDelay is called");
+  dispatch_async(queue_, ^{
+      if (!breakpadRef_) {
+        callback(nil, -1);
+        return;
+      }
+      int delay = [self sendDelay];
+      if (delay != 0) {
+        callback(nil, delay);
+        return;
+      }
+      [self reportWillBeSent];
+      callback(BreakpadGetNextReportConfiguration(breakpadRef_), 0);
+  });
+}
+
 #pragma mark -
 
 - (int)sendDelay {
@@ -300,7 +331,8 @@ NSString* GetPlatform() {
       // A report can be sent now.
       if (timeToWait == 0) {
         [self reportWillBeSent];
-        BreakpadUploadNextReport(breakpadRef_, uploadTimeParameters_);
+        BreakpadUploadNextReportWithParameters(breakpadRef_,
+                                               uploadTimeParameters_);
 
         // If more reports must be sent, make sure this method is called again.
         if (BreakpadGetCrashReportCount(breakpadRef_) > 0)
@@ -308,10 +340,14 @@ NSString* GetPlatform() {
       }
 
       // A report must be sent later.
-      if (timeToWait > 0)
-        [self performSelector:@selector(sendStoredCrashReports)
-                   withObject:nil
-                   afterDelay:timeToWait];
+      if (timeToWait > 0) {
+        // performSelector: doesn't work on queue_
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self performSelector:@selector(sendStoredCrashReports)
+                       withObject:nil
+                       afterDelay:timeToWait];
+        });
+     }
   });
 }
 

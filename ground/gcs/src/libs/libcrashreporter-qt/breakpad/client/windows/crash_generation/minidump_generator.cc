@@ -174,9 +174,17 @@ bool HandleTraceData::CollectHandleData(
   stream_data->SizeOfEntry = sizeof(AVRF_HANDLE_OPERATION);
   stream_data->NumberOfEntries = static_cast<ULONG32>(operations_.size());
   stream_data->Reserved = 0;
-  AVRF_HANDLE_OPERATION* data_iter = reinterpret_cast<AVRF_HANDLE_OPERATION*>(stream_data + 1);
-  for (i = operations_.begin(); i != i_end; i++)
-    *data_iter++ = *i;
+  std::copy(operations_.begin(),
+            operations_.end(),
+#ifdef _MSC_VER
+            stdext::checked_array_iterator<AVRF_HANDLE_OPERATION*>(
+                reinterpret_cast<AVRF_HANDLE_OPERATION*>(stream_data + 1),
+                operations_.size())
+#else
+            reinterpret_cast<AVRF_HANDLE_OPERATION*>(stream_data + 1)
+#endif
+            );
+
   return true;
 }
 
@@ -251,8 +259,9 @@ MinidumpGenerator::MinidumpGenerator(
     const MINIDUMP_TYPE dump_type,
     const bool is_client_pointers)
     : dbghelp_module_(NULL),
+      write_dump_(NULL),
       rpcrt4_module_(NULL),
-      dump_path_(dump_path),
+      create_uuid_(NULL),
       process_handle_(process_handle),
       process_id_(process_id),
       thread_id_(thread_id),
@@ -261,14 +270,13 @@ MinidumpGenerator::MinidumpGenerator(
       assert_info_(assert_info),
       dump_type_(dump_type),
       is_client_pointers_(is_client_pointers),
+      dump_path_(dump_path),
       dump_file_(INVALID_HANDLE_VALUE),
       full_dump_file_(INVALID_HANDLE_VALUE),
       dump_file_is_internal_(false),
       full_dump_file_is_internal_(false),
       additional_streams_(NULL),
-      callback_info_(NULL),
-      write_dump_(NULL),
-      create_uuid_(NULL) {
+      callback_info_(NULL) {
   InitializeCriticalSection(&module_load_sync_);
   InitializeCriticalSection(&get_proc_address_sync_);
 }
@@ -347,7 +355,7 @@ bool MinidumpGenerator::WriteMinidump() {
   user_streams.UserStreamArray = user_stream_array.get();
 
   MDRawAssertionInfo* actual_assert_info = assert_info_;
-  MDRawAssertionInfo client_assert_info = {0};
+  MDRawAssertionInfo client_assert_info = {{0}};
 
   if (assert_info_) {
     // If the assertion info object lives in the client process,

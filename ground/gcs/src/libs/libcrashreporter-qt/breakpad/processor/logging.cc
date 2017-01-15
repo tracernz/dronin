@@ -35,21 +35,15 @@
 
 #include <assert.h>
 #include <errno.h>
-#include <stdio.h>
 #include <string.h>
 #include <time.h>
 
 #include <string>
 
+#include "common/stdio_wrapper.h"
 #include "common/using_std_string.h"
 #include "processor/logging.h"
 #include "processor/pathname_stripper.h"
-
-#ifdef __MINGW32__
-#include <pthread.h>
-#elif defined(_WIN32)
-#define snprintf _snprintf
-#endif
 
 namespace google_breakpad {
 
@@ -59,7 +53,7 @@ LogStream::LogStream(std::ostream &stream, Severity severity,
   time_t clock;
   time(&clock);
   struct tm tm_struct;
-#if defined(_WIN32) && !defined(__MINGW32__)
+#ifdef _WIN32
   localtime_s(&tm_struct, &clock);
 #else
   localtime_r(&clock, &tm_struct);

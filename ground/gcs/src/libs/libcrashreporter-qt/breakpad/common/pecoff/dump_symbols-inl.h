@@ -39,9 +39,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#ifndef _WIN32
 #include <sys/mman.h>
-#endif
 #include <sys/stat.h>
 #include <unistd.h>
 #include <libgen.h>
@@ -113,37 +111,13 @@ class MmapWrapper {
   ~MmapWrapper() {
     if (is_set_ && base_ != NULL) {
       assert(size_ > 0);
-#ifndef _WIN32
       munmap(base_, size_);
-#else
-      UnmapViewOfFile(base_);
-      CloseHandle(hMap_);
-#endif
     }
   }
-  void *set(int obj_fd, size_t mapped_size) {
-#ifndef _WIN32
-    void *mapped_address = mmap(NULL, mapped_size,
-          PROT_READ | PROT_WRITE, MAP_PRIVATE, obj_fd, 0);
-    if (mapped_address == MAP_FAILED)
-      return NULL;
-#else
-    HANDLE h = (HANDLE)_get_osfhandle(obj_fd);
-    hMap_ = CreateFileMapping(h, NULL, PAGE_READONLY,0, 0, NULL);
-    // XXX: should also use SEC_IMAGE_NO_EXECUTE on Windows 6.2 or later
-    if (!hMap_) {
-      return NULL;
-    }
-    void *mapped_address = MapViewOfFile(hMap_, FILE_MAP_READ, 0, 0, 0);
-    if (!mapped_address) {
-      CloseHandle(hMap_);
-      return NULL;
-    }
-#endif
+  void set(void *mapped_address, size_t mapped_size) {
     is_set_ = true;
     base_ = mapped_address;
     size_ = mapped_size;
-    return mapped_address;
   }
   void release() {
     assert(is_set_);
@@ -156,9 +130,6 @@ class MmapWrapper {
   bool is_set_;
   void *base_;
   size_t size_;
-#ifdef _WIN32
-  HANDLE hMap_;
-#endif
 };
 
 #ifndef NO_STABS_SUPPORT
@@ -202,7 +173,7 @@ class DumperLineToModule: public DwarfCUToModule::LineToModuleHandler {
   void StartCompilationUnit(const string& compilation_dir) {
     compilation_dir_ = compilation_dir;
   }
-  void ReadProgram(const char *program, uint64 length,
+  void ReadProgram(const uint8_t *program, uint64 length,
                    Module *module, std::vector<Module::Line> *lines) {
     DwarfLineToModule handler(module, compilation_dir_, lines);
     dwarf2reader::LineInfo parser(program, length, byte_reader_, &handler);
@@ -235,7 +206,7 @@ bool LoadDwarf(const string& dwarf_filename,
   for (int i = 0; i < num_sections; ++i) {
     const Shdr section = ObjectFileReader::FindSectionByIndex(header, i);
     string name = ObjectFileReader::GetSectionName(header, section);
-    const char* contents = reinterpret_cast<const char *>(ObjectFileReader::GetSectionPointer(header, section));
+    const uint8_t* contents = reinterpret_cast<const uint8_t *>(ObjectFileReader::GetSectionPointer(header, section));
     file_context.AddSectionToSectionMap(name, contents,
                                         ObjectFileReader::GetSectionSize(header, section));
   }
@@ -245,7 +216,7 @@ bool LoadDwarf(const string& dwarf_filename,
   dwarf2reader::SectionMap::const_iterator debug_info_entry =
       file_context.section_map().find(".debug_info");
   assert(debug_info_entry != file_context.section_map().end());
-  const std::pair<const char*, uint64>& debug_info_section =
+  const std::pair<const uint8_t*, uint64>& debug_info_section =
       debug_info_entry->second;
   // This should never have been called if the file doesn't have a
   // .debug_info section.
@@ -259,7 +230,8 @@ bool LoadDwarf(const string& dwarf_filename,
     // Make a Dwarf2Handler that drives the DIEHandler.
     dwarf2reader::DIEDispatcher die_dispatcher(&root_handler);
     // Make a DWARF parser for the compilation unit at OFFSET.
-    dwarf2reader::CompilationUnit reader(file_context.section_map(),
+    dwarf2reader::CompilationUnit reader(dwarf_filename,
+                                         file_context.section_map(),
                                          offset,
                                          &byte_reader,
                                          &die_dispatcher);
@@ -312,7 +284,7 @@ bool LoadDwarfCFI(const string& dwarf_filename,
       dwarf2reader::ENDIANNESS_BIG : dwarf2reader::ENDIANNESS_LITTLE;
 
   // Find the call frame information and its size.
-  const char* cfi = reinterpret_cast<const char *>(ObjectFileReader::GetSectionPointer(header, section));
+  const uint8_t *cfi = reinterpret_cast<const uint8_t *>(ObjectFileReader::GetSectionPointer(header, section));
   size_t cfi_size = ObjectFileReader::GetSectionSize(header, section);
 
   // Plug together the parser, handler, and their entourages.
@@ -358,12 +330,15 @@ bool LoadFile(const string& obj_file, MmapWrapper* map_wrapper,
             obj_file.c_str(), strerror(errno));
     return false;
   }
-  *header = map_wrapper->set(obj_fd, st.st_size);
-  if (!(*header)) {
+  void *obj_base = mmap(NULL, st.st_size,
+                        PROT_READ | PROT_WRITE, MAP_PRIVATE, obj_fd, 0);
+  if (obj_base == MAP_FAILED) {
     fprintf(stderr, "Failed to mmap file '%s': %s\n",
             obj_file.c_str(), strerror(errno));
     return false;
   }
+  map_wrapper->set(obj_base, st.st_size);
+  *header = obj_base;
   return true;
 }
 

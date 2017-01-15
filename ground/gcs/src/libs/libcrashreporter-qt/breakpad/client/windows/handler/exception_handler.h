@@ -238,7 +238,8 @@ class ExceptionHandler {
   // Convenience form of WriteMinidump which does not require an
   // ExceptionHandler instance.
   static bool WriteMinidump(const wstring &dump_path,
-                            MinidumpCallback callback, void* callback_context);
+                            MinidumpCallback callback, void* callback_context,
+                            MINIDUMP_TYPE dump_type = MiniDumpNormal);
 
   // Write a minidump of |child| immediately.  This can be used to
   // capture the execution state of |child| independently of a crash.
@@ -249,7 +250,8 @@ class ExceptionHandler {
                                     DWORD child_blamed_thread,
                                     const wstring& dump_path,
                                     MinidumpCallback callback,
-                                    void* callback_context);
+                                    void* callback_context,
+                                    MINIDUMP_TYPE dump_type = MiniDumpNormal);
 
   // Get the thread ID of the thread requesting the dump (either the exception
   // thread or any other thread that called WriteMinidump directly).  This
@@ -261,6 +263,15 @@ class ExceptionHandler {
   bool get_handle_debug_exceptions() const { return handle_debug_exceptions_; }
   void set_handle_debug_exceptions(bool handle_debug_exceptions) {
     handle_debug_exceptions_ = handle_debug_exceptions;
+  }
+
+  // Controls behavior of EXCEPTION_INVALID_HANDLE.
+  bool get_consume_invalid_handle_exceptions() const {
+    return consume_invalid_handle_exceptions_;
+  }
+  void set_consume_invalid_handle_exceptions(
+      bool consume_invalid_handle_exceptions) {
+    consume_invalid_handle_exceptions_ = consume_invalid_handle_exceptions;
   }
 
   // Returns whether out-of-process dump generation is used or not.
@@ -415,13 +426,13 @@ class ExceptionHandler {
   // that there is no previous unhandled exception filter.
   LPTOP_LEVEL_EXCEPTION_FILTER previous_filter_;
 
-//#if _MSC_VER >= 1400  // MSVC 2005/8
+#if _MSC_VER >= 1400  // MSVC 2005/8
   // Beginning in VC 8, the CRT provides an invalid parameter handler that will
   // be called when some CRT functions are passed invalid parameters.  In
   // earlier CRTs, the same conditions would cause unexpected behavior or
   // crashes.
   _invalid_parameter_handler previous_iph_;
-//#endif  // _MSC_VER >= 1400
+#endif  // _MSC_VER >= 1400
 
   // The CRT allows you to override the default handler for pure
   // virtual function calls.
@@ -471,6 +482,10 @@ class ExceptionHandler {
   // EXCEPTION_SINGLE_STEP exceptions.  Leave this false (the default)
   // to not interfere with debuggers.
   bool handle_debug_exceptions_;
+
+  // If true, the handler will consume any EXCEPTION_INVALID_HANDLE exceptions.
+  // Leave this false (the default) to handle these exceptions as normal.
+  bool consume_invalid_handle_exceptions_;
 
   // Callers can request additional memory regions to be included in
   // the dump.

@@ -67,8 +67,10 @@ bool ClientInfo::Initialize() {
   // The crash_id will be the low order word of the process creation time.
   FILETIME creation_time, exit_time, kernel_time, user_time;
   if (GetProcessTimes(process_handle_, &creation_time, &exit_time,
-                      &kernel_time, &user_time))
-    crash_id_ = creation_time.dwLowDateTime;
+                      &kernel_time, &user_time)) {
+    start_time_ = creation_time;
+  }
+  crash_id_ = start_time_.dwLowDateTime;
 
   dump_requested_handle_ = CreateEvent(NULL,    // Security attributes.
                                        TRUE,    // Manual reset.
@@ -174,11 +176,7 @@ void ClientInfo::SetProcessUptime() {
 
   // Convert it to a string.
   wchar_t* value = custom_info_entries_.get()[custom_client_info_.count].value;
-#ifdef _MSC_VER
   _i64tow_s(delay, value, CustomInfoEntry::kValueMaxLength, 10);
-#else
-  _i64tow(delay, value, 10);
-#endif
 }
 
 bool ClientInfo::PopulateCustomInfo() {

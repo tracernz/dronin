@@ -2,7 +2,7 @@ TEMPLATE = lib
 CONFIG += staticlib
 TARGET = crashreporter
 include(../../gcslibrary.pri)
-CONFIG -= c++11
+#CONFIG -= c++11
 SOURCES += libcrashreporter-handler/Handler.cpp
 HEADERS += libcrashreporter-handler/Handler.h
 QT += core
@@ -47,12 +47,15 @@ SOURCES += \
             breakpad/client/linux/minidump_writer/linux_dumper.cc \
             breakpad/client/linux/minidump_writer/linux_ptrace_dumper.cc \
             breakpad/client/linux/minidump_writer/minidump_writer.cc \
+            breakpad/client/linux/microdump_writer/microdump_writer.cc \
+            breakpad/client/linux/dump_writer_common/thread_info.cc \
+            breakpad/client/linux/dump_writer_common/ucontext_reader.cc \
             breakpad/common/linux/elfutils.cc \
             breakpad/common/linux/file_id.cc \
             breakpad/common/linux/guid_creator.cc \
             breakpad/common/linux/linux_libc_support.cc \
             breakpad/common/linux/memory_mapped_file.cc \
-            breakpad/common/linux/safe_readlink.cc
+            breakpad/common/linux/safe_readlink.cc \
 }}
 win32 {
 SOURCES += \

@@ -22,7 +22,7 @@ addons:
     # tools
     - g++-5
     - gcc-5
-    - gcc-5:i386
+    - gcc-5-multilib
     # deps
     - zlib1g-dev
     - libusb-1.0-0-dev

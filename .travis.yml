@@ -22,8 +22,9 @@ addons:
     # tools
     - g++-5
     - gcc-5
-    - gcc-5-multilib
     # deps
+    - gcc-5-multilib
+    - gcc-multilib # needed for asm/errno.h?
     - zlib1g-dev
     - libusb-1.0-0-dev
     - libudev-dev
@@ -52,8 +53,10 @@ before_script:
   - git merge-base upstream/next HEAD
 
 script:
-  - V=1 make -j2 gcs
-  - make -j2 all_flight
+  - make -j4 gcs 2> >(tee gcserr.log >&2)
+  - make -j4 all_flight 2> >(tee flighterr.log >&2)
 
-after-script:
+after_script:
   - ccache -s
+  - echo "\nGCS Build Errors:\n" && cat gcserr.log
+  - echo "\nFlight Build Errors:\n" && cat flighterr.log

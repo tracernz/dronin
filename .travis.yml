@@ -70,3 +70,4 @@ deploy:
     repo: tracernz/dronin
     branch: mrc-test-travis58-rel
     condition: $GCS_BUILD_CONF = release
+  skip_cleanup: true

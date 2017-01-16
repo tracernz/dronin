@@ -63,9 +63,9 @@ deploy:
   access_key_id: AKIAI3MUPYJQY4BER5MA
   secret_access_key:
     secure: qqlbJvWc0zFDI8vaGrrtl5NGBM4kulP86lSsrCJg/45G7l3Pd76kNuoKnJsLut3FAjAHL6ho10rSF72Ja8x5peLn/4O/o2DzuS1lFp4HUEzV2eCOMrSWxGLDk7Pix2ea0c+h81HSXVL17JYRU+EG0NJQP6fy9ObS5izauKLDT4yIDOr08eJaNxM65yIIIBpcl3RreeRwvI5bOJjMYQtQ/8a63a/TZG4Qn5hbrsMkz/oGVa/jO2hX6uIFj12j7D17L2D3jzIBRCZwlsYDfVFTk/eZofNq34G6zs61jltYwyI9cA/HXngqOJpXeK2znvAMyEiD5NpYxzWUfi8po6uhHIoOodBZB8ATf2fU+P3c0RmQIhS0K5mELATr3yf/hpTOsNwPQNVWwAtgiEyRvDlRBI+TsQDNTd7WdK4+O6TmI1AJysVrXoMRcm7fSX4Y7xtu2rRq1nC+9N8TOuyQ6p64tkCV5Ho9Y4T39uJIX8+uNbXOCJ8D9oTEQohmwcWewgKZ8X8rsHSPU5K8b74u2MCTDmGHKpR6BDiCzQDELnW6arGiTUQNVGhlcUUbtK54ZrSUBOF28WCpyfbbFiOHsKJl85sigbAJirLY26HVstAh9LCnDyz7jyMNJ8AP1OjMDTYjCP29PVgKFZKLrITbDYsq8PoDhPx3Gh/1tQd2I5RHpq0=
-  bucket: dronin-builds/${TRAVIS_BUILD_NUMBER}-${TRAVIS_EVENT_TYPE}
+  bucket: dronin-builds
   local-dir: build/packages
-  upload-dir: drtest
+  upload-dir: drtest/${TRAVIS_BUILD_NUMBER}-${TRAVIS_EVENT_TYPE}
   on:
     repo: tracernz/dronin
     branch: mrc-test-travis58-rel

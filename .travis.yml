@@ -30,7 +30,7 @@ script:
 - make -j4 gcs 2> >(tee gcserr.log >&2)
 - make -j4 all_flight 2> >(tee flighterr.log >&2)
 - V=0 make package_flight
-- V=0 make package_all_compress
+- V=0 make package_installer
 after_script:
 - ccache -s
 after_failure:
@@ -53,6 +53,6 @@ deploy:
   local-dir: build/packages
   on:
     repo: tracernz/dronin
-    #branch: mrc-test-travis58-rel
-    tags: true
+    branch: mrc-test-travis-osx
+    #tags: true
     condition: $GCS_BUILD_CONF = release

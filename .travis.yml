@@ -1,6 +1,6 @@
 language: c++
-dist: trusty
-sudo: false
+os: osx
+osx_image: xcode8.2
 cache:
 - ccache
 - directories:
@@ -12,27 +12,9 @@ env:
 - GCS_BUILD_CONF=release FLIGHT_BUILD_CONF=release
 git:
   depth: 100
-addons:
-  apt:
-    sources:
-    - ubuntu-toolchain-r-test
-    packages:
-    - g++-5
-    - gcc-5
-    - gcc-5-multilib
-    - gcc-multilib
-    - zlib1g-dev
-    - libusb-1.0-0-dev
-    - libudev-dev
-    - libgl1-mesa-dev
-    - libpulse0
-    - libpulse-mainloop-glib0
-    - libpulse-dev
-    - pxz
 before_install:
-- mkdir -p ~/bin
-- ln -fs /usr/bin/gcc-5 ~/bin/gcc
-- ln -fs /usr/bin/g++-5 ~/bin/g++
+- brew update
+- brew install wget
 - gcc --version
 - g++ --version
 install:

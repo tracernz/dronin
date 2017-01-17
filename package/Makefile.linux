@@ -32,28 +32,41 @@ ALL_DEB_FILES += $(foreach f, $(DEB_ASSETS_FILES), $(DEB_BUILD_DIR)/$(f))
 
 QT_PLUGINS_USED		:= imageformats platforms sqldrivers xcbglintegrations
 
+ifeq (,$(shell which pxz))
+XZ := xz
+else
+XZ := pxz
+endif
+ifeq (,$(V0))
+TAR := tar -I ${XZ} -cvf
+CP := $(CP)
+else
+TAR := tar -I ${XZ} -cf
+CP := cp
+endif
+
 standalone: $(STANDALONE_DEPENDENCIES)
 	@echo $@ starting
 	@echo Copying Qt5 plugins libraries
 	$(V1) mkdir -p "$(BUILD_DIR)/ground/gcs/lib/dr/qtplugins"
-	$(V1) cp -v -R $(QT_PLUGINS_DIR)/imageformats $(BUILD_DIR)/ground/gcs/lib/dr/qtplugins/
-	$(V1) cp -v -R $(QT_PLUGINS_DIR)/platforms $(BUILD_DIR)/ground/gcs/lib/dr/qtplugins/
+	$(V1) $(CP) -R $(QT_PLUGINS_DIR)/imageformats $(BUILD_DIR)/ground/gcs/lib/dr/qtplugins/
+	$(V1) $(CP) -R $(QT_PLUGINS_DIR)/platforms $(BUILD_DIR)/ground/gcs/lib/dr/qtplugins/
 	$(V1) mkdir -p "$(BUILD_DIR)/ground/gcs/lib/dr/qtplugins/sqldrivers"
-	$(V1) cp -v -R $(QT_PLUGINS_DIR)/sqldrivers/libqsqlite.so $(BUILD_DIR)/ground/gcs/lib/dr/qtplugins/sqldrivers
-	$(V1) cp -v -R $(QT_PLUGINS_DIR)/xcbglintegrations $(BUILD_DIR)/ground/gcs/lib/dr/qtplugins/
+	$(V1) $(CP) -R $(QT_PLUGINS_DIR)/sqldrivers/libqsqlite.so $(BUILD_DIR)/ground/gcs/lib/dr/qtplugins/sqldrivers
+	$(V1) $(CP) -R $(QT_PLUGINS_DIR)/xcbglintegrations $(BUILD_DIR)/ground/gcs/lib/dr/qtplugins/
 	$(V1) mkdir -p "$(BUILD_DIR)/ground/gcs/lib/dr/qml"
-	$(V1) cp -v -R $(QT_PLUGINS_DIR)/../qml/QtQuick.2 $(BUILD_DIR)/ground/gcs/lib/dr/qml/
-	$(V1) cp -v -R $(QT_PLUGINS_DIR)/../qml/QtQuick $(BUILD_DIR)/ground/gcs/lib/dr/qml/
+	$(V1) $(CP) -R $(QT_PLUGINS_DIR)/../qml/QtQuick.2 $(BUILD_DIR)/ground/gcs/lib/dr/qml/
+	$(V1) $(CP) -R $(QT_PLUGINS_DIR)/../qml/QtQuick $(BUILD_DIR)/ground/gcs/lib/dr/qml/
 	@echo Copying platform libraries dependencies
 	$(V1) find $(QT_PLUGINS_DIR)/platforms/ -name '*.so'	| xargs -I '{}' ldd '{}'| sed -e '/^[^\t]/ d; s/^\t\(.* => \)\?\([^ ]*\) (.*/\2/g' \
-	| grep "Qt5" | grep -v "build/ground" | sort | uniq | xargs -I '{}' cp -v -f '{}' $(BUILD_DIR)/ground/gcs/lib/dr 
+	| grep "Qt5" | grep -v "build/ground" | sort | uniq | xargs -I '{}' $(CP) -f '{}' $(BUILD_DIR)/ground/gcs/lib/dr 
 	$(V1)find $(QT_PLUGINS_DIR)/../qml/QtQuick/ -name '*.so'	| xargs -I '{}' ldd '{}'| sed -e '/^[^\t]/ d; s/^\t\(.* => \)\?\([^ ]*\) (.*/\2/g' \
-	| grep "Qt5" | grep -v "build/ground" | sort | uniq | xargs -I '{}' cp -v -f '{}' $(BUILD_DIR)/ground/gcs/lib/dr
+	| grep "Qt5" | grep -v "build/ground" | sort | uniq | xargs -I '{}' $(CP) -f '{}' $(BUILD_DIR)/ground/gcs/lib/dr
 	@echo Searching and copying used Qt5 libraries
 	$(V1) find $(BUILD_DIR)/ground/gcs/bin/drgcs.bin $(BUILD_DIR)/ground/gcs/lib/dr/plugins/dRonin/*.so -exec ldd {} \; \
-	| sed -e '/^[^\t]/ d; s/^\t\(.* => \)\?\([^ ]*\) (.*/\2/g'| grep "Qt5" | grep -v "build/ground" | sort | uniq | xargs -I '{}' cp -v -f '{}' $(BUILD_DIR)/ground/gcs/lib/dr
+	| sed -e '/^[^\t]/ d; s/^\t\(.* => \)\?\([^ ]*\) (.*/\2/g'| grep "Qt5" | grep -v "build/ground" | sort | uniq | xargs -I '{}' $(CP) -f '{}' $(BUILD_DIR)/ground/gcs/lib/dr
 	@echo Copying qt.conf file
-	$(V1) cp -v $(ROOT_DIR)/package/linux/assets/qt.conf $(BUILD_DIR)/ground/gcs/bin/
+	$(V1) $(CP) $(ROOT_DIR)/package/linux/assets/qt.conf $(BUILD_DIR)/ground/gcs/bin/
 	$(V1) sed -i -e "$(SED_SUBSTITUTE)" $(BUILD_DIR)/ground/gcs/bin/qt.conf
 
 .PHONY: gcs
@@ -62,8 +75,8 @@ gcs:
 	$(V1) $(MAKE) -C $(ROOT_DIR) GCS_BUILD_CONF=release $@
 
 ground_package_os_specific: ground_package_common
-	$(V1) cp -v $(ROOT_DIR)/package/linux/deb/_package.udev $(PACKAGE_DIR)/rules.udev
-	$(V1) cp -v $(ROOT_DIR)/package/linux/assets/exec $(PACKAGE_DIR)/$(GCS_PACKAGE_NAME)/drgcs
+	$(V1) $(CP) $(ROOT_DIR)/package/linux/deb/_package.udev $(PACKAGE_DIR)/rules.udev
+	$(V1) $(CP) $(ROOT_DIR)/package/linux/assets/exec $(PACKAGE_DIR)/$(GCS_PACKAGE_NAME)/drgcs
 	$(V1) sed -i -e "$(SED_SUBSTITUTE)" $(PACKAGE_DIR)/$(GCS_PACKAGE_NAME)/drgcs
 
 installer_package: deb_build ground_package extract_firmware
@@ -87,18 +100,18 @@ $(foreach cpfile, $(DEB_ASSETS_FILES), $(eval $(call CP_DEB_FILES_TEMPLATE,$(cpf
 .PHONY: ground_package linux_deb_package deb_build $(DEB_BUILD_DIR)
 
 package_ground_compress: package_ground
-	$(V1) tar -cvJf $(PACKAGE_DIR)/$(GCS_PACKAGE_NAME).tar.xz -C $(PACKAGE_DIR) $(GCS_PACKAGE_NAME)
+	$(V1) $(TAR) $(PACKAGE_DIR)/$(GCS_PACKAGE_NAME).tar.xz -C $(PACKAGE_DIR) $(GCS_PACKAGE_NAME)
 
 package_all_compress: package_all package_symbols_compress
 	$(V1)cd $(PACKAGE_DIR) && rm -rf $(GCS_PACKAGE_NAME)/firmware
 	$(V1)cd $(PACKAGE_DIR) && cp -r firmware_$(PACKAGE_LBL) $(GCS_PACKAGE_NAME)/firmware
-	$(V1) tar -cvJf $(BUILD_DIR)/dronin-$(PACKAGE_LBL).tar.xz --exclude='*.tar.xz' -C $(PACKAGE_DIR) $(GCS_PACKAGE_NAME)
+	$(V1) $(TAR) $(BUILD_DIR)/dronin-$(PACKAGE_LBL).tar.xz --exclude='*.tar.xz' -C $(PACKAGE_DIR) $(GCS_PACKAGE_NAME)
 
 package_symbols_compress: package_ground_symbols package_flight_symbols
 	# blow away old symbols
 	$(V1)rm -rf $(BUILD_DIR)/dronin-$(PACKAGE_LBL)-symbols.tar.xz $(BUILD_DIR)/dronin-$(PACKAGE_LBL)-breakpad.tar.xz
-	$(V1)cd $(PACKAGE_DIR)-symbols && tar -cvJf $(BUILD_DIR)/dronin-$(PACKAGE_LBL)-symbols.tar.xz *
-	$(V1)cd $(PACKAGE_DIR)-symbols/breakpad && tar -cvJf $(BUILD_DIR)/dronin-$(PACKAGE_LBL)-breakpad.tar.xz *
+	$(V1)cd $(PACKAGE_DIR)-symbols && $(TAR) $(BUILD_DIR)/dronin-$(PACKAGE_LBL)-symbols.tar.xz *
+	$(V1)cd $(PACKAGE_DIR)-symbols/breakpad && $(TAR) $(BUILD_DIR)/dronin-$(PACKAGE_LBL)-breakpad.tar.xz *
 
 .PHONY: standalone installer_package deb_build $(DEB_BUILD_DIR)
 .PHONY: package_ground_compress package_symbols_compress

@@ -17,3 +17,5 @@ CONFIG(debug, debug|release):*-g++*|*-clang* {
 DR_QT_MAJOR_VERSION=5
 DR_QT_MINOR_VERSION=8
 DR_QT_PATCH_VERSION=0
+
+BREAKPAD = $$PWD/../tools/breakpad/20160909

@@ -23,7 +23,7 @@ endif
 
 # Change the Qt version here, format is e.g. 5.8.0, 5.8.0-1 or 5.8.0-beta etc.
 
-QT_VERSION := 5.8.0-rc_605
+QT_VERSION := 5.8.0
 QT_MINGW_VERSION := 530
 
 # These bits are not user serviceable
@@ -126,8 +126,8 @@ endif
 ifdef WINDOWS
   qt_sdk_install: QT_SDK_URL  := $(QT_URL_PREFIX)windows-x86-mingw$(QT_MINGW_VERSION)-$(QT_VERSION_FULL)$(QT_VERSION_EXTRA).exe
   QT_SDK_QBS_PATH := $(QT_SDK_DIR)/Tools/QtCreator/bin/qbs
-  ifeq ($(USE_MSVC),yes)
-    QBS_PROFILE := MSVC2015_x86
+  ifeq ($(USE_MSVC),YES)
+    QBS_PROFILE := MSVC2015-x86
   endif
   QT_SDK_QMAKE_PATH := $(QT_SDK_DIR)/$(QT_VERSION_SHORT)/mingw$(QT_MINGW_VERSION)_32/bin/qmake
 endif
@@ -169,6 +169,8 @@ endif
 ifdef WINDOWS
 	$(V1) "$(DL_DIR)/$(QT_SDK_FILE)"
 endif
+
+	$(V1) $(QT_SDK_QBS_PATH) setup-toolchains --detect
 
 .PHONY: qt_sdk_clean
 qt_sdk_clean:
@@ -562,21 +564,34 @@ zip_clean:
 
 
 # Google breakpad
-BREAKPAD_TAG := test-20170129.2
+BREAKPAD_REV := test-20170129.2
 BREAKPAD_REPO := https://github.com/d-ronin/breakpad.git
-BREAKPAD_DIR := $(TOOLS_DIR)/breakpad/$(BREAKPAD_TAG)
+BREAKPAD_DIR := $(TOOLS_DIR)/breakpad/$(BREAKPAD_REV)
+BREAKPAD_BUILD_DIR := $(DL_DIR)/breakpad
 
 .PHONY: breakpad_install breakpad_clean tools_required_breakpad
 
 breakpad_install: | $(DL_DIR) $(TOOLS_DIR)
 breakpad_install: | breakpad_clean
-	$(V0) @echo " DOWNLOAD     $(BREAKPAD_REPO) @ $(BREAKPAD_TAG)"
-	$(V1) [ ! -d "$(DL_DIR)/breakpad" ] || $(RM) -rf $(DL_DIR)/breakpad
-	$(V1) mkdir -p $(DL_DIR)/breakpad
-	$(V1) git clone --depth 1 --recursive $(BREAKPAD_REPO) $(DL_DIR)/breakpad
-	$(V0) @echo " BUILDING     $(BREAKPAD_REPO) @ $(BREAKPAD_TAG)"
-	$(V1) $(QBS) setup-toolchains --detect
-	$(V1) cd $(DL_DIR)/breakpad && $(QBS) install --install-root $(BREAKPAD_DIR) profile:$(QBS_PROFILE) release
+	$(V0) @echo " DOWNLOAD     $(BREAKPAD_REPO) @ $(BREAKPAD_REV)"
+	$(V1) [ ! -d "$(BREAKPAD_BUILD_DIR)" ] || $(RM) -rf "$(BREAKPAD_BUILD_DIR)"
+	$(V1) mkdir -p "$(BREAKPAD_BUILD_DIR)"
+	$(V1) git clone -q --no-checkout $(BREAKPAD_REPO) "$(BREAKPAD_BUILD_DIR)"
+	$(V1) ( \
+	  cd $(BREAKPAD_BUILD_DIR) ; \
+	  git init -q ; \
+	  git remote add upstream "$(BREAKPAD_REPO)" ; \
+	  git fetch -q --depth=1 --recurse-submodules upstream $(BREAKPAD_REV) ; \
+	  git checkout -q $(BREAKPAD_REV) ; \
+	  git submodule -q update --init ; \
+	)
+
+	$(V0) @echo " BUILDING     $(BREAKPAD_REPO) @ $(BREAKPAD_REV)"
+	$(V1) ( \
+	  cd $(BREAKPAD_BUILD_DIR) ; \
+	  $(QBS) install --install-root $(BREAKPAD_DIR) profile:$(QBS_PROFILE) release ; \
+	  $(QBS) install --install-root $(BREAKPAD_DIR) -p breakpad_client profile:$(QBS_PROFILE) debug ; \
+	)
 
 breakpad_clean:
 	$(V0) @echo " CLEAN        $(BREAKPAD_DIR)"
@@ -598,15 +613,10 @@ endif
 
 ifeq ($(shell [ -d "$(QT_SDK_DIR)" ] && echo "exists"), exists)
   QMAKE = $(QT_SDK_QMAKE_PATH)
-else
-  # not installed, hope it's in the path...
-  QMAKE = qmake
-endif
-
-ifeq ($(shell [ -f "$(QT_SDK_QBS_PATH)" ] && echo "exists"), exists)
   QBS = $(QT_SDK_QBS_PATH)
 else
   # not installed, hope it's in the path...
+  QMAKE = qmake
   QBS = qbs
 endif
 

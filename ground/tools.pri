@@ -1,3 +1,5 @@
+TOOLS_DIR = $$PWD/../tools
+
 # If the PYTHON environment variable isn't set (by Make)
 # then we set it ourselves.
 PYTHON_LOCAL = $$(PYTHON)
@@ -18,4 +20,4 @@ DR_QT_MAJOR_VERSION=5
 DR_QT_MINOR_VERSION=8
 DR_QT_PATCH_VERSION=0
 
-BREAKPAD = $$PWD/../tools/breakpad/20160909
+BREAKPAD = $$TOOLS_DIR/breakpad/test-20170129.2

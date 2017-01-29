@@ -108,6 +108,8 @@ ifdef LINUX
     # Linux 64-bit
     qt_sdk_install: QT_SDK_URL := $(QT_URL_PREFIX)linux-x64-$(QT_VERSION_FULL)$(QT_VERSION_EXTRA).run
     QT_SDK_QMAKE_PATH := $(QT_SDK_DIR)/$(QT_VERSION_SHORT)/gcc_64/bin/qmake
+    QT_SDK_QBS_PATH := $(QT_SDK_DIR)/Tools/QtCreator/bin/qbs
+    QBS_PROFILE := gcc
   else
     $(warning Build is only supported on 64-bit Linux)
   endif
@@ -116,12 +118,17 @@ endif
 ifdef MACOSX
   qt_sdk_install: QT_SDK_URL  := $(QT_URL_PREFIX)mac-x64-clang-$(QT_VERSION_FULL)$(QT_VERSION_EXTRA).dmg
   QT_SDK_QMAKE_PATH := $(QT_SDK_DIR)/$(QT_VERSION_SHORT)/clang_64/bin/qmake
-
+  QT_SDK_QBS_PATH := $(QT_SDK_DIR)/Qt\ Creator.app/Contents/MacOS/qbs
+  QBS_PROFILE := clang
   export QT_SDK_BIN_PATH := $(QT_SDK_DIR)/$(QT_VERSION_SHORT)/clang_64/bin
 endif
 
 ifdef WINDOWS
   qt_sdk_install: QT_SDK_URL  := $(QT_URL_PREFIX)windows-x86-mingw$(QT_MINGW_VERSION)-$(QT_VERSION_FULL)$(QT_VERSION_EXTRA).exe
+  QT_SDK_QBS_PATH := $(QT_SDK_DIR)/Tools/QtCreator/bin/qbs
+  ifeq ($(USE_MSVC),yes)
+    QBS_PROFILE := MSVC2015_x86
+  endif
   QT_SDK_QMAKE_PATH := $(QT_SDK_DIR)/$(QT_VERSION_SHORT)/mingw$(QT_MINGW_VERSION)_32/bin/qmake
 endif
 
@@ -554,94 +561,22 @@ zip_clean:
 	$(V1) [ ! -d "$(ZIP_DIR)" ] || $(RM) -rf $(ZIP_DIR)
 
 
-# Google depot-tools, used to build breakpad on Mac/Linux
-DEPOT_TOOLS_REPO := https://chromium.googlesource.com/chromium/tools/depot_tools.git
-DEPOT_TOOLS_REV := master
-DEPOT_TOOLS_DIR := $(TOOLS_DIR)/depot-tools
-
-.PHONY: depot_tools_install depot_tools_clean
-depot_tools_install: | $(TOOLS_DIR)
-	$(V0) @echo " DOWNLOAD     $(DEPOT_TOOLS_REPO)"
-	$(V1) ( \
-		if [ ! -d "$(DEPOT_TOOLS_DIR)" ] ; then \
-			mkdir -p "$(DEPOT_TOOLS_DIR)" ; \
-			cd "$(DEPOT_TOOLS_DIR)" ; \
-			git init -q ; \
-			git remote add origin $(DEPOT_TOOLS_REPO) ; \
-		fi ; \
-		cd "$(DEPOT_TOOLS_DIR)" ; \
-		git fetch -q --depth=1 origin $(DEPOT_TOOLS_REV) ; \
-		git checkout -q -f FETCH_HEAD ; \
-		git clean -q -f -d -x ; \
-	)
-
-depot_tools_clean:
-	$(V0) @echo " CLEAN        $(DEPOT_TOOLS_DIR)"
-	$(V1) [ ! -d "$(DEPOT_TOOLS_DIR)" ] || $(RM) -rf $(DEPOT_TOOLS_DIR)
-
 # Google breakpad
+BREAKPAD_TAG := test-20170129.2
 BREAKPAD_REPO := https://github.com/d-ronin/breakpad.git
-BREAKPAD_REV := 20160909
-BREAKPAD_DIR := $(TOOLS_DIR)/breakpad/$(BREAKPAD_REV)
-BREAKPAD_BUILD_DIR := $(DL_DIR)/breakpad
+BREAKPAD_DIR := $(TOOLS_DIR)/breakpad/$(BREAKPAD_TAG)
 
-.PHONY: breakpad_install breakpad_clean breakpad_dist_clean tools_required_breakpad
-
-ifndef WINDOWS
-
-breakpad_install: | $(DL_DIR) $(TOOLS_DIR)
-breakpad_install: | breakpad_clean depot_tools_install
-	$(V0) @echo " DOWNLOAD     $(BREAKPAD_REPO) @ $(BREAKPAD_REV)"
-	$(V1) mkdir -p "$(BREAKPAD_BUILD_DIR)"
-
-	$(V1) ( \
-		cd $(BREAKPAD_BUILD_DIR) ; \
-		export PATH="$(DEPOT_TOOLS_DIR):$(PATH)" ; \
-		gclient config --name=src "$(BREAKPAD_REPO)" ; \
-		gclient sync --with_tags --no-history -r refs/tags/$(BREAKPAD_REV) ; \
-	)
-
-	$(V0) @echo " BUILD        $(BREAKPAD_DIR)"
-	$(V1) ( \
-		cd "$(BREAKPAD_BUILD_DIR)/src/src" ; \
-		$(MAKE) distclean > /dev/null 2>&1 ; \
-		../configure --prefix="$(BREAKPAD_DIR)"; \
-		$(MAKE) ; \
-		$(MAKE) install ; \
-	)
-
-ifdef MACOSX
-	$(V1) ( \
-		cd "$(BREAKPAD_BUILD_DIR)/src/src/tools/mac/dump_syms" ; \
-		xcodebuild ; \
-		cp build/Release/dump_syms "$(BREAKPAD_DIR)/bin"; \
-	)
-endif
-
-else # WINDOWS
+.PHONY: breakpad_install breakpad_clean tools_required_breakpad
 
 breakpad_install: | $(DL_DIR) $(TOOLS_DIR)
 breakpad_install: | breakpad_clean
-	$(V0) @echo " DOWNLOAD     $(BREAKPAD_REPO) @ $(BREAKPAD_REV)"
-	$(V1) mkdir -p "$(BREAKPAD_BUILD_DIR)"
-
-	$(V1) ( \
-		cd "$(BREAKPAD_BUILD_DIR)" ; \
-		if [ ! -d "$(BREAKPAD_BUILD_DIR)/.git" ] ; then \
-			git init -q ; \
-			git remote add origin $(BREAKPAD_REPO) ; \
-		fi ; \
-		git fetch -q --depth=1 origin $(BREAKPAD_REV) ; \
-		git checkout -q -f FETCH_HEAD ; \
-		mkdir -p "$(BREAKPAD_DIR)/bin" ; \
-		cp "$(BREAKPAD_BUILD_DIR)/src/tools/windows/binaries/"* "$(BREAKPAD_DIR)/bin" ; \
-	)
-
-endif # WINDOWS
-
-breakpad_dist_clean:
-	$(V0) @echo " CLEAN        $(BREAKPAD_BUILD_DIR)"
-	$(V1) [ ! -d "$(BREAKPAD_BUILD_DIR)" ] || $(RM) -rf $(BREAKPAD_BUILD_DIR)
+	$(V0) @echo " DOWNLOAD     $(BREAKPAD_REPO) @ $(BREAKPAD_TAG)"
+	$(V1) [ ! -d "$(DL_DIR)/breakpad" ] || $(RM) -rf $(DL_DIR)/breakpad
+	$(V1) mkdir -p $(DL_DIR)/breakpad
+	$(V1) git clone --depth 1 --recursive $(BREAKPAD_REPO) $(DL_DIR)/breakpad
+	$(V0) @echo " BUILDING     $(BREAKPAD_REPO) @ $(BREAKPAD_TAG)"
+	$(V1) $(QBS) setup-toolchains --detect
+	$(V1) cd $(DL_DIR)/breakpad && $(QBS) install --install-root $(BREAKPAD_DIR) profile:$(QBS_PROFILE) release
 
 breakpad_clean:
 	$(V0) @echo " CLEAN        $(BREAKPAD_DIR)"
@@ -666,6 +601,13 @@ ifeq ($(shell [ -d "$(QT_SDK_DIR)" ] && echo "exists"), exists)
 else
   # not installed, hope it's in the path...
   QMAKE = qmake
+endif
+
+ifeq ($(shell [ -f "$(QT_SDK_QBS_PATH)" ] && echo "exists"), exists)
+  QBS = $(QT_SDK_QBS_PATH)
+else
+  # not installed, hope it's in the path...
+  QBS = qbs
 endif
 
 ifeq ($(shell [ -d "$(ARM_SDK_DIR)" ] && echo "exists"), exists)

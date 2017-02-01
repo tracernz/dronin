@@ -433,7 +433,7 @@ bool UAVObjectGeneratorGCS::process_object(ObjectInfo* info)
 
             }
             enums.append(" };\n");
-            q_enums.append(QString("    Q_ENUMS(%1Options)\n").arg(info->fields[n]->name));
+            enums.append(QString("    Q_ENUM(%1Options)\n").arg(info->fields[n]->name));
         }
         // Generate element names (only if field has more than one element)
         if (info->fields[n]->numElements > 1 && !info->fields[n]->defaultElementNames) {

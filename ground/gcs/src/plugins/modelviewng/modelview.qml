@@ -103,7 +103,7 @@ Rectangle {
         }
     }
     Text{
-        text: loader.source
+        text: String(loader.source).substring(String(loader.source).length - 20)
         color: 'white'
         font.pointSize: 20
     }

@@ -132,6 +132,7 @@ linux {
 linux-g++* {
     # Enable -Werror on Linux, should do this for all platforms once warnings are all eliminated
     QMAKE_CXXFLAGS_WARN_ON += -Werror
+    QMAKE_CXXFLAGS_WARN_ON += -Wno-sign-compare
 }
 
 win32 {

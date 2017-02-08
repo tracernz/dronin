@@ -32,10 +32,12 @@
 #include <QFileDialog>
 #include <QtAlgorithms>
 #include <QStringList>
+#include <QGamepad>
 
 GCSControlGadgetOptionsPage::GCSControlGadgetOptionsPage(GCSControlGadgetConfiguration *config, QObject *parent) :
         IOptionsPage(parent),
-        m_config(config)
+        m_config(config),
+        m_gamepad(Q_NULLPTR)
 {
     options_page = NULL;
 
@@ -46,7 +48,8 @@ GCSControlGadgetOptionsPage::GCSControlGadgetOptionsPage(GCSControlGadgetConfigu
 
 GCSControlGadgetOptionsPage::~GCSControlGadgetOptionsPage()
 {
-
+    disconnect(this);
+    externalDeviceChanged(0);
 }
 
 void GCSControlGadgetOptionsPage::gamepads(quint8 count)
@@ -210,6 +213,14 @@ QWidget *GCSControlGadgetOptionsPage::createPage(QWidget *parent)
     connect(sdlGamepad,SIGNAL(gamepads(quint8)),this,SLOT(gamepads(quint8)));
 #endif
 
+    connect(options_page->cbExternalDevice, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &GCSControlGadgetOptionsPage::externalDeviceChanged);
+
+    auto padMgr = QGamepadManager::instance();
+    if (padMgr) {
+        connect(padMgr, &QGamepadManager::connectedGamepadsChanged, this, &GCSControlGadgetOptionsPage::connectedGamepadsChanged);
+        connectedGamepadsChanged();
+    }
+
     return optionsPageWidget;
 }
 
@@ -334,4 +345,110 @@ void GCSControlGadgetOptionsPage::updateButtonAction(int controlID)
     }
 
 
+}
+
+void GCSControlGadgetOptionsPage::connectedGamepadsChanged()
+{
+    auto padMgr = QGamepadManager::instance();
+    if (!padMgr || !options_page)
+        return;
+
+    auto pads = padMgr->connectedGamepads();
+
+    for (int i = 0; i < options_page->cbExternalDevice->count(); ) {
+        auto devId = options_page->cbExternalDevice->itemData(i).value<ExternalDeviceId>();
+        if (devId.first == GAMEPAD && !pads.contains(devId.second)) {
+            options_page->cbExternalDevice->removeItem(i);
+        } else {
+            if (pads.contains(devId.second))
+                pads.removeAt(pads.indexOf(devId.second));
+            i++;
+        }
+    }
+
+    for (auto pad : pads)
+        options_page->cbExternalDevice->addItem(QString("Joystick [%0]").arg(pad), QVariant::fromValue(ExternalDeviceId(GAMEPAD, pad)));
+}
+
+void GCSControlGadgetOptionsPage::externalDeviceChanged(int index)
+{
+    if (m_gamepad) {
+        m_gamepad->disconnect();
+        m_gamepad->deleteLater();
+        m_gamepad = Q_NULLPTR;
+    }
+
+    if (index <= 0)
+        return;
+
+    auto devId = options_page->cbExternalDevice->itemData(index).value<ExternalDeviceId>();
+    switch (devId.first) {
+    case GAMEPAD:
+        m_gamepad = new QGamepad(devId.second, this);
+        if (m_gamepad) {
+            connect(m_gamepad, &QGamepad::axisLeftXChanged, this, [this](double value) {
+                this->axisChanged(0, 0.5 + value / 2.0);
+            });
+            axisChanged(0, 0.5 + m_gamepad->axisLeftX() / 2.0);
+            connect(m_gamepad, &QGamepad::axisLeftYChanged, this, [this](double value) {
+                this->axisChanged(1, 0.5 + value / 2.0);
+            });
+            axisChanged(1, 0.5 + m_gamepad->axisLeftY() / 2.0);
+            connect(m_gamepad, &QGamepad::axisRightXChanged, this, [this](double value) {
+                this->axisChanged(2, 0.5 + value / 2.0);
+            });
+            axisChanged(2, 0.5 + m_gamepad->axisRightX() / 2.0);
+            connect(m_gamepad, &QGamepad::axisRightYChanged, this, [this](double value) {
+                this->axisChanged(3, 0.5 + value / 2.0);
+            });
+            axisChanged(3, 0.5 + m_gamepad->axisRightY() / 2.0);
+            connect(m_gamepad, &QGamepad::buttonL2Changed, this, [this](double value) {
+                this->axisChanged(4, value);
+            });
+            axisChanged(4, m_gamepad->buttonL2());
+            connect(m_gamepad, &QGamepad::buttonR2Changed, this, [this](double value) {
+                this->axisChanged(5, value);
+            });
+            axisChanged(5, m_gamepad->buttonR2());
+
+            connect(m_gamepad, &QGamepad::buttonUpChanged, this, [this](bool value) {
+                this->buttonChanged(0, value);
+            });
+            buttonChanged(0, m_gamepad->buttonUp());
+            connect(m_gamepad, &QGamepad::buttonLeftChanged, this, [this](bool value) {
+                this->buttonChanged(1, value);
+            });
+            buttonChanged(1, m_gamepad->buttonLeft());
+            connect(m_gamepad, &QGamepad::buttonDownChanged, this, [this](bool value) {
+                this->buttonChanged(2, value);
+            });
+            buttonChanged(2, m_gamepad->buttonDown());
+            connect(m_gamepad, &QGamepad::buttonRightChanged, this, [this](bool value) {
+                this->buttonChanged(3, value);
+            });
+            buttonChanged(0, m_gamepad->buttonRight());
+
+        }
+        break;
+    default:
+        break;
+    }
+}
+
+void GCSControlGadgetOptionsPage::axisChanged(int axis, double value)
+{
+    if (!options_page)
+        return;
+    auto widget = options_page->widget->findChild<QProgressBar *>(QString("joyCh%0").arg(axis));
+    if (widget)
+        widget->setValue(static_cast<int>(0.5 + widget->minimum() + value * (widget->maximum() - widget->minimum())));
+}
+
+void GCSControlGadgetOptionsPage::buttonChanged(int button, bool value)
+{
+    if (!options_page)
+        return;
+    auto widget = options_page->widget->findChild<QCheckBox *>(QString("buttonInput%0").arg(button));
+    if (widget)
+        widget->setChecked(value);
 }

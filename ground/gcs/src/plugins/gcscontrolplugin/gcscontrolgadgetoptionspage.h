@@ -39,6 +39,7 @@
 #include <QComboBox>
 #include <QDoubleSpinBox>
 #include <QLabel>
+#include <QGamepad>
 
 namespace Core {
 class IUAVGadgetConfiguration;
@@ -63,6 +64,13 @@ public:
     void apply();
     void finish();
 
+    enum ExternalDeviceType {
+        NONE = 0,
+        GAMEPAD = 1,
+    };
+    Q_ENUM(ExternalDeviceType)
+    typedef QPair<ExternalDeviceType, int> ExternalDeviceId;
+
 private:
     Ui::GCSControlGadgetOptionsPage *options_page;
     GCSControlGadgetConfiguration *m_config;
@@ -76,6 +84,8 @@ private:
     QList<QComboBox*> buttonActionList;
     QList<QDoubleSpinBox*> buttonValueList;
     QList<QLabel*> buttonLabelList;
+
+    QGamepad *m_gamepad;
 
 protected slots:
     // signals from joystick
@@ -94,6 +104,13 @@ protected slots:
     void updateButtonAction_5(void){updateButtonAction(5);};
     void updateButtonAction_6(void){updateButtonAction(6);};
     void updateButtonAction_7(void){updateButtonAction(7);};
+
+    void connectedGamepadsChanged();
+    void externalDeviceChanged(int i);
+    void axisChanged(int axis, double value);
+    void buttonChanged(int button, bool value);
 };
+
+Q_DECLARE_METATYPE(GCSControlGadgetOptionsPage::ExternalDeviceId);
 
 #endif // GCSCONTROLGADGETOPTIONSPAGE_H

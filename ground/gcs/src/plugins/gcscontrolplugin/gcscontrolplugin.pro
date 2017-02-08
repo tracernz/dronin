@@ -26,8 +26,9 @@ HEADERS += gcscontrolgadgetfactory.h
 
 OTHER_FILES += GCSControl.pluginspec
 
-QT += svg
+QT += gamepad
 QT += network
+QT += svg
 
 SDL {
     DEFINES += USE_SDL

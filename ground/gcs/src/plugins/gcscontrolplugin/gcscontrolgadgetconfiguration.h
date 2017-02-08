@@ -30,6 +30,8 @@
 #include <coreplugin/iuavgadgetconfiguration.h>
 #include <QtNetwork/QHostAddress>
 
+#include <QGamepad>
+
 typedef struct{
     int     ActionID;
     int     FunctionID;
@@ -89,6 +91,7 @@ class GCSControlGadgetConfiguration : public IUAVGadgetConfiguration
         bool channelReverse[8];
         int udp_port;
         QHostAddress udp_host;
+        QGamepad *m_gamepad;
 
 
 };

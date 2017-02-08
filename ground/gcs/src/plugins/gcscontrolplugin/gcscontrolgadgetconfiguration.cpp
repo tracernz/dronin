@@ -66,7 +66,6 @@ GCSControlGadgetConfiguration::GCSControlGadgetConfiguration(QString classId, QS
             channelReverse[i] = qSettings->value(QString().sprintf("channel%dReverse",i)).toBool();
         }
     }
-
 }
 
 void GCSControlGadgetConfiguration::setUDPControlSettings(int port, QString host)

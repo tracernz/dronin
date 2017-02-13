@@ -7,4 +7,4 @@ install:
   - set IGNORE_MISSING_TOOLCHAIN=true
 
 build_script:
-  - C:\msys64\usr\bin\sh.exe --login -c "make uavobjects"
+  - C:\msys64\usr\bin\sh.exe --login -c "cd `cygpath ${APPVEYOR_BUILD_FOLDER}` && source ./make/winx86/bash_profile && make uavobjects"

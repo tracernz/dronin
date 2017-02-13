@@ -73,7 +73,14 @@ $Global:scriptDir = Join-Path $Global:rootDir "make\scripts"
 $dlDir = Join-Path $Global:rootDir "downloads"
 $toolsDir = Join-Path $Global:rootDir "tools"
 
-# TODO: make dlDir if not exists
+if (!(Test-Path -PathType Container $dlDir)) {
+    New-Item -ItemType Directory -Path $dlDir | Out-Null
+}
+
+if (!(Test-Path -PathType Container $toolsDir)) {
+    New-Item -ItemType Directory -Path $toolsDir | Out-Null
+}
+
 $qtSdkInstallerUrl = [System.Uri]"http://download.qt.io/official_releases/qt/5.8/5.8.0/qt-opensource-windows-x86-msvc2015-5.8.0.exe"
 if ($environment -eq "mingw") {
     $qtSdkInstallerUrl = [System.Uri]"http://download.qt.io/official_releases/qt/5.8/5.8.0/qt-opensource-windows-x86-mingw530-5.8.0.exe"

@@ -1,0 +1,10 @@
+image: Visual Studio 2015
+shallow_clone: true
+clone_depth: 1
+
+install:
+  - ps: make\winx86\bootstrap-win.ps1 msvc
+  - set IGNORE_MISSING_TOOLCHAIN=true
+
+build_script:
+  - C:\msys64\usr\bin\sh.exe --login -c "make uavobjects"

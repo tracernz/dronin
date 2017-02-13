@@ -25,6 +25,7 @@ endif
 
 QT_VERSION := 5.8.0
 QT_MINGW_VERSION := 530
+QT_MINGW_VERSION_SHORT := 53
 
 # These bits are not user serviceable
 QT_VERSION_LONG := $(word 1, $(subst -, , $(QT_VERSION)))
@@ -59,17 +60,12 @@ ifdef IGNORE_MISSING_TOOLCHAIN
 tools_required_qt:
 	$(warning "Skipping Qt toolchain check!")
 else
-ifdef WINDOWS
-tools_required_qt:
-	$(V1) echo "*** Not checking Qt version on Windows ***"
-else
 tools_required_qt:
 ifeq ($(wildcard $(QT_SDK_DIR)/*),)
 	$(error "Qt SDK not found, please run `make qt_sdk_install`")
 else
 	$(info "Qt SDK found in $(QT_SDK_DIR)")
 endif
-endif # WINDOWS
 endif # IGNORE_MISSING_TOOLCHAIN
 
 ifdef LINUX
@@ -124,50 +120,47 @@ ifdef MACOSX
 endif
 
 ifdef WINDOWS
-  qt_sdk_install: QT_SDK_URL  := $(QT_URL_PREFIX)windows-x86-mingw$(QT_MINGW_VERSION)-$(QT_VERSION_FULL)$(QT_VERSION_EXTRA).exe
   QT_SDK_QBS_PATH := $(QT_SDK_DIR)/Tools/QtCreator/bin/qbs
-  ifeq ($(USE_MSVC),YES)
+  ifeq ($(DRONIN_ENV),msvc)
     QBS_PROFILE := MSVC2015-x86
+    QT_SDK_QMAKE_PATH := $(QT_SDK_DIR)/$(QT_VERSION_SHORT)/msvc2015/bin/qmake
+  else
+  	ifdef AMD64
+      QBS_PROFILE := i686-w64-mingw32
+    else
+      # TODO: confirm this one?
+      QBS_PROFILE := i686-w32-mingw32
+    endif
+    QT_SDK_QMAKE_PATH := $(QT_SDK_DIR)/$(QT_VERSION_SHORT)/mingw$(QT_MINGW_VERSION_SHORT)_32/bin/qmake
   endif
-  QT_SDK_QMAKE_PATH := $(QT_SDK_DIR)/$(QT_VERSION_SHORT)/mingw$(QT_MINGW_VERSION)_32/bin/qmake
 endif
 
 qt_sdk_install: QT_SDK_FILE := $(notdir $(QT_SDK_URL))
 
 # order-only prereq on directory existance:
 qt_sdk_install : | $(DL_DIR) $(TOOLS_DIR)
+ifneq ($OSFAMILY, windows)
 qt_sdk_install: qt_sdk_clean
-        # download the source only if it's newer than what we already have
-ifneq ($(OSFAMILY), windows)
-	$(V1) wget -N -P "$(DL_DIR)" "$(QT_SDK_URL)"
-else
-	$(V1) curl -L -k -o "$(DL_DIR)/$(QT_SDK_FILE)" "$(QT_SDK_URL)"
 endif
-        # tell the user exactly which path they should select in the GUI
-	$(V1) echo "*** NOTE NOTE NOTE ***"
-	$(V1) echo "*"
-	$(V1) echo "*  In the GUI, please use exactly this path as the installation path:"
-	$(V1) echo "*        $(QT_SDK_DIR)"
-	$(V1) echo "*"
-	$(V1) echo "*** NOTE NOTE NOTE ***"
+        # download the source only if it's newer than what we already have
+ifeq ($(OSFAMILY), windows)
+	$(error "Please use $(ROOT_DIR)/make/winx86/bootstrap-win.ps1 instead!")
+endif
+
+	$(V1) wget -N -P "$(DL_DIR)" "$(QT_SDK_URL)"
 
 ifneq (,$(filter $(UNAME), Darwin))
 	$(V1) hdiutil attach -quiet -private -mountpoint /tmp/qt-installer "$(DL_DIR)/$(QT_SDK_FILE)" 
-	$(V1) dronin_qt_path="$(QT_SDK_DIR)" \
-		/tmp/qt-installer/qt-opensource-mac-x64-clang-$(QT_VERSION_LONG).app/Contents/MacOS/qt-opensource-mac-x64-clang-$(QT_VERSION_LONG) \
-		--script $(ROOT_DIR)/make/scripts/qt-install.qs
+	$(V1) /tmp/qt-installer/qt-opensource-mac-x64-clang-$(QT_VERSION_LONG).app/Contents/MacOS/qt-opensource-mac-x64-clang-$(QT_VERSION_LONG) \
+		--script $(ROOT_DIR)/make/scripts/qt-install.qs dronin_qt_path="$(QT_SDK_DIR)"
 	$(V1) hdiutil detach -quiet /tmp/qt-installer
 endif
 
 ifneq (,$(filter $(UNAME), Linux))
         #installer is an executable, make it executable and run it
 	$(V1) chmod u+x "$(DL_DIR)/$(QT_SDK_FILE)"
-	$(V1) dronin_qt_path="$(QT_SDK_DIR)" "$(DL_DIR)/$(QT_SDK_FILE)" \
-		--script $(ROOT_DIR)/make/scripts/qt-install.qs
-endif
-
-ifdef WINDOWS
-	$(V1) "$(DL_DIR)/$(QT_SDK_FILE)"
+	$(V1) "$(DL_DIR)/$(QT_SDK_FILE)" \
+		--script $(ROOT_DIR)/make/scripts/qt-install.qs dronin_qt_path="$(QT_SDK_DIR)"
 endif
 
 .PHONY: qt_sdk_clean
@@ -178,16 +171,17 @@ qt_sdk_clean:
 ARM_SDK_DIR := $(TOOLS_DIR)/gcc-arm-none-eabi-5_2-2015q4
 
 .PHONY: arm_sdk_install
+arm_sdk_install: ARM_SDK_URL_PREFIX := https://launchpad.net/gcc-arm-embedded/5.0/5-2015-q4-major/+download/gcc-arm-none-eabi-5_2-2015q4-20151219-
 ifdef LINUX
-  arm_sdk_install: ARM_SDK_URL  := https://launchpad.net/gcc-arm-embedded/5.0/5-2015-q4-major/+download/gcc-arm-none-eabi-5_2-2015q4-20151219-linux.tar.bz2
+  arm_sdk_install: ARM_SDK_URL  := $(ARM_SDK_URL_PREFIX)linux.tar.bz2
 endif
 
 ifdef MACOSX
-  arm_sdk_install: ARM_SDK_URL  := https://launchpad.net/gcc-arm-embedded/5.0/5-2015-q4-major/+download/gcc-arm-none-eabi-5_2-2015q4-20151219-mac.tar.bz2
+  arm_sdk_install: ARM_SDK_URL  := $(ARM_SDK_URL_PREFIX)mac.tar.bz2
 endif
 
 ifdef WINDOWS
-  arm_sdk_install: ARM_SDK_URL  := https://launchpad.net/gcc-arm-embedded/5.0/5-2015-q4-major/+download/gcc-arm-none-eabi-5_2-2015q4-20151219-win32.zip
+  arm_sdk_install: ARM_SDK_URL  := $(ARM_SDK_URL_PREFIX)win32.zip
 endif
 
 arm_sdk_install: ARM_SDK_FILE := $(notdir $(ARM_SDK_URL))

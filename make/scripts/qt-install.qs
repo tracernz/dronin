@@ -1,8 +1,12 @@
+var headless = installer.environmentVariable("CI").toLowerCase() == "true" ? true : false
+
 function Controller() {
-    installer.autoRejectMessageBoxes();
-    installer.installationFinished.connect(function() {
-        gui.clickButton(buttons.FinishButton);
-    })
+    if (headless) {
+        installer.autoRejectMessageBoxes();
+        installer.installationFinished.connect(function() {
+            gui.clickButton(buttons.FinishButton);
+        })
+    }
 }
 
 Controller.prototype.WelcomePageCallback = function() {
@@ -19,28 +23,41 @@ Controller.prototype.IntroductionPageCallback = function() {
 
 Controller.prototype.TargetDirectoryPageCallback = function()
 {
-    var qt_path = installer.environmentVariable('dronin_qt_path');
-    if (!qt_path.length) {
-        console.log("ERROR: dronin_qt_path environment variable missing!")
+    if (!installer.containsValue('dronin_qt_path')) {
+        console.log("ERROR: dronin_qt_path value missing!")
         var warningLabel = gui.currentPageWidget().WarningLabel;
-        warningLabel.setText("ERROR: dronin_qt_path environment variable missing!");
-        installer.autoAcceptMessageBoxes();
-        gui.clickButton(buttons.CancelButton);
-
+        warningLabel.setText("ERROR: dronin_qt_path value missing!");
+        if (headless) {
+            installer.autoAcceptMessageBoxes();
+            gui.clickButton(buttons.CancelButton);
+        }
     } else {
-        gui.currentPageWidget().TargetDirectoryLineEdit.setText(qt_path);
-        gui.clickButton(buttons.NextButton);
+        gui.currentPageWidget().TargetDirectoryLineEdit.setText(installer.value('dronin_qt_path'));
+        gui.currentPageWidget().TargetDirectoryLineEdit.setEnabled(false);
+        gui.currentPageWidget().BrowseDirectoryButton.setEnabled(false);
+        if (headless)
+            gui.clickButton(buttons.NextButton);
     }
 }
 
 Controller.prototype.ComponentSelectionPageCallback = function() {
-    gui.currentPageWidget().deselectComponent("qt.tools.qtcreator")
-    gui.clickButton(buttons.NextButton);
+    if (installer.containsValue('dronin_qt_components')) {
+        if (installer.isInstaller())
+            gui.currentPageWidget().deselectAll();
+
+        installer.value('dronin_qt_components').split(" ").forEach(function(component) {
+            gui.currentPageWidget().selectComponent(component);
+        });
+    }
+    if (headless)
+        gui.clickButton(buttons.NextButton);
 }
 
 Controller.prototype.LicenseAgreementPageCallback = function() {
-    gui.currentPageWidget().AcceptLicenseRadioButton.setChecked(true);
-    gui.clickButton(buttons.NextButton);
+    if (headless) {
+        gui.currentPageWidget().AcceptLicenseRadioButton.setChecked(true);
+        gui.clickButton(buttons.NextButton);
+    }
 }
 
 Controller.prototype.StartMenuDirectoryPageCallback = function() {

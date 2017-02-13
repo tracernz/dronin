@@ -252,10 +252,6 @@ $(BUILD_DIR):
 #
 ##############################
 
-USE_MSVC ?= NO
-ifeq ($(USE_MSVC), YES)
-QT_SPEC=win32-msvc2015
-endif
 .PHONY: all_ground
 all_ground: gcs
 
@@ -268,21 +264,14 @@ GCS_SILENT := silent
 endif
 endif
 
+QT_MAKE ?= $(MAKE) --no-print-directory -w 
 .PHONY: gcs
 gcs: tools_required_qt tools_required_breakpad uavobjects
-ifeq ($(USE_MSVC), NO)
 	$(V1) mkdir -p $(BUILD_DIR)/ground/$@
 	$(V1) ( cd $(BUILD_DIR)/ground/$@ && \
 	  PYTHON=$(PYTHON) $(QMAKE) $(ROOT_DIR)/ground/gcs/gcs.pro -spec $(QT_SPEC) -r CONFIG+="$(GCS_BUILD_CONF) $(GCS_SILENT)" $(GCS_QMAKE_OPTS) && \
-	  $(MAKE) --no-print-directory -w ; \
+	  $(QT_MAKE); \
 	)
-else
-	$(V1) mkdir -p $(BUILD_DIR)/ground/$@
-	$(V1) ( cd $(BUILD_DIR)/ground/$@ && \
-	  PYTHON=$(PYTHON) $(QMAKE) $(ROOT_DIR)/ground/gcs/gcs.pro -spec $(QT_SPEC) -r CONFIG+="$(GCS_BUILD_CONF) $(GCS_SILENT)" $(GCS_QMAKE_OPTS) && \
-	  MAKEFLAGS= jom $(JOM_OPTIONS); \
-	)
-endif
 
 .PHONY: gcs_clean
 gcs_clean:
@@ -308,17 +297,10 @@ endif
 .PHONY: uavobjgenerator
 uavobjgenerator:
 	$(V1) mkdir -p $(BUILD_DIR)/ground/$@
-ifeq ($(USE_MSVC), NO)
 	$(V1) ( cd $(BUILD_DIR)/ground/$@ && \
 	  PYTHON=$(PYTHON) $(QMAKE) $(ROOT_DIR)/ground/uavobjgenerator/uavobjgenerator.pro -spec $(QT_SPEC) -r CONFIG+="debug $(UAVOGEN_SILENT)" && \
-	  $(MAKE) --no-print-directory -w; \
+	  $(QT_MAKE); \
 	)
-else
-	$(V1) ( cd $(BUILD_DIR)/ground/$@ && \
-	  PYTHON=$(PYTHON) $(QMAKE) $(ROOT_DIR)/ground/uavobjgenerator/uavobjgenerator.pro -spec $(QT_SPEC) -r CONFIG+="debug $(UAVOGEN_SILENT)" && \
-	  MAKEFLAGS= jom $(JOM_OPTIONS); \
-	)
-endif
 
 UAVOBJ_XML_DIR := $(ROOT_DIR)/shared/uavobjectdefinition
 UAVOBJ_OUT_DIR := $(BUILD_DIR)/uavobject-synthetics

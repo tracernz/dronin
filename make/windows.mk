@@ -15,7 +15,14 @@
 PYTHON := python
 export PYTHON
 
-QT_SPEC ?= win32-g++
+DRONIN_ENV ?= msvc
+
+ifeq ($(DRONIN_ENV),msvc)
+  QT_SPEC ?= win32-msvc2015
+  QT_MAKE := MAKEFLAGS= jom $(JOM_OPTIONS)
+else
+  QT_SPEC ?= win32-g++
+endif
 
 # this might need to switch on debug/release
 UAVOBJGENERATOR := "$(BUILD_DIR)/ground/uavobjgenerator/debug/uavobjgenerator.exe"

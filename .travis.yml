@@ -1,0 +1,46 @@
+dist: trusty
+sudo: false
+
+#branches
+#  only:
+#    - next
+
+addons:
+  apt:
+    #sources:
+    #- ubuntu-toolchain-r-test
+    packages:
+    #- g++-5
+    #- gcc-5
+    - doxygen
+    - doxygen-doc
+    - doxygen-latex
+    - doxygen-gui
+    - graphviz
+
+git:
+  depth: 1
+
+env:
+  global:
+    - GH_REPO_REF: github.com/d-ronin/doxygen.git
+    - PROJECT_REV: $TRAVIS_COMMIT
+    - IGNORE_MISSING_TOOLCHAIN: true
+
+# before_install:
+#   - mkdir -p ~/bin
+#   - ln -fs /usr/bin/gcc-5 ~/bin/gcc
+#   - ln -fs /usr/bin/g++-5 ~/bin/g++
+#   - gcc --version
+#   - g++ --version
+
+# install:
+#   - xvfb-run make qt_sdk_install | grep -Ev "(^\[[0-9]*\] Warning:|^[0-9\. \t]*[KMG])"
+
+script:
+  - echo "skipping uavobjects..."
+# skip uavobjects, generated files are way too large (flight uav objects html >1 GiB)
+#  - make uavobjects
+
+after_success:
+  - cd $TRAVIS_BUILD_DIR && ./make/scripts/travis-build_deploy-docs.sh

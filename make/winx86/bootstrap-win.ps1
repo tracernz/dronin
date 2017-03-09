@@ -134,3 +134,9 @@ if (!(Test-Path($bashPath))) {
     Copy-Item $bashScript $bashPath
     Echo "Installed new bash profile to $($bashPath)"
 }
+
+Echo "To setup remainder of build dependencies, open a git bash shell inside your dRonin tree ($($Global:rootDir)) and run:"
+Echo "make breakpad_install"
+Echo "make openssl_install"
+Echo "make zip_install"
+Echo "make arm_sdk_install"

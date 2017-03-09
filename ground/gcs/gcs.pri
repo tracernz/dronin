@@ -137,6 +137,8 @@ linux-g++* {
 win32 {
     # http://gcc.gnu.org/bugzilla/show_bug.cgi?id=52991
     !win32-msvc*:QMAKE_CXXFLAGS += -mno-ms-bitfields
+    # use link-time code generation on release builds, saves a bit of RAM and maybe some CPU
+    win32-msvc*:CONFIG(release, debug|release):CONFIG *= ltcg ltcg_link
 }
 
 unix {

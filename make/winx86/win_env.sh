@@ -13,6 +13,7 @@ if [ -z "$DRONIN_ENV" ]; then
   export DRONIN_ENV=msvc
 fi
 
+# vcvars*.bat just finds the newest kit by default, let's take a different approach for predictability
 UCRT_VERSION="10.0.14393.0"
 TARGET_PLATFORM="x86" # x86 or x64
 

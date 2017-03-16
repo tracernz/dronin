@@ -2,9 +2,14 @@ image: Visual Studio 2015
 shallow_clone: true
 clone_depth: 1
 
+environment:
+  DRCRASH_ENV: msvc
+
 install:
   - ps: make\winx86\bootstrap-win.ps1 msvc
   - set IGNORE_MISSING_TOOLCHAIN=true
+  - C:\msys64\usr\bin\sh.exe --login -c "cd `cygpath ${APPVEYOR_BUILD_FOLDER}` && source ./make/winx86/bash_profile && make breakpad_install"
 
 build_script:
   - C:\msys64\usr\bin\sh.exe --login -c "cd `cygpath ${APPVEYOR_BUILD_FOLDER}` && source ./make/winx86/bash_profile && make uavobjects"
+  - C:\msys64\usr\bin\sh.exe --login -c "cd `cygpath ${APPVEYOR_BUILD_FOLDER}` && source ./make/winx86/bash_profile && make gcs"

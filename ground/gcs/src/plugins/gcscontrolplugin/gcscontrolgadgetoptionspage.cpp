@@ -213,13 +213,18 @@ QWidget *GCSControlGadgetOptionsPage::createPage(QWidget *parent)
     connect(sdlGamepad,SIGNAL(gamepads(quint8)),this,SLOT(gamepads(quint8)));
 #endif
 
-    connect(options_page->cbExternalDevice, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &GCSControlGadgetOptionsPage::externalDeviceChanged);
+    connect(options_page->cbExternalDevice, QOverload<int>::of(&QComboBox::currentIndexChanged),
+            this, &GCSControlGadgetOptionsPage::externalDeviceChanged);
 
     auto padMgr = QGamepadManager::instance();
     if (padMgr) {
-        connect(padMgr, &QGamepadManager::connectedGamepadsChanged, this, &GCSControlGadgetOptionsPage::connectedGamepadsChanged);
+        connect(padMgr, &QGamepadManager::connectedGamepadsChanged, this,
+                &GCSControlGadgetOptionsPage::connectedGamepadsChanged);
         connectedGamepadsChanged();
     }
+    connect(padMgr, &QGamepadManager::gamepadAxisEvent, this, [](int devId, QGamepadManager::GamepadAxes axis, double value) {
+        qDebug() << "axis event" << devId << axis << value;
+    });
 
     return optionsPageWidget;
 }

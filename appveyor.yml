@@ -1,6 +1,7 @@
 image: Visual Studio 2015
 shallow_clone: true
 clone_depth: 100
+clone_folder: c:\projects\dron
 
 install:
   - cinst qbs
@@ -10,5 +11,6 @@ install:
 build_script:
   - SET "PATH=C:\msys64\MINGW64\bin;C:\msys64\usr\bin;%PATH%"
   - cd %APPVEYOR_BUILD_FOLDER%
+  - tree
   - bash -lc "pacman -S --needed --noconfirm git make"
   - bash --init-file "%APPVEYOR_BUILD_FOLDER%\make\winx86\bash_profile" -lc "cd '%APPVEYOR_BUILD_FOLDER%' && ls -al && IGNORE_MISSING_TOOLCHAIN=yes make uavobjects"

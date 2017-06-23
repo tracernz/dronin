@@ -2,14 +2,13 @@ image: Visual Studio 2015
 shallow_clone: true
 clone_depth: 100
 
-#install:
-#  - cinst qbs
-#  - qbs setup-toolchains --detect
-#  - qbs config defaultProfile MSVC2015-x86
+install:
+  - cinst qbs
+  - qbs setup-toolchains --detect
+  - qbs config defaultProfile MSVC2015-x86
 
 build_script:
   - SET "PATH=C:\msys64\MINGW64\bin;C:\msys64\usr\bin;%PATH%"
   - cd %APPVEYOR_BUILD_FOLDER%
-  - bash -lc "pacman -S --needed --noconfirm git"
-  - bash -lc "pacman -S --needed --noconfirm make"
-  - bash --init-file "%APPVEYOR_BUILD_FOLDER%\make\winx86\bash_profile" -lc "ls -al && make uavobjects"
+  - bash -lc "pacman -S --needed --noconfirm git make"
+  - bash --init-file "%APPVEYOR_BUILD_FOLDER%\make\winx86\bash_profile" -lc "cd '%APPVEYOR_BUILD_FOLDER%' && ls -al && IGNORE_MISSING_TOOLCHAIN=yes make uavobjects"

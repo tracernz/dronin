@@ -35,6 +35,11 @@ ifeq (MINGW, $(findstring MINGW,$(UNAME)))
   export WINDOWS := 1
 endif
 
+ifeq (MSYS_NT, $(findstring MSYS_NT,$(UNAME)))
+  OSFAMILY := windows
+  export WINDOWS := 1
+endif
+
 # report an error if we couldn't work out what OS this is running on
 ifndef OSFAMILY
   $(info uname reports $(UNAME))

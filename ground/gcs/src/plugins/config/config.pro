@@ -98,6 +98,7 @@ FORMS += airframe.ui \
     modules.ui \
     osd.ui \
     osdpage.ui \
+    autotunebeginning.ui \
     autotuneproperties.ui \
     autotunesliders.ui \
     autotunefinalpage.ui

@@ -794,7 +794,7 @@ static const struct pios_tim_channel pios_tim_servoport_v02_pins[] = {
 			.pin_source = GPIO_PinSource1,
 		},
 	},
-	{ // Ch8 TIM17_CH1 (PA7)
+	/*{ // Ch8 TIM17_CH1 (PA7)
 		.timer = TIM17,
 		.timer_chan = TIM_Channel_1,
 		.remap = GPIO_AF_1,
@@ -809,7 +809,7 @@ static const struct pios_tim_channel pios_tim_servoport_v02_pins[] = {
 			},
 			.pin_source = GPIO_PinSource7,
 		},
-	},
+	},*/
 	{ // Ch9 TIM3_CH2  (PA4)
 		.timer = TIM3,
 		.timer_chan = TIM_Channel_2,
@@ -1159,6 +1159,24 @@ static struct pios_mpu_cfg pios_mpu_cfg = {
 	.use_internal_mag = true,
 };
 #endif /* PIOS_INCLUDE_MPU */
+
+#if defined(PIOS_INCLUDE_WS2811)
+#include "pios_ws2811.h"
+
+ws2811_dev_t pios_ws2811;
+
+static const struct pios_ws2811_cfg pios_ws2811_cfg = {
+	.timer = TIM17,
+	.timer_chan = TIM_Channel_1,
+	.led_gpio = GPIOA,
+	.gpio_pin = GPIO_Pin_7,
+	.remap = GPIO_AF_1,
+	.timer_dma_source = TIM_DMA_Update,
+	.dma_chan = DMA1_Channel7,
+	.dma_tcif = DMA1_FLAG_TC7,
+	.dma_irqn = DMA1_Channel7_IRQn,
+};
+#endif /* PIOS_INCLUDE_WS2811 */
 
 /**
  * @}

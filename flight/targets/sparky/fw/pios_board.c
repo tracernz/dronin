@@ -45,6 +45,10 @@
 #include "manualcontrolsettings.h"
 #include "modulesettings.h"
 
+#if defined(PIOS_INCLUDE_WS2811)
+#   include "rgbledsettings.h"
+#endif
+
 
 #define PIOS_COM_CAN_RX_BUF_LEN 256
 #define PIOS_COM_CAN_TX_BUF_LEN 256
@@ -288,6 +292,20 @@ void PIOS_Board_Init(void)
 	pios_rcvr_group_map[MANUALCONTROLSETTINGS_CHANNELGROUPS_GCS] = pios_gcsrcvr_rcvr_id;
 #endif	/* PIOS_INCLUDE_GCSRCVR */
 
+#ifdef PIOS_INCLUDE_WS2811
+	uint8_t num_leds;
+
+	RGBLEDSettingsInitialize();
+
+	RGBLEDSettingsNumLedsGet(&num_leds);
+
+	// remap TIM17 to DMA1_Channel7 to co-exist with ADC
+	SYSCFG_DMAChannelRemapConfig(SYSCFG_DMARemap_TIM17, ENABLE);
+
+	PIOS_WS2811_init(&pios_ws2811, &pios_ws2811_cfg, num_leds);
+	PIOS_WS2811_trigger_update(pios_ws2811);
+#endif
+
 	uint8_t hw_outport;
 	uint8_t number_of_pwm_outputs;
 	uint8_t number_of_adc_ports;
@@ -295,12 +313,12 @@ void PIOS_Board_Init(void)
 	HwSparkyOutPortGet(&hw_outport);
 	switch (hw_outport) {
 	case HWSPARKY_OUTPORT_PWM10:
-		number_of_pwm_outputs = 10;
+		number_of_pwm_outputs = 9;
 		number_of_adc_ports = 0;
 		use_pwm_in = false;
 		break;
 	case HWSPARKY_OUTPORT_PWM82ADC:
-		number_of_pwm_outputs = 8;
+		number_of_pwm_outputs = 7;
 		number_of_adc_ports = 2;
 		use_pwm_in = false;
 		break;
@@ -310,7 +328,7 @@ void PIOS_Board_Init(void)
 		use_pwm_in = false;
 		break;
 	case HWSPARKY_OUTPORT_PWM9PWM_IN:
-		number_of_pwm_outputs = 9;
+		number_of_pwm_outputs = 8;
 		use_pwm_in = true;
 		number_of_adc_ports = 0;
 		break;

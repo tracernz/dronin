@@ -83,6 +83,9 @@
 
 #define PIOS_INCLUDE_FASTHEAP
 
+#define PIOS_INCLUDE_WS2811
+#define SYSTEMMOD_RGBLED_SUPPORT
+
 #endif /* PIOS_CONFIG_H */
 
 /**

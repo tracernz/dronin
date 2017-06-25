@@ -229,15 +229,18 @@ int main(int argc, char **argv)
 
     QApplication app(argc, argv);
 
+    auto args = QCoreApplication::arguments();
 #ifdef USE_CRASHREPORTING
-    QString dirName(GCS_REVISION_PRETTY);
-    dirName = dirName.replace("%@%", "_");
-    // Limit to alphanumerics plus dots, because this will be a filename
-    // component.
-    dirName = dirName.replace(QRegularExpression("[^A-Za-z0-9.]+"), "_");
-    dirName = QDir::tempPath() + QDir::separator() + GCS_PROJECT_BRANDING + "_" + dirName;
-    QDir().mkdir(dirName);
-    new CrashReporter::Handler(dirName, true, "crashreporterapp");
+    if (!args.contains(QStringLiteral("-no-reporter")) {
+        QString dirName(GCS_REVISION_PRETTY);
+        dirName = dirName.replace("%@%", "_");
+        // Limit to alphanumerics plus dots, because this will be a filename
+        // component.
+        dirName = dirName.replace(QRegularExpression("[^A-Za-z0-9.]+"), "_");
+        dirName = QDir::tempPath() + QDir::separator() + GCS_PROJECT_BRANDING + "_" + dirName;
+        QDir().mkdir(dirName);
+        new CrashReporter::Handler(dirName, true, "crashreporterapp");
+    }
 #endif
 
     RunGuard &guard = RunGuard::instance(QStringLiteral(GCS_PROJECT_BRANDING)

@@ -9,6 +9,5 @@ install:
 build_script:
   - SET "PATH=C:\msys64\MINGW64\bin;C:\msys64\usr\bin;%PATH%"
   - cd %APPVEYOR_BUILD_FOLDER%
-  - tree
   - bash -lc "pacman -S --needed --noconfirm git make"
-  - bash -lc "source '$APPVEYOR_BUILD_FOLDER/make/winx86/appveyor_build.sh'"
+  - bash -l "%APPVEYOR_BUILD_FOLDER%/make/winx86/appveyor_build.sh"

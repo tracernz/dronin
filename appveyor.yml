@@ -11,4 +11,4 @@ build_script:
   - cd %APPVEYOR_BUILD_FOLDER%
   - tree
   - bash -lc "pacman -S --needed --noconfirm git make"
-  - bash --init-file "%APPVEYOR_BUILD_FOLDER%\make\winx86\bash_profile" -lc "cd '%APPVEYOR_BUILD_FOLDER%' && ls -al && IGNORE_MISSING_TOOLCHAIN=yes make uavobjects"
+  - bash -lc "source '$APPVEYOR_BUILD_FOLDER/make/winx86/appveyor_build.sh'"

@@ -3,4 +3,4 @@ cd "${APPVEYOR_BUILD_FOLDER}"
 
 export IGNORE_MISSING_TOOLCHAIN=yes
 
-make uavobjects
+make -j4 gcs GCS_BUILD_CONF=release

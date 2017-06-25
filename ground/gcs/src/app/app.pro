@@ -6,6 +6,8 @@ TARGET = $$GCS_APP_TARGET
 DESTDIR = $$GCS_APP_PATH
 QT += xml
 QT += widgets
+QT += charts
+
 SOURCES += \
     main.cpp \
     customsplash.cpp

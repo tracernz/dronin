@@ -34,7 +34,10 @@ test_and_add_to_path ()
   fi
 
   if [ -f "$1/$2" ] ; then
+    echo "Adding $1/$2"
     export PATH=$PATH\:$1
+  else
+    echo "Didn't find $1/$2"
   fi
 }
 
@@ -87,4 +90,6 @@ test_and_add_to_path "/C/Program Files (x86)/NSIS/Unicode" "makensis.exe"
 if ! which make >/dev/null 2>&1 ; then
   alias make=mingw32-make
 fi
+
+which qmake
 

@@ -23,7 +23,7 @@ endif
 
 # Change the Qt version here, format is e.g. 5.8.0, 5.8.0-1 or 5.8.0-beta etc.
 
-QT_VERSION := 5.8.0
+QT_VERSION := 5.9.1
 QT_MINGW_VERSION := 530
 
 # These bits are not user serviceable
@@ -74,9 +74,9 @@ endif # IGNORE_MISSING_TOOLCHAIN
 
 ifdef LINUX
   ifdef AMD64
-    QT_PLUGINS_DIR = $(QT_SDK_DIR)/$(QT_VERSION_SHORT)/gcc_64/plugins
+    QT_PLUGINS_DIR = $(QT_SDK_DIR)/$(QT_VERSION_FULL)/gcc_64/plugins
   else
-    QT_PLUGINS_DIR = $(QT_SDK_DIR)/$(QT_VERSION_SHORT)/gcc/plugins
+    QT_PLUGINS_DIR = $(QT_SDK_DIR)/$(QT_VERSION_FULL)/gcc/plugins
   endif
 endif
 
@@ -107,7 +107,7 @@ ifdef LINUX
   ifdef AMD64
     # Linux 64-bit
     qt_sdk_install: QT_SDK_URL := $(QT_URL_PREFIX)linux-x64-$(QT_VERSION_FULL)$(QT_VERSION_EXTRA).run
-    QT_SDK_QMAKE_PATH := $(QT_SDK_DIR)/$(QT_VERSION_SHORT)/gcc_64/bin/qmake
+    QT_SDK_QMAKE_PATH := $(QT_SDK_DIR)/$(QT_VERSION_FULL)/gcc_64/bin/qmake
     QT_SDK_QBS_PATH := $(QT_SDK_DIR)/Tools/QtCreator/bin/qbs
     QBS_PROFILE := gcc
   else
@@ -116,11 +116,11 @@ ifdef LINUX
 endif
 
 ifdef MACOSX
-  qt_sdk_install: QT_SDK_URL  := $(QT_URL_PREFIX)mac-x64-clang-$(QT_VERSION_FULL)$(QT_VERSION_EXTRA).dmg
-  QT_SDK_QMAKE_PATH := $(QT_SDK_DIR)/$(QT_VERSION_SHORT)/clang_64/bin/qmake
+  qt_sdk_install: QT_SDK_URL  := $(QT_URL_PREFIX)mac-x64-$(QT_VERSION_FULL)$(QT_VERSION_EXTRA).dmg
+  QT_SDK_QMAKE_PATH := $(QT_SDK_DIR)/$(QT_VERSION_FULL)/clang_64/bin/qmake
   QT_SDK_QBS_PATH := $(QT_SDK_DIR)/Qt\ Creator.app/Contents/MacOS/qbs
   QBS_PROFILE := clang
-  export QT_SDK_BIN_PATH := $(QT_SDK_DIR)/$(QT_VERSION_SHORT)/clang_64/bin
+  export QT_SDK_BIN_PATH := $(QT_SDK_DIR)/$(QT_VERSION_FULL)/clang_64/bin
 endif
 
 ifdef WINDOWS
@@ -129,7 +129,7 @@ ifdef WINDOWS
   ifeq ($(USE_MSVC),YES)
     QBS_PROFILE := MSVC2015-x86
   endif
-  QT_SDK_QMAKE_PATH := $(QT_SDK_DIR)/$(QT_VERSION_SHORT)/mingw$(QT_MINGW_VERSION)_32/bin/qmake
+  QT_SDK_QMAKE_PATH := $(QT_SDK_DIR)/$(QT_VERSION_FULL)/mingw$(QT_MINGW_VERSION)_32/bin/qmake
 endif
 
 qt_sdk_install: QT_SDK_FILE := $(notdir $(QT_SDK_URL))
@@ -152,7 +152,7 @@ endif
 	$(V1) echo "*** NOTE NOTE NOTE ***"
 
 ifneq (,$(filter $(UNAME), Darwin))
-	$(V1) hdiutil attach -quiet -private -mountpoint /tmp/qt-installer "$(DL_DIR)/$(QT_SDK_FILE)" 
+	$(V1) hdiutil attach -quiet -private -mountpoint /tmp/qt-installer "$(DL_DIR)/$(QT_SDK_FILE)"
 	$(V1) dronin_qt_path="$(QT_SDK_DIR)" \
 		/tmp/qt-installer/qt-opensource-mac-x64-clang-$(QT_VERSION_LONG).app/Contents/MacOS/qt-opensource-mac-x64-clang-$(QT_VERSION_LONG) \
 		--script $(ROOT_DIR)/make/scripts/qt-install.qs
@@ -262,7 +262,7 @@ libusb_win_clean:
 openocd_win_install: | $(DL_DIR) $(TOOLS_DIR)
 openocd_win_install: OPENOCD_URL  := git://git.code.sf.net/p/openocd/code
 openocd_win_install: OPENOCD_REV  := cf1418e9a85013bbf8dbcc2d2e9985695993d9f4
-openocd_win_install: OPENOCD_OPTIONS := 
+openocd_win_install: OPENOCD_OPTIONS :=
 
 ifeq ($(OPENOCD_FTDI), yes)
 openocd_win_install: OPENOCD_OPTIONS := $(OPENOCD_OPTIONS) --enable-ft2232_ftd2xx --with-ftd2xx-win32-zipdir=$(FTD2XX_DIR)
@@ -540,7 +540,7 @@ libkml_clean:
 	$(V1) [ ! -d "$(LIBKML_BUILD_DIR)" ] || $(RM) -rf "$(LIBKML_BUILD_DIR)"
 
 # ZIP download URL
-zip_install: ZIP_URL  := http://pkgs.fedoraproject.org/repo/pkgs/zip/zip30.tar.gz/7b74551e63f8ee6aab6fbc86676c0d37/zip30.tar.gz 
+zip_install: ZIP_URL  := http://pkgs.fedoraproject.org/repo/pkgs/zip/zip30.tar.gz/7b74551e63f8ee6aab6fbc86676c0d37/zip30.tar.gz
 
 zip_install: ZIP_FILE := $(notdir $(ZIP_URL))
 

@@ -124,7 +124,7 @@ ifdef MACOSX
 endif
 
 ifdef WINDOWS
-  qt_sdk_install: QT_SDK_URL  := $(QT_URL_PREFIX)windows-x86-mingw$(QT_MINGW_VERSION)-$(QT_VERSION_FULL)$(QT_VERSION_EXTRA).exe
+  qt_sdk_install: QT_SDK_URL  := $(QT_URL_PREFIX)windows-x86-$(QT_VERSION_FULL)$(QT_VERSION_EXTRA).exe
   QT_SDK_QBS_PATH := $(QT_SDK_DIR)/Tools/QtCreator/bin/qbs
   ifeq ($(USE_MSVC),YES)
     QBS_PROFILE := MSVC2015-x86

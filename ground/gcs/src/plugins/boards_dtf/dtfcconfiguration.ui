@@ -97,7 +97,7 @@
                  <item>
                   <widget class="QComboBox" name="cmbRcvrPort">
                    <property name="objrelation" stdset="0">
-                    <stringlist>
+                    <stringlist notr="true">
                      <string>objname:HwDtfc</string>
                      <string>fieldname:RcvrPort</string>
                      <string>buttongroup:1</string>
@@ -193,7 +193,7 @@
                  <item>
                   <widget class="QComboBox" name="cmbUART3">
                    <property name="objrelation" stdset="0">
-                    <stringlist>
+                    <stringlist notr="true">
                      <string>objname:HwDtfc</string>
                      <string>fieldname:Uart2</string>
                      <string>buttongroup:1</string>
@@ -339,7 +339,7 @@
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Low-pass filter (LPF) cutoff frequency for the accelerometer signals. Generally, the cutoff frequency should be as high as possible. Lowering the cutoff helps reducing noise caused by motor vibrations, but it can possibly decrease the responsiveness of the UAV. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="objrelation" stdset="0">
-             <stringlist>
+             <stringlist notr="true">
               <string>objname:HwDtfc</string>
               <string>fieldname:ICM20608G_AccelLPF</string>
               <string>buttongroup:1</string>
@@ -357,7 +357,7 @@
           <item row="3" column="3">
            <widget class="QComboBox" name="cmbAccelRange">
             <property name="objrelation" stdset="0">
-             <stringlist>
+             <stringlist notr="true">
               <string>objname:HwDtfc</string>
               <string>fieldname:AccelRange</string>
               <string>buttongroup:1</string>
@@ -392,7 +392,7 @@
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Low-pass filter (LPF) cutoff frequency for gyro signals. Generally, the cutoff frequency should be as high as possible. Lowering the cutoff helps reducing noise caused by motor vibrations, but it can possibly decrease the responsiveness of the UAV. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="objrelation" stdset="0">
-             <stringlist>
+             <stringlist notr="true">
               <string>objname:HwDtfc</string>
               <string>fieldname:ICM20608G_GyroLPF</string>
               <string>buttongroup:1</string>
@@ -403,7 +403,7 @@
           <item row="1" column="1">
            <widget class="QComboBox" name="cmbUsbHidPort">
             <property name="objrelation" stdset="0">
-             <stringlist>
+             <stringlist notr="true">
               <string>objname:HwDtfc</string>
               <string>fieldname:USB_HIDPort</string>
               <string>buttongroup:1</string>
@@ -414,7 +414,7 @@
           <item row="7" column="1">
            <widget class="QComboBox" name="cmbDsmxMode">
             <property name="objrelation" stdset="0">
-             <stringlist>
+             <stringlist notr="true">
               <string>objname:HwDtfc</string>
               <string>fieldname:DSMxMode</string>
               <string>buttongroup:1</string>
@@ -425,7 +425,7 @@
           <item row="3" column="1">
            <widget class="QComboBox" name="cmbGyroRange">
             <property name="objrelation" stdset="0">
-             <stringlist>
+             <stringlist notr="true">
               <string>objname:HwDtfc</string>
               <string>fieldname:GyroRange</string>
               <string>buttongroup:1</string>
@@ -436,7 +436,7 @@
           <item row="1" column="3">
            <widget class="QComboBox" name="cmbUsbVcpPort">
             <property name="objrelation" stdset="0">
-             <stringlist>
+             <stringlist notr="true">
               <string>objname:HwDtfc</string>
               <string>fieldname:USB_VCPPort</string>
               <string>buttongroup:1</string>
@@ -622,7 +622,7 @@
         <bool>true</bool>
        </property>
        <property name="objrelation" stdset="0">
-        <stringlist>
+        <stringlist notr="true">
          <string>button:help</string>
          <string>url:http://www.dtfuhf.com/</string>
         </stringlist>
@@ -650,7 +650,7 @@
         <string>Reload Board Data</string>
        </property>
        <property name="objrelation" stdset="0">
-        <stringlist>
+        <stringlist notr="true">
          <string>button:reload</string>
          <string>buttongroup:1</string>
         </stringlist>
@@ -666,7 +666,7 @@
         <string>Reset Defaults</string>
        </property>
        <property name="objrelation" stdset="0">
-        <stringlist>
+        <stringlist notr="true">
          <string>button:default</string>
          <string>buttongroup:1</string>
         </stringlist>
@@ -694,7 +694,7 @@
         <string>Save</string>
        </property>
        <property name="objrelation" stdset="0">
-        <stringlist>
+        <stringlist notr="true">
          <string>button:save</string>
          <string>buttongroup:1</string>
         </stringlist>
@@ -707,7 +707,7 @@
         <string>Reboot</string>
        </property>
        <property name="objrelation" stdset="0">
-        <stringlist>
+        <stringlist notr="true">
          <string>button:reboot</string>
         </stringlist>
        </property>

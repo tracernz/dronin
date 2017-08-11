@@ -60,7 +60,7 @@
         <x>0</x>
         <y>0</y>
         <width>970</width>
-        <height>772</height>
+        <height>767</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -881,6 +881,7 @@
        <property name="objrelation" stdset="0">
         <stringlist notr="true">
          <string>button:help</string>
+         <string>url:https://www.brainfpv.com/support/</string>
         </stringlist>
        </property>
       </widget>

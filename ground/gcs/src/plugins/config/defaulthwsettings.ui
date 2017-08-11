@@ -91,7 +91,7 @@
         <string>Connections</string>
        </property>
        <property name="objrelation" stdset="0">
-        <stringlist>
+        <stringlist notr="true">
          <string>button:connectiondiagram</string>
         </stringlist>
        </property>
@@ -134,7 +134,7 @@ Useful if you have accidentally changed some settings.</string>
         </size>
        </property>
        <property name="objrelation" stdset="0">
-        <stringlist>
+        <stringlist notr="true">
          <string>button:reload</string>
          <string>buttongroup:1</string>
         </stringlist>
@@ -150,7 +150,7 @@ Useful if you have accidentally changed some settings.</string>
         <string>Reset Defaults</string>
        </property>
        <property name="objrelation" stdset="0">
-        <stringlist>
+        <stringlist notr="true">
          <string>button:default</string>
          <string>buttongroup:1</string>
         </stringlist>
@@ -166,7 +166,7 @@ Useful if you have accidentally changed some settings.</string>
         <string>Save</string>
        </property>
        <property name="objrelation" stdset="0">
-        <stringlist>
+        <stringlist notr="true">
          <string>button:save</string>
         </stringlist>
        </property>
@@ -181,7 +181,7 @@ Useful if you have accidentally changed some settings.</string>
         <string>Reboot</string>
        </property>
        <property name="objrelation" stdset="0">
-        <stringlist>
+        <stringlist notr="true">
          <string>button:reboot</string>
         </stringlist>
        </property>

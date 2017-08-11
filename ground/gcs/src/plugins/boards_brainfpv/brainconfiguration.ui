@@ -578,6 +578,7 @@
        <property name="objrelation" stdset="0">
         <stringlist notr="true">
          <string>button:help</string>
+         <string>url:https://www.brainfpv.com/support/</string>
         </stringlist>
        </property>
       </widget>

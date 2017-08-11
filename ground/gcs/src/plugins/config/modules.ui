@@ -57,7 +57,7 @@
               <item>
                <widget class="QLabel" name="lblManual">
                 <property name="text">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Some modules are shown greyed out, these modules are enabled from their own configuration tabs. After enabling a module, a &lt;span style=&quot; font-weight:600;&quot;&gt;reboot&lt;/span&gt; is required before the module will start.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Some modules are shown greyed out, these modules are enabled from their own configuration tabs. After enabling a module, a &lt;span style=" font-weight:600;"&gt;reboot&lt;/span&gt; is required before the module will start.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>
@@ -70,7 +70,7 @@
                  <string>Airspeed</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:ModuleSettings</string>
                   <string>fieldname:AdminState</string>
                   <string>element:Airspeed</string>
@@ -86,7 +86,7 @@
                  <string>Altitude Hold</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:ModuleSettings</string>
                   <string>fieldname:AdminState</string>
                   <string>element:AltitudeHold</string>
@@ -105,7 +105,7 @@
                  <string>Autotune</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:ModuleSettings</string>
                   <string>fieldname:AdminState</string>
                   <string>element:Autotune</string>
@@ -121,7 +121,7 @@
                  <string>Battery Monitoring</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:ModuleSettings</string>
                   <string>fieldname:AdminState</string>
                   <string>element:Battery</string>
@@ -140,7 +140,7 @@
                  <string>Camera Stabilisation</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:ModuleSettings</string>
                   <string>fieldname:AdminState</string>
                   <string>element:CameraStab</string>
@@ -156,7 +156,7 @@
                  <string>Fixed Wing Path Follower</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:ModuleSettings</string>
                   <string>fieldname:AdminState</string>
                   <string>element:FixedWingPathFollower</string>
@@ -172,7 +172,7 @@
                  <string>Flight Statistics</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:ModuleSettings</string>
                   <string>fieldname:AdminState</string>
                   <string>element:FlightStats</string>
@@ -191,7 +191,7 @@
                  <string>Geofence</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:ModuleSettings</string>
                   <string>fieldname:AdminState</string>
                   <string>element:Geofence</string>
@@ -210,7 +210,7 @@
                  <string>Logging</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:ModuleSettings</string>
                   <string>fieldname:AdminState</string>
                   <string>element:Logging</string>
@@ -229,7 +229,7 @@
                  <string>Path Planner</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:ModuleSettings</string>
                   <string>fieldname:AdminState</string>
                   <string>element:PathPlanner</string>
@@ -248,7 +248,7 @@
                  <string>TxPID</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:ModuleSettings</string>
                   <string>fieldname:AdminState</string>
                   <string>element:TxPID</string>
@@ -264,7 +264,7 @@
                  <string>Vibration Analysis</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:ModuleSettings</string>
                   <string>fieldname:AdminState</string>
                   <string>element:VibrationAnalysis</string>
@@ -283,7 +283,7 @@
                  <string>VTOL Path Follower</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:ModuleSettings</string>
                   <string>fieldname:AdminState</string>
                   <string>element:VtolPathFollower</string>
@@ -305,7 +305,7 @@
               <item>
                <widget class="QLabel" name="lblAuto">
                 <property name="text">
-                 <string>These modules are  are automatically enabled by configuring appropriate ports on the &quot;Hardware&quot; configuration tab. Note that &quot;Hardware&quot; tab settings won't take effect until after a reboot.</string>
+                 <string>These modules are  are automatically enabled by configuring appropriate ports on the "Hardware" configuration tab. Note that "Hardware" tab settings won't take effect until after a reboot.</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>
@@ -321,7 +321,7 @@
                  <string>Com Bridge (USB VCP to Serial Port)</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:TaskInfo</string>
                   <string>fieldname:Running</string>
                   <string>element:Com2UsbBridge</string>
@@ -338,7 +338,7 @@
                  <string>FrSky Sensor Hub Telemetry</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:TaskInfo</string>
                   <string>fieldname:Running</string>
                   <string>element:UAVOFrSKYSBridge</string>
@@ -352,7 +352,7 @@
                  <string>FrSky S.PORT Telemetry</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:TaskInfo</string>
                   <string>fieldname:Running</string>
                   <string>element:UAVOFrSkySPortBridge</string>
@@ -369,7 +369,7 @@
                  <string>GPS</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:TaskInfo</string>
                   <string>fieldname:Running</string>
                   <string>element:GPS</string>
@@ -386,7 +386,7 @@
                  <string>HoTT Telemetry</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:TaskInfo</string>
                   <string>fieldname:Running</string>
                   <string>element:UAVOHoTTBridge</string>
@@ -403,7 +403,7 @@
                  <string>Light Telemetry (LTM)</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:TaskInfo</string>
                   <string>fieldname:Running</string>
                   <string>element:UAVOLighttelemetryBridge</string>
@@ -417,7 +417,7 @@
                  <string>Mavlink Telemetry</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:TaskInfo</string>
                   <string>fieldname:Running</string>
                   <string>element:UAVOMavlinkBridge</string>
@@ -434,7 +434,7 @@
                  <string>MSP Telemetry</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:TaskInfo</string>
                   <string>fieldname:Running</string>
                   <string>element:UAVOMSPBridge</string>
@@ -530,7 +530,7 @@
                     <double>0.000000000000000</double>
                    </property>
                    <property name="objrelation" stdset="0">
-                    <stringlist>
+                    <stringlist notr="true">
                      <string>objname:FlightBatterySettings</string>
                      <string>fieldname:MaxCellVoltage</string>
                     </stringlist>
@@ -550,7 +550,7 @@
                     <bool>true</bool>
                    </property>
                    <property name="objrelation" stdset="0">
-                    <stringlist>
+                    <stringlist notr="true">
                      <string>objname:FlightBatteryState</string>
                      <string>fieldname:DetectedCellCount</string>
                     </stringlist>
@@ -600,7 +600,7 @@
                     <number>1</number>
                    </property>
                    <property name="objrelation" stdset="0">
-                    <stringlist>
+                    <stringlist notr="true">
                      <string>objname:FlightBatterySettings</string>
                      <string>fieldname:NbCells</string>
                     </stringlist>
@@ -667,7 +667,7 @@
                     <number>2000</number>
                    </property>
                    <property name="objrelation" stdset="0">
-                    <stringlist>
+                    <stringlist notr="true">
                      <string>objname:FlightBatterySettings</string>
                      <string>fieldname:Capacity</string>
                     </stringlist>
@@ -724,7 +724,7 @@
                  <double>3.300000000000000</double>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:FlightBatterySettings</string>
                   <string>fieldname:CellVoltageThresholds</string>
                   <string>element:Alarm</string>
@@ -767,7 +767,7 @@
                  <double>0.010000000000000</double>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:FlightBatterySettings</string>
                   <string>fieldname:SensorCalibrationFactor</string>
                   <string>element:Voltage</string>
@@ -794,7 +794,7 @@
                  <double>3.500000000000000</double>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:FlightBatterySettings</string>
                   <string>fieldname:CellVoltageThresholds</string>
                   <string>element:Warning</string>
@@ -808,7 +808,7 @@
                  <bool>true</bool>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:FlightBatteryState</string>
                   <string>fieldname:Voltage</string>
                  </stringlist>
@@ -840,7 +840,7 @@
                  <double>0.100000000000000</double>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:FlightBatterySettings</string>
                   <string>fieldname:SensorCalibrationOffset</string>
                   <string>element:Voltage</string>
@@ -854,7 +854,7 @@
                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select an ADC pin to measure the voltage. Pins not available with the current board configuration are labeled &amp;quot;Disabled&amp;quot;. These pins may be enabled by settings on the &amp;quot;Hardware&amp;quot; tab. Pins labeled &amp;quot;N/A&amp;quot; are not available due to the board hardware design.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:FlightBatterySettings</string>
                   <string>fieldname:VoltagePin</string>
                  </stringlist>
@@ -936,7 +936,7 @@
                  <bool>true</bool>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:FlightBatteryState</string>
                   <string>fieldname:Current</string>
                  </stringlist>
@@ -962,7 +962,7 @@
                  <number>255</number>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:FlightBatterySettings</string>
                   <string>fieldname:FlightTimeThresholds</string>
                   <string>element:Warning</string>
@@ -983,7 +983,7 @@
                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select an ADC pin to measure the current. Pins not available with the current board configuration are labeled &amp;quot;Disabled&amp;quot;. These pins may be enabled by settings on the &amp;quot;Hardware&amp;quot; tab. Pins labeled &amp;quot;N/A&amp;quot; are not available due to the board hardware design.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:FlightBatterySettings</string>
                   <string>fieldname:CurrentPin</string>
                  </stringlist>
@@ -1022,7 +1022,7 @@
                  <double>0.100000000000000</double>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:FlightBatterySettings</string>
                   <string>fieldname:SensorCalibrationOffset</string>
                   <string>element:Current</string>
@@ -1049,7 +1049,7 @@
                  <number>255</number>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:FlightBatterySettings</string>
                   <string>fieldname:FlightTimeThresholds</string>
                   <string>element:Alarm</string>
@@ -1083,7 +1083,7 @@
                  <bool>true</bool>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:FlightBatteryState</string>
                   <string>fieldname:ConsumedEnergy</string>
                  </stringlist>
@@ -1112,7 +1112,7 @@
                  <double>0.000010000000000</double>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:FlightBatterySettings</string>
                   <string>fieldname:SensorCalibrationFactor</string>
                   <string>element:Current</string>
@@ -1126,7 +1126,7 @@
                  <bool>true</bool>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:FlightBatteryState</string>
                   <string>fieldname:EstimatedFlightTime</string>
                  </stringlist>
@@ -1211,7 +1211,7 @@
               <item row="0" column="1">
                <widget class="QComboBox" name="cbGPSProtocol">
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:ModuleSettings</string>
                   <string>fieldname:GPSDataProtocol</string>
                  </stringlist>
@@ -1228,7 +1228,7 @@
               <item row="3" column="1">
                <widget class="QComboBox" name="cbGPSConstellation">
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:ModuleSettings</string>
                   <string>fieldname:GPSConstellation</string>
                  </stringlist>
@@ -1241,7 +1241,7 @@
                  <string>Auto Configure u-blox</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:ModuleSettings</string>
                   <string>fieldname:GPSAutoConfigure</string>
                  </stringlist>
@@ -1258,7 +1258,7 @@
               <item row="4" column="1">
                <widget class="QComboBox" name="cbGPSSBASConstellation">
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:ModuleSettings</string>
                   <string>fieldname:GPSSBASConstellation</string>
                  </stringlist>
@@ -1275,7 +1275,7 @@
               <item row="1" column="1">
                <widget class="QComboBox" name="cb_gpsSpeed">
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:ModuleSettings</string>
                   <string>fieldname:GPSSpeed</string>
                  </stringlist>
@@ -1340,7 +1340,7 @@
               <item row="0" column="1">
                <widget class="QComboBox" name="cbLogBehavior">
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:LoggingSettings</string>
                   <string>fieldname:LogBehavior</string>
                  </stringlist>
@@ -1357,7 +1357,7 @@
               <item row="1" column="1">
                <widget class="QComboBox" name="cbLogProfile">
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:LoggingSettings</string>
                   <string>fieldname:Profile</string>
                  </stringlist>
@@ -1374,7 +1374,7 @@
               <item row="2" column="1">
                <widget class="QComboBox" name="cbMaxLogRate">
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:LoggingSettings</string>
                   <string>fieldname:MaxLogRate</string>
                  </stringlist>
@@ -1391,7 +1391,7 @@
               <item row="3" column="1">
                <widget class="QComboBox" name="cb_gpsSpeed_2">
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:ModuleSettings</string>
                   <string>fieldname:OpenLogSpeed</string>
                  </stringlist>
@@ -1684,7 +1684,7 @@
               <item row="0" column="0" colspan="2">
                <widget class="QLabel" name="label_46">
                 <property name="text">
-                 <string>Sometimes, you may want to activate your buzzer manually by a switch on your radio. Configure an accessory channel on the &quot;Input&quot; tab and select it here. The buzzer will beep with the current alarm if active, otherwise short blinks when armed, or long blinks when disarmed.</string>
+                 <string>Sometimes, you may want to activate your buzzer manually by a switch on your radio. Configure an accessory channel on the "Input" tab and select it here. The buzzer will beep with the current alarm if active, otherwise short blinks when armed, or long blinks when disarmed.</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>
@@ -1703,7 +1703,7 @@
               <item>
                <widget class="QLabel" name="label_38">
                 <property name="text">
-                 <string>The alarm severities are listed here in order of priority, highest to lowest. When you select a severity, you will get all alarms of equal severity or higher, except for &quot;ManualControlOnly&quot;, which is a special case.</string>
+                 <string>The alarm severities are listed here in order of priority, highest to lowest. When you select a severity, you will get all alarms of equal severity or higher, except for "ManualControlOnly", which is a special case.</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>
@@ -1729,7 +1729,7 @@
               <item>
                <widget class="QLabel" name="label_39">
                 <property name="text">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;HairOnFire &lt;/span&gt;effectively disables annunciation. There are no alarms of this priority.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=" font-weight:600;"&gt;HairOnFire &lt;/span&gt;effectively disables annunciation. There are no alarms of this priority.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>
@@ -1739,7 +1739,7 @@
               <item>
                <widget class="QLabel" name="label_40">
                 <property name="text">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Critical&lt;/span&gt; is active when a major problem has been detected e.g. vehicle has not been configured correctly. Your vehicle will be unable to arm.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=" font-weight:600;"&gt;Critical&lt;/span&gt; is active when a major problem has been detected e.g. vehicle has not been configured correctly. Your vehicle will be unable to arm.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>
@@ -1749,7 +1749,7 @@
               <item>
                <widget class="QLabel" name="label_41">
                 <property name="text">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Error&lt;/span&gt; is active when the controller detected an error or fault that prevents flight e.g. ran out of memory, or battery is completely exhausted.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=" font-weight:600;"&gt;Error&lt;/span&gt; is active when the controller detected an error or fault that prevents flight e.g. ran out of memory, or battery is completely exhausted.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>
@@ -1759,7 +1759,7 @@
               <item>
                <widget class="QLabel" name="label_42">
                 <property name="text">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Warning&lt;/span&gt; indicates a general non-fatal (yet) condition e.g. battery will soon be exhausted (if battery module is enabled).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=" font-weight:600;"&gt;Warning&lt;/span&gt; indicates a general non-fatal (yet) condition e.g. battery will soon be exhausted (if battery module is enabled).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>
@@ -1769,7 +1769,7 @@
               <item>
                <widget class="QLabel" name="label_43">
                 <property name="text">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;OK&lt;/span&gt; indicates that everything is healthy/green. This will be active all the time. More useful for heartbeat LEDs etc.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=" font-weight:600;"&gt;OK&lt;/span&gt; indicates that everything is healthy/green. This will be active all the time. More useful for heartbeat LEDs etc.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>
@@ -1779,7 +1779,7 @@
               <item>
                <widget class="QLabel" name="label_34">
                 <property name="text">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Unitialised&lt;/span&gt; indicates that a particular subsytem hasn't been initialised (e.g. because it's disabled in the modules tab). This will be active all the time (even with all modules running, it is lower priority than &amp;quot;OK&amp;quot;).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=" font-weight:600;"&gt;Unitialised&lt;/span&gt; indicates that a particular subsytem hasn't been initialised (e.g. because it's disabled in the modules tab). This will be active all the time (even with all modules running, it is lower priority than &amp;quot;OK&amp;quot;).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>
@@ -1789,7 +1789,7 @@
               <item>
                <widget class="QLabel" name="label_44">
                 <property name="text">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;ManualControlOnly&lt;/span&gt; is a special case. It is only active for alarms generated by the manual control module i.e. the radio control subsystem. Select this for buzzer if you want to beep only when out of radio range.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=" font-weight:600;"&gt;ManualControlOnly&lt;/span&gt; is a special case. It is only active for alarms generated by the manual control module i.e. the radio control subsystem. Select this for buzzer if you want to beep only when out of radio range.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>
@@ -2249,7 +2249,7 @@
                  <number>100</number>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:AirspeedSettings</string>
                   <string>field:GPSSamplePeriod_ms</string>
                  </stringlist>
@@ -2281,7 +2281,7 @@
               <item row="0" column="1">
                <widget class="QComboBox" name="cb_airspeedSensorType">
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:AirspeedSettings</string>
                   <string>fieldname:AirspeedSensorType</string>
                  </stringlist>
@@ -2301,7 +2301,7 @@
                  <double>0.100000000000000</double>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:AirspeedSettings</string>
                   <string>fieldname:Scale</string>
                  </stringlist>
@@ -2321,7 +2321,7 @@
                  <double>0.100000000000000</double>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:AirspeedSettings</string>
                   <string>fieldname:ZeroPoint</string>
                  </stringlist>
@@ -2338,7 +2338,7 @@
               <item row="3" column="1">
                <widget class="QComboBox" name="cbAirspeedAnalog">
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:AirspeedSettings</string>
                   <string>fieldname:AnalogPin</string>
                  </stringlist>
@@ -2380,7 +2380,7 @@
             <string>GAM</string>
            </property>
            <property name="objrelation" stdset="0">
-            <stringlist>
+            <stringlist notr="true">
              <string>objname:HoTTSettings</string>
              <string>fieldname:Sensor</string>
              <string>element:GAM</string>
@@ -2396,7 +2396,7 @@
             <string>EAM</string>
            </property>
            <property name="objrelation" stdset="0">
-            <stringlist>
+            <stringlist notr="true">
              <string>objname:HoTTSettings</string>
              <string>fieldname:Sensor</string>
              <string>element:EAM</string>
@@ -2412,7 +2412,7 @@
             <string>Vario</string>
            </property>
            <property name="objrelation" stdset="0">
-            <stringlist>
+            <stringlist notr="true">
              <string>objname:HoTTSettings</string>
              <string>fieldname:Sensor</string>
              <string>element:VARIO</string>
@@ -2428,7 +2428,7 @@
             <string>GPS</string>
            </property>
            <property name="objrelation" stdset="0">
-            <stringlist>
+            <stringlist notr="true">
              <string>objname:HoTTSettings</string>
              <string>fieldname:Sensor</string>
              <string>element:GPS</string>
@@ -2444,7 +2444,7 @@
             <string>ESC</string>
            </property>
            <property name="objrelation" stdset="0">
-            <stringlist>
+            <stringlist notr="true">
              <string>objname:HoTTSettings</string>
              <string>fieldname:Sensor</string>
              <string>element:ESC</string>
@@ -2533,7 +2533,7 @@
                 <string/>
                </property>
                <property name="objrelation" stdset="0">
-                <stringlist>
+                <stringlist notr="true">
                  <string>objname:HoTTSettings</string>
                  <string>fieldname:Warning</string>
                  <string>element:MinPowerVoltage</string>
@@ -2580,7 +2580,7 @@
                 <string/>
                </property>
                <property name="objrelation" stdset="0">
-                <stringlist>
+                <stringlist notr="true">
                  <string>objname:HoTTSettings</string>
                  <string>fieldname:Warning</string>
                  <string>element:MaxPowerVoltage</string>
@@ -2654,7 +2654,7 @@
                 <string/>
                </property>
                <property name="objrelation" stdset="0">
-                <stringlist>
+                <stringlist notr="true">
                  <string>objname:HoTTSettings</string>
                  <string>fieldname:Warning</string>
                  <string>element:MaxUsedCapacity</string>
@@ -2728,7 +2728,7 @@
                 <string/>
                </property>
                <property name="objrelation" stdset="0">
-                <stringlist>
+                <stringlist notr="true">
                  <string>objname:HoTTSettings</string>
                  <string>fieldname:Warning</string>
                  <string>element:MinSensor2Voltage</string>
@@ -2775,7 +2775,7 @@
                 <string/>
                </property>
                <property name="objrelation" stdset="0">
-                <stringlist>
+                <stringlist notr="true">
                  <string>objname:HoTTSettings</string>
                  <string>fieldname:Warning</string>
                  <string>element:MaxSensor2Voltage</string>
@@ -2849,7 +2849,7 @@
                 <string/>
                </property>
                <property name="objrelation" stdset="0">
-                <stringlist>
+                <stringlist notr="true">
                  <string>objname:HoTTSettings</string>
                  <string>fieldname:Warning</string>
                  <string>element:PosDifference2</string>
@@ -2926,7 +2926,7 @@
                 <string/>
                </property>
                <property name="objrelation" stdset="0">
-                <stringlist>
+                <stringlist notr="true">
                  <string>objname:HoTTSettings</string>
                  <string>fieldname:Warning</string>
                  <string>element:MinHeight</string>
@@ -2976,7 +2976,7 @@
                 <string/>
                </property>
                <property name="objrelation" stdset="0">
-                <stringlist>
+                <stringlist notr="true">
                  <string>objname:HoTTSettings</string>
                  <string>fieldname:Warning</string>
                  <string>element:MaxHeight</string>
@@ -3053,7 +3053,7 @@
                 <string/>
                </property>
                <property name="objrelation" stdset="0">
-                <stringlist>
+                <stringlist notr="true">
                  <string>objname:HoTTSettings</string>
                  <string>fieldname:Warning</string>
                  <string>element:MinSensor2Temp</string>
@@ -3103,7 +3103,7 @@
                 <string/>
                </property>
                <property name="objrelation" stdset="0">
-                <stringlist>
+                <stringlist notr="true">
                  <string>objname:HoTTSettings</string>
                  <string>fieldname:Warning</string>
                  <string>element:MaxSensor2Temp</string>
@@ -3177,7 +3177,7 @@
                 <string/>
                </property>
                <property name="objrelation" stdset="0">
-                <stringlist>
+                <stringlist notr="true">
                  <string>objname:HoTTSettings</string>
                  <string>fieldname:Warning</string>
                  <string>element:MinRPM</string>
@@ -3224,7 +3224,7 @@
                 <string/>
                </property>
                <property name="objrelation" stdset="0">
-                <stringlist>
+                <stringlist notr="true">
                  <string>objname:HoTTSettings</string>
                  <string>fieldname:Warning</string>
                  <string>element:MaxRPM</string>
@@ -3298,7 +3298,7 @@
                 <string/>
                </property>
                <property name="objrelation" stdset="0">
-                <stringlist>
+                <stringlist notr="true">
                  <string>objname:HoTTSettings</string>
                  <string>fieldname:Warning</string>
                  <string>element:MaxServoDifference</string>
@@ -3372,7 +3372,7 @@
                 <string/>
                </property>
                <property name="objrelation" stdset="0">
-                <stringlist>
+                <stringlist notr="true">
                  <string>objname:HoTTSettings</string>
                  <string>fieldname:Warning</string>
                  <string>element:MaxDistance</string>
@@ -3449,7 +3449,7 @@
                 <string/>
                </property>
                <property name="objrelation" stdset="0">
-                <stringlist>
+                <stringlist notr="true">
                  <string>objname:HoTTSettings</string>
                  <string>fieldname:Warning</string>
                  <string>element:NegDifference1</string>
@@ -3526,7 +3526,7 @@
                 <string/>
                </property>
                <property name="objrelation" stdset="0">
-                <stringlist>
+                <stringlist notr="true">
                  <string>objname:HoTTSettings</string>
                  <string>fieldname:Warning</string>
                  <string>element:NegDifference2</string>
@@ -3600,7 +3600,7 @@
                 <string/>
                </property>
                <property name="objrelation" stdset="0">
-                <stringlist>
+                <stringlist notr="true">
                  <string>objname:HoTTSettings</string>
                  <string>fieldname:Warning</string>
                  <string>element:MinFuel</string>
@@ -3690,7 +3690,7 @@
                 <string/>
                </property>
                <property name="objrelation" stdset="0">
-                <stringlist>
+                <stringlist notr="true">
                  <string>objname:HoTTSettings</string>
                  <string>fieldname:Warning</string>
                  <string>element:MaxServoTemp</string>
@@ -3839,7 +3839,7 @@
                 <string/>
                </property>
                <property name="objrelation" stdset="0">
-                <stringlist>
+                <stringlist notr="true">
                  <string>objname:HoTTSettings</string>
                  <string>fieldname:Warning</string>
                  <string>element:MinCellVoltage</string>
@@ -3929,7 +3929,7 @@
                 <string/>
                </property>
                <property name="objrelation" stdset="0">
-                <stringlist>
+                <stringlist notr="true">
                  <string>objname:HoTTSettings</string>
                  <string>fieldname:Warning</string>
                  <string>element:MinSensor1Voltage</string>
@@ -3976,7 +3976,7 @@
                 <string/>
                </property>
                <property name="objrelation" stdset="0">
-                <stringlist>
+                <stringlist notr="true">
                  <string>objname:HoTTSettings</string>
                  <string>fieldname:Warning</string>
                  <string>element:MaxSensor1Voltage</string>
@@ -4053,7 +4053,7 @@
                 <string/>
                </property>
                <property name="objrelation" stdset="0">
-                <stringlist>
+                <stringlist notr="true">
                  <string>objname:HoTTSettings</string>
                  <string>fieldname:Warning</string>
                  <string>element:MinSensor1Temp</string>
@@ -4103,7 +4103,7 @@
                 <string/>
                </property>
                <property name="objrelation" stdset="0">
-                <stringlist>
+                <stringlist notr="true">
                  <string>objname:HoTTSettings</string>
                  <string>fieldname:Warning</string>
                  <string>element:MaxSensor1Temp</string>
@@ -4177,7 +4177,7 @@
                 <string/>
                </property>
                <property name="objrelation" stdset="0">
-                <stringlist>
+                <stringlist notr="true">
                  <string>objname:HoTTSettings</string>
                  <string>fieldname:Warning</string>
                  <string>element:MinSpeed</string>
@@ -4224,7 +4224,7 @@
                 <string/>
                </property>
                <property name="objrelation" stdset="0">
-                <stringlist>
+                <stringlist notr="true">
                  <string>objname:HoTTSettings</string>
                  <string>fieldname:Warning</string>
                  <string>element:MaxSpeed</string>
@@ -4298,7 +4298,7 @@
                 <string/>
                </property>
                <property name="objrelation" stdset="0">
-                <stringlist>
+                <stringlist notr="true">
                  <string>objname:HoTTSettings</string>
                  <string>fieldname:Warning</string>
                  <string>element:PosDifference1</string>
@@ -4347,7 +4347,7 @@
                 <string/>
                </property>
                <property name="objrelation" stdset="0">
-                <stringlist>
+                <stringlist notr="true">
                  <string>objname:HoTTSettings</string>
                  <string>fieldname:Warning</string>
                  <string>element:AltitudeBeep</string>
@@ -4421,7 +4421,7 @@
                 <string/>
                </property>
                <property name="objrelation" stdset="0">
-                <stringlist>
+                <stringlist notr="true">
                  <string>objname:HoTTSettings</string>
                  <string>fieldname:Warning</string>
                  <string>element:MaxCurrent</string>
@@ -4488,7 +4488,7 @@
               <item row="0" column="1">
                <widget class="QComboBox" name="cb_TelemetryBaudRate">
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:ModuleSettings</string>
                   <string>fieldname:TelemetrySpeed</string>
                  </stringlist>
@@ -4505,7 +4505,7 @@
               <item row="2" column="1">
                <widget class="QComboBox" name="cb_combridgeSpeed">
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:ModuleSettings</string>
                   <string>fieldname:ComUsbBridgeSpeed</string>
                  </stringlist>
@@ -4522,7 +4522,7 @@
               <item row="3" column="1">
                <widget class="QComboBox" name="cb_LightTelemetrySpeed">
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:ModuleSettings</string>
                   <string>fieldname:LightTelemetrySpeed</string>
                  </stringlist>
@@ -4539,7 +4539,7 @@
               <item row="4" column="1">
                <widget class="QComboBox" name="cb_MavlinkSpeed">
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:ModuleSettings</string>
                   <string>fieldname:MavlinkSpeed</string>
                  </stringlist>
@@ -4556,7 +4556,7 @@
               <item row="1" column="1">
                <widget class="QComboBox" name="cb_MspSpeed">
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:ModuleSettings</string>
                   <string>fieldname:MSPSpeed</string>
                  </stringlist>
@@ -4639,7 +4639,7 @@
         <bool>true</bool>
        </property>
        <property name="objrelation" stdset="0">
-        <stringlist>
+        <stringlist notr="true">
          <string>button:help</string>
          <string>url:https://github.com/d-ronin/dRonin/wiki/OnlineHelp:-Modules</string>
         </stringlist>
@@ -4672,7 +4672,7 @@ Apply or Save button afterwards.</string>
         <string>Reload Board Data</string>
        </property>
        <property name="objrelation" stdset="0">
-        <stringlist>
+        <stringlist notr="true">
          <string>button:reload</string>
          <string>buttongroup:1</string>
         </stringlist>
@@ -4700,7 +4700,7 @@ Apply or Save button afterwards.</string>
         <string>Apply</string>
        </property>
        <property name="objrelation" stdset="0">
-        <stringlist>
+        <stringlist notr="true">
          <string>button:apply</string>
         </stringlist>
        </property>
@@ -4730,7 +4730,7 @@ Apply or Save button afterwards.</string>
         <bool>false</bool>
        </property>
        <property name="objrelation" stdset="0">
-        <stringlist>
+        <stringlist notr="true">
          <string>button:save</string>
         </stringlist>
        </property>

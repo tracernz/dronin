@@ -1,4 +1,5 @@
-include(gcs.pri)
+# include(gcs.pri)
+# user needs to include this, otherwise multiple includes cause issues
 
 USB_ID_SOURCE_DIR = $$clean_path($$GCS_SOURCE_TREE/../../shared/usb_ids)
 USB_ID_JSON = $$USB_ID_SOURCE_DIR/usb_ids.json

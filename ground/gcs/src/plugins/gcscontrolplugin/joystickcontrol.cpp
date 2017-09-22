@@ -98,14 +98,8 @@ void JoystickControl::mouseMoveEvent(QMouseEvent *event)
 
     double y = -(point.y() / areaSize.height() - 0.5) * 2.0;
     double x = (point.x() / areaSize.width() - 0.5) * 2.0;
-    if (y < -1.0)
-        y = -1.0;
-    if (y > 1.0)
-        y = 1.0;
-    if (x < -1.0)
-        x = -1.0;
-    if (x > 1.0)
-        x = 1.0;
+    x = std::max(-1.0, std::min(x, 1.0));
+    y = std::max(-1.0, std::min(y, 1.0));
 
     emit positionClicked(x, y);
 }

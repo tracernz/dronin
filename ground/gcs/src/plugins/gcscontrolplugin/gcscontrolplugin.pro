@@ -28,13 +28,8 @@ HEADERS += gcscontrolgadgetfactory.h
 
 OTHER_FILES += GCSControl.pluginspec
 
+QT += gamepad
 QT += svg
-QT += network
-
-SDL {
-    DEFINES += USE_SDL
-    include(../../libs/sdlgamepad/sdlgamepad.pri)
-}
 
 FORMS += gcscontrol.ui \
     gcscontrolgadgetoptionspage.ui

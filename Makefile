@@ -138,8 +138,7 @@ help:
 	@echo "     android_sdk_install  - Install the Android SDK tools"
 	@echo "     gtest_install        - Install the google unit test suite"
 	@echo "     uncrustify_install   - Install the uncrustify code formatter"
-	@echo "     openssl_install      - Install the openssl libraries on windows machines"	
-	@echo "     sdl_install          - Install the SDL libraries"
+	@echo "     openssl_install      - Install the openssl libraries on windows machines"
 ifndef WINDOWS
 	@echo "     depot_tools_install  - Install Google depot-tools for building breakpad tools"
 endif
@@ -206,7 +205,6 @@ endif
 	@echo "     gcs                  - Build the Ground Control System (GCS) application"
 	@echo "        GCS_QMAKE_OPTS=     - Optional build flags with the following arguments:"
 	@echo "           \"CONFIG+=LIGHTWEIGHT_GCS\"  - Build a lightweight GCS suitable for low-powered platforms"
-	@echo "           \"CONFIG+=SDL\"              - Enable joystick and gamepad support"
 	@echo "           \"CONFIG+=OSG\"              - Enable OpenSceneGraph support"
 	@echo "           \"CONFIG+=KML\"              - Enable KML file support"
 	@echo "     gcs_clean            - Remove the Ground Control System (GCS) application"
@@ -274,7 +272,7 @@ all_ground: gcs
 ifndef WINDOWS
 # unfortunately the silent linking command is broken on windows
 ifeq ($(V), 1)
-GCS_SILENT := 
+GCS_SILENT :=
 else
 GCS_SILENT := silent
 endif
@@ -329,7 +327,7 @@ gcs_clazy: $(UAVOBJECT_MARKER) | tools_required_qt
 ifndef WINDOWS
 # unfortunately the silent linking command is broken on windows
 ifeq ($(V), 1)
-UAVOGEN_SILENT := 
+UAVOGEN_SILENT :=
 else
 UAVOGEN_SILENT := silent
 endif
@@ -409,7 +407,7 @@ $(ANDROIDGCS_ASSETS_DIR)/uavos:
 
 ifeq ($(V), 1)
 ANT_QUIET := -d
-ANDROID_SILENT := 
+ANDROID_SILENT :=
 else
 ANT_QUIET := -q
 ANDROID_SILENT := -s
@@ -422,7 +420,7 @@ $(ANDROIDGCS_OUT_DIR)/bin/androidgcs-$(ANDROIDGCS_BUILD_CONF).apk: uavo-collecti
 	$(V1) mkdir -p $(ANDROIDGCS_OUT_DIR)
 	$(V1) $(ANDROID) $(ANDROID_SILENT) update project --subprojects --target 'Google Inc.:Google APIs:19' --name androidgcs --path ./androidgcs
 	$(V1) ant -f ./androidgcs/google-play-services_lib/build.xml \
-		$(ANT_QUIET) debug               
+		$(ANT_QUIET) debug
 	$(V1) ant -f ./androidgcs/build.xml \
 		$(ANT_QUIET) \
 		-Dout.dir="../$(call toprel, $(ANDROIDGCS_OUT_DIR)/bin)" \
@@ -1121,14 +1119,14 @@ export FW_FILES := $(FW_FILES)
 PACKAGE_TARGETS = package_installer package_ground package_flight package_all
 PACKAGE_TARGETS += package_ground_compress package_all_compress
 .PHONY: $(PACKAGE_TARGETS)
-$(PACKAGE_TARGETS): 
+$(PACKAGE_TARGETS):
 	$(V1) cd package && $(MAKE) --no-print-directory $@
 
 package_flight: all_flight
 
 ##############################
 #
-# uncrustify 
+# uncrustify
 #
 ##############################
 

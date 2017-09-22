@@ -46,8 +46,6 @@ public:
     void allowGcsControl(bool allow);
     void setGCSControl(bool newState);
     bool getGCSControl(void);
-    void setUDPControl(bool newState);
-    bool getUDPControl(void);
 
 signals:
     //! Emitted whenever the UI is clicked on to indicate the new stick positions
@@ -66,7 +64,6 @@ protected slots:
     void toggleControl(bool checked);
     void selectFlightMode(int state);
     void flightModeChanged(quint8 mode);
-    void toggleUDPControl(int state);
     void armedChanged(quint8 armed);
 
 private:

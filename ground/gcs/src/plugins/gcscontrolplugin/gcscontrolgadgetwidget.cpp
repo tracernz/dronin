@@ -60,13 +60,9 @@ GCSControlGadgetWidget::GCSControlGadgetWidget(QWidget *parent)
             &GCSControlGadgetWidget::rightStickClicked);
 
     // Connect misc controls
-    connect(m_gcscontrol->checkBoxGcsControl, &QAbstractButton::clicked, this,
-            &GCSControlGadgetWidget::toggleControl);
     connect(m_gcscontrol->comboBoxFlightMode, QOverload<int>::of(&QComboBox::currentIndexChanged),
             this, &GCSControlGadgetWidget::selectFlightMode);
 
-    connect(m_gcscontrol->checkBoxUDPControl, &QCheckBox::stateChanged, this,
-            &GCSControlGadgetWidget::toggleUDPControl); // UDP control checkbox
 
     // Connect object updated event from UAVObject to also update check boxes and dropdown
     connect(flightStatus, &FlightStatus::FlightModeChanged, this,
@@ -109,7 +105,6 @@ void GCSControlGadgetWidget::rightStickClicked(double X, double Y)
   */
 void GCSControlGadgetWidget::toggleControl(bool checked)
 {
-    m_gcscontrol->checkBoxUDPControl->setEnabled(checked);
     emit controlEnabled(checked);
 }
 
@@ -121,15 +116,6 @@ void GCSControlGadgetWidget::flightModeChanged(quint8 mode)
 void GCSControlGadgetWidget::armedChanged(quint8 armed)
 {
     m_gcscontrol->checkBoxArmed->setChecked(armed != 0);
-}
-
-void GCSControlGadgetWidget::toggleUDPControl(int state)
-{
-    if (state) {
-        setUDPControl(true);
-    } else {
-        setUDPControl(false);
-    }
 }
 
 /*!
@@ -158,16 +144,6 @@ void GCSControlGadgetWidget::setGCSControl(bool newState)
 bool GCSControlGadgetWidget::getGCSControl(void)
 {
     return m_gcscontrol->checkBoxGcsControl->isChecked();
-}
-
-void GCSControlGadgetWidget::setUDPControl(bool newState)
-{
-    m_gcscontrol->checkBoxUDPControl->setChecked(newState);
-}
-
-bool GCSControlGadgetWidget::getUDPControl(void)
-{
-    return m_gcscontrol->checkBoxUDPControl->isChecked();
 }
 
 /**

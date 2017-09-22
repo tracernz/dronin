@@ -30,6 +30,8 @@
 #include "gcscontrol.h"
 
 #include <QFileDialog>
+#include <QGamepad>
+#include <QGamepadManager>
 #include <QtAlgorithms>
 #include <QStringList>
 
@@ -38,61 +40,8 @@ GCSControlGadgetOptionsPage::GCSControlGadgetOptionsPage(GCSControlGadgetConfigu
     : IOptionsPage(parent)
     , m_config(config)
 {
-    options_page = NULL;
-
-#if defined(USE_SDL)
-    sdlGamepad = dynamic_cast<GCSControl *>(parent)->sdlGamepad;
-#endif
+    options_page = nullptr;
 }
-
-GCSControlGadgetOptionsPage::~GCSControlGadgetOptionsPage()
-{
-}
-
-void GCSControlGadgetOptionsPage::gamepads(quint8 count)
-{
-    Q_UNUSED(count);
-}
-
-#if defined(USE_SDL)
-void GCSControlGadgetOptionsPage::buttonState(ButtonNumber number, bool pressed)
-{
-    if (options_page) {
-        QList<QCheckBox *> rbList;
-        rbList << options_page->buttonInput0 << options_page->buttonInput1
-               << options_page->buttonInput2 << options_page->buttonInput3
-               << options_page->buttonInput4 << options_page->buttonInput5
-               << options_page->buttonInput6 << options_page->buttonInput7;
-
-        if (number < 8) // We only support 8 buttons
-        {
-            rbList.at(number)->setChecked(pressed);
-        }
-    }
-}
-
-void GCSControlGadgetOptionsPage::axesValues(QListInt16 values)
-{
-    if (options_page) {
-        QList<QProgressBar *> pbList;
-        pbList << options_page->joyCh0 << options_page->joyCh1 << options_page->joyCh2
-               << options_page->joyCh3 << options_page->joyCh4 << options_page->joyCh5
-               << options_page->joyCh6 << options_page->joyCh7;
-        int i = 0;
-        foreach (qint16 value, values) {
-            if (i > 7)
-                break; // We only support 7 channels
-            if (chRevList.at(i)->isChecked() == 1)
-                value = 65535 - value;
-            if (pbList.at(i)->minimum() > value)
-                pbList.at(i)->setMinimum(value);
-            if (pbList.at(i)->maximum() < value)
-                pbList.at(i)->setMaximum(value);
-            pbList.at(i++)->setValue(value);
-        }
-    }
-}
-#endif
 
 // creates options page widget (uses the UI file)
 QWidget *GCSControlGadgetOptionsPage::createPage(QWidget *parent)
@@ -199,11 +148,6 @@ QWidget *GCSControlGadgetOptionsPage::createPage(QWidget *parent)
     connect(buttonActionList.at(7), SIGNAL(currentIndexChanged(int)), this,
             SLOT(updateButtonAction_7()));
 
-    // updateButtonFunction();
-
-    options_page->udp_host->setText(m_config->getUDPControlHost().toString());
-    options_page->udp_port->setText(QString::number(m_config->getUDPControlPort()));
-
     // Controls mode are from 1 to 4.
     if (m_config->getControlsMode() > 0 && m_config->getControlsMode() < 5)
         options_page->controlsMode->setCurrentIndex(m_config->getControlsMode() - 1);
@@ -221,12 +165,11 @@ QWidget *GCSControlGadgetOptionsPage::createPage(QWidget *parent)
         ;
     }
 
-#if defined(USE_SDL)
-    connect(sdlGamepad, SIGNAL(axesValues(QListInt16)), this, SLOT(axesValues(QListInt16)));
-    connect(sdlGamepad, SIGNAL(buttonState(ButtonNumber, bool)), this,
-            SLOT(buttonState(ButtonNumber, bool)));
-    connect(sdlGamepad, SIGNAL(gamepads(quint8)), this, SLOT(gamepads(quint8)));
-#endif
+    auto gpManager = QGamepadManager::instance();
+    for (const auto id : gpManager->connectedGamepads()) {
+        QGamepad gp(id);
+        options_page->cbxJoysticks->addItem(QStringLiteral("%0 [%1]").arg(gp.name(), QString::number(id)), id);
+    }
 
     return optionsPageWidget;
 }
@@ -260,9 +203,6 @@ void GCSControlGadgetOptionsPage::apply()
     }
     m_config->setRPYTchannels(roll, pitch, yaw, throttle);
 
-    m_config->setUDPControlSettings(options_page->udp_port->text().toInt(),
-                                    options_page->udp_host->text());
-
     m_config->setGcsReceiverMode(options_page->gcsReceiverCB->checkState());
 
     for (unsigned int j = 0; j < 8; j++) {
@@ -275,11 +215,8 @@ void GCSControlGadgetOptionsPage::apply()
 
 void GCSControlGadgetOptionsPage::finish()
 {
-#if defined(USE_SDL)
-    disconnect(sdlGamepad, 0, this, 0);
-#endif
     delete options_page;
-    options_page = NULL;
+    options_page = nullptr;
 }
 
 void GCSControlGadgetOptionsPage::updateButtonFunction()

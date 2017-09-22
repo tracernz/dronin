@@ -40,7 +40,7 @@ GCSControlGadgetFactory::~GCSControlGadgetFactory()
 IUAVGadget *GCSControlGadgetFactory::createGadget(QWidget *parent)
 {
     GCSControlGadgetWidget *gadgetWidget = new GCSControlGadgetWidget(parent);
-    return new GCSControlGadget(QString("GCSControlGadget"), gadgetWidget, parent, this->parent());
+    return new GCSControlGadget(QString("GCSControlGadget"), gadgetWidget, parent);
 }
 
 IUAVGadgetConfiguration *GCSControlGadgetFactory::createConfiguration(QSettings *qSettings)

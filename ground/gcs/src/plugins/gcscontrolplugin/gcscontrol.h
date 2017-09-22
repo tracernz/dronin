@@ -47,9 +47,6 @@ public:
     bool initialize(const QStringList &arguments, QString *errorString);
     void shutdown();
 
-#if defined(USE_SDL)
-    SDLGamepad *sdlGamepad;
-#endif
 public slots:
     bool beginGCSControl();
     bool endGCSControl();

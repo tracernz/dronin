@@ -26,7 +26,7 @@
 #ifndef GCSCONTROL_GLOBAL_H
 #define GCSCONTROL_GLOBAL_H
 
-#include <QtCore/qglobal.h>
+#include <QtGlobal>
 
 #if defined(GCSCONTROL_LIBRARY)
 #define GCSCONTROLSHARED_EXPORT Q_DECL_EXPORT

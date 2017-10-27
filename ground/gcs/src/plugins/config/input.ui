@@ -864,7 +864,7 @@ channel value for each flight mode.</string>
                    </font>
                   </property>
                   <property name="text">
-                   <string>Avoid &quot;Manual&quot; for multirotors!</string>
+                   <string>Avoid "Manual" for multirotors!</string>
                   </property>
                   <property name="wordWrap">
                    <bool>true</bool>
@@ -1434,7 +1434,7 @@ margin:1px;</string>
        <item>
         <widget class="QScrollArea" name="saArmingSettings">
          <property name="styleSheet">
-          <string notr="true">QFrame[hasWarning=&quot;true&quot;] {
+          <string notr="true">QFrame[hasWarning="true"] {
 	background-color: #f5c1c1;
 	background-image: url(:/configgadget/images/ic_warning_black_24px_trans.png);
 	background-repeat: none;
@@ -1693,7 +1693,7 @@ margin:1px;</string>
                       <enum>Qt::StrongFocus</enum>
                      </property>
                      <property name="toolTip">
-                      <string>Indicate the control used for arming the airframe, in addition to setting the throttle to its minimum position. In other terms &quot;Throttle Off&quot;.</string>
+                      <string>Indicate the control used for arming the airframe, in addition to setting the throttle to its minimum position. In other terms "Throttle Off".</string>
                      </property>
                     </widget>
                    </item>
@@ -1756,7 +1756,7 @@ margin:1px;</string>
                       </size>
                      </property>
                      <property name="objrelation" stdset="0">
-                      <stringlist>
+                      <stringlist notr="true">
                        <string>objname:ManualControlSettings</string>
                        <string>fieldname:ArmTime</string>
                        <string>useunits:yes</string>
@@ -1995,7 +1995,7 @@ margin:1px;</string>
                    <item>
                     <widget class="QLabel" name="lblAutoDisarm">
                      <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Additionally, it will be automatically disarmed when:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=" font-weight:600;"&gt;Additionally, it will be automatically disarmed when:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                     </widget>
                    </item>

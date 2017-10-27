@@ -179,7 +179,7 @@ have to define channel output range using Output configuration tab.</string>
                  <number>20</number>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:CameraStabSettings</string>
                   <string>fieldname:OutputRange</string>
                   <string>element:Yaw</string>
@@ -208,7 +208,7 @@ have to define channel output range using Output configuration tab.</string>
                  <number>20</number>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:CameraStabSettings</string>
                   <string>fieldname:OutputRange</string>
                   <string>element:Pitch</string>
@@ -237,7 +237,7 @@ have to define channel output range using Output configuration tab.</string>
                  <number>20</number>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:CameraStabSettings</string>
                   <string>fieldname:OutputRange</string>
                   <string>element:Roll</string>
@@ -497,7 +497,7 @@ Attitude: camera tracks level for the axis. Input controls the deflection.
 AxisLock: camera remembers tracking attitude. Input controls the rate of deflection.</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:CameraStabSettings</string>
                   <string>fieldname:StabilizationMode</string>
                   <string>element:Yaw</string>
@@ -522,7 +522,7 @@ AxisLock: camera remembers tracking attitude. Input controls the rate of deflect
 Don't forget to map this channel using Input configuration tab.</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:CameraStabSettings</string>
                   <string>fieldname:Input</string>
                   <string>element:Yaw</string>
@@ -586,7 +586,7 @@ margin:1px;</string>
 Don't forget to map this channel using Input configuration tab.</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:CameraStabSettings</string>
                   <string>fieldname:Input</string>
                   <string>element:Roll</string>
@@ -611,7 +611,7 @@ Don't forget to map this channel using Input configuration tab.</string>
 Don't forget to map this channel using Input configuration tab.</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:CameraStabSettings</string>
                   <string>fieldname:Input</string>
                   <string>element:Pitch</string>
@@ -640,7 +640,7 @@ Don't forget to map this channel using Input configuration tab.</string>
                  <number>20</number>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:CameraStabSettings</string>
                   <string>fieldname:InputRange</string>
                   <string>element:Yaw</string>
@@ -666,7 +666,7 @@ Don't forget to map this channel using Input configuration tab.</string>
                  <number>50</number>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:CameraStabSettings</string>
                   <string>fieldname:InputRate</string>
                   <string>element:Yaw</string>
@@ -694,7 +694,7 @@ This option smoothes the stick input. Zero value disables LPF.</string>
                  <number>0</number>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:CameraStabSettings</string>
                   <string>fieldname:FeedForward</string>
                   <string>element:Yaw</string>
@@ -717,7 +717,7 @@ Attitude: camera tracks level for the axis. Input controls the deflection.
 AxisLock: camera remembers tracking attitude. Input controls the rate of deflection.</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:CameraStabSettings</string>
                   <string>fieldname:StabilizationMode</string>
                   <string>element:Pitch</string>
@@ -746,7 +746,7 @@ AxisLock: camera remembers tracking attitude. Input controls the rate of deflect
                  <number>20</number>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:CameraStabSettings</string>
                   <string>fieldname:InputRange</string>
                   <string>element:Pitch</string>
@@ -772,7 +772,7 @@ AxisLock: camera remembers tracking attitude. Input controls the rate of deflect
                  <number>50</number>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:CameraStabSettings</string>
                   <string>fieldname:InputRate</string>
                   <string>element:Pitch</string>
@@ -800,7 +800,7 @@ This option smoothes the stick input. Zero value disables LPF.</string>
                  <number>0</number>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:CameraStabSettings</string>
                   <string>fieldname:FeedForward</string>
                   <string>element:Pitch</string>
@@ -823,7 +823,7 @@ Attitude: camera tracks level for the axis. Input controls the deflection.
 AxisLock: camera remembers tracking attitude. Input controls the rate of deflection.</string>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:CameraStabSettings</string>
                   <string>fieldname:StabilizationMode</string>
                   <string>element:Roll</string>
@@ -852,7 +852,7 @@ AxisLock: camera remembers tracking attitude. Input controls the rate of deflect
                  <number>20</number>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:CameraStabSettings</string>
                   <string>fieldname:InputRange</string>
                   <string>element:Roll</string>
@@ -888,7 +888,7 @@ AxisLock: camera remembers tracking attitude. Input controls the rate of deflect
                  <number>50</number>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:CameraStabSettings</string>
                   <string>fieldname:InputRate</string>
                   <string>element:Roll</string>
@@ -926,7 +926,7 @@ This option smoothes the stick input. Zero value disables LPF.</string>
                  <number>0</number>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:CameraStabSettings</string>
                   <string>fieldname:FeedForward</string>
                   <string>element:Roll</string>
@@ -999,7 +999,7 @@ value.</string>
                  <double>1.000000000000000</double>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:CameraStabSettings</string>
                   <string>fieldname:MaxAxisLockRate</string>
                   <string>haslimits:no</string>
@@ -1041,7 +1041,7 @@ value.</string>
                  <double>0.000000000000000</double>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:CameraStabSettings</string>
                   <string>fieldname:AttitudeFilter</string>
                   <string>haslimits:no</string>

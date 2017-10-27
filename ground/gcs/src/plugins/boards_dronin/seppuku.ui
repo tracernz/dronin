@@ -636,7 +636,7 @@ QLabel[severity=error] {
             <string>Connection Diagram</string>
            </property>
            <property name="objrelation" stdset="0">
-            <stringlist>
+            <stringlist notr="true">
              <string>button:connectiondiagram</string>
             </stringlist>
            </property>

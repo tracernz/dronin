@@ -73,7 +73,7 @@
                  <double>180.000000000000000</double>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:AttitudeSettings</string>
                   <string>fieldname:BoardRotation</string>
                   <string>element:Roll</string>
@@ -121,7 +121,7 @@
                  <double>90.000000000000000</double>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:AttitudeSettings</string>
                   <string>fieldname:BoardRotation</string>
                   <string>element:Pitch</string>
@@ -175,7 +175,7 @@
                  <double>180.000000000000000</double>
                 </property>
                 <property name="objrelation" stdset="0">
-                 <stringlist>
+                 <stringlist notr="true">
                   <string>objname:AttitudeSettings</string>
                   <string>fieldname:BoardRotation</string>
                   <string>element:Yaw</string>
@@ -469,7 +469,7 @@ arming it in that case!</string>
           <string>Zero gyros while arming vehicle</string>
          </property>
          <property name="objrelation" stdset="0">
-          <stringlist>
+          <stringlist notr="true">
            <string>objname:AttitudeSettings</string>
            <string>fieldname:ZeroDuringArming</string>
            <string>buttongroup:1</string>
@@ -826,7 +826,7 @@ new home location unless it is in indoor mode.</string>
                    <double>180.000000000000000</double>
                   </property>
                   <property name="objrelation" stdset="0">
-                   <stringlist>
+                   <stringlist notr="true">
                     <string>objname:SensorSettings</string>
                     <string>fieldname:YGyroTempCoeff</string>
                     <string>element:T3</string>
@@ -848,7 +848,7 @@ new home location unless it is in indoor mode.</string>
                    <double>180.000000000000000</double>
                   </property>
                   <property name="objrelation" stdset="0">
-                   <stringlist>
+                   <stringlist notr="true">
                     <string>objname:SensorSettings</string>
                     <string>fieldname:ZGyroTempCoeff</string>
                     <string>element:T</string>
@@ -870,7 +870,7 @@ new home location unless it is in indoor mode.</string>
                    <double>180.000000000000000</double>
                   </property>
                   <property name="objrelation" stdset="0">
-                   <stringlist>
+                   <stringlist notr="true">
                     <string>objname:SensorSettings</string>
                     <string>fieldname:XGyroTempCoeff</string>
                     <string>element:T3</string>
@@ -892,7 +892,7 @@ new home location unless it is in indoor mode.</string>
                    <double>180.000000000000000</double>
                   </property>
                   <property name="objrelation" stdset="0">
-                   <stringlist>
+                   <stringlist notr="true">
                     <string>objname:SensorSettings</string>
                     <string>fieldname:XGyroTempCoeff</string>
                     <string>element:T</string>
@@ -924,7 +924,7 @@ new home location unless it is in indoor mode.</string>
                    <double>180.000000000000000</double>
                   </property>
                   <property name="objrelation" stdset="0">
-                   <stringlist>
+                   <stringlist notr="true">
                     <string>objname:SensorSettings</string>
                     <string>fieldname:ZGyroTempCoeff</string>
                     <string>element:1</string>
@@ -946,7 +946,7 @@ new home location unless it is in indoor mode.</string>
                    <double>180.000000000000000</double>
                   </property>
                   <property name="objrelation" stdset="0">
-                   <stringlist>
+                   <stringlist notr="true">
                     <string>objname:SensorSettings</string>
                     <string>fieldname:XGyroTempCoeff</string>
                     <string>element:1</string>
@@ -978,7 +978,7 @@ new home location unless it is in indoor mode.</string>
                    <double>180.000000000000000</double>
                   </property>
                   <property name="objrelation" stdset="0">
-                   <stringlist>
+                   <stringlist notr="true">
                     <string>objname:SensorSettings</string>
                     <string>fieldname:XGyroTempCoeff</string>
                     <string>element:T2</string>
@@ -1000,7 +1000,7 @@ new home location unless it is in indoor mode.</string>
                    <double>180.000000000000000</double>
                   </property>
                   <property name="objrelation" stdset="0">
-                   <stringlist>
+                   <stringlist notr="true">
                     <string>objname:SensorSettings</string>
                     <string>fieldname:YGyroTempCoeff</string>
                     <string>element:1</string>
@@ -1022,7 +1022,7 @@ new home location unless it is in indoor mode.</string>
                    <double>180.000000000000000</double>
                   </property>
                   <property name="objrelation" stdset="0">
-                   <stringlist>
+                   <stringlist notr="true">
                     <string>objname:SensorSettings</string>
                     <string>fieldname:YGyroTempCoeff</string>
                     <string>element:T</string>
@@ -1061,7 +1061,7 @@ new home location unless it is in indoor mode.</string>
                    <double>180.000000000000000</double>
                   </property>
                   <property name="objrelation" stdset="0">
-                   <stringlist>
+                   <stringlist notr="true">
                     <string>objname:SensorSettings</string>
                     <string>fieldname:YGyroTempCoeff</string>
                     <string>element:T2</string>
@@ -1102,7 +1102,7 @@ new home location unless it is in indoor mode.</string>
                    <double>180.000000000000000</double>
                   </property>
                   <property name="objrelation" stdset="0">
-                   <stringlist>
+                   <stringlist notr="true">
                     <string>objname:SensorSettings</string>
                     <string>fieldname:ZGyroTempCoeff</string>
                     <string>element:T3</string>
@@ -1134,7 +1134,7 @@ new home location unless it is in indoor mode.</string>
                    <double>180.000000000000000</double>
                   </property>
                   <property name="objrelation" stdset="0">
-                   <stringlist>
+                   <stringlist notr="true">
                     <string>objname:SensorSettings</string>
                     <string>fieldname:ZGyroTempCoeff</string>
                     <string>element:T2</string>
@@ -1335,7 +1335,7 @@ new home location unless it is in indoor mode.</string>
         <bool>true</bool>
        </property>
        <property name="objrelation" stdset="0">
-        <stringlist>
+        <stringlist notr="true">
          <string>button:help</string>
          <string>url:https://github.com/d-ronin/dRonin/wiki/OnlineHelp:-Attitude</string>
         </stringlist>
@@ -1366,7 +1366,7 @@ Save button afterwards.</string>
         <string>Reset To Defaults</string>
        </property>
        <property name="objrelation" stdset="0">
-        <stringlist>
+        <stringlist notr="true">
          <string>button:default</string>
          <string>buttongroup:1</string>
         </stringlist>
@@ -1399,7 +1399,7 @@ Save button afterwards.</string>
         <string>Reload Board Data</string>
        </property>
        <property name="objrelation" stdset="0">
-        <stringlist>
+        <stringlist notr="true">
          <string>button:reload</string>
          <string>buttongroup:1</string>
         </stringlist>

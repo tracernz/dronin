@@ -70,6 +70,8 @@ ConfigTaskWidget::ConfigTaskWidget(QWidget *parent)
     UAVSettingsImportExportManager *importexportplugin =
         pm->getObject<UAVSettingsImportExportManager>();
     connect(importexportplugin, SIGNAL(importAboutToBegin()), this, SLOT(invalidateObjects()));
+    connect(importexportplugin, &UAVSettingsImportExportManager::importEnded,
+            [this]() { refreshWidgetsValues(); });
 }
 
 /**
@@ -376,7 +378,8 @@ void ConfigTaskWidget::refreshWidgetsValues(UAVObject *obj)
             setWidgetFromField(ow->widget, ow->field, ow->index, ow->scale, ow->isLimited,
                                ow->useUnits);
     }
-    setDirty(dirtyBack);
+    // it doesn't make sense to keep the dirty state if all widgets were overwritten...
+    setDirty(obj && dirtyBack);
 }
 /**
  * SLOT function used to update the uavobject fields from widgets with relation to

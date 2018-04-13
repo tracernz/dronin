@@ -23,7 +23,7 @@ endif
 
 # Change the Qt version here, format is e.g. 5.8.0, 5.8.0-1 or 5.8.0-beta etc.
 
-QT_VERSION := 5.9.2
+QT_VERSION := 5.9.5
 QT_MINGW_VERSION := 530
 
 # These bits are not user serviceable

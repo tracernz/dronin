@@ -267,6 +267,11 @@ plugin_usagestatsgadget.depends += plugin_uavobjectutil
 plugin_usagestatsgadget.depends += plugin_debuggadget
 SUBDIRS += plugin_usagestatsgadget
 
+# Bluetooth (LE) plugin
+plugin_bluetooth.subdir = bluetooth
+plugin_bluetooth.depends = plugin_coreplugin
+SUBDIRS += plugin_bluetooth
+
 ############################
 #  Board plugins
 # Those plugins define supported board models: each board manufacturer

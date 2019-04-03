@@ -292,6 +292,10 @@ static int32_t check_stabilization_settings(int index, bool multirotor)
  */
 static int32_t check_safe_to_arm()
 {
+	// 8 Second grace period while gyrobias completes warmup
+	if (PIOS_Thread_Systime() < 8000) {
+		return SYSTEMALARMS_CONFIGERROR_UNSAFETOARM;
+	}
 	FlightStatusData flightStatus;
 	FlightStatusGet(&flightStatus);
 
